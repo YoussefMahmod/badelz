@@ -1,0 +1,135 @@
+"use client";
+
+import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import {
+  Home,
+  Search,
+  Users,
+  ShoppingBag,
+  LayoutDashboard,
+  RectangleHorizontal,
+  CalendarDays,
+  Settings,
+} from "lucide-react";
+import { useTranslation } from "@/i18n";
+import type { ReactNode } from "react";
+
+interface NavItem {
+  href: string;
+  icon: ReactNode;
+  activeIcon: ReactNode;
+  labelKey: string;
+}
+
+export function BottomNav({ variant = "public" }: { variant?: "public" | "owner" }) {
+  const { t } = useTranslation();
+  const pathname = usePathname();
+
+  const publicTabs: NavItem[] = [
+    {
+      href: "/",
+      icon: <Home size={24} strokeWidth={1.5} />,
+      activeIcon: <Home size={24} strokeWidth={2} />,
+      labelKey: "nav.home",
+    },
+    {
+      href: "/play",
+      icon: <Users size={24} strokeWidth={1.5} />,
+      activeIcon: <Users size={24} strokeWidth={2} />,
+      labelKey: "nav.play",
+    },
+    {
+      href: "/browse",
+      icon: <Search size={24} strokeWidth={1.5} />,
+      activeIcon: <Search size={24} strokeWidth={2} />,
+      labelKey: "nav.browse",
+    },
+    {
+      href: "/market",
+      icon: <ShoppingBag size={24} strokeWidth={1.5} />,
+      activeIcon: <ShoppingBag size={24} strokeWidth={2} />,
+      labelKey: "nav.market",
+    },
+  ];
+
+  const ownerTabs: NavItem[] = [
+    {
+      href: "/dashboard",
+      icon: <LayoutDashboard size={24} strokeWidth={1.5} />,
+      activeIcon: <LayoutDashboard size={24} strokeWidth={2} />,
+      labelKey: "nav.dashboard",
+    },
+    {
+      href: "/courts",
+      icon: <RectangleHorizontal size={24} strokeWidth={1.5} />,
+      activeIcon: <RectangleHorizontal size={24} strokeWidth={2} />,
+      labelKey: "nav.courts",
+    },
+    {
+      href: "/bookings",
+      icon: <CalendarDays size={24} strokeWidth={1.5} />,
+      activeIcon: <CalendarDays size={24} strokeWidth={2} />,
+      labelKey: "nav.bookings",
+    },
+    {
+      href: "/settings",
+      icon: <Settings size={24} strokeWidth={1.5} />,
+      activeIcon: <Settings size={24} strokeWidth={2} />,
+      labelKey: "nav.settings",
+    },
+  ];
+
+  const tabs = variant === "owner" ? ownerTabs : publicTabs;
+
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    return pathname.startsWith(href);
+  };
+
+  return (
+    <nav
+      className="fixed bottom-0 inset-x-0 z-50 bg-[#0a0f1a]/90 backdrop-blur-xl border-t border-white/5 safe-bottom"
+      role="navigation"
+    >
+      <div className="mx-auto flex max-w-lg items-center justify-around px-2 py-2.5">
+        {tabs.map((tab) => {
+          const active = isActive(tab.href);
+          return (
+            <Link
+              key={tab.href}
+              href={tab.href}
+              className="relative flex flex-col items-center gap-1 px-3 py-1.5 transition-colors"
+              aria-current={active ? "page" : undefined}
+            >
+              <span
+                className={
+                  active
+                    ? "flex items-center justify-center rounded-xl p-1.5 text-[#c8ff00]"
+                    : "flex items-center justify-center p-1.5 text-white/30"
+                }
+              >
+                {active ? tab.activeIcon : tab.icon}
+              </span>
+              {active && (
+                <motion.div
+                  layoutId="nav-dot"
+                  className="h-1 w-1 rounded-full bg-[#c8ff00]"
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                />
+              )}
+              <span
+                className={`text-[11px] font-medium ${
+                  active ? "text-[#c8ff00]" : "text-white/30"
+                }`}
+              >
+                {t(tab.labelKey as Parameters<typeof t>[0])}
+              </span>
+            </Link>
+          );
+        })}
+      </div>
+    </nav>
+  );
+}

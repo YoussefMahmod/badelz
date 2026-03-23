@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: badelz_db
+    restart: unless-stopped
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_USER: badelz
+      POSTGRES_PASSWORD: badelz_dev
+      POSTGRES_DB: badelz
+    volumes:
+      - badelz_pgdata:/var/lib/postgresql/data
+
+volumes:
+  badelz_pgdata:

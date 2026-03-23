@@ -1,0 +1,253 @@
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+import { motion } from "framer-motion";
+import {
+  CalendarDays,
+  User,
+  Phone,
+  Clock,
+  Check,
+  X,
+  CheckCircle,
+} from "lucide-react";
+import { useTranslation, useLocale } from "@/i18n";
+import { staggerContainer, staggerItem } from "@/lib/animations";
+import { formatTime, formatDateShort } from "@/lib/format";
+import { LoadingSpinner } from "@/components/loading-spinner";
+import { EmptyState } from "@/components/empty-state";
+
+type BookingStatus = "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED" | "NO_SHOW";
+
+interface Booking {
+  id: string;
+  playerName: string;
+  playerPhone: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  status: BookingStatus;
+  confirmationCode: string;
+  court: { name: string; nameAr: string | null };
+}
+
+const STATUS_CONFIG: Record<
+  BookingStatus,
+  { color: string; bg: string; borderColor: string }
+> = {
+  PENDING: { color: "text-amber-600", bg: "bg-amber-50", borderColor: "border-amber-200" },
+  CONFIRMED: { color: "text-green-600", bg: "bg-green-50", borderColor: "border-green-200" },
+  CANCELLED: { color: "text-red-600", bg: "bg-red-50", borderColor: "border-red-200" },
+  COMPLETED: { color: "text-blue-600", bg: "bg-blue-50", borderColor: "border-blue-200" },
+  NO_SHOW: { color: "text-gray-500", bg: "bg-gray-50", borderColor: "border-gray-200" },
+};
+
+const STATUS_KEYS: BookingStatus[] = ["PENDING", "CONFIRMED", "CANCELLED", "COMPLETED", "NO_SHOW"];
+
+export default function OwnerBookingsPage() {
+  const { t } = useTranslation();
+  const { locale } = useLocale();
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeFilter, setActiveFilter] = useState<BookingStatus | "ALL">("ALL");
+
+  const fetchBookings = useCallback(async () => {
+    try {
+      const params = new URLSearchParams();
+      if (activeFilter !== "ALL") params.set("status", activeFilter);
+
+      const res = await fetch(`/api/owner/bookings?${params.toString()}`);
+      const json = await res.json();
+      if (res.ok && json.data) {
+        setBookings(json.data);
+      } else {
+        setBookings([]);
+      }
+    } catch {
+      setBookings([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [activeFilter]);
+
+  useEffect(() => {
+    fetchBookings();
+  }, [fetchBookings]);
+
+  const handleAction = async (bookingId: string, action: "confirm" | "cancel" | "complete") => {
+    try {
+      const statusMap = {
+        confirm: "CONFIRMED",
+        cancel: "CANCELLED",
+        complete: "COMPLETED",
+      };
+      const res = await fetch(`/api/bookings/${bookingId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: statusMap[action] }),
+      });
+      if (!res.ok) {
+        const json = await res.json();
+        alert(json.message || "حدث خطأ");
+        return;
+      }
+      fetchBookings();
+    } catch {
+      alert("حدث خطأ في الاتصال");
+    }
+  };
+
+  const getStatusLabel = (status: BookingStatus) => {
+    const labels: Record<BookingStatus, string> = {
+      PENDING: t("owner.pending"),
+      CONFIRMED: t("owner.confirmed"),
+      CANCELLED: t("owner.cancelled"),
+      COMPLETED: t("owner.completed"),
+      NO_SHOW: t("owner.noShow"),
+    };
+    return labels[status];
+  };
+
+  const filters = [
+    { key: "ALL" as const, label: t("owner.allStatuses") },
+    ...STATUS_KEYS.map((s) => ({ key: s, label: getStatusLabel(s) })),
+  ];
+
+  const filtered = activeFilter === "ALL"
+    ? bookings
+    : bookings.filter((b) => b.status === activeFilter);
+
+  return (
+    <div className="mx-auto max-w-3xl px-4 py-5">
+      <motion.h1
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-xl font-bold text-gray-900 mb-5"
+      >
+        {t("owner.bookingsList")}
+      </motion.h1>
+
+      {/* Status filter tabs */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.1 }}
+        className="flex gap-2 overflow-x-auto hide-scrollbar pb-4"
+      >
+        {filters.map((filter) => (
+          <button
+            key={filter.key}
+            onClick={() => {
+              setActiveFilter(filter.key);
+              setLoading(true);
+            }}
+            className={`shrink-0 rounded-full px-4 py-2 text-xs font-medium transition-all ${
+              activeFilter === filter.key
+                ? "bg-[#111827] text-white"
+                : "border border-gray-200 text-gray-500 hover:text-gray-900 hover:border-gray-300"
+            }`}
+          >
+            {filter.label}
+          </button>
+        ))}
+      </motion.div>
+
+      {/* Bookings */}
+      {loading ? (
+        <LoadingSpinner />
+      ) : filtered.length === 0 ? (
+        <EmptyState
+          icon={<CalendarDays size={28} />}
+          title={t("owner.noBookings")}
+        />
+      ) : (
+        <motion.div
+          variants={staggerContainer}
+          initial="initial"
+          animate="animate"
+          className="space-y-3"
+        >
+          {filtered.map((booking) => {
+            const config = STATUS_CONFIG[booking.status];
+            return (
+              <motion.div
+                key={booking.id}
+                variants={staggerItem}
+                className="bg-white border border-gray-200 rounded-2xl p-4"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#c8ff00]/20">
+                    <User size={18} className="text-[#111827]" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="text-sm font-semibold text-gray-900 truncate">
+                        {booking.playerName}
+                      </h3>
+                      <span
+                        className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium ${config.bg} ${config.color} border ${config.borderColor}`}
+                      >
+                        {getStatusLabel(booking.status)}
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-400">
+                      <span className="flex items-center gap-1">
+                        <Phone size={10} />
+                        <span dir="ltr">{booking.playerPhone}</span>
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <CalendarDays size={10} />
+                        {formatDateShort(booking.date, locale === "ar" ? "ar-EG" : "en-US")}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock size={10} />
+                        {formatTime(booking.startTime)} - {formatTime(booking.endTime)}
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-300 mt-1">
+                      {booking.court.name} | {booking.confirmationCode}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                {booking.status === "PENDING" && (
+                  <div className="flex gap-2 mt-3 pt-3 border-t border-gray-100">
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => handleAction(booking.id, "confirm")}
+                      className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-green-50 border border-green-200 py-2 text-xs font-medium text-green-600 hover:bg-green-100 transition-all"
+                    >
+                      <Check size={14} />
+                      {t("owner.confirmBooking")}
+                    </motion.button>
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => handleAction(booking.id, "cancel")}
+                      className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-red-50 border border-red-200 py-2 text-xs font-medium text-red-600 hover:bg-red-100 transition-all"
+                    >
+                      <X size={14} />
+                      {t("owner.cancelBooking")}
+                    </motion.button>
+                  </div>
+                )}
+                {booking.status === "CONFIRMED" && (
+                  <div className="mt-3 pt-3 border-t border-gray-100">
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => handleAction(booking.id, "complete")}
+                      className="flex w-full items-center justify-center gap-1.5 rounded-full bg-blue-50 border border-blue-200 py-2 text-xs font-medium text-blue-600 hover:bg-blue-100 transition-all"
+                    >
+                      <CheckCircle size={14} />
+                      {t("owner.completeBooking")}
+                    </motion.button>
+                  </div>
+                )}
+              </motion.div>
+            );
+          })}
+        </motion.div>
+      )}
+    </div>
+  );
+}

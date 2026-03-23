@@ -1,0 +1,349 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ───────────────────────────────────────────────
+
+enum UserRole {
+  VENUE_OWNER
+  ADMIN
+}
+
+enum SportType {
+  PADEL
+  FOOTBALL
+  TENNIS
+  BASKETBALL
+  VOLLEYBALL
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
+}
+
+enum DayOfWeek {
+  SUNDAY
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+}
+
+// ─── Models ──────────────────────────────────────────────
+
+model User {
+  id          String   @id @default(cuid())
+  name        String
+  email       String   @unique
+  password    String
+  phone       String?
+  role        UserRole @default(VENUE_OWNER)
+  isOnboarded Boolean  @default(false)
+  locale      String   @default("ar")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  accounts Account[]
+  venues   Venue[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Venue {
+  id            String      @id @default(cuid())
+  ownerId       String
+  name          String
+  nameAr        String?
+  description   String?
+  descriptionAr String?
+  phone         String
+  whatsapp      String?
+  address       String
+  addressAr     String?
+  city          String
+  cityAr        String?
+  latitude      Float?
+  longitude     Float?
+  coverPhoto    String?
+  photos        String[]
+  sportTypes    SportType[]
+  rating        Float       @default(0)
+  ratingCount   Int         @default(0)
+  isActive      Boolean     @default(true)
+  currency      String      @default("EGP")
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  owner    User      @relation(fields: [ownerId], references: [id])
+  courts   Court[]
+  bookings Booking[]
+
+  @@index([city])
+  @@index([isActive])
+}
+
+model Court {
+  id           String    @id @default(cuid())
+  venueId      String
+  name         String
+  nameAr       String?
+  sportType    SportType @default(PADEL)
+  pricePerHour Decimal   @db.Decimal(10, 2)
+  isActive     Boolean   @default(true)
+  sortOrder    Int       @default(0)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  venue    Venue      @relation(fields: [venueId], references: [id], onDelete: Cascade)
+  slots    TimeSlot[]
+  bookings Booking[]
+
+  @@index([venueId])
+}
+
+model TimeSlot {
+  id        String    @id @default(cuid())
+  courtId   String
+  dayOfWeek DayOfWeek
+  startTime String // "14:00" format (24h)
+  endTime   String // "15:00" format (24h)
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+
+  court Court @relation(fields: [courtId], references: [id], onDelete: Cascade)
+
+  @@unique([courtId, dayOfWeek, startTime])
+  @@index([courtId, dayOfWeek])
+}
+
+model Booking {
+  id               String        @id @default(cuid())
+  courtId          String
+  venueId          String
+  playerName       String
+  playerPhone      String
+  date             DateTime      @db.Date
+  startTime        String // "14:00"
+  endTime          String // "15:00"
+  totalPrice       Decimal       @db.Decimal(10, 2)
+  status           BookingStatus @default(PENDING)
+  confirmationCode String        @unique
+  notes            String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  court Court @relation(fields: [courtId], references: [id])
+  venue Venue @relation(fields: [venueId], references: [id])
+  game  Game?
+
+  @@index([courtId, date])
+  @@index([venueId, date])
+  @@index([playerPhone])
+  @@index([confirmationCode])
+}
+
+// ─── Game Link Models ────────────────────────────────────
+
+enum GameStatus {
+  OPEN
+  FULL
+  CANCELLED
+}
+
+model Game {
+  id        String     @id @default(cuid())
+  bookingId String     @unique
+  gameCode  String     @unique
+  status    GameStatus @default(OPEN)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  booking Booking      @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  players GamePlayer[]
+
+  @@index([gameCode])
+}
+
+model GamePlayer {
+  id          String   @id @default(cuid())
+  gameId      String
+  position    Int
+  playerName  String
+  playerPhone String
+  confirmedAt DateTime @default(now())
+
+  game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@unique([gameId, position])
+  @@unique([gameId, playerPhone])
+  @@index([gameId])
+}
+
+// ─── Lobby & Community Models ────────────────────────────
+
+enum LobbyStatus {
+  OPEN
+  FULL
+  CANCELLED
+  EXPIRED
+}
+
+enum PlayerTier {
+  BRONZE
+  SILVER
+  GOLD
+  DIAMOND
+  ELITE
+}
+
+enum ListingCategory {
+  RACKETS
+  SHOES
+  BAGS
+  BALLS
+  APPAREL
+  ACCESSORIES
+  OTHER
+}
+
+enum ListingCondition {
+  NEW
+  LIKE_NEW
+  USED
+  WELL_USED
+}
+
+enum ListingStatus {
+  ACTIVE
+  SOLD
+  REMOVED
+}
+
+model Lobby {
+  id         String      @id @default(cuid())
+  lobbyCode  String      @unique
+  hostName   String
+  hostPhone  String
+  area       String
+  areaAr     String?
+  date       DateTime
+  startTime  String?     // Optional preferred time "HH:MM"
+  priceRange String?     // e.g., "200-300"
+  note       String?
+  status     LobbyStatus @default(OPEN)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  players    LobbyPlayer[]
+
+  @@index([area])
+  @@index([date])
+  @@index([status])
+  @@index([lobbyCode])
+}
+
+model LobbyPlayer {
+  id          String   @id @default(cuid())
+  lobbyId     String
+  lobby       Lobby    @relation(fields: [lobbyId], references: [id])
+  position    Int      // 0 = host, 1-3 = joined
+  playerName  String
+  playerPhone String
+  confirmedAt DateTime @default(now())
+
+  @@unique([lobbyId, playerPhone])
+  @@index([lobbyId])
+}
+
+model PlayerProfile {
+  id          String     @id @default(cuid())
+  phone       String     @unique
+  name        String
+  nameAr      String?
+  area        String?
+  areaAr      String?
+  avatar      String?
+  gamesPlayed Int        @default(0)
+  gamesWon    Int        @default(0)
+  rating      Decimal    @default(0) @db.Decimal(3, 1)
+  tier        PlayerTier @default(BRONZE)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([phone])
+  @@index([tier])
+  @@index([area])
+}
+
+model Coach {
+  id           String   @id @default(cuid())
+  name         String
+  nameAr       String?
+  phone        String   @unique
+  whatsapp     String?
+  bio          String?
+  bioAr        String?
+  photo        String?
+  areas        String[]
+  areasAr      String[]
+  pricePerHour Decimal? @db.Decimal(10, 2)
+  experience   String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([isActive])
+}
+
+model Listing {
+  id            String           @id @default(cuid())
+  sellerName    String
+  sellerPhone   String
+  title         String
+  titleAr       String?
+  description   String?
+  descriptionAr String?
+  price         Decimal          @db.Decimal(10, 2)
+  currency      String           @default("EGP")
+  category      ListingCategory
+  condition     ListingCondition @default(USED)
+  photos        String[]
+  area          String
+  areaAr        String?
+  status        ListingStatus    @default(ACTIVE)
+  views         Int              @default(0)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  @@index([category])
+  @@index([area])
+  @@index([status])
+  @@index([createdAt])
+}

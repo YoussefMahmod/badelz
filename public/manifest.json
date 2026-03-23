@@ -1,0 +1,19 @@
+{
+  "name": "بادلز - Badelz",
+  "short_name": "بادلز",
+  "description": "احجز كورت بادل في مصر",
+  "start_url": "/browse",
+  "id": "/",
+  "display": "standalone",
+  "theme_color": "#0a0f1a",
+  "background_color": "#0a0f1a",
+  "orientation": "portrait",
+  "categories": ["sports", "lifestyle"],
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
