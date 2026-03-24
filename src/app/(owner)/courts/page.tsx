@@ -108,8 +108,8 @@ function InlineFeedback({ message }: { message: FeedbackMessage | null }) {
           exit={{ opacity: 0, y: -8, height: 0 }}
           className={`flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium ${
             message.type === "success"
-              ? "bg-green-50 text-green-700"
-              : "bg-red-50 text-red-700"
+              ? "bg-green-500/10 text-green-400"
+              : "bg-red-500/10 text-red-400"
           }`}
         >
           {message.type === "success" ? (
@@ -293,27 +293,27 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ type: "spring", damping: 28, stiffness: 300 }}
-        className="relative z-10 w-full sm:max-w-lg bg-white rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col overflow-hidden"
+        className="relative z-10 w-full sm:max-w-lg bg-[#111827] rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col overflow-hidden"
       >
         {/* Handle bar (mobile) */}
         <div className="flex justify-center pt-3 pb-1 sm:hidden">
-          <div className="h-1 w-10 rounded-full bg-gray-300" />
+          <div className="h-1 w-10 rounded-full bg-white/20" />
         </div>
 
         {/* Header */}
-        <div className="flex items-center justify-between px-5 pt-3 pb-2 border-b border-gray-100">
+        <div className="flex items-center justify-between px-5 pt-3 pb-2 border-b border-white/10">
           <div>
-            <h2 className="text-lg font-bold text-gray-900">
+            <h2 className="text-lg font-bold text-white/90">
               {t("owner.manageSlots")}
             </h2>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-white/50">
               {court.nameAr || court.name}
             </p>
           </div>
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={onClose}
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white/50 hover:bg-white/20 transition-colors"
             aria-label={t("common.close")}
           >
             <X size={18} />
@@ -323,7 +323,7 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
         {/* Day tabs */}
         <div
           ref={dayScrollRef}
-          className="flex gap-2 px-5 py-3 overflow-x-auto scrollbar-hide border-b border-gray-100"
+          className="flex gap-2 px-5 py-3 overflow-x-auto scrollbar-hide border-b border-white/10"
         >
           {DAYS_ORDER.map((day) => {
             const isSelected = day === selectedDay;
@@ -338,7 +338,7 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
                 className={`relative shrink-0 rounded-xl px-3 py-2 text-xs font-semibold transition-all ${
                   isSelected
                     ? "bg-[#111827] text-white shadow-sm"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    : "bg-white/10 text-white/60 hover:bg-white/15"
                 }`}
               >
                 {t(DAY_TRANSLATION_KEYS[day])}
@@ -347,7 +347,7 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
                     className={`absolute -top-1.5 -end-1.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-bold ${
                       isSelected
                         ? "bg-[#c8ff00] text-[#111827]"
-                        : "bg-gray-300 text-gray-700"
+                        : "bg-white/20 text-white/70"
                     }`}
                   >
                     {daySlotCount}
@@ -373,10 +373,10 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
               {/* Existing slots */}
               {slotsForDay.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-8 text-center">
-                  <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-100">
-                    <Clock size={20} className="text-gray-400" />
+                  <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10">
+                    <Clock size={20} className="text-white/40" />
                   </div>
-                  <p className="text-sm text-gray-500 max-w-xs">
+                  <p className="text-sm text-white/50 max-w-xs">
                     {t("owner.noSlots")}
                   </p>
                 </div>
@@ -390,12 +390,12 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9, x: -40 }}
-                        className="flex items-center justify-between rounded-xl bg-gray-50 border border-gray-200 px-4 py-3"
+                        className="flex items-center justify-between rounded-xl bg-white/5 border border-white/10 px-4 py-3"
                       >
                         <div className="flex items-center gap-2">
-                          <Clock size={14} className="text-gray-400 shrink-0" />
+                          <Clock size={14} className="text-white/40 shrink-0" />
                           <span
-                            className="text-sm font-medium text-gray-900"
+                            className="text-sm font-medium text-white/90"
                             dir="ltr"
                           >
                             {formatTime(slot.startTime)} —{" "}
@@ -406,12 +406,12 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
                           whileTap={{ scale: 0.85 }}
                           onClick={() => handleDeleteSlot(slot.id)}
                           disabled={deletingSlotId === slot.id}
-                          className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors disabled:opacity-40"
+                          className="flex h-8 w-8 items-center justify-center rounded-lg text-white/40 hover:bg-red-500/10 hover:text-red-400 transition-colors disabled:opacity-40"
                           aria-label={t("owner.deleteSlot")}
                         >
                           {deletingSlotId === slot.id ? (
                             <motion.div
-                              className="h-4 w-4 rounded-full border-2 border-gray-300 border-t-gray-600"
+                              className="h-4 w-4 rounded-full border-2 border-white/20 border-t-white/60"
                               animate={{ rotate: 360 }}
                               transition={{
                                 duration: 0.6,
@@ -430,20 +430,20 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
               )}
 
               {/* Add slot form */}
-              <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50/50 p-4 space-y-3">
-                <p className="text-xs font-semibold text-gray-500">
+              <div className="rounded-2xl border border-dashed border-white/15 bg-white/5 p-4 space-y-3">
+                <p className="text-xs font-semibold text-white/50">
                   {t("owner.addSlot")}
                 </p>
                 <div className="flex items-end gap-2">
                   <div className="flex-1">
-                    <label className="text-xs text-gray-400 mb-1 block">
+                    <label className="text-xs text-white/40 mb-1 block">
                       {t("owner.startTime")}
                     </label>
                     <select
                       value={startTime}
                       onChange={(e) => setStartTime(e.target.value)}
                       dir="ltr"
-                      className="w-full rounded-xl bg-white border border-gray-200 px-3 py-2.5 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] appearance-none"
+                      className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] appearance-none"
                     >
                       {START_TIMES.map((time) => (
                         <option key={`start-${time}`} value={time}>
@@ -453,14 +453,14 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
                     </select>
                   </div>
                   <div className="flex-1">
-                    <label className="text-xs text-gray-400 mb-1 block">
+                    <label className="text-xs text-white/40 mb-1 block">
                       {t("owner.endTime")}
                     </label>
                     <select
                       value={endTime}
                       onChange={(e) => setEndTime(e.target.value)}
                       dir="ltr"
-                      className="w-full rounded-xl bg-white border border-gray-200 px-3 py-2.5 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] appearance-none"
+                      className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] appearance-none"
                     >
                       {END_TIMES.map((time) => (
                         <option key={`end-${time}`} value={time}>
@@ -473,12 +473,12 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
                     whileTap={{ scale: 0.9 }}
                     onClick={handleAddSlot}
                     disabled={addingSlot}
-                    className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-xl bg-[#111827] text-white hover:bg-gray-800 transition-colors disabled:opacity-50"
+                    className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-xl bg-[#c8ff00] text-[#111827] hover:bg-[#c8ff00]/80 transition-colors disabled:opacity-50"
                     aria-label={t("owner.addSlot")}
                   >
                     {addingSlot ? (
                       <motion.div
-                        className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white"
+                        className="h-4 w-4 rounded-full border-2 border-[#111827]/30 border-t-[#111827]"
                         animate={{ rotate: 360 }}
                         transition={{
                           duration: 0.6,
@@ -499,11 +499,11 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
                   whileTap={{ scale: 0.97 }}
                   onClick={handleCopyToAllDays}
                   disabled={copying}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white/70 hover:bg-white/10 transition-colors disabled:opacity-50"
                 >
                   {copying ? (
                     <motion.div
-                      className="h-4 w-4 rounded-full border-2 border-gray-300 border-t-gray-600"
+                      className="h-4 w-4 rounded-full border-2 border-white/20 border-t-white/60"
                       animate={{ rotate: 360 }}
                       transition={{
                         duration: 0.6,
@@ -612,7 +612,7 @@ function CourtCard({
     <motion.div
       variants={staggerItem}
       layout
-      className={`bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden transition-opacity ${
+      className={`bg-white/5 border border-white/10 rounded-2xl overflow-hidden transition-opacity ${
         !court.isActive ? "opacity-50" : ""
       }`}
     >
@@ -621,24 +621,24 @@ function CourtCard({
         <div className="flex items-start gap-3">
           {/* Court icon */}
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#c8ff00]/15">
-            <RectangleHorizontal size={22} className="text-[#111827]" />
+            <RectangleHorizontal size={22} className="text-[#c8ff00]" />
           </div>
 
           {/* Court info */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-0.5">
-              <h3 className="text-base font-bold text-gray-900 truncate">
+              <h3 className="text-base font-bold text-white/90 truncate">
                 {court.nameAr || court.name}
               </h3>
               {court.nameAr && (
-                <span className="text-xs text-gray-400 truncate" dir="ltr">
+                <span className="text-xs text-white/40 truncate" dir="ltr">
                   {court.name}
                 </span>
               )}
             </div>
-            <p className="text-sm font-semibold text-gray-700">
+            <p className="text-sm font-semibold text-white/70">
               {formatPrice(parseFloat(court.pricePerHour))}{" "}
-              <span className="text-gray-400 font-normal">
+              <span className="text-white/40 font-normal">
                 {t("common.perHour")}
               </span>
             </p>
@@ -649,7 +649,7 @@ function CourtCard({
             <motion.button
               whileTap={{ scale: 0.85 }}
               onClick={handleStartEdit}
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-white/40 hover:bg-white/10 hover:text-white/70 transition-colors"
               aria-label={t("owner.editCourt")}
             >
               <Pencil size={16} />
@@ -657,7 +657,7 @@ function CourtCard({
             <motion.button
               whileTap={{ scale: 0.85 }}
               onClick={() => onToggleActive(court)}
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 transition-colors"
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-white/40 hover:bg-white/10 transition-colors"
               aria-label={
                 court.isActive ? t("owner.active") : t("owner.inactive")
               }
@@ -665,7 +665,7 @@ function CourtCard({
               {court.isActive ? (
                 <ToggleRight size={26} className="text-green-500" />
               ) : (
-                <ToggleLeft size={26} className="text-gray-300" />
+                <ToggleLeft size={26} className="text-white/20" />
               )}
             </motion.button>
           </div>
@@ -676,19 +676,19 @@ function CourtCard({
           <span
             className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${
               court.isActive
-                ? "bg-green-50 text-green-700"
-                : "bg-gray-100 text-gray-500"
+                ? "bg-green-500/10 text-green-400"
+                : "bg-white/5 text-white/40"
             }`}
           >
             <span
               className={`h-1.5 w-1.5 rounded-full ${
-                court.isActive ? "bg-green-500" : "bg-gray-400"
+                court.isActive ? "bg-green-500" : "bg-white/30"
               }`}
             />
             {court.isActive ? t("owner.active") : t("owner.inactive")}
           </span>
 
-          <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">
+          <span className="inline-flex items-center gap-1 rounded-full bg-white/5 px-2.5 py-0.5 text-xs font-medium text-white/40">
             <Clock size={11} />
             {t("owner.slotsCount", { count: slotCount })}
           </span>
@@ -705,17 +705,17 @@ function CourtCard({
             transition={{ duration: 0.25 }}
             className="overflow-hidden"
           >
-            <div className="border-t border-gray-100 bg-gray-50/50 px-4 py-4 space-y-3">
+            <div className="border-t border-white/5 bg-white/5 px-4 py-4 space-y-3">
               <div className="flex items-center gap-2 mb-1">
-                <Pencil size={13} className="text-gray-400" />
-                <span className="text-xs font-semibold text-gray-500">
+                <Pencil size={13} className="text-white/40" />
+                <span className="text-xs font-semibold text-white/50">
                   {t("owner.editCourt")}
                 </span>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs text-gray-400 mb-1 block">
+                  <label className="text-xs text-white/40 mb-1 block">
                     {t("owner.courtName")}
                   </label>
                   <input
@@ -723,24 +723,24 @@ function CourtCard({
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
                     dir="ltr"
-                    className="w-full rounded-xl bg-white border border-gray-200 px-3 py-2.5 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-shadow"
+                    className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-shadow"
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-gray-400 mb-1 block">
+                  <label className="text-xs text-white/40 mb-1 block">
                     {t("owner.courtNameAr")}
                   </label>
                   <input
                     type="text"
                     value={editNameAr}
                     onChange={(e) => setEditNameAr(e.target.value)}
-                    className="w-full rounded-xl bg-white border border-gray-200 px-3 py-2.5 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-shadow"
+                    className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-shadow"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-xs text-gray-400 mb-1 block">
+                <label className="text-xs text-white/40 mb-1 block">
                   {t("owner.pricePerHour")} (EGP)
                 </label>
                 <input
@@ -749,7 +749,7 @@ function CourtCard({
                   onChange={(e) => setEditPrice(e.target.value)}
                   min="1"
                   dir="ltr"
-                  className="w-full rounded-xl bg-white border border-gray-200 px-3 py-2.5 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-shadow"
+                  className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-shadow"
                 />
               </div>
 
@@ -760,12 +760,12 @@ function CourtCard({
                   whileTap={{ scale: 0.97 }}
                   onClick={handleSaveEdit}
                   disabled={saving || !editName.trim() || !editPrice}
-                  className="flex-1 flex items-center justify-center gap-2 rounded-full bg-[#111827] py-2.5 text-sm font-bold text-white transition-all hover:bg-gray-800 disabled:opacity-50"
+                  className="flex-1 flex items-center justify-center gap-2 rounded-full bg-[#c8ff00] py-2.5 text-sm font-bold text-[#111827] transition-all hover:bg-[#c8ff00]/80 disabled:opacity-50"
                 >
                   {saving ? (
                     <>
                       <motion.div
-                        className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white"
+                        className="h-4 w-4 rounded-full border-2 border-[#111827]/30 border-t-[#111827]"
                         animate={{ rotate: 360 }}
                         transition={{
                           duration: 0.6,
@@ -785,7 +785,7 @@ function CourtCard({
                 <motion.button
                   whileTap={{ scale: 0.97 }}
                   onClick={handleCancelEdit}
-                  className="rounded-full border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors"
+                  className="rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white/60 hover:bg-white/10 transition-colors"
                 >
                   {t("common.cancel")}
                 </motion.button>
@@ -796,11 +796,11 @@ function CourtCard({
       </AnimatePresence>
 
       {/* Manage slots button */}
-      <div className="border-t border-gray-100">
+      <div className="border-t border-white/5">
         <motion.button
           whileTap={{ scale: 0.98 }}
           onClick={() => onOpenSlots(court)}
-          className="flex w-full items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-[#111827] hover:bg-gray-50 transition-colors"
+          className="flex w-full items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-[#c8ff00] hover:bg-white/5 transition-colors"
         >
           <Clock size={15} />
           {t("owner.manageSlots")}
@@ -968,11 +968,11 @@ export default function CourtsPage() {
         className="flex items-center justify-between mb-6"
       >
         <div>
-          <h1 className="text-xl font-bold text-gray-900">
+          <h1 className="text-xl font-bold text-white/90">
             {t("owner.manageCourts")}
           </h1>
           {courts.length > 0 && (
-            <p className="text-sm text-gray-400 mt-0.5">
+            <p className="text-sm text-white/40 mt-0.5">
               {courts.length}{" "}
               {courts.length === 1 ? "court" : "courts"}
             </p>
@@ -981,7 +981,7 @@ export default function CourtsPage() {
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={() => setShowAddForm(!showAddForm)}
-          className="flex items-center gap-1.5 rounded-full bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-gray-800 transition-colors"
+          className="flex items-center gap-1.5 rounded-full bg-[#c8ff00] px-4 py-2.5 text-sm font-semibold text-[#111827] shadow-sm hover:bg-[#c8ff00]/80 transition-colors"
         >
           <Plus size={16} />
           {t("owner.addCourt")}
@@ -1000,17 +1000,17 @@ export default function CourtsPage() {
           >
             <form
               onSubmit={handleAddCourt}
-              className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm space-y-3"
+              className="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-3"
             >
               <div className="flex items-center justify-between mb-1">
-                <h3 className="text-sm font-bold text-gray-900">
+                <h3 className="text-sm font-bold text-white/90">
                   {t("owner.addCourt")}
                 </h3>
                 <motion.button
                   type="button"
                   whileTap={{ scale: 0.85 }}
                   onClick={() => setShowAddForm(false)}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
+                  className="flex h-8 w-8 items-center justify-center rounded-lg text-white/40 hover:bg-white/10 hover:text-white/70 transition-colors"
                 >
                   <X size={16} />
                 </motion.button>
@@ -1018,7 +1018,7 @@ export default function CourtsPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs text-gray-400 mb-1 block">
+                  <label className="text-xs text-white/40 mb-1 block">
                     {t("owner.courtName")}
                   </label>
                   <input
@@ -1027,26 +1027,26 @@ export default function CourtsPage() {
                     onChange={(e) => setFormName(e.target.value)}
                     required
                     dir="ltr"
-                    className="w-full rounded-xl bg-gray-50 border border-gray-200 px-3 py-2.5 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-shadow"
+                    className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-shadow"
                     placeholder="Court 1"
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-gray-400 mb-1 block">
+                  <label className="text-xs text-white/40 mb-1 block">
                     {t("owner.courtNameAr")}
                   </label>
                   <input
                     type="text"
                     value={formNameAr}
                     onChange={(e) => setFormNameAr(e.target.value)}
-                    className="w-full rounded-xl bg-gray-50 border border-gray-200 px-3 py-2.5 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-shadow"
+                    className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-shadow"
                     placeholder="كورت ١"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-xs text-gray-400 mb-1 block">
+                <label className="text-xs text-white/40 mb-1 block">
                   {t("owner.pricePerHour")} (EGP)
                 </label>
                 <input
@@ -1056,7 +1056,7 @@ export default function CourtsPage() {
                   required
                   min="1"
                   dir="ltr"
-                  className="w-full rounded-xl bg-gray-50 border border-gray-200 px-3 py-2.5 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-shadow"
+                  className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-shadow"
                   placeholder="300"
                 />
               </div>
@@ -1067,12 +1067,12 @@ export default function CourtsPage() {
                 type="submit"
                 whileTap={{ scale: 0.97 }}
                 disabled={submitting}
-                className="w-full flex items-center justify-center gap-2 rounded-full bg-[#111827] py-2.5 text-sm font-bold text-white transition-all hover:bg-gray-800 disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-2 rounded-full bg-[#c8ff00] py-2.5 text-sm font-bold text-[#111827] transition-all hover:bg-[#c8ff00]/80 disabled:opacity-50"
               >
                 {submitting ? (
                   <>
                     <motion.div
-                      className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white"
+                      className="h-4 w-4 rounded-full border-2 border-[#111827]/30 border-t-[#111827]"
                       animate={{ rotate: 360 }}
                       transition={{
                         duration: 0.6,

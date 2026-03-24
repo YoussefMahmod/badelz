@@ -181,7 +181,7 @@ export default function SettingsPage() {
       <motion.h1
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-xl font-bold text-gray-900 mb-2"
+        className="text-xl font-bold text-white/90 mb-2"
       >
         {t("owner.settings")}
       </motion.h1>
@@ -222,8 +222,8 @@ export default function SettingsPage() {
 
         {/* Location Detection */}
         <div>
-          <label className="mb-1.5 flex items-center gap-2 text-xs font-medium text-gray-500">
-            <span className="text-gray-400"><Crosshair size={14} /></span>
+          <label className="mb-1.5 flex items-center gap-2 text-xs font-medium text-white/50">
+            <span className="text-white/40"><Crosshair size={14} /></span>
             {t("onboarding.detectLocation")}
           </label>
           <div className="flex items-center gap-3">
@@ -231,7 +231,7 @@ export default function SettingsPage() {
               type="button"
               onClick={handleDetectLocation}
               disabled={detectingLocation}
-              className="flex items-center gap-2 rounded-xl bg-gray-50 border border-gray-200 px-4 py-2.5 text-sm text-gray-700 transition-all hover:border-[#c8ff00] hover:bg-[#c8ff00]/5 disabled:opacity-50"
+              className="flex items-center gap-2 rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 text-sm text-white/70 transition-all hover:border-[#c8ff00] hover:bg-[#c8ff00]/5 disabled:opacity-50"
             >
               {detectingLocation ? (
                 <>
@@ -246,7 +246,7 @@ export default function SettingsPage() {
               )}
             </button>
             {form.latitude && form.longitude && (
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-white/40">
                 {form.latitude.toFixed(4)}, {form.longitude.toFixed(4)}
               </span>
             )}
@@ -298,7 +298,7 @@ export default function SettingsPage() {
           type="submit"
           whileTap={{ scale: 0.97 }}
           disabled={saving}
-          className="flex w-full items-center justify-center gap-2 rounded-full bg-[#111827] py-3.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-gray-800 disabled:opacity-50"
+          className="flex w-full items-center justify-center gap-2 rounded-full bg-[#c8ff00] py-3.5 text-sm font-bold text-[#111827] shadow-sm transition-all hover:bg-[#b8e600] disabled:opacity-50"
         >
           {saved ? (
             <>
@@ -321,7 +321,7 @@ export default function SettingsPage() {
               signOut({ callbackUrl: "/" })
             );
           }}
-          className="flex w-full items-center justify-center gap-2 rounded-full border border-red-200 py-3 text-sm font-medium text-red-400 transition-all hover:bg-red-50 hover:border-red-300 mt-3"
+          className="flex w-full items-center justify-center gap-2 rounded-full border border-red-500/30 py-3 text-sm font-medium text-red-400 transition-all hover:bg-red-500/10 hover:border-red-500/50 mt-3"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
           {t("auth.signOut")}
@@ -350,8 +350,8 @@ function SettingsField({
 }) {
   return (
     <div>
-      <label className="mb-1.5 flex items-center gap-2 text-xs font-medium text-gray-500">
-        <span className="text-gray-400">{icon}</span>
+      <label className="mb-1.5 flex items-center gap-2 text-xs font-medium text-white/50">
+        <span className="text-white/40">{icon}</span>
         {label}
       </label>
       <input
@@ -360,7 +360,7 @@ function SettingsField({
         onChange={(e) => onChange(e.target.value)}
         required={required}
         dir={dir}
-        className="w-full rounded-xl bg-gray-50 border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
+        className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 text-sm text-white outline-none placeholder:text-white/25 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
       />
     </div>
   );

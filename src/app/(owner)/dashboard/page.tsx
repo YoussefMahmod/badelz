@@ -85,29 +85,29 @@ export default function DashboardPage() {
       icon: CalendarDays,
       label: t("owner.todayBookings"),
       value: data?.todayBookings ?? 0,
-      color: "text-blue-600",
+      color: "text-blue-400",
       bg: "bg-[#c8ff00]",
     },
     {
       icon: Calendar,
       label: t("owner.weekBookings"),
       value: data?.weekBookings ?? 0,
-      color: "text-cyan-600",
-      bg: "bg-cyan-50",
+      color: "text-cyan-400",
+      bg: "bg-cyan-500/15",
     },
     {
       icon: BarChart3,
       label: t("owner.totalBookings"),
       value: data?.totalBookings ?? 0,
-      color: "text-indigo-600",
-      bg: "bg-indigo-50",
+      color: "text-indigo-400",
+      bg: "bg-indigo-500/15",
     },
     {
       icon: Wallet,
       label: t("owner.revenue"),
       value: formatPrice(data?.revenue ?? 0),
-      color: "text-amber-600",
-      bg: "bg-amber-50",
+      color: "text-amber-400",
+      bg: "bg-amber-500/15",
     },
   ];
 
@@ -121,10 +121,10 @@ export default function DashboardPage() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-6"
       >
-        <h1 className="text-xl font-bold text-gray-900">
+        <h1 className="text-xl font-bold text-white/90">
           {t("owner.welcome", { name: user?.name || "" })}
         </h1>
-        <p className="text-sm text-gray-400">{t("owner.dashboard")}</p>
+        <p className="text-sm text-white/40">{t("owner.dashboard")}</p>
       </motion.div>
 
       {/* Stats grid */}
@@ -140,13 +140,13 @@ export default function DashboardPage() {
             <motion.div
               key={stat.label}
               variants={staggerItem}
-              className="bg-white border border-gray-200 rounded-2xl p-4"
+              className="bg-white/5 border border-white/10 rounded-2xl p-4"
             >
               <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${stat.bg} mb-3`}>
-                <Icon size={18} className={idx === 0 ? "text-[#111827]" : stat.color} />
+                <Icon size={18} className={idx === 0 ? "text-[#c8ff00]" : stat.color} />
               </div>
-              <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-              <p className="text-xs text-gray-400 mt-0.5">{stat.label}</p>
+              <p className="text-2xl font-bold text-white/90">{stat.value}</p>
+              <p className="text-xs text-white/40 mt-0.5">{stat.label}</p>
             </motion.div>
           );
         })}
@@ -158,7 +158,7 @@ export default function DashboardPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
       >
-        <h2 className="text-base font-bold text-gray-700 mb-3">
+        <h2 className="text-base font-bold text-white/70 mb-3">
           {t("owner.upcomingBookings")}
         </h2>
 
@@ -175,24 +175,24 @@ export default function DashboardPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 + idx * 0.05 }}
-                className="bg-white border border-gray-200 rounded-xl p-3 flex items-center gap-3"
+                className="bg-white/5 border border-white/10 rounded-xl p-3 flex items-center gap-3"
               >
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#c8ff00]/20">
-                  <User size={18} className="text-[#111827]" />
+                  <User size={18} className="text-[#c8ff00]" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">
+                  <p className="text-sm font-medium text-white/90 truncate">
                     {booking.playerName}
                   </p>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-white/40">
                     {booking.court.name}
                   </p>
                 </div>
                 <div className="text-end shrink-0">
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-white/50">
                     {formatDateShort(booking.date)}
                   </p>
-                  <p className="text-xs text-gray-900 font-medium flex items-center gap-1">
+                  <p className="text-xs text-white/90 font-medium flex items-center gap-1">
                     <Clock size={10} />
                     {formatTime(booking.startTime)}
                   </p>
