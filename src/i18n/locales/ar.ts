@@ -468,7 +468,7 @@ const ar: TranslationKeys = {
     newItemsDaily: "إعلانات جديدة يومياً",
     sortBy: "الترتيب",
     clearFilters: "مسح الفلاتر",
-    newBadge: "جديد",
+    newBadge: "أُضيف حديثاً",
     viewCount: "{{count}} مشاهدة",
     moreInCategory: "المزيد في {{category}}",
     relatedItems: "إعلانات مشابهة",

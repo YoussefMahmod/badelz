@@ -146,7 +146,7 @@ export function ListingCard({
 
         {/* NEW badge - top left */}
         {showNewBadge && (
-          <span className="absolute top-2.5 start-2.5 bg-emerald-500 text-white text-[9px] font-bold uppercase px-2 py-0.5 rounded-full animate-pulse">
+          <span className="absolute top-2.5 start-2.5 bg-emerald-500 text-white text-[8px] font-bold px-2.5 py-0.5 rounded-full animate-pulse whitespace-nowrap">
             {t("market.newBadge" as Parameters<typeof t>[0])}
           </span>
         )}
