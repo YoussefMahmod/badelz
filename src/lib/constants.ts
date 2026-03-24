@@ -10,11 +10,12 @@ export const AREAS = [
 
 export type AreaKey = (typeof AREAS)[number]["key"];
 
-export function calculateTier(gamesPlayed: number): "BRONZE" | "SILVER" | "GOLD" | "DIAMOND" | "ELITE" {
-  if (gamesPlayed >= 50) return "ELITE";
+export function calculateTier(gamesPlayed: number): "BRONZE" | "GOLD" | "EMERALD" | "DIAMOND" | "MASTER" | "GRANDMASTER" {
+  if (gamesPlayed >= 100) return "GRANDMASTER";
+  if (gamesPlayed >= 50) return "MASTER";
   if (gamesPlayed >= 25) return "DIAMOND";
-  if (gamesPlayed >= 10) return "GOLD";
-  if (gamesPlayed >= 3) return "SILVER";
+  if (gamesPlayed >= 10) return "EMERALD";
+  if (gamesPlayed >= 3) return "GOLD";
   return "BRONZE";
 }
 

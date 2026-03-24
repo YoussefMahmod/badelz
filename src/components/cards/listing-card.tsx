@@ -1,9 +1,9 @@
 "use client";
 
-import { Eye, MapPin, Package } from "lucide-react";
+import { motion } from "framer-motion";
+import { MapPin, Package } from "lucide-react";
 import { useTranslation, useLocale } from "@/i18n";
 import { LISTING_CATEGORY_COLORS } from "@/lib/constants";
-import { CardShell } from "./card-shell";
 
 interface ListingData {
   id: string;
@@ -21,8 +21,7 @@ interface ListingData {
 
 interface ListingCardProps {
   listing: ListingData;
-  size?: "sm" | "md" | "lg";
-  interactive?: boolean;
+  variant?: "default" | "spotlight";
   onClick?: () => void;
 }
 
@@ -45,8 +44,7 @@ const CATEGORY_KEYS: Record<string, string> = {
 
 export function ListingCard({
   listing,
-  size = "md",
-  interactive = true,
+  variant = "default",
   onClick,
 }: ListingCardProps) {
   const { t } = useTranslation();
@@ -61,122 +59,135 @@ export function ListingCard({
   const categoryKey = CATEGORY_KEYS[listing.category] ?? "market.other";
   const hasPhoto = listing.photos.length > 0;
 
-  if (size === "sm") {
+  /* ─── Spotlight Card (full-width landscape hero) ─── */
+  if (variant === "spotlight") {
     return (
-      <CardShell
-        accentColor={accentColor}
-        size="sm"
-        interactive={interactive}
+      <motion.div
+        whileTap={{ scale: 0.98 }}
         onClick={onClick}
+        className="relative h-48 sm:h-56 rounded-2xl overflow-hidden cursor-pointer group"
+        style={{
+          background: `linear-gradient(135deg, ${accentColor}12 0%, #0a0f1a 60%)`,
+        }}
       >
-        <div className="flex flex-col h-full">
-          {/* Photo top half */}
-          <div className="relative h-[55%] bg-white/5">
+        {/* Background glow */}
+        <div
+          className="absolute inset-0 opacity-20"
+          style={{
+            background: `radial-gradient(circle at 70% 50%, ${accentColor}30, transparent 70%)`,
+          }}
+        />
+
+        <div className="flex h-full">
+          {/* Photo side */}
+          <div className="relative w-1/2 h-full overflow-hidden">
             {hasPhoto ? (
               <img
                 src={listing.photos[0]}
                 alt={displayTitle}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
             ) : (
               <div
                 className="w-full h-full flex items-center justify-center"
-                style={{ backgroundColor: `${accentColor}10` }}
+                style={{ backgroundColor: `${accentColor}08` }}
               >
-                <Package size={20} style={{ color: accentColor }} />
+                <Package size={48} style={{ color: accentColor }} className="opacity-30" />
               </div>
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#0a0f1a]/80" />
           </div>
-          {/* Info */}
-          <div className="flex-1 p-2 flex flex-col justify-between">
-            <p className="text-white font-bold text-[10px] line-clamp-2 leading-tight">
-              {displayTitle}
-            </p>
-            <p
-              className="font-extrabold text-sm font-[family-name:var(--font-display)]"
-              style={{ color: "#c8ff00" }}
+
+          {/* Info side */}
+          <div className="flex-1 p-5 sm:p-6 flex flex-col justify-between relative z-10">
+            {/* Category label */}
+            <span
+              className="text-[10px] font-bold uppercase tracking-[0.2em] font-[family-name:var(--font-display)]"
+              style={{ color: accentColor }}
             >
-              {listing.price} {t("common.egp")}
+              {t(categoryKey as Parameters<typeof t>[0])}
+            </span>
+
+            <div>
+              {/* Title */}
+              <h3 className="text-lg sm:text-xl font-bold text-white line-clamp-2 leading-tight mb-1">
+                {displayTitle}
+              </h3>
+
+              {/* Condition */}
+              <span className="text-[9px] font-bold uppercase tracking-widest text-white/35 font-[family-name:var(--font-display)]">
+                {t(conditionKey as Parameters<typeof t>[0])}
+              </span>
+            </div>
+
+            {/* Price */}
+            <p className="text-2xl sm:text-3xl font-extrabold font-[family-name:var(--font-display)] text-[#c8ff00]">
+              {listing.price}{" "}
+              <span className="text-xs text-white/30 font-normal">
+                {t("common.egp")}
+              </span>
             </p>
           </div>
         </div>
-      </CardShell>
+      </motion.div>
     );
   }
 
+  /* ─── Default Card (sport product style) ─── */
   return (
-    <CardShell
-      accentColor={accentColor}
-      size={size}
-      interactive={interactive}
+    <motion.div
+      whileTap={{ scale: 0.97 }}
       onClick={onClick}
+      className="relative rounded-t-none rounded-b-2xl bg-[#0d1220] overflow-hidden cursor-pointer group"
     >
-      <div className="flex flex-col h-full">
-        {/* Photo area — top 50% */}
-        <div className="relative h-[50%] bg-white/5 overflow-hidden">
-          {hasPhoto ? (
-            <img
-              src={listing.photos[0]}
-              alt={displayTitle}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div
-              className="w-full h-full flex items-center justify-center"
-              style={{ backgroundColor: `${accentColor}10` }}
-            >
-              <Package size={32} style={{ color: accentColor }} />
-            </div>
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+      {/* Category color band */}
+      <div className="h-1" style={{ backgroundColor: accentColor }} />
 
-          {/* Category badge — top start */}
-          <span
-            className="absolute top-2 start-2 text-[10px] font-bold px-2 py-0.5 rounded-full"
-            style={{ backgroundColor: `${accentColor}30`, color: accentColor }}
+      {/* Photo area - 70% */}
+      <div className="relative h-44 bg-white/5 overflow-hidden">
+        {hasPhoto ? (
+          <img
+            src={listing.photos[0]}
+            alt={displayTitle}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        ) : (
+          <div
+            className="w-full h-full flex items-center justify-center"
+            style={{ backgroundColor: `${accentColor}08` }}
           >
-            {t(categoryKey as Parameters<typeof t>[0])}
-          </span>
-
-          {/* Condition badge — top end */}
-          <span className="absolute top-2 end-2 glass-dark text-[10px] font-medium px-2 py-0.5 rounded-full text-white/70">
-            {t(conditionKey as Parameters<typeof t>[0])}
-          </span>
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 p-3 flex flex-col justify-between">
-          {/* Title */}
-          <p
-            className={`text-white font-bold line-clamp-2 leading-tight ${
-              size === "lg" ? "text-base" : "text-sm"
-            }`}
-          >
-            {displayTitle}
-          </p>
-
-          {/* Price */}
-          <p className="text-[#c8ff00] text-xl font-extrabold font-[family-name:var(--font-display)] mt-1">
-            {listing.price}{" "}
-            <span className="text-xs text-white/40 font-normal">
-              {t("common.egp")}
-            </span>
-          </p>
-
-          {/* Stats row */}
-          <div className="flex items-center justify-between mt-2 text-white/40 text-xs">
-            <span className="flex items-center gap-1">
-              <Eye size={10} />
-              {listing.views}
-            </span>
-            <span className="flex items-center gap-1">
-              <MapPin size={10} />
-              {displayArea}
-            </span>
+            <Package size={36} style={{ color: accentColor }} className="opacity-25" />
           </div>
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0d1220] via-transparent to-transparent" />
+      </div>
+
+      {/* Info area */}
+      <div className="p-3 pt-2">
+        {/* Condition */}
+        <span className="text-[9px] font-bold uppercase tracking-widest text-white/35 font-[family-name:var(--font-display)]">
+          {t(conditionKey as Parameters<typeof t>[0])}
+        </span>
+
+        {/* Title */}
+        <p className="text-sm font-bold text-white line-clamp-1 leading-tight mt-1">
+          {displayTitle}
+        </p>
+
+        {/* Price */}
+        <p className="text-[22px] font-extrabold font-[family-name:var(--font-display)] text-[#c8ff00] mt-1">
+          {listing.price}{" "}
+          <span className="text-[10px] text-white/30 font-normal">
+            {t("common.egp")}
+          </span>
+        </p>
+
+        {/* Area - shows on hover */}
+        <div className="flex items-center gap-1 mt-1.5 text-[10px] text-white/0 group-hover:text-white/30 transition-colors duration-300">
+          <MapPin size={9} />
+          <span>{displayArea}</span>
         </div>
       </div>
-    </CardShell>
+    </motion.div>
   );
 }

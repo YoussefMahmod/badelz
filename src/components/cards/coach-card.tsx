@@ -54,7 +54,7 @@ export function CoachCard({
 
   if (size === "sm") {
     return (
-      <CardShell tier="pro" size="sm" interactive={interactive} onClick={onClick}>
+      <CardShell accentColor="#c8ff00" size="sm" interactive={interactive} onClick={onClick}>
         <div className="flex flex-col items-center justify-center h-full p-2 gap-1.5">
           {/* Pro badge */}
           <span className="bg-[#c8ff00] text-[#111827] text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase">
@@ -87,7 +87,7 @@ export function CoachCard({
   }
 
   return (
-    <CardShell tier="pro" size={size} interactive={interactive} onClick={onClick}>
+    <CardShell accentColor="#c8ff00" size={size} interactive={interactive} onClick={onClick}>
       <div className="flex flex-col h-full p-3">
         {/* Pro badge */}
         <div className="flex justify-center mb-1">

@@ -22,7 +22,7 @@ import { useTranslation, useLocale } from "@/i18n";
 import { buildPlayerShareLink } from "@/lib/whatsapp";
 import { scaleInGlow, slideUp } from "@/lib/animations";
 
-type PlayerTier = "BRONZE" | "SILVER" | "GOLD" | "DIAMOND" | "ELITE";
+type PlayerTier = "BRONZE" | "GOLD" | "EMERALD" | "DIAMOND" | "MASTER" | "GRANDMASTER";
 
 interface PlayerData {
   id: string;
@@ -41,10 +41,11 @@ interface PlayerData {
 
 const TIER_COLORS: Record<PlayerTier, string> = {
   BRONZE: "#cd7f32",
-  SILVER: "#c0c0c0",
   GOLD: "#ffd700",
-  DIAMOND: "#00d4ff",
-  ELITE: "#c8ff00",
+  EMERALD: "#50c878",
+  DIAMOND: "#b9f2ff",
+  MASTER: "#ff4655",
+  GRANDMASTER: "#c8ff00",
 };
 
 export default function MyCardPage() {
@@ -342,7 +343,7 @@ function MyCardContent() {
             {...slideUp}
             className="relative z-10 mx-auto max-w-md px-4 pb-6"
           >
-            <div className="glass-dark rounded-2xl p-5">
+            <div className="bg-[#0a0f1a]/80 backdrop-blur-xl border border-white/10 rounded-2xl p-5">
               <div className="grid grid-cols-1 gap-4 mb-4">
                 <StatItem
                   icon={<Gamepad2 size={16} />}

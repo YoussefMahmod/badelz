@@ -9,7 +9,7 @@ import { useTranslation, useLocale } from "@/i18n";
 import { buildPlayerShareLink } from "@/lib/whatsapp";
 import { scaleInGlow, slideUp } from "@/lib/animations";
 
-type PlayerTier = "BRONZE" | "SILVER" | "GOLD" | "DIAMOND" | "ELITE";
+type PlayerTier = "BRONZE" | "GOLD" | "EMERALD" | "DIAMOND" | "MASTER" | "GRANDMASTER";
 
 interface PlayerData {
   id: string;
@@ -28,10 +28,11 @@ interface PlayerData {
 
 const TIER_COLORS: Record<PlayerTier, string> = {
   BRONZE: "#cd7f32",
-  SILVER: "#c0c0c0",
   GOLD: "#ffd700",
-  DIAMOND: "#00d4ff",
-  ELITE: "#c8ff00",
+  EMERALD: "#50c878",
+  DIAMOND: "#b9f2ff",
+  MASTER: "#ff4655",
+  GRANDMASTER: "#c8ff00",
 };
 
 export default function PlayerProfilePage() {

@@ -3,7 +3,7 @@
 import { useRef, useCallback } from "react";
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 
-type Tier = "bronze" | "silver" | "gold" | "diamond" | "elite" | "pro";
+type Tier = "bronze" | "gold" | "emerald" | "diamond" | "master" | "grandmaster";
 type Size = "sm" | "md" | "lg";
 
 interface CardShellProps {
@@ -18,68 +18,321 @@ interface CardShellProps {
 
 /* ─── Tier visual definitions ─── */
 
-const TIER_CLASSES: Record<Tier, string> = {
-  bronze: [
-    "border-2 border-[#cd7f32]",
-    "bg-gradient-to-br from-[#1a1a2e] to-[#16213e]",
-  ].join(" "),
-  silver: [
-    "border-[3px] silver-frame holo-shine",
-    "bg-gradient-to-br from-[#1a1a2e] to-[#252540]",
-  ].join(" "),
-  gold: [
-    "border-4 gold-frame holo-shine-gold holo-shine",
-    "bg-gradient-to-br from-[#1a1a2e] to-[#2a2040]",
-  ].join(" "),
-  diamond: [
-    "border-4 diamond-frame sparkle-particles-dense diamond-pulse-glow diamond-edge-energy holo-shine",
-    "bg-gradient-to-br from-[#0a0f1a] to-[#0f1b2d]",
-  ].join(" "),
-  elite: [
-    "border-[5px] aurora-border sparkle-particles-dense sparkle-particles-layer2 elite-surface elite-noise",
-    "bg-gradient-to-br from-[#0a0f1a] to-[#120a20]",
-  ].join(" "),
-  pro: [
-    "border-4 border-[#c8ff00] holo-shine-gold holo-shine",
-    "bg-gradient-to-br from-[#1a1a2e] to-[#1a2a1e]",
-  ].join(" "),
+const TIER_CARD_CLASSES: Record<Tier, string> = {
+  bronze:
+    "border-2 border-[#cd7f32] bg-gradient-to-br from-[#1a1a2e] to-[#16213e]",
+  gold:
+    "border-[3px] border-[#ffd700] bg-gradient-to-br from-[#1a1a2e] to-[#2a2040]",
+  emerald:
+    "border-[3px] border-[#50c878] bg-gradient-to-br from-[#0a1a15] to-[#0f2b1a]",
+  diamond:
+    "border-4 border-[#b9f2ff] bg-gradient-to-br from-[#0a0f1a] to-[#0f1b2d]",
+  master:
+    "border-4 border-[#ff4655] bg-gradient-to-br from-[#1a0a0e] to-[#2a1015]",
+  grandmaster:
+    "border-[5px] border-transparent bg-gradient-to-br from-[#0a0f1a] to-[#120a20]",
 };
 
 const TIER_STYLES: Partial<Record<Tier, React.CSSProperties>> = {
-  silver: {
-    boxShadow: "0 0 15px rgba(192,192,192,0.2)",
+  bronze: {
+    boxShadow: "0 0 10px rgba(205,127,50,0.1)",
   },
   gold: {
     boxShadow:
-      "0 0 30px rgba(255,215,0,0.25), 0 0 60px rgba(255,215,0,0.1), inset 0 0 20px rgba(255,215,0,0.05)",
+      "0 0 20px rgba(255,215,0,0.2), 0 0 40px rgba(255,215,0,0.08)",
   },
-  // diamond glow is handled by the diamond-pulse-glow CSS animation
-  diamond: {},
-  elite: {
+  emerald: {
     boxShadow:
-      "0 0 30px rgba(200,255,0,0.3), 0 0 60px rgba(0,212,255,0.15), 0 0 100px rgba(200,255,0,0.08)",
+      "0 0 25px rgba(80,200,120,0.2), 0 0 50px rgba(80,200,120,0.08)",
   },
-  pro: {
+  diamond: {
     boxShadow:
-      "0 0 25px rgba(200,255,0,0.2), 0 0 50px rgba(200,255,0,0.08)",
+      "0 0 30px rgba(185,242,255,0.25), 0 0 60px rgba(185,242,255,0.1)",
+  },
+  master: {
+    boxShadow:
+      "0 0 30px rgba(255,70,85,0.3), 0 0 60px rgba(255,70,85,0.15), 0 0 100px rgba(255,70,85,0.05)",
+  },
+  grandmaster: {
+    boxShadow:
+      "0 0 40px rgba(200,255,0,0.25), 0 0 60px rgba(0,212,255,0.15), 0 0 100px rgba(255,70,85,0.1)",
   },
 };
 
-/* Tiers that need a frame wrapper with ornamental pseudo-elements */
-const FRAME_ORNAMENTS: Partial<Record<Tier, string>> = {
-  gold: "gold-wings",
-  elite: "elite-wisps",
-};
-
-/* Silver gets corner accents via extra span elements */
-const NEEDS_CORNER_ACCENTS: Partial<Record<Tier, boolean>> = {
-  silver: true,
-};
+/* No frame ornaments — pure glow rings style */
 
 const SIZE_CLASSES: Record<Size, string> = {
   sm: "w-36 h-[201px]",
   md: "w-56 card-ratio",
   lg: "w-72 card-ratio",
+};
+
+/* ─── Gold effects ─── */
+function GoldEffects() {
+  return (
+    <>
+      {/* Gold shimmer sweep */}
+      <div
+        className="absolute inset-0 rounded-2xl pointer-events-none z-[2] overflow-hidden"
+        style={{ borderRadius: "inherit" }}
+      >
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(105deg, transparent 30%, rgba(255,215,0,0.08) 38%, rgba(255,255,255,0.18) 50%, rgba(255,215,0,0.08) 62%, transparent 70%)",
+            backgroundSize: "200% 100%",
+            animation: "gold-shimmer 2.5s ease-in-out infinite",
+          }}
+        />
+      </div>
+    </>
+  );
+}
+
+/* ─── Emerald effects ─── */
+function EmeraldEffects() {
+  return (
+    <>
+      {/* Breathing emerald glow pulse */}
+      <div
+        className="absolute inset-0 rounded-2xl pointer-events-none"
+        style={{
+          borderRadius: "inherit",
+          animation: "emerald-pulse 3s ease-in-out infinite",
+        }}
+      />
+      {/* Green-tinted holo sweep */}
+      <div
+        className="absolute inset-0 rounded-2xl pointer-events-none z-[2] overflow-hidden"
+        style={{ borderRadius: "inherit" }}
+      >
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(105deg, transparent 30%, rgba(80,200,120,0.06) 38%, rgba(255,255,255,0.14) 50%, rgba(80,200,120,0.06) 62%, transparent 70%)",
+            backgroundSize: "200% 100%",
+            animation: "gold-shimmer 3s ease-in-out infinite",
+          }}
+        />
+      </div>
+    </>
+  );
+}
+
+/* ─── Diamond effects ─── */
+function DiamondEffects() {
+  return (
+    <>
+      {/* Ice sparkle particles */}
+      <div
+        className="absolute pointer-events-none z-[3]"
+        style={{
+          inset: -6,
+          borderRadius: "inherit",
+          backgroundImage: [
+            "radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,0.8), transparent)",
+            "radial-gradient(2px 2px at 25% 75%, rgba(185,242,255,0.8), transparent)",
+            "radial-gradient(1.5px 1.5px at 40% 10%, rgba(255,255,255,0.7), transparent)",
+            "radial-gradient(2px 2px at 55% 85%, rgba(185,242,255,0.7), transparent)",
+            "radial-gradient(2px 2px at 70% 30%, rgba(255,255,255,0.8), transparent)",
+            "radial-gradient(1.5px 1.5px at 85% 60%, rgba(185,242,255,0.6), transparent)",
+          ].join(", "),
+          animation: "diamond-sparkle 2.5s ease-in-out infinite",
+        }}
+      />
+      {/* Pulsing ice glow */}
+      <div
+        className="absolute inset-0 rounded-2xl pointer-events-none"
+        style={{
+          borderRadius: "inherit",
+          animation: "diamond-ice-pulse 2s ease-in-out infinite",
+        }}
+      />
+      {/* Refraction edge energy */}
+      <div
+        className="absolute inset-0 rounded-2xl pointer-events-none z-[4]"
+        style={{
+          borderRadius: "inherit",
+          background: [
+            "linear-gradient(90deg, transparent 0%, rgba(185,242,255,0.4) 20%, transparent 40%) top / 200% 1px no-repeat",
+            "linear-gradient(90deg, transparent 60%, rgba(185,242,255,0.4) 80%, transparent 100%) bottom / 200% 1px no-repeat",
+            "linear-gradient(180deg, transparent 0%, rgba(185,242,255,0.3) 30%, transparent 60%) left / 1px 200% no-repeat",
+            "linear-gradient(180deg, transparent 40%, rgba(185,242,255,0.3) 70%, transparent 100%) right / 1px 200% no-repeat",
+          ].join(", "),
+          animation: "diamond-edge-flash 3s ease-in-out infinite",
+        }}
+      />
+    </>
+  );
+}
+
+/* ─── Master effects ─── */
+function MasterEffects() {
+  return (
+    <>
+      {/* Crimson flame-like animated border glow */}
+      <div
+        className="absolute inset-0 rounded-2xl pointer-events-none"
+        style={{
+          borderRadius: "inherit",
+          animation: "master-flame 1.5s ease-in-out infinite",
+        }}
+      />
+      {/* Ember particles floating upward */}
+      <div
+        className="absolute pointer-events-none z-[3]"
+        style={{
+          inset: -6,
+          borderRadius: "inherit",
+          backgroundImage: [
+            "radial-gradient(2px 2px at 15% 80%, rgba(255,70,85,0.8), transparent)",
+            "radial-gradient(2px 2px at 30% 90%, rgba(255,140,50,0.7), transparent)",
+            "radial-gradient(1.5px 1.5px at 50% 85%, rgba(255,70,85,0.6), transparent)",
+            "radial-gradient(2px 2px at 70% 75%, rgba(255,140,50,0.7), transparent)",
+            "radial-gradient(2px 2px at 85% 88%, rgba(255,70,85,0.8), transparent)",
+            "radial-gradient(1.5px 1.5px at 40% 70%, rgba(255,200,50,0.5), transparent)",
+            "radial-gradient(2px 2px at 60% 95%, rgba(255,70,85,0.6), transparent)",
+            "radial-gradient(1.5px 1.5px at 25% 65%, rgba(255,140,50,0.5), transparent)",
+          ].join(", "),
+          animation: "ember-float 2s ease-in-out infinite",
+        }}
+      />
+      {/* Second ember layer, staggered */}
+      <div
+        className="absolute pointer-events-none z-[3]"
+        style={{
+          inset: -8,
+          borderRadius: "inherit",
+          backgroundImage: [
+            "radial-gradient(2px 2px at 20% 92%, rgba(255,70,85,0.7), transparent)",
+            "radial-gradient(1.5px 1.5px at 45% 78%, rgba(255,200,50,0.6), transparent)",
+            "radial-gradient(2px 2px at 65% 88%, rgba(255,70,85,0.8), transparent)",
+            "radial-gradient(2px 2px at 80% 95%, rgba(255,140,50,0.6), transparent)",
+            "radial-gradient(1.5px 1.5px at 35% 82%, rgba(255,70,85,0.5), transparent)",
+            "radial-gradient(2px 2px at 55% 72%, rgba(255,140,50,0.7), transparent)",
+          ].join(", "),
+          animation: "ember-float 2.5s ease-in-out infinite 0.6s",
+        }}
+      />
+      {/* Intense inner glow */}
+      <div
+        className="absolute inset-0 rounded-2xl pointer-events-none z-[1]"
+        style={{
+          borderRadius: "inherit",
+          background:
+            "radial-gradient(ellipse at center, rgba(255,70,85,0.08) 0%, transparent 70%)",
+        }}
+      />
+    </>
+  );
+}
+
+/* ─── Grandmaster effects — MAXIMUM OVERDRIVE ─── */
+function GrandmasterEffects() {
+  return (
+    <>
+      {/* 1. Rotating aurora border */}
+      <div
+        className="absolute rounded-2xl pointer-events-none z-[-1]"
+        style={{
+          inset: -5,
+          background:
+            "conic-gradient(from var(--gm-aurora-angle, 0deg), #c8ff00, #00d4ff, #ff4655, #ffd700, #c8ff00)",
+          borderRadius: "inherit",
+          animation:
+            "gm-aurora-rotate 3s linear infinite, gm-border-pulse 4s ease-in-out infinite",
+        }}
+      />
+      {/* 2. Inner mask — creates the border ring effect */}
+      <div
+        className="absolute rounded-2xl pointer-events-none z-[-1]"
+        style={{
+          inset: 1,
+          background: "linear-gradient(to bottom right, #0a0f1a, #120a20)",
+          borderRadius: "inherit",
+        }}
+      />
+      {/* 3. Chromatic holo sweep */}
+      <div
+        className="absolute inset-0 rounded-2xl pointer-events-none z-[2] overflow-hidden"
+        style={{ borderRadius: "inherit" }}
+      >
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(105deg, transparent 25%, rgba(200,255,0,0.05) 32%, rgba(0,212,255,0.06) 40%, rgba(255,255,255,0.18) 50%, rgba(255,70,85,0.06) 60%, rgba(255,215,0,0.05) 68%, transparent 75%)",
+            backgroundSize: "200% 100%",
+            animation: "gm-holo-sweep 2s ease-in-out infinite",
+          }}
+        />
+      </div>
+      {/* 4. Dense sparkle particles layer 1 */}
+      <div
+        className="absolute pointer-events-none z-[3]"
+        style={{
+          inset: -8,
+          borderRadius: "inherit",
+          backgroundImage: [
+            "radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,0.8), transparent)",
+            "radial-gradient(2px 2px at 25% 75%, rgba(0,212,255,0.8), transparent)",
+            "radial-gradient(1.5px 1.5px at 40% 10%, rgba(200,255,0,0.7), transparent)",
+            "radial-gradient(2px 2px at 55% 85%, rgba(255,255,255,0.7), transparent)",
+            "radial-gradient(2px 2px at 70% 30%, rgba(0,212,255,0.8), transparent)",
+            "radial-gradient(1.5px 1.5px at 85% 60%, rgba(200,255,0,0.6), transparent)",
+            "radial-gradient(2px 2px at 15% 50%, rgba(255,255,255,0.6), transparent)",
+            "radial-gradient(1.5px 1.5px at 60% 45%, rgba(0,212,255,0.7), transparent)",
+            "radial-gradient(2px 2px at 90% 15%, rgba(200,255,0,0.7), transparent)",
+            "radial-gradient(2px 2px at 45% 65%, rgba(255,255,255,0.8), transparent)",
+          ].join(", "),
+          animation: "sparkle-float 2s ease-in-out infinite",
+        }}
+      />
+      {/* 5. Dense sparkle particles layer 2 — offset timing */}
+      <div
+        className="absolute pointer-events-none z-[3]"
+        style={{
+          inset: -10,
+          borderRadius: "inherit",
+          backgroundImage: [
+            "radial-gradient(2px 2px at 8% 40%, rgba(200,255,0,0.7), transparent)",
+            "radial-gradient(2px 2px at 22% 15%, rgba(255,255,255,0.8), transparent)",
+            "radial-gradient(1.5px 1.5px at 38% 90%, rgba(0,212,255,0.6), transparent)",
+            "radial-gradient(2px 2px at 52% 25%, rgba(255,70,85,0.5), transparent)",
+            "radial-gradient(2px 2px at 68% 70%, rgba(255,215,0,0.6), transparent)",
+            "radial-gradient(1.5px 1.5px at 78% 5%, rgba(200,255,0,0.8), transparent)",
+            "radial-gradient(2px 2px at 92% 55%, rgba(255,255,255,0.7), transparent)",
+            "radial-gradient(1.5px 1.5px at 35% 35%, rgba(0,212,255,0.7), transparent)",
+            "radial-gradient(2px 2px at 5% 80%, rgba(200,255,0,0.6), transparent)",
+            "radial-gradient(2px 2px at 75% 90%, rgba(255,70,85,0.5), transparent)",
+          ].join(", "),
+          animation: "sparkle-float-alt 2.5s ease-in-out infinite 0.5s",
+        }}
+      />
+      {/* 6. Noise overlay */}
+      <div
+        className="absolute inset-0 rounded-2xl pointer-events-none z-[1]"
+        style={{
+          borderRadius: "inherit",
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E")`,
+          backgroundRepeat: "repeat",
+          backgroundSize: "256px 256px",
+          mixBlendMode: "overlay",
+        }}
+      />
+    </>
+  );
+}
+
+/* ─── Effect component map ─── */
+const TIER_EFFECTS: Partial<Record<Tier, React.FC>> = {
+  gold: GoldEffects,
+  emerald: EmeraldEffects,
+  diamond: DiamondEffects,
+  master: MasterEffects,
+  grandmaster: GrandmasterEffects,
 };
 
 export function CardShell({
@@ -112,7 +365,7 @@ export function CardShell({
     animate(y, 0, { duration: 0.5, ease: "easeOut" });
   }, [x, y]);
 
-  const tierClasses = accentColor ? "" : TIER_CLASSES[tier];
+  const tierClasses = accentColor ? "" : TIER_CARD_CLASSES[tier];
   const tierStyle = accentColor
     ? {
         borderColor: accentColor,
@@ -120,8 +373,10 @@ export function CardShell({
       }
     : TIER_STYLES[tier] ?? {};
 
-  const frameOrnament = !accentColor ? FRAME_ORNAMENTS[tier] : undefined;
-  const needsCorners = !accentColor && NEEDS_CORNER_ACCENTS[tier];
+  /* No ornaments in glow rings style */
+
+  /* Resolve tier effect component */
+  const EffectComponent = !accentColor ? TIER_EFFECTS[tier] : undefined;
 
   const cardElement = (
     <motion.div
@@ -137,7 +392,7 @@ export function CardShell({
       whileTap={interactive ? { scale: 0.97 } : undefined}
       onClick={onClick}
       className={[
-        "relative rounded-2xl overflow-hidden cursor-pointer",
+        "relative rounded-2xl cursor-pointer",
         "transition-shadow duration-300",
         accentColor
           ? "border-2 bg-gradient-to-br from-[#1a1a2e] to-[#16213e]"
@@ -149,80 +404,15 @@ export function CardShell({
         .filter(Boolean)
         .join(" ")}
     >
-      {/* Silver corner accents — bottom corners need real elements since
-          ::before/::after are already used by holo-shine */}
-      {needsCorners && (
-        <>
-          {/* Top-left L-corner */}
-          <span
-            className="absolute top-1 z-10 pointer-events-none"
-            style={{
-              insetInlineStart: "4px",
-              width: 14,
-              height: 14,
-              borderTop: "2px solid rgba(192,192,192,0.6)",
-              borderInlineStart: "2px solid rgba(192,192,192,0.6)",
-              borderRadius: "3px 0 0 0",
-            }}
-          />
-          {/* Top-right L-corner */}
-          <span
-            className="absolute top-1 z-10 pointer-events-none"
-            style={{
-              insetInlineEnd: "4px",
-              width: 14,
-              height: 14,
-              borderTop: "2px solid rgba(192,192,192,0.6)",
-              borderInlineEnd: "2px solid rgba(192,192,192,0.6)",
-              borderRadius: "0 3px 0 0",
-            }}
-          />
-          {/* Bottom-left L-corner */}
-          <span
-            className="absolute bottom-1 z-10 pointer-events-none"
-            style={{
-              insetInlineStart: "4px",
-              width: 14,
-              height: 14,
-              borderBottom: "2px solid rgba(192,192,192,0.6)",
-              borderInlineStart: "2px solid rgba(192,192,192,0.6)",
-              borderRadius: "0 0 0 3px",
-            }}
-          />
-          {/* Bottom-right L-corner */}
-          <span
-            className="absolute bottom-1 z-10 pointer-events-none"
-            style={{
-              insetInlineEnd: "4px",
-              width: 14,
-              height: 14,
-              borderBottom: "2px solid rgba(192,192,192,0.6)",
-              borderInlineEnd: "2px solid rgba(192,192,192,0.6)",
-              borderRadius: "0 0 3px 0",
-            }}
-          />
-        </>
-      )}
+      {/* Tier-specific visual effects (real DOM elements, no pseudo-elements) */}
+      {EffectComponent && <EffectComponent />}
 
-      {children}
+      {/* Inner content wrapper — clips content, does NOT clip card effects */}
+      <div className="relative overflow-hidden rounded-2xl h-full z-[5]">
+        {children}
+      </div>
     </motion.div>
   );
 
-  /* Wrap in a frame div for tiers that have ornaments extending OUTSIDE the card */
-  if (frameOrnament) {
-    return (
-      <div
-        className={`relative ${frameOrnament}`}
-        style={{ perspective: 1200, padding: "16px 8px 8px 8px" }}
-      >
-        {cardElement}
-      </div>
-    );
-  }
-
-  return (
-    <div style={{ perspective: 1200 }}>
-      {cardElement}
-    </div>
-  );
+  return <div style={{ perspective: 1200 }}>{cardElement}</div>;
 }

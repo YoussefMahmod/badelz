@@ -317,7 +317,7 @@ async function main() {
   ]);
   console.log(`Created ${bookings.length} sample bookings`);
 
-  // ─── Player Profiles (5 tiers) ───
+  // ─── Player Profiles (6 tiers) ───
   const players = await Promise.all([
     prisma.playerProfile.create({
       data: {
@@ -342,7 +342,7 @@ async function main() {
         gamesPlayed: 5,
         gamesWon: 3,
         rating: 4.0,
-        tier: PlayerTier.SILVER,
+        tier: PlayerTier.GOLD,
       },
     }),
     prisma.playerProfile.create({
@@ -355,7 +355,7 @@ async function main() {
         gamesPlayed: 15,
         gamesWon: 10,
         rating: 4.5,
-        tier: PlayerTier.GOLD,
+        tier: PlayerTier.EMERALD,
       },
     }),
     prisma.playerProfile.create({
@@ -381,7 +381,33 @@ async function main() {
         gamesPlayed: 55,
         gamesWon: 40,
         rating: 4.9,
-        tier: PlayerTier.ELITE,
+        tier: PlayerTier.MASTER,
+      },
+    }),
+    prisma.playerProfile.create({
+      data: {
+        phone: "01012345678",
+        name: "علي حسام",
+        nameAr: "علي حسام",
+        area: "Sheikh Zayed",
+        areaAr: "الشيخ زايد",
+        gamesPlayed: 120,
+        gamesWon: 95,
+        rating: 5.0,
+        tier: PlayerTier.GRANDMASTER,
+      },
+    }),
+    prisma.playerProfile.create({
+      data: {
+        phone: "01187654321",
+        name: "كريم مصطفى",
+        nameAr: "كريم مصطفى",
+        area: "Nasr City",
+        areaAr: "مدينة نصر",
+        gamesPlayed: 2,
+        gamesWon: 1,
+        rating: 3.8,
+        tier: PlayerTier.BRONZE,
       },
     }),
   ]);

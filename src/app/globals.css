@@ -401,109 +401,131 @@ input::placeholder, textarea::placeholder { color: var(--text-tertiary); }
 }
 
 /* ─── Collectible Card Effects ────────────────────────── */
-/* LoL / Wild Rift inspired ranked card frames               */
+/* LoL-inspired ranked card frames:                         */
+/* Bronze > Gold > Emerald > Diamond > Master > Grandmaster */
 
 /* ══════════════════════════════════════════════════════════
    KEYFRAMES
    ══════════════════════════════════════════════════════════ */
 
-/* Holographic sweep across card surface */
-@keyframes holo-shine {
+/* Gold shimmer sweep */
+@keyframes gold-shimmer {
   0% { background-position: -200% center; }
   100% { background-position: 200% center; }
 }
 
-/* Silver animated border gradient cycle */
-@keyframes silver-border-cycle {
-  0%   { border-color: #c0c0c0; }
-  33%  { border-color: #e8e8e8; }
-  66%  { border-color: #808080; }
-  100% { border-color: #c0c0c0; }
-}
-
-/* Gold animated border gradient shift */
+/* Gold border animation */
 @keyframes gold-border-shift {
   0%   { border-color: #ffd700; }
-  25%  { border-color: #ffbf00; }
-  50%  { border-color: #fff4c2; }
-  75%  { border-color: #ffbf00; }
+  50%  { border-color: #ffed4a; }
   100% { border-color: #ffd700; }
 }
 
-/* Diamond border color cycling */
+/* Emerald breathing glow */
+@keyframes emerald-pulse {
+  0%, 100% { box-shadow: 0 0 15px rgba(80,200,120,0.2); }
+  50%      { box-shadow: 0 0 30px rgba(80,200,120,0.4), 0 0 60px rgba(80,200,120,0.1); }
+}
+
+/* Diamond ice pulse */
+@keyframes diamond-ice-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(185,242,255,0.2), 0 0 40px rgba(185,242,255,0.05); }
+  50%      { box-shadow: 0 0 35px rgba(185,242,255,0.4), 0 0 70px rgba(185,242,255,0.15); }
+}
+
+/* Diamond border cycling */
 @keyframes diamond-border-cycle {
-  0%   { border-color: #00d4ff; }
-  50%  { border-color: #c8ff00; }
-  100% { border-color: #00d4ff; }
+  0%   { border-color: #b9f2ff; }
+  50%  { border-color: #e0f7ff; }
+  100% { border-color: #b9f2ff; }
 }
 
-/* Diamond pulsing glow — visible breathing */
-@keyframes diamond-pulse {
-  0%, 100% {
-    box-shadow:
-      0 0 20px rgba(0,212,255,0.2),
-      0 0 40px rgba(0,212,255,0.05);
-  }
-  50% {
-    box-shadow:
-      0 0 40px rgba(0,212,255,0.4),
-      0 0 80px rgba(0,212,255,0.15),
-      0 0 120px rgba(0,212,255,0.05);
-  }
+/* Diamond sparkle float */
+@keyframes diamond-sparkle {
+  0%, 100% { opacity: 0; transform: translateY(0) scale(0); }
+  50%      { opacity: 0.8; transform: translateY(-10px) scale(1); }
 }
 
-/* Aurora rotating border (Elite) */
-@property --aurora-angle {
+/* Diamond edge flash */
+@keyframes diamond-edge-flash {
+  0%, 100% { background-position: 0% 0%; opacity: 0; }
+  10%      { opacity: 0.6; }
+  50%      { background-position: 100% 100%; opacity: 0; }
+}
+
+/* Master flame flicker */
+@keyframes master-flame {
+  0%, 100% { border-color: #ff4655; box-shadow: 0 0 20px rgba(255,70,85,0.3); }
+  25%      { border-color: #ff6b75; box-shadow: 0 0 35px rgba(255,70,85,0.5); }
+  50%      { border-color: #ff2d3a; box-shadow: 0 0 25px rgba(255,70,85,0.35); }
+  75%      { border-color: #ff5565; box-shadow: 0 0 40px rgba(255,70,85,0.45); }
+}
+
+/* Master ember float (particles rising) */
+@keyframes ember-float {
+  0%, 100% { opacity: 0; transform: translateY(0) scale(0); }
+  30%      { opacity: 0.7; transform: translateY(-15px) scale(1); }
+  70%      { opacity: 0.4; transform: translateY(-25px) scale(0.6); }
+}
+
+/* Master avatar flame */
+@keyframes master-avatar-flame {
+  0%, 100% { box-shadow: 0 0 10px rgba(255,70,85,0.3); }
+  50%      { box-shadow: 0 0 20px rgba(255,70,85,0.5), 0 0 40px rgba(255,70,85,0.2); }
+}
+
+/* Diamond avatar pulse */
+@keyframes diamond-avatar-pulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(185,242,255,0.3); }
+  50%      { box-shadow: 0 0 16px rgba(185,242,255,0.5), 0 0 30px rgba(185,242,255,0.2); }
+}
+
+/* Grandmaster aurora rotate (@property for conic-gradient animation) */
+@property --gm-aurora-angle {
   syntax: '<angle>';
   initial-value: 0deg;
   inherits: false;
 }
 
-@keyframes aurora-rotate {
-  to { --aurora-angle: 360deg; }
+@keyframes gm-aurora-rotate {
+  to { --gm-aurora-angle: 360deg; }
 }
 
-/* Elite border thickness pulse */
-@keyframes elite-border-pulse {
-  0%, 100% { inset: -4px; }
-  50%      { inset: -6px; }
+/* Grandmaster border thickness pulse */
+@keyframes gm-border-pulse {
+  0%, 100% { inset: -5px; }
+  50%      { inset: -7px; }
 }
 
-/* Sparkle float animations — staggered */
+/* Grandmaster chromatic sweep */
+@keyframes gm-holo-sweep {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+/* Sparkle float (shared by diamond, master, grandmaster) */
 @keyframes sparkle-float {
   0%, 100% { opacity: 0; transform: translateY(0) scale(0); }
-  50% { opacity: 0.8; transform: translateY(-10px) scale(1); }
+  50%      { opacity: 0.8; transform: translateY(-10px) scale(1); }
 }
 
 @keyframes sparkle-float-alt {
   0%, 100% { opacity: 0; transform: translateY(0) scale(0); }
-  40% { opacity: 0.7; transform: translateY(-12px) scale(1.1); }
-  80% { opacity: 0.3; transform: translateY(-6px) scale(0.5); }
+  40%      { opacity: 0.7; transform: translateY(-12px) scale(1.1); }
+  80%      { opacity: 0.3; transform: translateY(-6px) scale(0.5); }
 }
 
-/* Generic glow pulse (legacy compat) */
-@keyframes card-glow-pulse {
-  0%, 100% {
-    box-shadow: 0 0 20px var(--glow-color, rgba(0,212,255,0.15)),
-                0 0 50px var(--glow-color, rgba(0,212,255,0.05));
-  }
-  50% {
-    box-shadow: 0 0 35px var(--glow-color, rgba(0,212,255,0.25)),
-                0 0 70px var(--glow-color, rgba(0,212,255,0.1));
-  }
-}
-
-/* Wisp flicker for Elite corners */
+/* Wisp flicker (master, grandmaster corner effects) */
 @keyframes wisp-flicker {
   0%, 100% { opacity: 0.5; transform: scaleY(1) scaleX(1); }
   30%      { opacity: 0.9; transform: scaleY(1.15) scaleX(0.9); }
   60%      { opacity: 0.4; transform: scaleY(0.9) scaleX(1.1); }
 }
 
-/* Elite tier badge pulse */
+/* Badge glow pulse */
 @keyframes badge-glow-pulse {
-  0%, 100% { box-shadow: 0 0 6px var(--badge-glow, rgba(200,255,0,0.3)); }
-  50%      { box-shadow: 0 0 14px var(--badge-glow, rgba(200,255,0,0.6)), 0 0 30px var(--badge-glow, rgba(200,255,0,0.2)); }
+  0%, 100% { box-shadow: 0 0 6px var(--badge-glow, rgba(255,70,85,0.3)); }
+  50%      { box-shadow: 0 0 14px var(--badge-glow, rgba(255,70,85,0.6)), 0 0 30px var(--badge-glow, rgba(255,70,85,0.2)); }
 }
 
 /* Rank-up flash animation */
@@ -514,299 +536,45 @@ input::placeholder, textarea::placeholder { color: var(--text-tertiary); }
   100% { opacity: 0; transform: scale(1); }
 }
 
-/* Diamond edge energy flash */
-@keyframes diamond-edge-flash {
-  0%, 100% { background-position: 0% 0%; opacity: 0; }
-  10% { opacity: 0.6; }
-  50% { background-position: 100% 100%; opacity: 0; }
+/* Holographic sweep (shared utility) */
+@keyframes holo-shine {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
 }
 
 
 /* ══════════════════════════════════════════════════════════
    BRONZE — Bare minimum, motivates upgrading
    ══════════════════════════════════════════════════════════ */
-/* Just a plain wire frame. No glow, no animation, no shine.
-   Feels "unfinished" so the player WANTS to rank up. */
+/* Plain border, no glow, no animation. Feels unfinished so
+   the player WANTS to rank up. */
 
 
 /* ══════════════════════════════════════════════════════════
-   SILVER — Visible metallic energy
+   GOLD — Ornate golden frame with shimmer
    ══════════════════════════════════════════════════════════ */
 
-/* Animated silver border cycling through silver shades */
-.silver-frame {
-  animation: silver-border-cycle 3s ease-in-out infinite;
-}
-
-/* Silver corner accent marks — L-shaped lines at each corner */
-.silver-corners {
-  position: relative;
-}
-.silver-corners::before,
-.silver-corners::after {
-  content: '';
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  pointer-events: none;
-  z-index: 4;
-}
-/* Top-left & bottom-right corners */
-.silver-corners::before {
-  top: 4px;
-  inset-inline-start: 4px;
-  border-top: 2px solid rgba(192,192,192,0.6);
-  border-inline-start: 2px solid rgba(192,192,192,0.6);
-  border-radius: 3px 0 0 0;
-  box-shadow:
-    /* bottom-right corner via box-shadow trick — mirror element */
-    calc(100cqw - 22px) calc(100cqh - 22px) 0 0 transparent;
-}
-/* Top-right & bottom-left corners */
-.silver-corners::after {
-  top: 4px;
-  inset-inline-end: 4px;
-  border-top: 2px solid rgba(192,192,192,0.6);
-  border-inline-end: 2px solid rgba(192,192,192,0.6);
-  border-radius: 0 3px 0 0;
-}
-
-/* We need a dedicated element for bottom corners — handled in card-shell via extra spans */
+/* Gold — glow rings only, no wing ornaments */
 
 
 /* ══════════════════════════════════════════════════════════
-   GOLD — Dramatic ornate golden frame
+   EMERALD — Crystalline nature energy
    ══════════════════════════════════════════════════════════ */
-
-/* Animated gold border shifting through gold tones */
-.gold-frame {
-  animation: gold-border-shift 3s ease-in-out infinite;
-}
-
-/* Gold wing ornaments — triangular wings outside top corners */
-.gold-wings {
-  position: relative;
-}
-.gold-wings::before,
-.gold-wings::after {
-  content: '';
-  position: absolute;
-  top: -6px;
-  width: 0;
-  height: 0;
-  z-index: 5;
-  filter: drop-shadow(0 0 4px rgba(255,215,0,0.4));
-}
-/* Top-left wing */
-.gold-wings::before {
-  inset-inline-start: -4px;
-  border-bottom: 16px solid #ffd700;
-  border-inline-start: 0px solid transparent;
-  border-inline-end: 12px solid transparent;
-}
-/* Top-right wing */
-.gold-wings::after {
-  inset-inline-end: -4px;
-  border-bottom: 16px solid #ffd700;
-  border-inline-end: 0px solid transparent;
-  border-inline-start: 12px solid transparent;
-}
+/* Breathing glow + holo sweep + corner accents (via card-shell spans) */
 
 
 /* ══════════════════════════════════════════════════════════
-   DIAMOND — Crystal energy frame
+   DIAMOND — Ice crystal energy frame
    ══════════════════════════════════════════════════════════ */
 
-/* Diamond animated border color */
-.diamond-frame {
-  animation: diamond-border-cycle 2.5s ease-in-out infinite;
-}
-
-/* Diamond pulsing glow class — applied to card directly */
-.diamond-pulse-glow {
-  animation: diamond-pulse 2s ease-in-out infinite;
-}
-
-/* Dense sparkle particles — 10 dots, brighter, faster */
-.sparkle-particles-dense {
-  position: relative;
-}
-.sparkle-particles-dense::before {
-  content: '';
-  position: absolute;
-  inset: -6px;
-  border-radius: inherit;
-  background-image:
-    radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,0.8), transparent),
-    radial-gradient(2px 2px at 25% 75%, rgba(0,212,255,0.8), transparent),
-    radial-gradient(1.5px 1.5px at 40% 10%, rgba(200,255,0,0.7), transparent),
-    radial-gradient(2px 2px at 55% 85%, rgba(255,255,255,0.7), transparent),
-    radial-gradient(2px 2px at 70% 30%, rgba(0,212,255,0.8), transparent),
-    radial-gradient(1.5px 1.5px at 85% 60%, rgba(200,255,0,0.6), transparent),
-    radial-gradient(2px 2px at 15% 50%, rgba(255,255,255,0.6), transparent),
-    radial-gradient(1.5px 1.5px at 60% 45%, rgba(0,212,255,0.7), transparent),
-    radial-gradient(2px 2px at 90% 15%, rgba(200,255,0,0.7), transparent),
-    radial-gradient(2px 2px at 45% 65%, rgba(255,255,255,0.8), transparent);
-  animation: sparkle-float 2s ease-in-out infinite;
-  pointer-events: none;
-  z-index: 3;
-}
-
-/* Second sparkle layer — staggered timing for density (Elite) */
-.sparkle-particles-layer2 {
-  position: relative;
-}
-.sparkle-particles-layer2::after {
-  content: '';
-  position: absolute;
-  inset: -8px;
-  border-radius: inherit;
-  background-image:
-    radial-gradient(2px 2px at 8% 40%, rgba(200,255,0,0.7), transparent),
-    radial-gradient(2px 2px at 22% 15%, rgba(255,255,255,0.8), transparent),
-    radial-gradient(1.5px 1.5px at 38% 90%, rgba(0,212,255,0.6), transparent),
-    radial-gradient(2px 2px at 52% 25%, rgba(255,0,110,0.5), transparent),
-    radial-gradient(2px 2px at 68% 70%, rgba(167,139,250,0.6), transparent),
-    radial-gradient(1.5px 1.5px at 78% 5%, rgba(200,255,0,0.8), transparent),
-    radial-gradient(2px 2px at 92% 55%, rgba(255,255,255,0.7), transparent),
-    radial-gradient(1.5px 1.5px at 35% 35%, rgba(0,212,255,0.7), transparent),
-    radial-gradient(2px 2px at 5% 80%, rgba(200,255,0,0.6), transparent),
-    radial-gradient(2px 2px at 75% 90%, rgba(255,0,110,0.5), transparent);
-  animation: sparkle-float-alt 2.5s ease-in-out infinite;
-  animation-delay: 0.5s;
-  pointer-events: none;
-  z-index: 3;
-}
-
-/* Diamond edge energy — thin bright lines that flash along edges */
-.diamond-edge-energy {
-  position: relative;
-}
-.diamond-edge-energy::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background:
-    linear-gradient(90deg, transparent 0%, rgba(0,212,255,0.4) 20%, transparent 40%) top / 200% 1px no-repeat,
-    linear-gradient(90deg, transparent 60%, rgba(200,255,0,0.4) 80%, transparent 100%) bottom / 200% 1px no-repeat,
-    linear-gradient(180deg, transparent 0%, rgba(0,212,255,0.3) 30%, transparent 60%) left / 1px 200% no-repeat,
-    linear-gradient(180deg, transparent 40%, rgba(200,255,0,0.3) 70%, transparent 100%) right / 1px 200% no-repeat;
-  animation: diamond-edge-flash 3s ease-in-out infinite;
-  pointer-events: none;
-  z-index: 4;
-}
+/* ══════════════════════════════════════════════════════════
+   MASTER — Crimson flame energy (glow rings only)
+   ══════════════════════════════════════════════════════════ */
 
 
 /* ══════════════════════════════════════════════════════════
-   ELITE — MAXIMUM OVERDRIVE
+   GRANDMASTER — Aurora maximum overdrive (glow rings only)
    ══════════════════════════════════════════════════════════ */
-
-/* Rotating conic-gradient border — lime > cyan > pink > purple */
-.aurora-border {
-  position: relative;
-  z-index: 0;
-}
-.aurora-border::before {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: inherit;
-  background: conic-gradient(
-    from var(--aurora-angle, 0deg),
-    #c8ff00,
-    #00d4ff,
-    #ff006e,
-    #a78bfa,
-    #c8ff00
-  );
-  z-index: -1;
-  animation: aurora-rotate 3s linear infinite, elite-border-pulse 4s ease-in-out infinite;
-}
-.aurora-border::after {
-  content: '';
-  position: absolute;
-  inset: 1px;
-  border-radius: inherit;
-  background: inherit;
-  z-index: -1;
-}
-
-/* Elite surface — faster, more opaque rainbow holographic */
-.elite-surface {
-  position: relative;
-  overflow: hidden;
-}
-.elite-surface::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(
-    105deg,
-    transparent 30%,
-    rgba(200,255,0,0.06) 36%,
-    rgba(255,255,255,0.2) 50%,
-    rgba(0,212,255,0.06) 64%,
-    transparent 70%
-  );
-  background-size: 200% 100%;
-  animation: holo-shine 2s ease-in-out infinite;
-  pointer-events: none;
-  z-index: 2;
-}
-
-/* Elite energy wisps at top corners */
-.elite-wisps {
-  position: relative;
-}
-.elite-wisps::before,
-.elite-wisps::after {
-  content: '';
-  position: absolute;
-  width: 40px;
-  height: 60px;
-  z-index: 6;
-  pointer-events: none;
-  animation: wisp-flicker 2s ease-in-out infinite;
-  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-}
-/* Top-left wisp — lime/cyan energy */
-.elite-wisps::before {
-  top: -15px;
-  inset-inline-start: -10px;
-  background: radial-gradient(ellipse at bottom right, rgba(200,255,0,0.4), rgba(0,212,255,0.1) 50%, transparent 70%);
-}
-/* Top-right wisp — pink/purple energy */
-.elite-wisps::after {
-  top: -15px;
-  inset-inline-end: -10px;
-  background: radial-gradient(ellipse at bottom left, rgba(255,0,110,0.3), rgba(167,139,250,0.1) 50%, transparent 70%);
-  animation-delay: 0.8s;
-}
-
-/* Elite noise overlay — more visible */
-.elite-noise {
-  position: relative;
-}
-.elite-noise::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 256px 256px;
-  pointer-events: none;
-  z-index: 1;
-  border-radius: inherit;
-  mix-blend-mode: overlay;
-}
-
-
-/* ══════════════════════════════════════════════════════════
-   PRO (Coach) — Premium but clean
-   ══════════════════════════════════════════════════════════ */
-/* Uses holo-shine-gold + lime border — no extra classes needed */
 
 
 /* ══════════════════════════════════════════════════════════
@@ -851,37 +619,12 @@ input::placeholder, textarea::placeholder { color: var(--text-tertiary); }
   animation: holo-shine 2.5s ease-in-out infinite;
 }
 
-/* Legacy sparkle-particles (5 dots — used elsewhere potentially) */
-.sparkle-particles {
-  position: relative;
-}
-.sparkle-particles::before {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: inherit;
-  background-image:
-    radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,0.6), transparent),
-    radial-gradient(2px 2px at 70% 15%, rgba(200,255,0,0.6), transparent),
-    radial-gradient(1.5px 1.5px at 85% 65%, rgba(0,212,255,0.5), transparent),
-    radial-gradient(2px 2px at 35% 80%, rgba(255,255,255,0.4), transparent),
-    radial-gradient(1.5px 1.5px at 55% 45%, rgba(200,255,0,0.5), transparent);
-  animation: sparkle-float 3s ease-in-out infinite;
-  pointer-events: none;
-  z-index: 3;
-}
-
-/* Generic glow pulse (legacy compat) */
-.card-glow-pulse {
-  animation: card-glow-pulse 3s ease-in-out infinite;
-}
-
 /* Rank-up flash */
 .rank-up-flash {
   animation: rank-up-flash 1s ease-out forwards;
 }
 
-/* Badge glow pulse (for Elite tier badges) */
+/* Badge glow pulse (for Master & Grandmaster tier badges) */
 .badge-glow-pulse {
   animation: badge-glow-pulse 2s ease-in-out infinite;
 }
@@ -911,12 +654,12 @@ input::placeholder, textarea::placeholder { color: var(--text-tertiary); }
 }
 
 /* Tier frame colors & variables */
-.tier-bronze  { --tier-color: #cd7f32; --tier-glow: rgba(205,127,50,0.15); }
-.tier-silver  { --tier-color: #c0c0c0; --tier-glow: rgba(192,192,192,0.25); }
-.tier-gold    { --tier-color: #ffd700; --tier-glow: rgba(255,215,0,0.3); }
-.tier-diamond { --tier-color: #00d4ff; --tier-glow: rgba(0,212,255,0.35); }
-.tier-elite   { --tier-color: #c8ff00; --tier-glow: rgba(200,255,0,0.35); }
-.tier-pro     { --tier-color: #c8ff00; --tier-glow: rgba(200,255,0,0.25); }
+.tier-bronze      { --tier-color: #cd7f32; --tier-glow: rgba(205,127,50,0.15); }
+.tier-gold        { --tier-color: #ffd700; --tier-glow: rgba(255,215,0,0.3); }
+.tier-emerald     { --tier-color: #50c878; --tier-glow: rgba(80,200,120,0.25); }
+.tier-diamond     { --tier-color: #b9f2ff; --tier-glow: rgba(185,242,255,0.3); }
+.tier-master      { --tier-color: #ff4655; --tier-glow: rgba(255,70,85,0.35); }
+.tier-grandmaster { --tier-color: #c8ff00; --tier-glow: rgba(200,255,0,0.35); }
 
 /* ─── Reduced motion ─── */
 @media (prefers-reduced-motion: reduce) {
