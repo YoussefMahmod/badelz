@@ -878,41 +878,7 @@ function VenueOwnerSection() {
   );
 }
 
-// ════════════════════════════════════════════════════
-// Section 6: Stats Counters
-// ════════════════════════════════════════════════════
-function StatsSection() {
-  const { t } = useTranslation();
-
-  return (
-    <section className="relative py-20 sm:py-24 px-5 sm:px-8 overflow-hidden">
-      <div className="mx-auto max-w-4xl">
-        <motion.div
-          className="grid grid-cols-2 sm:grid-cols-4 gap-8"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.7, ease: easePremium }}
-        >
-          <AnimatedCounter target={50} label={t("landing.statCourtsLabel")} />
-          <AnimatedCounter target={200} label={t("landing.statPlayersLabel")} />
-          <AnimatedCounter target={500} label={t("landing.statGamesLabel")} />
-          <AnimatedCounter target={3} label={t("landing.statCitiesLabel")} suffix="" />
-        </motion.div>
-
-        <motion.p
-          className="text-center text-white/40 text-sm mt-10"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-        >
-          {t("landing.joinCommunity")}
-        </motion.p>
-      </div>
-    </section>
-  );
-}
+// Stats section removed
 
 // ════════════════════════════════════════════════════
 // Section 7: Final CTA + Footer
@@ -985,7 +951,7 @@ export function HeroSection() {
       <HowItWorksSection />
       <PlayerCardsSection />
       <VenueOwnerSection />
-      <StatsSection />
+      {/* Stats section removed */}
       <FinalCta />
       <Footer />
     </div>

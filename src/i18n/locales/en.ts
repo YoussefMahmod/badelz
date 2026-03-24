@@ -107,7 +107,7 @@ const en = {
     ctaBullet1: "Zero commission — no hidden fees",
     ctaBullet2: "Booking management dashboard",
     ctaBullet3: "WhatsApp booking alerts",
-    madeInEgypt: "Made with love in Egypt",
+    madeInEgypt: "",
     platformBadge: "Egypt's #1 Padel Platform",
     heroLine1: "Book Courts.",
     heroLine2: "Find Players.",

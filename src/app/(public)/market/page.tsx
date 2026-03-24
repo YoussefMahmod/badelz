@@ -260,8 +260,7 @@ export default function MarketPage() {
               transition={{ delay: 0.4 }}
               className="text-white/40 text-sm mt-2"
             >
-              <span className="text-white/60 font-semibold">{total}</span>{" "}
-              {t("market.listingsCount", { count: total })} &middot;{" "}
+              <span className="text-white/60 font-semibold">{t("market.listingsCount", { count: total })}</span> &middot;{" "}
               {t("market.newItemsDaily")}
             </motion.p>
           </motion.div>
