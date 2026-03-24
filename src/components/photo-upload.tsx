@@ -19,6 +19,7 @@ export function PhotoUpload({ photos, onChange, max = 5 }: PhotoUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [urlMode, setUrlMode] = useState(!CLOUD_NAME || !UPLOAD_PRESET);
   const [urlInput, setUrlInput] = useState("");
+  const [uploadError, setUploadError] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
   const canAdd = photos.length < max;
@@ -37,8 +38,12 @@ export function PhotoUpload({ photos, onChange, max = 5 }: PhotoUploadProps) {
       );
       const data = await res.json();
       if (data.secure_url) return data.secure_url;
+      console.error("Cloudinary upload error:", data);
+      setUploadError(data?.error?.message || "Upload failed");
       return null;
-    } catch {
+    } catch (err) {
+      console.error("Cloudinary upload exception:", err);
+      setUploadError("Upload failed — check connection");
       return null;
     }
   };
@@ -48,6 +53,7 @@ export function PhotoUpload({ photos, onChange, max = 5 }: PhotoUploadProps) {
     if (!files || files.length === 0) return;
 
     setUploading(true);
+    setUploadError("");
     const newPhotos = [...photos];
 
     for (let i = 0; i < files.length && newPhotos.length < max; i++) {
@@ -110,6 +116,16 @@ export function PhotoUpload({ photos, onChange, max = 5 }: PhotoUploadProps) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Upload error */}
+      {uploadError && (
+        <div className="mb-2 rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-2 text-xs text-red-400 flex items-center justify-between">
+          <span>{uploadError}</span>
+          <button type="button" onClick={() => setUploadError("")} className="text-red-400/60 hover:text-red-400 ms-2">
+            <X size={12} />
+          </button>
+        </div>
+      )}
 
       {/* Upload controls */}
       {canAdd && (
