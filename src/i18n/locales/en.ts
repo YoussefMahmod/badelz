@@ -22,6 +22,7 @@ const en = {
   },
   nav: {
     home: "Home",
+    discover: "Discover",
     browse: "Browse",
     bookings: "Bookings",
     courts: "Courts",
@@ -107,6 +108,20 @@ const en = {
     ctaBullet2: "Booking management dashboard",
     ctaBullet3: "WhatsApp booking alerts",
     madeInEgypt: "Made with love in Egypt",
+  },
+  discover: {
+    subtitle: "Egypt's padel community",
+    greeting: "Hey, {{name}}",
+    courtsNearYou: "Courts Near You",
+    openGames: "Open Games",
+    hotInMarket: "Hot in Market",
+    newCoaches: "New Coaches",
+    topPlayers: "Top Players",
+    seeAll: "See all",
+    bookCourt: "Book a Court",
+    findPlayers: "Find Players",
+    sellGear: "Sell Gear",
+    newHere: "New here? See what Badelz is about",
   },
   browse: {
     title: "Padel Courts",

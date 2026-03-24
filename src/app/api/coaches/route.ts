@@ -25,12 +25,21 @@ export async function GET(request: NextRequest) {
       ];
     }
 
+    const sort = searchParams.get("sort");
+    let orderBy: Prisma.CoachOrderByWithRelationInput = { createdAt: "desc" };
+    if (sort === "name") {
+      orderBy = { name: "asc" };
+    } else if (sort === "price") {
+      orderBy = { pricePerHour: "asc" };
+    }
+    // "newest" or default both resolve to createdAt desc
+
     const [coaches, total] = await Promise.all([
       prisma.coach.findMany({
         where,
         skip,
         take: limit,
-        orderBy: { createdAt: "desc" },
+        orderBy,
       }),
       prisma.coach.count({ where }),
     ]);

@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
-  Home,
+  Sparkles,
   Search,
   Users,
   ShoppingBag,
@@ -33,9 +33,9 @@ export function BottomNav({ variant = "public" }: { variant?: "public" | "owner"
   const publicTabs: NavItem[] = [
     {
       href: "/",
-      icon: <Home size={22} strokeWidth={1.5} />,
-      activeIcon: <Home size={22} strokeWidth={2} />,
-      labelKey: "nav.home",
+      icon: <Sparkles size={22} strokeWidth={1.5} />,
+      activeIcon: <Sparkles size={22} strokeWidth={2} />,
+      labelKey: "nav.discover",
     },
     {
       href: "/browse",

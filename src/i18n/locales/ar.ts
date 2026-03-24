@@ -24,6 +24,7 @@ const ar: TranslationKeys = {
   },
   nav: {
     home: "الرئيسية",
+    discover: "اكتشف",
     browse: "الملاعب",
     bookings: "الحجوزات",
     courts: "الكورتات",
@@ -109,6 +110,20 @@ const ar: TranslationKeys = {
     ctaBullet2: "لوحة تحكم الحجوزات",
     ctaBullet3: "إشعارات حجز واتساب",
     madeInEgypt: "صُنع بحب في مصر",
+  },
+  discover: {
+    subtitle: "مجتمع البادل في مصر",
+    greeting: "أهلاً، {{name}}",
+    courtsNearYou: "ملاعب قريبة منك",
+    openGames: "ماتشات مفتوحة",
+    hotInMarket: "الأكتر طلباً في السوق",
+    newCoaches: "مدربين جدد",
+    topPlayers: "أفضل اللاعبين",
+    seeAll: "عرض الكل",
+    bookCourt: "احجز كورت",
+    findPlayers: "لاقي لاعبين",
+    sellGear: "بيع معداتك",
+    newHere: "جديد هنا؟ اعرف أكتر عن بادلز",
   },
   browse: {
     title: "كورتات بادل",
