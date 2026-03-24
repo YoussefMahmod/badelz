@@ -13,6 +13,10 @@ import {
   MessageCircle,
   CheckCircle,
   X,
+  Building2,
+  Globe,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation, useLocale } from "@/i18n";
@@ -337,7 +341,7 @@ function OnboardingWizard() {
           <p className="text-xs text-white/40 mb-3">
             {t("onboarding.step", { current: step + 1, total: totalSteps })}
           </p>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" dir="ltr">
             {Array.from({ length: totalSteps }).map((_, i) => (
               <motion.div
                 key={i}
@@ -792,7 +796,11 @@ function OwnerStep({
   setCourtForm: React.Dispatch<React.SetStateAction<OwnerCourtForm>>;
 }) {
   const { t } = useTranslation();
+  const { locale } = useLocale();
   const [detectingLocation, setDetectingLocation] = useState(false);
+  const [detectedAreaName, setDetectedAreaName] = useState("");
+  const [showArabic, setShowArabic] = useState(false);
+  const [showCourtArabic, setShowCourtArabic] = useState(false);
 
   const handleDetectLocation = async () => {
     setDetectingLocation(true);
@@ -801,7 +809,37 @@ function OwnerStep({
         navigator.geolocation.getCurrentPosition(
           (position) => {
             const { latitude, longitude } = position.coords;
-            setVenueForm((prev) => ({ ...prev, latitude, longitude }));
+
+            // Find nearest area using haversine
+            let minDist = Infinity;
+            let nearest: (typeof AREAS)[number] = AREAS[1]; // default to first real area
+            for (const area of AREAS) {
+              if (area.key === "all") continue;
+              const R = 6371;
+              const dLat = ((area.lat - latitude) * Math.PI) / 180;
+              const dLng = ((area.lng - longitude) * Math.PI) / 180;
+              const a =
+                Math.sin(dLat / 2) ** 2 +
+                Math.cos((latitude * Math.PI) / 180) *
+                  Math.cos((area.lat * Math.PI) / 180) *
+                  Math.sin(dLng / 2) ** 2;
+              const dist = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+              if (dist < minDist) {
+                minDist = dist;
+                nearest = area;
+              }
+            }
+
+            setVenueForm((prev) => ({
+              ...prev,
+              latitude,
+              longitude,
+              city: nearest.labelEn,
+              cityAr: nearest.labelAr,
+            }));
+            setDetectedAreaName(
+              locale === "ar" ? nearest.labelAr : nearest.labelEn
+            );
             setDetectingLocation(false);
           },
           () => {
@@ -817,124 +855,219 @@ function OwnerStep({
     }
   };
 
+  // Auto-expand Arabic section if Arabic fields already have data
+  useEffect(() => {
+    if (venueForm.nameAr || venueForm.addressAr || venueForm.cityAr) {
+      setShowArabic(true);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (courtForm.nameAr) {
+      setShowCourtArabic(true);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   if (step === 0) {
     return (
-      <div className="glass-dark rounded-2xl p-6 space-y-4">
-        <h2 className="text-xl font-bold text-white mb-1">
-          {t("onboarding.venueInfo")}
-        </h2>
+      <div className="glass-dark rounded-2xl p-6 space-y-5">
+        {/* Header */}
+        <div>
+          <h2 className="text-xl font-bold text-white mb-1">
+            {t("onboarding.venueInfo")}
+          </h2>
+          <p className="text-sm text-white/40">
+            {t("onboarding.venueInfoSubtitle")}
+          </p>
+        </div>
 
-        {/* Venue name */}
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className={labelClasses}>
-              {t("onboarding.venueName")} <span className="text-red-400">*</span>
-            </label>
-            <input
-              type="text"
-              value={venueForm.name}
-              onChange={(e) => setVenueForm((prev) => ({ ...prev, name: e.target.value }))}
-              className={inputClasses}
-            />
-          </div>
-          <div>
-            <label className={labelClasses}>
-              {t("onboarding.venueNameAr")}{" "}
-              <span className="text-white/20">({t("common.optional")})</span>
-            </label>
-            <input
-              type="text"
-              value={venueForm.nameAr}
-              onChange={(e) => setVenueForm((prev) => ({ ...prev, nameAr: e.target.value }))}
-              dir="rtl"
-              className={inputClasses}
-            />
-          </div>
+        {/* Venue Name */}
+        <div>
+          <label className={labelClasses}>
+            <span className="flex items-center gap-2">
+              <Building2 size={14} className="text-emerald-400/60" />
+              {t("onboarding.venueName")}
+              <span className="text-emerald-400 text-[10px]">●</span>
+            </span>
+          </label>
+          <input
+            type="text"
+            value={venueForm.name}
+            onChange={(e) =>
+              setVenueForm((prev) => ({ ...prev, name: e.target.value }))
+            }
+            placeholder={t("onboarding.venueNamePlaceholder")}
+            className={inputClasses}
+          />
         </div>
 
         {/* Address */}
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className={labelClasses}>
-              {t("onboarding.venueAddress")} <span className="text-red-400">*</span>
-            </label>
-            <input
-              type="text"
-              value={venueForm.address}
-              onChange={(e) => setVenueForm((prev) => ({ ...prev, address: e.target.value }))}
-              className={inputClasses}
-            />
-          </div>
-          <div>
-            <label className={labelClasses}>
-              {t("onboarding.venueAddressAr")}{" "}
-              <span className="text-white/20">({t("common.optional")})</span>
-            </label>
-            <input
-              type="text"
-              value={venueForm.addressAr}
-              onChange={(e) => setVenueForm((prev) => ({ ...prev, addressAr: e.target.value }))}
-              dir="rtl"
-              className={inputClasses}
-            />
-          </div>
+        <div>
+          <label className={labelClasses}>
+            <span className="flex items-center gap-2">
+              <MapPin size={14} className="text-emerald-400/60" />
+              {t("onboarding.venueAddress")}
+              <span className="text-emerald-400 text-[10px]">●</span>
+            </span>
+          </label>
+          <input
+            type="text"
+            value={venueForm.address}
+            onChange={(e) =>
+              setVenueForm((prev) => ({ ...prev, address: e.target.value }))
+            }
+            placeholder={t("onboarding.venueAddressPlaceholder")}
+            className={inputClasses}
+          />
         </div>
 
         {/* City */}
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className={labelClasses}>
-              {t("onboarding.venueCity")} <span className="text-red-400">*</span>
-            </label>
-            <input
-              type="text"
-              value={venueForm.city}
-              onChange={(e) => setVenueForm((prev) => ({ ...prev, city: e.target.value }))}
-              className={inputClasses}
-            />
-          </div>
-          <div>
-            <label className={labelClasses}>
-              {t("onboarding.venueCityAr")}{" "}
-              <span className="text-white/20">({t("common.optional")})</span>
-            </label>
-            <input
-              type="text"
-              value={venueForm.cityAr}
-              onChange={(e) => setVenueForm((prev) => ({ ...prev, cityAr: e.target.value }))}
-              dir="rtl"
-              className={inputClasses}
-            />
-          </div>
+        <div>
+          <label className={labelClasses}>
+            <span className="flex items-center gap-2">
+              <Globe size={14} className="text-emerald-400/60" />
+              {t("onboarding.venueCity")}
+              <span className="text-emerald-400 text-[10px]">●</span>
+            </span>
+          </label>
+          <input
+            type="text"
+            value={venueForm.city}
+            onChange={(e) =>
+              setVenueForm((prev) => ({ ...prev, city: e.target.value }))
+            }
+            placeholder={t("onboarding.venueCityPlaceholder")}
+            className={inputClasses}
+          />
         </div>
 
-        {/* Detect location */}
+        {/* Arabic toggle + collapsible section */}
         <div>
           <motion.button
             type="button"
-            whileTap={{ scale: 0.95 }}
-            onClick={handleDetectLocation}
-            disabled={detectingLocation}
-            className="flex items-center gap-2 rounded-xl border border-dashed border-white/15 bg-white/5 px-4 py-3 text-xs text-white/50 transition-all hover:border-white/25 hover:text-white/70 disabled:opacity-50"
+            whileTap={{ scale: 0.97 }}
+            onClick={() => setShowArabic((prev) => !prev)}
+            className="flex items-center gap-2 text-sm text-white/40 transition-colors hover:text-white/60"
           >
-            {detectingLocation ? (
-              <>
-                <Loader2 size={14} className="animate-spin" />
-                <span>{t("onboarding.detectingLocation")}</span>
-              </>
-            ) : venueForm.latitude !== null ? (
-              <>
-                <CheckCircle size={14} className="text-emerald-400" />
-                <span className="text-emerald-400">{t("onboarding.locationDetected")}</span>
-              </>
+            {showArabic ? (
+              <ChevronUp size={14} />
             ) : (
-              <>
-                <MapPin size={14} />
-                <span>{t("onboarding.detectLocation")}</span>
-              </>
+              <ChevronDown size={14} />
             )}
+            <span>
+              {showArabic
+                ? t("onboarding.hideArabicNames")
+                : t("onboarding.addArabicNames")}
+            </span>
           </motion.button>
+
+          <AnimatePresence>
+            {showArabic && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                className="overflow-hidden"
+              >
+                <div className="mt-4 border-s-2 border-emerald-500/20 ps-4 space-y-4">
+                  {/* Name Arabic */}
+                  <div>
+                    <label className={labelClasses}>
+                      {t("onboarding.venueNameAr")}
+                    </label>
+                    <input
+                      type="text"
+                      value={venueForm.nameAr}
+                      onChange={(e) =>
+                        setVenueForm((prev) => ({
+                          ...prev,
+                          nameAr: e.target.value,
+                        }))
+                      }
+                      dir="rtl"
+                      placeholder={t("onboarding.venueNameArPlaceholder")}
+                      className={inputClasses}
+                    />
+                  </div>
+
+                  {/* Address Arabic */}
+                  <div>
+                    <label className={labelClasses}>
+                      {t("onboarding.venueAddressAr")}
+                    </label>
+                    <input
+                      type="text"
+                      value={venueForm.addressAr}
+                      onChange={(e) =>
+                        setVenueForm((prev) => ({
+                          ...prev,
+                          addressAr: e.target.value,
+                        }))
+                      }
+                      dir="rtl"
+                      placeholder={t("onboarding.venueAddressArPlaceholder")}
+                      className={inputClasses}
+                    />
+                  </div>
+
+                  {/* City Arabic */}
+                  <div>
+                    <label className={labelClasses}>
+                      {t("onboarding.venueCityAr")}
+                    </label>
+                    <input
+                      type="text"
+                      value={venueForm.cityAr}
+                      onChange={(e) =>
+                        setVenueForm((prev) => ({
+                          ...prev,
+                          cityAr: e.target.value,
+                        }))
+                      }
+                      dir="rtl"
+                      placeholder={t("onboarding.venueCityArPlaceholder")}
+                      className={inputClasses}
+                    />
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
+
+        {/* Detect location — full width, prominent */}
+        <motion.button
+          type="button"
+          whileTap={{ scale: 0.97 }}
+          onClick={handleDetectLocation}
+          disabled={detectingLocation}
+          className="w-full flex items-center justify-center gap-3 rounded-xl border border-emerald-500/30 bg-emerald-500/5 px-4 py-4 text-sm transition-all hover:bg-emerald-500/10 hover:border-emerald-500/50 disabled:opacity-50"
+        >
+          {detectingLocation ? (
+            <>
+              <Loader2 size={16} className="animate-spin text-emerald-400" />
+              <span className="text-white/60">
+                {t("onboarding.detectingLocation")}
+              </span>
+            </>
+          ) : venueForm.latitude !== null ? (
+            <>
+              <CheckCircle size={16} className="text-emerald-400" />
+              <span className="text-emerald-400">
+                {t("onboarding.locationDetected")}
+                {detectedAreaName && ` — ${detectedAreaName}`}
+              </span>
+            </>
+          ) : (
+            <>
+              <MapPin size={16} className="text-emerald-400" />
+              <span className="text-emerald-400">
+                {t("onboarding.detectLocation")}
+              </span>
+            </>
+          )}
+        </motion.button>
       </div>
     );
   }
@@ -950,14 +1083,17 @@ function OwnerStep({
         <div>
           <label className={labelClasses}>
             <span className="flex items-center gap-2">
-              <Phone size={14} className="text-white/40" />
-              {t("onboarding.venuePhone")} <span className="text-red-400">*</span>
+              <Phone size={14} className="text-emerald-400/60" />
+              {t("onboarding.venuePhone")}
+              <span className="text-emerald-400 text-[10px]">●</span>
             </span>
           </label>
           <input
             type="tel"
             value={venueForm.phone}
-            onChange={(e) => setVenueForm((prev) => ({ ...prev, phone: e.target.value }))}
+            onChange={(e) =>
+              setVenueForm((prev) => ({ ...prev, phone: e.target.value }))
+            }
             placeholder="01XXXXXXXXX"
             dir="ltr"
             inputMode="tel"
@@ -969,15 +1105,19 @@ function OwnerStep({
         <div>
           <label className={labelClasses}>
             <span className="flex items-center gap-2">
-              <MessageCircle size={14} className="text-white/40" />
-              {t("onboarding.venueWhatsApp")}{" "}
-              <span className="text-white/20">({t("common.optional")})</span>
+              <MessageCircle size={14} className="text-emerald-400/60" />
+              {t("onboarding.venueWhatsApp")}
+              <span className="text-white/20 text-xs font-normal ms-1">
+                ({t("common.optional")})
+              </span>
             </span>
           </label>
           <input
             type="tel"
             value={venueForm.whatsapp}
-            onChange={(e) => setVenueForm((prev) => ({ ...prev, whatsapp: e.target.value }))}
+            onChange={(e) =>
+              setVenueForm((prev) => ({ ...prev, whatsapp: e.target.value }))
+            }
             placeholder="01XXXXXXXXX"
             dir="ltr"
             inputMode="tel"
@@ -988,7 +1128,7 @@ function OwnerStep({
     );
   }
 
-  // Step 2: First court
+  // Step 2: First court — single-column with collapsible Arabic
   return (
     <div className="glass-dark rounded-2xl p-6 space-y-5">
       <div>
@@ -996,50 +1136,99 @@ function OwnerStep({
           {t("onboarding.firstCourt")}
         </h2>
         <p className="text-sm text-white/40">
-          {t("onboarding.firstCourtDesc")}
+          {t("onboarding.firstCourtSubtitle")}
         </p>
       </div>
 
       {/* Court name */}
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className={labelClasses}>
-            {t("onboarding.courtName")} <span className="text-red-400">*</span>
-          </label>
-          <input
-            type="text"
-            value={courtForm.name}
-            onChange={(e) => setCourtForm((prev) => ({ ...prev, name: e.target.value }))}
-            placeholder={t("onboarding.courtNamePlaceholder")}
-            className={inputClasses}
-          />
-        </div>
-        <div>
-          <label className={labelClasses}>
-            {t("onboarding.courtNameAr")}{" "}
-            <span className="text-white/20">({t("common.optional")})</span>
-          </label>
-          <input
-            type="text"
-            value={courtForm.nameAr}
-            onChange={(e) => setCourtForm((prev) => ({ ...prev, nameAr: e.target.value }))}
-            dir="rtl"
-            placeholder={t("onboarding.courtNamePlaceholder")}
-            className={inputClasses}
-          />
-        </div>
+      <div>
+        <label className={labelClasses}>
+          <span className="flex items-center gap-2">
+            {t("onboarding.courtName")}
+            <span className="text-emerald-400 text-[10px]">●</span>
+          </span>
+        </label>
+        <input
+          type="text"
+          value={courtForm.name}
+          onChange={(e) =>
+            setCourtForm((prev) => ({ ...prev, name: e.target.value }))
+          }
+          placeholder={t("onboarding.courtNamePlaceholder")}
+          className={inputClasses}
+        />
+      </div>
+
+      {/* Arabic court name toggle */}
+      <div>
+        <motion.button
+          type="button"
+          whileTap={{ scale: 0.97 }}
+          onClick={() => setShowCourtArabic((prev) => !prev)}
+          className="flex items-center gap-2 text-sm text-white/40 transition-colors hover:text-white/60"
+        >
+          {showCourtArabic ? (
+            <ChevronUp size={14} />
+          ) : (
+            <ChevronDown size={14} />
+          )}
+          <span>
+            {showCourtArabic
+              ? t("onboarding.hideArabicNames")
+              : t("onboarding.addArabicNames")}
+          </span>
+        </motion.button>
+
+        <AnimatePresence>
+          {showCourtArabic && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              className="overflow-hidden"
+            >
+              <div className="mt-4 border-s-2 border-emerald-500/20 ps-4">
+                <label className={labelClasses}>
+                  {t("onboarding.courtNameAr")}
+                </label>
+                <input
+                  type="text"
+                  value={courtForm.nameAr}
+                  onChange={(e) =>
+                    setCourtForm((prev) => ({
+                      ...prev,
+                      nameAr: e.target.value,
+                    }))
+                  }
+                  dir="rtl"
+                  placeholder={t("onboarding.courtNameArPlaceholder")}
+                  className={inputClasses}
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Price per hour */}
       <div>
         <label className={labelClasses}>
-          {t("onboarding.courtPricePerHour")} <span className="text-red-400">*</span>
+          <span className="flex items-center gap-2">
+            {t("onboarding.courtPricePerHour")}
+            <span className="text-emerald-400 text-[10px]">●</span>
+          </span>
         </label>
         <div className="relative">
           <input
             type="number"
             value={courtForm.pricePerHour}
-            onChange={(e) => setCourtForm((prev) => ({ ...prev, pricePerHour: e.target.value }))}
+            onChange={(e) =>
+              setCourtForm((prev) => ({
+                ...prev,
+                pricePerHour: e.target.value,
+              }))
+            }
             placeholder="500"
             dir="ltr"
             inputMode="numeric"
