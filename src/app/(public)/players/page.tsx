@@ -149,15 +149,15 @@ function PodiumSkeleton() {
     <div className="flex flex-col md:flex-row items-center md:items-end justify-center gap-6 md:gap-8 py-8">
       {/* #2 skeleton */}
       <div className="order-2 md:order-1 md:mt-12">
-        <div className="w-full max-w-[14rem] card-ratio rounded-2xl bg-white/5 border border-white/10 animate-pulse" />
+        <div className="w-full max-w-[10rem] card-ratio rounded-2xl bg-white/5 border border-white/10 animate-pulse" />
       </div>
       {/* #1 skeleton */}
       <div className="order-1 md:order-2">
-        <div className="w-full max-w-[18rem] card-ratio rounded-2xl bg-white/5 border border-white/10 animate-pulse" />
+        <div className="w-full max-w-[14rem] card-ratio rounded-2xl bg-white/5 border border-white/10 animate-pulse" />
       </div>
       {/* #3 skeleton */}
       <div className="order-3 md:mt-12">
-        <div className="w-full max-w-[14rem] card-ratio rounded-2xl bg-white/5 border border-white/10 animate-pulse" />
+        <div className="w-full max-w-[10rem] card-ratio rounded-2xl bg-white/5 border border-white/10 animate-pulse" />
       </div>
     </div>
   );
@@ -243,7 +243,7 @@ export default function PlayersPage() {
 
   return (
     <MainLayout showNav navType="public">
-      <div className="mx-auto max-w-4xl px-4 py-6 pb-28">
+      <div className="mx-auto max-w-4xl px-4 py-6 pb-28 overflow-x-hidden">
         {/* ── Header ── */}
         <motion.div {...slideUp} className="mb-6">
           <h1 className="text-3xl sm:text-4xl font-bold text-white/90 mb-1">
@@ -350,7 +350,7 @@ export default function PlayersPage() {
                 {/* Ambient glow behind #1 */}
                 {podiumPlayers[0] && (
                   <div
-                    className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full pointer-events-none"
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full pointer-events-none"
                     style={{
                       background: `radial-gradient(circle, ${
                         TIER_COLORS[podiumPlayers[0].tier] ?? "#c8ff00"

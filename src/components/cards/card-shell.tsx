@@ -62,9 +62,9 @@ const TIER_STYLES: Partial<Record<Tier, React.CSSProperties>> = {
 /* No frame ornaments — pure glow rings style */
 
 const SIZE_CLASSES: Record<Size, string> = {
-  sm: "w-36 h-[201px]",
-  md: "w-56 card-ratio",
-  lg: "w-72 card-ratio",
+  sm: "w-28 h-[156px]",
+  md: "w-44 card-ratio",
+  lg: "w-56 card-ratio",
 };
 
 /* ─── Gold effects ─── */
