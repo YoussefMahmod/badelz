@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { LogIn, CreditCard } from "lucide-react";
 import { LocaleToggle } from "./locale-toggle";
+import { Logo } from "./logo";
 import { useTranslation } from "@/i18n";
 import { useAuth } from "@/lib/auth-context";
 
@@ -32,11 +33,8 @@ export function Header() {
       className="sticky top-0 z-50 bg-white/5 backdrop-blur-xl border-b border-white/5"
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5">
-        <Link
-          href="/"
-          className="text-lg font-bold text-white tracking-tight"
-        >
-          {t("common.appName")}
+        <Link href="/" className="transition-opacity hover:opacity-80">
+          <Logo size={36} variant="full" colorMode="dark" />
         </Link>
 
         <div className="flex items-center gap-3">

@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { Mail, Lock, User, Phone, UserPlus } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import { LocaleToggle } from "@/components/locale-toggle";
+import { Logo } from "@/components/logo";
 
 export default function RegisterPage() {
   const { t } = useTranslation();
@@ -73,11 +74,8 @@ export default function RegisterPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <Link
-            href="/"
-            className="text-lg font-bold text-gray-900"
-          >
-            {t("common.appName")}
+          <Link href="/" className="transition-opacity hover:opacity-80">
+            <Logo size={32} variant="full" colorMode="light" />
           </Link>
         </div>
         <LocaleToggle />

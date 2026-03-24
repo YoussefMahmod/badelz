@@ -27,6 +27,13 @@ export const metadata: Metadata = {
     statusBarStyle: "black-translucent",
     title: "بادلز",
   },
+  icons: {
+    icon: [
+      { url: "/icons/icon.svg", type: "image/svg+xml" },
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180" }],
+  },
   openGraph: {
     title: "بادلز - Badelz",
     description: "احجز كورت بادل في مصر في ثواني",
