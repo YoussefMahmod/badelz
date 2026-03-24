@@ -47,7 +47,7 @@ export default function SettingsPage() {
   useEffect(() => {
     async function fetchVenue() {
       try {
-        const res = await fetch("/api/venues?limit=1");
+        const res = await fetch("/api/venues?limit=1&mine=true");
         const json = await res.json();
         const v = json.data?.[0];
         if (v) {

@@ -839,7 +839,7 @@ export default function CourtsPage() {
 
   const fetchCourts = useCallback(async () => {
     try {
-      const venuesRes = await fetch("/api/venues?limit=50");
+      const venuesRes = await fetch("/api/venues?limit=1&mine=true");
       const venuesJson = await venuesRes.json();
       const ownerVenue = (venuesJson.data || [])[0];
 

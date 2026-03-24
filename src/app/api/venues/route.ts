@@ -15,6 +15,15 @@ export async function GET(request: NextRequest) {
 
     const where: Record<string, unknown> = { isActive: true };
 
+    // Filter by owner when ?mine=true
+    const mine = searchParams.get("mine");
+    if (mine === "true") {
+      const session = await getServerSession(authOptions);
+      if (session?.user?.id) {
+        where.ownerId = session.user.id;
+      }
+    }
+
     if (city) {
       where.city = { equals: city, mode: "insensitive" };
     }
