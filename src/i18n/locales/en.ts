@@ -576,6 +576,11 @@ const en = {
     required: "Required",
     courtNameArPlaceholder: "مثلاً كورت 1",
     firstCourtSubtitle: "You can add more courts later from your dashboard",
+    bannerTitle: "Complete your profile",
+    bannerOwnerDesc: "Set up your venue to start receiving bookings",
+    bannerCoachDesc: "Add your areas and pricing so players can find you",
+    bannerPlayerDesc: "Select your area to see nearby courts",
+    bannerCta: "Complete Setup",
   },
   errors: {
     somethingWentWrong: "Something went wrong",

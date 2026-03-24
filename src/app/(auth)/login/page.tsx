@@ -58,8 +58,6 @@ function LoginForm() {
 
         if (returnTo) {
           router.push(returnTo);
-        } else if (!session?.user?.isOnboarded) {
-          router.push("/onboarding");
         } else {
           const role = session?.user?.role;
           if (role === "PLAYER") router.push("/my-profile");

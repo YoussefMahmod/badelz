@@ -122,8 +122,12 @@ function RegisterForm() {
         router.push(`/login${returnTo ? `?returnTo=${encodeURIComponent(returnTo)}` : ""}`);
       } else if (returnTo) {
         router.push(returnTo);
+      } else if (form.role === "PLAYER") {
+        router.push("/my-profile");
+      } else if (form.role === "COACH") {
+        router.push("/coach-dashboard");
       } else {
-        router.push("/onboarding");
+        router.push("/dashboard");
       }
     } catch {
       setError(t("common.error"));

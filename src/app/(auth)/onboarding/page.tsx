@@ -201,12 +201,13 @@ function OnboardingWizard() {
       if (!res.ok) {
         const json = await res.json();
         setError(json.message || t("common.error"));
+        setLoading(false);
         return;
       }
-      router.push("/my-profile");
+      // Hard redirect to force fresh session
+      window.location.href = "/my-profile";
     } catch {
       setError(t("common.error"));
-    } finally {
       setLoading(false);
     }
   };
@@ -229,12 +230,13 @@ function OnboardingWizard() {
       if (!res.ok) {
         const json = await res.json();
         setError(json.message || t("common.error"));
+        setLoading(false);
         return;
       }
-      router.push("/coach-dashboard");
+      // Hard redirect to force fresh session
+      window.location.href = "/coach-dashboard";
     } catch {
       setError(t("common.error"));
-    } finally {
       setLoading(false);
     }
   };
@@ -269,12 +271,13 @@ function OnboardingWizard() {
       if (!res.ok) {
         const json = await res.json();
         setError(json.message || t("common.error"));
+        setLoading(false);
         return;
       }
-      router.push("/dashboard");
+      // Hard redirect to force fresh session
+      window.location.href = "/dashboard";
     } catch {
       setError(t("common.error"));
-    } finally {
       setLoading(false);
     }
   };
@@ -679,10 +682,10 @@ function CoachStep({
               dir="ltr"
               inputMode="numeric"
               min={0}
-              className={`${inputClasses} pe-14`}
+              className={`${inputClasses} pe-16`}
             />
-            <span className="absolute end-4 top-1/2 -translate-y-1/2 text-xs text-white/30">
-              {t("common.egp")}
+            <span className="absolute end-4 top-1/2 -translate-y-1/2 text-sm text-white/40 pointer-events-none select-none">
+              EGP
             </span>
           </div>
         </div>
@@ -1233,10 +1236,10 @@ function OwnerStep({
             dir="ltr"
             inputMode="numeric"
             min={0}
-            className={`${inputClasses} pe-14`}
+            className={`${inputClasses} pe-16`}
           />
-          <span className="absolute end-4 top-1/2 -translate-y-1/2 text-xs text-white/30">
-            {t("common.egp")}
+          <span className="absolute end-4 top-1/2 -translate-y-1/2 text-sm text-white/40 pointer-events-none select-none">
+            EGP
           </span>
         </div>
       </div>

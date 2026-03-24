@@ -28,6 +28,7 @@ import {
   staggerDarkBento,
   darkBentoItem,
 } from "@/lib/animations";
+import { OnboardingBanner } from "@/components/onboarding-banner";
 
 type PlayerTier =
   | "BRONZE"
@@ -250,6 +251,8 @@ export default function PlayerProfilePage() {
 
   return (
     <div className="mx-auto max-w-lg px-4 py-6 pb-28">
+      <OnboardingBanner />
+
       {/* ── Player Card ── */}
       <motion.div {...scaleInGlow} className="flex justify-center mb-8 relative">
         {/* Ambient glow */}

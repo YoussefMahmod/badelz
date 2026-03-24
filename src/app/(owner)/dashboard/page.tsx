@@ -16,6 +16,7 @@ import { staggerContainer, staggerItem } from "@/lib/animations";
 import { formatPrice, formatTime, formatDateShort } from "@/lib/format";
 import { LoadingSpinner } from "@/components/loading-spinner";
 import { EmptyState } from "@/components/empty-state";
+import { OnboardingBanner } from "@/components/onboarding-banner";
 
 interface DashboardData {
   todayBookings: number;
@@ -112,6 +113,8 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-5">
+      <OnboardingBanner />
+
       {/* Welcome */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}

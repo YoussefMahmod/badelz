@@ -578,6 +578,11 @@ const ar: TranslationKeys = {
     required: "مطلوب",
     courtNameArPlaceholder: "مثلاً كورت 1",
     firstCourtSubtitle: "تقدر تضيف كورتات تانية بعدين من لوحة التحكم",
+    bannerTitle: "كمّل بياناتك",
+    bannerOwnerDesc: "سجل ملعبك عشان تبدأ تستقبل حجوزات",
+    bannerCoachDesc: "أضف مناطقك وأسعارك عشان اللاعبين يلاقوك",
+    bannerPlayerDesc: "اختار منطقتك عشان تشوف الملاعب القريبة",
+    bannerCta: "كمّل التسجيل",
   },
   errors: {
     somethingWentWrong: "حصلت مشكلة",

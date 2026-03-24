@@ -16,16 +16,13 @@ export function OwnerProtectedRoute({ children }: { children: ReactNode }) {
     if (!isLoading && isAuthenticated && user?.role !== "VENUE_OWNER") {
       router.replace("/");
     }
-    if (!isLoading && isAuthenticated && !user?.isOnboarded) {
-      router.replace("/onboarding");
-    }
-  }, [isLoading, isAuthenticated, user?.role, user?.isOnboarded, router]);
+  }, [isLoading, isAuthenticated, user?.role, router]);
 
   if (isLoading) {
     return <FullPageSpinner />;
   }
 
-  if (!isAuthenticated || user?.role !== "VENUE_OWNER" || !user?.isOnboarded) {
+  if (!isAuthenticated || user?.role !== "VENUE_OWNER") {
     return <FullPageSpinner />;
   }
 

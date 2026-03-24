@@ -26,6 +26,7 @@ import {
   staggerDarkBento,
   darkBentoItem,
 } from "@/lib/animations";
+import { OnboardingBanner } from "@/components/onboarding-banner";
 
 interface CoachProfileData {
   id: string;
@@ -148,6 +149,8 @@ export default function CoachDashboardPage() {
 
   return (
     <div className="mx-auto max-w-lg px-4 py-6 pb-28">
+      <OnboardingBanner />
+
       {/* ── Header ── */}
       <motion.div {...slideUp} className="mb-6">
         <h1 className="text-2xl font-bold text-white/90">
