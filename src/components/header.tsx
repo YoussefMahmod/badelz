@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { LogIn, CreditCard } from "lucide-react";
+import { LogIn, LogOut, CreditCard } from "lucide-react";
+import { signOut } from "next-auth/react";
 import { LocaleToggle } from "./locale-toggle";
 import { Logo } from "./logo";
 import { useTranslation } from "@/i18n";
@@ -52,26 +53,53 @@ export function Header() {
           )}
           <LocaleToggle />
           {isAuthenticated && user?.role === "PLAYER" ? (
-            <Link
-              href="/my-profile"
-              className="text-sm font-semibold text-white/70 hover:text-white transition-colors"
-            >
-              {t("nav.myProfile")}
-            </Link>
+            <>
+              <Link
+                href="/my-profile"
+                className="text-sm font-semibold text-white/70 hover:text-white transition-colors"
+              >
+                {t("nav.myProfile")}
+              </Link>
+              <button
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="flex items-center justify-center rounded-full p-2 text-white/30 hover:text-red-400 hover:bg-white/5 transition-colors"
+                aria-label={t("auth.signOut")}
+              >
+                <LogOut size={16} />
+              </button>
+            </>
           ) : isAuthenticated && user?.role === "COACH" ? (
-            <Link
-              href="/coach-dashboard"
-              className="text-sm font-semibold text-white/70 hover:text-white transition-colors"
-            >
-              {t("nav.dashboard")}
-            </Link>
+            <>
+              <Link
+                href="/coach-dashboard"
+                className="text-sm font-semibold text-white/70 hover:text-white transition-colors"
+              >
+                {t("nav.dashboard")}
+              </Link>
+              <button
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="flex items-center justify-center rounded-full p-2 text-white/30 hover:text-red-400 hover:bg-white/5 transition-colors"
+                aria-label={t("auth.signOut")}
+              >
+                <LogOut size={16} />
+              </button>
+            </>
           ) : isAuthenticated && user?.role === "VENUE_OWNER" ? (
-            <Link
-              href="/dashboard"
-              className="text-sm font-semibold text-white/70 hover:text-white transition-colors"
-            >
-              {t("nav.dashboard")}
-            </Link>
+            <>
+              <Link
+                href="/dashboard"
+                className="text-sm font-semibold text-white/70 hover:text-white transition-colors"
+              >
+                {t("nav.dashboard")}
+              </Link>
+              <button
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="flex items-center justify-center rounded-full p-2 text-white/30 hover:text-red-400 hover:bg-white/5 transition-colors"
+                aria-label={t("auth.signOut")}
+              >
+                <LogOut size={16} />
+              </button>
+            </>
           ) : (
             <>
               <Link

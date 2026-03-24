@@ -238,6 +238,7 @@ const en = {
     signInDesc: "Sign in to your account",
     signUpDesc: "Register your venue on Badelz",
     invalidCredentials: "Invalid email or password",
+    signOut: "Sign Out",
     selectRole: "Choose account type",
     phoneRequired: "Phone number required",
     signUpToSell: "Sign up to sell on Badelz",

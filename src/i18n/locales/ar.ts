@@ -240,6 +240,7 @@ const ar: TranslationKeys = {
     signInDesc: "سجل دخول لحسابك",
     signUpDesc: "سجّل ملعبك على بادلز",
     invalidCredentials: "البريد أو كلمة السر غلط",
+    signOut: "تسجيل خروج",
     selectRole: "اختر نوع الحساب",
     phoneRequired: "رقم الموبايل مطلوب",
     signUpToSell: "سجل حساب عشان تبيع على بادلز",
