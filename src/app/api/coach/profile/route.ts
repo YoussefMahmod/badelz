@@ -136,6 +136,7 @@ export async function PATCH(request: NextRequest) {
       pricePerHour,
       experience,
       whatsapp,
+      isActive,
     } = parsed.data;
 
     if (name !== undefined) updateData.name = name;
@@ -148,6 +149,7 @@ export async function PATCH(request: NextRequest) {
     if (pricePerHour !== undefined) updateData.pricePerHour = pricePerHour;
     if (experience !== undefined) updateData.experience = experience;
     if (whatsapp !== undefined) updateData.whatsapp = whatsapp;
+    if (isActive !== undefined) updateData.isActive = isActive;
 
     // Sync name to User table if changed
     if (name !== undefined) {

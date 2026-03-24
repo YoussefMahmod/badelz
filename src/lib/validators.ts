@@ -41,6 +41,7 @@ export const coachProfileUpdateSchema = z.object({
   pricePerHour: z.number().positive().optional(),
   experience: z.string().optional(),
   whatsapp: z.string().optional(),
+  isActive: z.boolean().optional(),
 });
 
 export const venueSchema = z.object({
