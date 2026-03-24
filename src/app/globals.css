@@ -661,6 +661,38 @@ input::placeholder, textarea::placeholder { color: var(--text-tertiary); }
 .tier-master      { --tier-color: #ff4655; --tier-glow: rgba(255,70,85,0.35); }
 .tier-grandmaster { --tier-color: #c8ff00; --tier-glow: rgba(200,255,0,0.35); }
 
+/* ─── Cursor: pointer on all interactive elements ─── */
+button,
+[role="button"],
+a,
+input[type="checkbox"],
+input[type="radio"],
+select,
+summary {
+  cursor: pointer;
+}
+
+button:disabled,
+[disabled] {
+  cursor: not-allowed;
+}
+
+/* ─── Disabled button states ─── */
+button:disabled,
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ─── Minimum touch targets for mobile ─── */
+@media (pointer: coarse) {
+  button,
+  a,
+  [role="button"] {
+    min-height: 44px;
+  }
+}
+
 /* ─── Reduced motion ─── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

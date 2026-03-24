@@ -181,17 +181,17 @@ export default function MarketPage() {
           >
             <button
               onClick={() => setSearchOpen(!searchOpen)}
-              className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all"
+              className="w-11 h-11 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
             >
               {searchOpen ? <X size={18} /> : <Search size={18} />}
             </button>
             <button
               onClick={openFilter}
-              className="relative w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all"
+              className="relative w-11 h-11 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
             >
               <SlidersHorizontal size={18} />
               {hasActiveFilters && (
-                <span className="absolute top-1.5 end-1.5 w-2 h-2 rounded-full bg-[#c8ff00]" />
+                <span className="absolute top-1.5 end-1.5 w-2.5 h-2.5 rounded-full bg-[#c8ff00] shadow-[0_0_6px_rgba(200,255,0,0.5)]" />
               )}
             </button>
           </motion.div>
@@ -259,7 +259,7 @@ export default function MarketPage() {
               <button
                 key={cat.key}
                 onClick={() => setSelectedCategory(cat.key)}
-                className="relative shrink-0 flex items-center gap-2 px-4 py-3.5 transition-colors"
+                className="relative shrink-0 flex items-center gap-2 px-4 py-3.5 transition-colors cursor-pointer"
               >
                 <Icon
                   size={16}
@@ -404,7 +404,7 @@ export default function MarketPage() {
                 </h2>
                 <button
                   onClick={() => setFilterOpen(false)}
-                  className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white/50 hover:text-white"
+                  className="min-w-[44px] min-h-[44px] rounded-full bg-white/5 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
                 >
                   <X size={16} />
                 </button>

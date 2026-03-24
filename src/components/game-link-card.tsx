@@ -66,26 +66,26 @@ export function GameLinkCard({
       transition={{ delay: 0.9 }}
       className="mx-auto max-w-md px-4 mt-6"
     >
-      <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-card">
+      <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6">
         {/* Header */}
         <div className="flex items-center gap-2 mb-5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100">
-            <Link2 size={16} className="text-gray-600" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10">
+            <Link2 size={16} className="text-white/60" />
           </div>
-          <h3 className="text-sm font-bold text-gray-700">
+          <h3 className="text-sm font-bold text-white/70">
             {t("game.gameLink")}
           </h3>
         </div>
 
         {/* Game code with copy */}
         <div className="flex items-center justify-center gap-3 mb-5">
-          <span className="text-2xl font-mono font-extrabold tracking-[0.15em] text-gray-900">
+          <span className="text-2xl font-mono font-extrabold tracking-[0.15em] text-white/90">
             {gameCode}
           </span>
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={handleCopy}
-            className="rounded-lg bg-gray-100 p-2.5 text-gray-400 transition-colors hover:bg-gray-200 hover:text-gray-600"
+            className="rounded-lg bg-white/10 p-2.5 text-white/40 transition-colors hover:bg-white/15 hover:text-white/60"
             aria-label={t("game.copyLink")}
           >
             {copied ? (
@@ -109,14 +109,14 @@ export function GameLinkCard({
                   transition={{ delay: 1 + i * 0.1, type: "spring", stiffness: 300 }}
                   className={`h-3 w-3 rounded-full transition-colors ${
                     filled
-                      ? "bg-[#c8ff00] shadow-sm"
-                      : "bg-gray-200"
+                      ? "bg-emerald-400 shadow-sm shadow-emerald-400/30"
+                      : "bg-white/15"
                   }`}
                 />
               );
             })}
           </div>
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-white/50">
             {spotsLeft > 0
               ? t("game.spotsLeft", { count: spotsLeft })
               : t("game.spotsFull")}
@@ -125,7 +125,7 @@ export function GameLinkCard({
 
         {/* Price per player */}
         <div className="flex items-center justify-center mb-5">
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-white/50">
             {t("game.pricePerPlayer", {
               price: formatPrice(pricePerPlayer),
             })}
@@ -149,7 +149,7 @@ export function GameLinkCard({
           {/* View game page */}
           <Link
             href={`/game/${gameCode}`}
-            className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-200 py-3 text-sm font-semibold text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-900"
+            className="flex w-full items-center justify-center gap-2 rounded-full border border-white/10 py-3 text-sm font-semibold text-white/60 transition-colors hover:bg-white/5 hover:text-white/90"
           >
             <Eye size={16} />
             {t("game.viewGame")}

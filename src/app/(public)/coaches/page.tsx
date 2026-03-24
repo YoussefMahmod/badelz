@@ -73,7 +73,7 @@ export default function CoachesPage() {
     () =>
       Array.from({ length: 6 }).map((_, i) => (
         <div key={i} className="flex justify-center">
-          <div className="w-56 card-ratio rounded-2xl overflow-hidden animate-pulse bg-white/5 border border-white/10">
+          <div className="w-full max-w-sm card-ratio rounded-2xl overflow-hidden animate-pulse bg-white/5 border border-white/10">
             <div className="h-full p-3 flex flex-col items-center gap-3">
               <div className="w-16 h-16 rounded-full dark-skeleton" />
               <div className="h-4 w-3/4 rounded-lg dark-skeleton" />
@@ -128,7 +128,7 @@ export default function CoachesPage() {
               <button
                 key={area.key}
                 onClick={() => setSelectedArea(area.key)}
-                className={`shrink-0 relative flex items-center gap-1.5 rounded-full px-4 py-2.5 text-xs font-semibold transition-all ${
+                className={`shrink-0 relative flex items-center gap-1.5 rounded-full px-4 py-2.5 text-xs font-semibold transition-all cursor-pointer ${
                   isSelected
                     ? "text-[#111827] shadow-sm"
                     : "border border-white/10 text-white/60 hover:text-white/90 hover:bg-white/10"
@@ -207,7 +207,7 @@ export default function CoachesPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className="fixed bottom-24 inset-x-0 z-30 flex justify-center px-4 pointer-events-none"
+        className="fixed bottom-24 sm:bottom-6 inset-x-0 z-30 flex justify-center px-4 pointer-events-none"
       >
         <motion.button
           whileTap={{ scale: 0.95 }}

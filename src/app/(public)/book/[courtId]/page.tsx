@@ -174,7 +174,7 @@ export default function BookingPage({
 
   return (
     <MainLayout showNav={false}>
-      <div className="mx-auto max-w-lg px-4 py-5 bg-white">
+      <div className="mx-auto max-w-lg px-4 py-5">
         {/* Back + title */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -183,14 +183,14 @@ export default function BookingPage({
         >
           <button
             onClick={() => (step > 0 ? setStep(step - 1) : router.back())}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:text-gray-900 hover:border-gray-300 transition-colors"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-white/40 hover:text-white/90 hover:border-white/20 transition-colors"
             aria-label={t("common.back")}
           >
             <ArrowRight size={18} className={dir === "ltr" ? "rotate-180" : ""} />
           </button>
           <div>
-            <h1 className="text-lg font-bold text-gray-900">{t("booking.title")}</h1>
-            <p className="text-xs text-gray-400">
+            <h1 className="text-lg font-bold text-white/90">{t("booking.title")}</h1>
+            <p className="text-xs text-white/40">
               {venueName} - {courtName}
             </p>
           </div>
@@ -210,10 +210,10 @@ export default function BookingPage({
                     }}
                     className={`flex h-8 w-8 items-center justify-center rounded-full transition-all duration-300 ${
                       isActive
-                        ? "bg-[#111827] shadow-sm text-white"
+                        ? "bg-emerald-500 shadow-lg shadow-emerald-500/20 text-white"
                         : isDone
-                          ? "bg-gray-200 text-gray-600"
-                          : "bg-gray-100 text-gray-400"
+                          ? "bg-emerald-500/20 text-emerald-400"
+                          : "bg-white/5 text-white/30"
                     }`}
                   >
                     <s.icon size={14} />
@@ -221,10 +221,10 @@ export default function BookingPage({
                   <span
                     className={`text-[10px] font-medium transition-colors ${
                       isActive
-                        ? "text-gray-900"
+                        ? "text-white/90"
                         : isDone
-                          ? "text-gray-500"
-                          : "text-gray-400"
+                          ? "text-emerald-400/70"
+                          : "text-white/30"
                     }`}
                   >
                     {t(s.labelKey as Parameters<typeof t>[0])}
@@ -235,9 +235,9 @@ export default function BookingPage({
           </div>
 
           {/* Progress track */}
-          <div className="h-1.5 rounded-full bg-gray-100 overflow-hidden">
+          <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
             <motion.div
-              className="h-full rounded-full bg-[#111827]"
+              className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500"
               initial={{ width: "25%" }}
               animate={{ width: `${progressWidth}%` }}
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
@@ -252,7 +252,7 @@ export default function BookingPage({
               key="step-date"
               {...stepTransition}
             >
-              <h2 className="text-base font-bold text-gray-700 mb-4">
+              <h2 className="text-base font-bold text-white/70 mb-4">
                 {t("booking.selectDate")}
               </h2>
               <div className="grid grid-cols-4 sm:grid-cols-7 gap-3">
@@ -268,17 +268,17 @@ export default function BookingPage({
                       onClick={() => handleDateSelect(ds)}
                       className={`flex flex-col items-center gap-0.5 rounded-2xl py-5 transition-all ${
                         active
-                          ? "bg-[#111827] text-white shadow-sm"
-                          : "border border-gray-200 text-gray-600 hover:border-gray-300"
+                          ? "bg-gradient-to-b from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20"
+                          : "border border-white/10 bg-white/5 text-white/60 hover:border-white/20 hover:bg-white/10"
                       }`}
                     >
-                      <span className={`text-[10px] font-medium ${active ? "text-white/60" : "text-gray-400"}`}>
+                      <span className={`text-[10px] font-medium ${active ? "text-white/70" : "text-white/40"}`}>
                         {dayName}
                       </span>
-                      <span className={`text-xl font-bold ${active ? "text-white" : "text-gray-900"}`}>
+                      <span className={`text-xl font-bold ${active ? "text-white" : "text-white/90"}`}>
                         {day.getDate()}
                       </span>
-                      <span className={`text-[10px] ${active ? "text-white/40" : "text-gray-400"}`}>
+                      <span className={`text-[10px] ${active ? "text-white/50" : "text-white/30"}`}>
                         {monthAbbr}
                       </span>
                     </motion.button>
@@ -293,7 +293,7 @@ export default function BookingPage({
               key="step-time"
               {...stepTransition}
             >
-              <h2 className="text-base font-bold text-gray-700 mb-4">
+              <h2 className="text-base font-bold text-white/70 mb-4">
                 {t("booking.selectTime")}
               </h2>
               <TimeSlotPicker
@@ -310,7 +310,7 @@ export default function BookingPage({
               key="step-info"
               {...stepTransition}
             >
-              <h2 className="text-base font-bold text-gray-700 mb-4">
+              <h2 className="text-base font-bold text-white/70 mb-4">
                 {t("booking.yourInfo")}
               </h2>
               <BookingForm
@@ -330,11 +330,11 @@ export default function BookingPage({
               key="step-confirm"
               {...stepTransition}
             >
-              <h2 className="text-base font-bold text-gray-700 mb-4">
+              <h2 className="text-base font-bold text-white/70 mb-4">
                 {t("booking.summary")}
               </h2>
 
-              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-5 space-y-3.5 mb-6">
+              <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-5 space-y-3.5 mb-6">
                 <SummaryRow label={t("booking.court")} value={`${venueName} - ${courtName}`} />
                 <SummaryRow
                   label={t("booking.date")}
@@ -351,7 +351,7 @@ export default function BookingPage({
                   value={formatPrice(price)}
                   highlight
                 />
-                <div className="border-t border-gray-200 pt-3.5 space-y-2">
+                <div className="border-t border-white/10 pt-3.5 space-y-2">
                   <SummaryRow label={t("booking.name")} value={playerInfo.name} />
                   <SummaryRow label={t("booking.phone")} value={playerInfo.phone} />
                   {playerInfo.notes && (
@@ -361,7 +361,7 @@ export default function BookingPage({
               </div>
 
               {submitError && (
-                <div className="mb-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600 text-center">
+                <div className="mb-4 rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400 text-center">
                   {submitError}
                 </div>
               )}
@@ -370,7 +370,7 @@ export default function BookingPage({
                 whileTap={{ scale: 0.97 }}
                 onClick={handleConfirm}
                 disabled={submitting}
-                className="w-full rounded-full bg-[#111827] py-4 text-base font-bold text-white shadow-sm transition-all hover:bg-gray-800 disabled:opacity-50"
+                className="w-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 py-4 text-base font-bold text-white shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/30 disabled:opacity-50"
               >
                 {submitting ? t("common.loading") : t("booking.confirmBooking")}
               </motion.button>
@@ -390,7 +390,7 @@ export default function BookingPage({
               whileTap={{ scale: 0.97 }}
               onClick={() => setStep(step + 1)}
               disabled={!canProceed()}
-              className="w-full rounded-full bg-[#111827] py-4 text-base font-bold text-white shadow-sm transition-all hover:bg-gray-800 disabled:opacity-30 disabled:cursor-not-allowed"
+              className="w-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 py-4 text-base font-bold text-white shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/30 disabled:opacity-30 disabled:cursor-not-allowed"
             >
               {t("common.next")}
             </motion.button>
@@ -412,9 +412,9 @@ function SummaryRow({
 }) {
   return (
     <div className="flex items-start justify-between gap-4 text-sm">
-      <span className="text-gray-400 shrink-0">{label}</span>
+      <span className="text-white/40 shrink-0">{label}</span>
       <span
-        className={`text-end ${highlight ? "font-bold text-gray-900" : "text-gray-600 font-medium"}`}
+        className={`text-end ${highlight ? "font-bold text-emerald-400" : "text-white/70 font-medium"}`}
       >
         {value}
       </span>

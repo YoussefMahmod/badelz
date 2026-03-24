@@ -163,7 +163,7 @@ export function BottomNav({ variant = "public" }: { variant?: "public" | "owner"
             <Link
               key={tab.href}
               href={tab.href}
-              className="relative flex flex-col items-center gap-1 px-3 py-1.5 transition-colors"
+              className="relative flex flex-col items-center gap-1 px-3 min-h-[44px] justify-center transition-colors cursor-pointer"
               aria-current={active ? "page" : undefined}
             >
               <span
@@ -178,12 +178,12 @@ export function BottomNav({ variant = "public" }: { variant?: "public" | "owner"
               {active && (
                 <motion.div
                   layoutId="nav-dot"
-                  className="h-1 w-1 rounded-full bg-[#c8ff00]"
+                  className="h-1.5 w-1.5 rounded-full bg-[#c8ff00]"
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 />
               )}
               <span
-                className={`text-[11px] font-medium ${
+                className={`text-xs font-medium leading-tight ${
                   active ? "text-[#c8ff00]" : "text-white/30"
                 }`}
               >

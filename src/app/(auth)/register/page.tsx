@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Lock, User, Phone, UserPlus, Users, GraduationCap, Building2 } from "lucide-react";
+import { Mail, Lock, User, Phone, UserPlus, Users, GraduationCap, Building2, Loader2 } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import { LocaleToggle } from "@/components/locale-toggle";
 import { Logo } from "@/components/logo";
@@ -284,8 +284,17 @@ function RegisterForm() {
           disabled={loading}
           className="flex w-full items-center justify-center gap-2 rounded-full bg-[#111827] py-3.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-gray-800 disabled:opacity-50"
         >
-          <UserPlus size={16} />
-          {loading ? t("common.loading") : t(roleConfig.signUpKey)}
+          {loading ? (
+            <>
+              <Loader2 size={16} className="animate-spin" />
+              {t("common.loading")}
+            </>
+          ) : (
+            <>
+              <UserPlus size={16} />
+              {t(roleConfig.signUpKey)}
+            </>
+          )}
         </motion.button>
       </form>
 

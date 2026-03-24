@@ -67,25 +67,25 @@ export function TimeSlotPicker({
             onClick={() => onSelect(slot.id)}
             className={`relative rounded-xl border p-4 text-center transition-all duration-200 ${
               isSelected
-                ? "bg-[#111827] text-white border-[#111827] shadow-lg"
-                : "bg-white border-gray-200 hover:border-gray-300 text-gray-900"
+                ? "bg-gradient-to-b from-emerald-500 to-teal-500 text-white border-emerald-500 shadow-lg shadow-emerald-500/20"
+                : "bg-white/5 border-white/10 hover:border-white/20 hover:bg-white/10 text-white/90"
             }`}
           >
-            <div className={`text-lg font-bold ${isSelected ? "text-white" : "text-gray-900"}`}>
+            <div className={`text-lg font-bold ${isSelected ? "text-white" : "text-white/90"}`}>
               {formatTime(slot.startTime)}
             </div>
-            <div className={`text-xs mt-1 ${isSelected ? "text-white/60" : "text-gray-400"}`}>
+            <div className={`text-xs mt-1 ${isSelected ? "text-white/70" : "text-white/40"}`}>
               {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
             </div>
             {slotPrice !== null && (
-              <div className={`text-xs mt-1 font-medium ${isSelected ? "text-[#c8ff00]" : "text-gray-500"}`}>
+              <div className={`text-xs mt-1 font-medium ${isSelected ? "text-white/90" : "text-emerald-400/70"}`}>
                 {formatPrice(slotPrice)}
               </div>
             )}
             {isSelected && (
               <motion.div
                 layoutId="slot-indicator"
-                className="absolute inset-0 rounded-xl ring-2 ring-[#111827]"
+                className="absolute inset-0 rounded-xl ring-2 ring-emerald-400"
                 transition={{ type: "spring", stiffness: 400, damping: 30 }}
               />
             )}

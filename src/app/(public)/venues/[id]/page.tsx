@@ -107,7 +107,7 @@ export default function VenueDetailPage({
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.1 }}
           onClick={() => router.back()}
-          className="absolute top-4 start-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-white hover:bg-white/20 transition-colors"
+          className="absolute top-4 start-4 z-10 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-white hover:bg-white/20 transition-colors cursor-pointer"
           aria-label={t("common.back")}
         >
           <ArrowRight
@@ -122,7 +122,7 @@ export default function VenueDetailPage({
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.15 }}
           onClick={handleShare}
-          className="absolute top-4 end-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-white hover:bg-white/20 transition-colors"
+          className="absolute top-4 end-4 z-10 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-white hover:bg-white/20 transition-colors cursor-pointer"
           aria-label={t("venue.share")}
         >
           <Share2 size={18} />
@@ -274,7 +274,7 @@ export default function VenueDetailPage({
           initial={{ opacity: 0, scale: 0.8, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="fixed bottom-24 end-4 z-40"
+          className="fixed bottom-24 end-4 z-40 sm:bottom-6 sm:end-6"
         >
           <a
             href={shareUrl}

@@ -33,11 +33,11 @@ export function Header() {
       className="sticky top-0 z-50 bg-white/5 backdrop-blur-xl border-b border-white/5"
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5">
-        <Link href="/" className="transition-opacity hover:opacity-80">
+        <Link href="/" className="transition-opacity hover:opacity-80 cursor-pointer">
           <Logo size={36} variant="full" colorMode="dark" />
         </Link>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3.5">
           {hasCard && (
             <Link
               href={`/my-card?phone=${cardPhone}`}

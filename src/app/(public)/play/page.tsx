@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Users, Crown } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { MainLayout } from "@/components/main-layout";
 import { LobbyCard } from "@/components/lobby-card";
 import { EmptyState } from "@/components/empty-state";
@@ -33,6 +34,7 @@ interface LobbyData {
 export default function PlayPage() {
   const { t } = useTranslation();
   const { locale } = useLocale();
+  const router = useRouter();
 
   const [selectedArea, setSelectedArea] = useState("all");
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -122,7 +124,7 @@ export default function PlayPage() {
           {/* "All" chip */}
           <button
             onClick={() => setSelectedDate(null)}
-            className={`shrink-0 relative flex flex-col items-center rounded-2xl px-4 py-2.5 text-xs font-semibold transition-all ${
+            className={`shrink-0 relative flex flex-col items-center rounded-2xl px-4 py-2.5 text-xs font-semibold transition-all cursor-pointer ${
               selectedDate === null
                 ? "bg-[#c8ff00] text-[#111827] shadow-sm"
                 : "border border-white/10 text-white/60 hover:text-white/90 hover:bg-white/10"
@@ -141,7 +143,7 @@ export default function PlayPage() {
               <button
                 key={dateStr}
                 onClick={() => setSelectedDate(isSelected ? null : dateStr)}
-                className={`shrink-0 relative flex flex-col items-center rounded-2xl px-4 py-2.5 transition-all ${
+                className={`shrink-0 relative flex flex-col items-center rounded-2xl px-4 py-2.5 transition-all cursor-pointer ${
                   isSelected
                     ? "bg-[#c8ff00] text-[#111827] shadow-sm"
                     : "border border-white/10 text-white/60 hover:text-white/90 hover:bg-white/10"
@@ -168,7 +170,7 @@ export default function PlayPage() {
               <button
                 key={area.key}
                 onClick={() => setSelectedArea(area.key)}
-                className={`shrink-0 relative flex items-center gap-1.5 rounded-full px-4 py-2.5 text-xs font-semibold transition-all ${
+                className={`shrink-0 relative flex items-center gap-1.5 rounded-full px-4 py-2.5 text-xs font-semibold transition-all cursor-pointer ${
                   isSelected
                     ? "text-[#111827] shadow-sm"
                     : "border border-white/10 text-white/60 hover:text-white/90 hover:bg-white/10"
@@ -199,7 +201,7 @@ export default function PlayPage() {
         >
           <Link
             href="/players"
-            className="flex items-center gap-3 rounded-2xl bg-white/5 border border-white/10 px-4 py-3 transition-all hover:bg-white/8 hover:border-[#c8ff00]/20 group"
+            className="flex items-center gap-3 rounded-2xl bg-white/5 border border-white/10 px-4 py-3 transition-all hover:bg-white/8 hover:border-[#c8ff00]/20 group cursor-pointer"
           >
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#c8ff00]/10">
               <Crown size={18} className="text-[#c8ff00]" />
@@ -230,6 +232,10 @@ export default function PlayPage() {
             icon={<Users size={28} />}
             title={t("lobby.noLobbies")}
             description={t("lobby.noLobbiesDesc")}
+            action={{
+              label: t("lobby.createLobby"),
+              onClick: () => router.push("/play/create"),
+            }}
           />
         ) : (
           <motion.div

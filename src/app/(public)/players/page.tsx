@@ -149,15 +149,15 @@ function PodiumSkeleton() {
     <div className="flex flex-col md:flex-row items-center md:items-end justify-center gap-6 md:gap-8 py-8">
       {/* #2 skeleton */}
       <div className="order-2 md:order-1 md:mt-12">
-        <div className="w-56 card-ratio rounded-2xl bg-white/5 border border-white/10 animate-pulse" />
+        <div className="w-full max-w-[14rem] card-ratio rounded-2xl bg-white/5 border border-white/10 animate-pulse" />
       </div>
       {/* #1 skeleton */}
       <div className="order-1 md:order-2">
-        <div className="w-72 card-ratio rounded-2xl bg-white/5 border border-white/10 animate-pulse" />
+        <div className="w-full max-w-[18rem] card-ratio rounded-2xl bg-white/5 border border-white/10 animate-pulse" />
       </div>
       {/* #3 skeleton */}
       <div className="order-3 md:mt-12">
-        <div className="w-56 card-ratio rounded-2xl bg-white/5 border border-white/10 animate-pulse" />
+        <div className="w-full max-w-[14rem] card-ratio rounded-2xl bg-white/5 border border-white/10 animate-pulse" />
       </div>
     </div>
   );
@@ -167,7 +167,7 @@ function ListRowSkeleton({ index }: { index: number }) {
   return (
     <div
       className="flex items-center gap-3 px-4 py-3.5 rounded-xl bg-white/[0.03] animate-pulse"
-      style={{ animationDelay: `${index * 80}ms` }}
+      style={{ animationDelay: `${index * 40}ms` }}
     >
       <div className="w-8 h-5 rounded dark-skeleton" />
       <div className="w-10 h-10 rounded-full dark-skeleton shrink-0" />

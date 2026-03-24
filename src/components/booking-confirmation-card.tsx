@@ -78,13 +78,13 @@ export function BookingConfirmationCard({
           className="relative mb-5"
         >
           <div
-            className="rounded-full bg-[#c8ff00] flex items-center justify-center shadow-lg"
+            className="rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-500/30"
             style={{ width: 88, height: 88 }}
           >
             <svg viewBox="0 0 24 24" className="h-11 w-11" fill="none">
               <motion.path
                 d="M5 13l4 4L19 7"
-                stroke="#111827"
+                stroke="white"
                 strokeWidth="2.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -94,7 +94,7 @@ export function BookingConfirmationCard({
           </div>
           {/* Decorative rings */}
           <motion.div
-            className="absolute inset-0 rounded-full border-2 border-[#c8ff00]/30"
+            className="absolute inset-0 rounded-full border-2 border-emerald-500/30"
             style={{ width: 88, height: 88 }}
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1.6, opacity: 0 }}
@@ -106,7 +106,7 @@ export function BookingConfirmationCard({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="text-2xl font-bold text-gray-900"
+          className="text-2xl font-bold text-white/90"
         >
           {t("confirmation.title")}
         </motion.h2>
@@ -114,7 +114,7 @@ export function BookingConfirmationCard({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="text-sm text-gray-400 mt-1"
+          className="text-sm text-white/40 mt-1"
         >
           {t("confirmation.subtitle")}
         </motion.p>
@@ -125,17 +125,17 @@ export function BookingConfirmationCard({
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
-        className="bg-white border border-gray-200 rounded-2xl p-6 mb-4 text-center shadow-card"
+        className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 mb-4 text-center"
       >
-        <p className="text-xs text-gray-400 mb-3">{t("confirmation.code")}</p>
+        <p className="text-xs text-white/40 mb-3">{t("confirmation.code")}</p>
         <div className="flex items-center justify-center gap-3">
-          <span className="text-3xl font-mono font-extrabold tracking-[0.2em] text-gray-900">
+          <span className="text-3xl font-mono font-extrabold tracking-[0.2em] text-white/90">
             {booking.confirmationCode}
           </span>
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={handleCopy}
-            className="rounded-lg bg-gray-100 p-2.5 text-gray-400 transition-colors hover:bg-gray-200 hover:text-gray-600"
+            className="rounded-lg bg-white/10 p-2.5 text-white/40 transition-colors hover:bg-white/15 hover:text-white/60"
             aria-label="Copy code"
           >
             {copied ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
@@ -148,9 +148,9 @@ export function BookingConfirmationCard({
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.7 }}
-        className="bg-white border border-gray-200 rounded-2xl p-5 mb-4 space-y-3"
+        className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-5 mb-4 space-y-3"
       >
-        <h3 className="text-sm font-bold text-gray-700 mb-3">{t("confirmation.details")}</h3>
+        <h3 className="text-sm font-bold text-white/70 mb-3">{t("confirmation.details")}</h3>
         <DetailRow label={t("booking.court")} value={`${booking.venueName} - ${booking.courtName}`} />
         <DetailRow label={t("booking.date")} value={formatDate(booking.date)} />
         <DetailRow
@@ -160,9 +160,9 @@ export function BookingConfirmationCard({
         <DetailRow label={t("booking.price")} value={formatPrice(price)} highlight />
 
         {/* Pay at venue badge */}
-        <div className="flex items-center justify-center gap-2 rounded-full bg-amber-50 px-4 py-2.5 mt-4 border border-amber-200">
-          <CreditCard size={15} className="text-amber-600" />
-          <span className="text-xs font-semibold text-amber-700">
+        <div className="flex items-center justify-center gap-2 rounded-full bg-amber-500/10 px-4 py-2.5 mt-4 border border-amber-500/20">
+          <CreditCard size={15} className="text-amber-400" />
+          <span className="text-xs font-semibold text-amber-400">
             {t("confirmation.payAtVenue")}
           </span>
         </div>
@@ -183,7 +183,7 @@ export function BookingConfirmationCard({
 
         <Link
           href="/browse"
-          className="flex items-center justify-center gap-2 w-full rounded-full border border-gray-200 py-3.5 text-sm font-semibold text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-900"
+          className="flex items-center justify-center gap-2 w-full rounded-full border border-white/10 py-3.5 text-sm font-semibold text-white/60 transition-colors hover:bg-white/5 hover:text-white/90"
         >
           <Search size={16} />
           {t("confirmation.backToBrowse")}
@@ -204,8 +204,8 @@ function DetailRow({
 }) {
   return (
     <div className="flex items-center justify-between text-sm">
-      <span className="text-gray-400">{label}</span>
-      <span className={highlight ? "font-bold text-gray-900" : "text-gray-600 font-medium"}>
+      <span className="text-white/40">{label}</span>
+      <span className={highlight ? "font-bold text-emerald-400" : "text-white/70 font-medium"}>
         {value}
       </span>
     </div>

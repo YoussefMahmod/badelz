@@ -118,7 +118,7 @@ export default function MyBookingsPage() {
         >
           <button
             onClick={() => router.back()}
-            className="flex h-10 w-10 items-center justify-center rounded-full glass-dark text-white/50 hover:text-white transition-colors"
+            className="flex h-10 w-10 items-center justify-center rounded-full glass-dark text-white/70 hover:text-white transition-colors cursor-pointer"
             aria-label={t("common.back")}
           >
             <ArrowRight size={18} className={dir === "ltr" ? "rotate-180" : ""} />
@@ -148,7 +148,7 @@ export default function MyBookingsPage() {
           <button
             type="submit"
             disabled={!/^01[0125]\d{8}$/.test(phone) || loading}
-            className="flex items-center justify-center rounded-xl bg-[#c8ff00] px-5 py-3 text-sm font-bold text-[#0a0f1a] disabled:opacity-30 transition-all"
+            className="flex items-center justify-center rounded-xl bg-[#c8ff00] px-5 py-3 text-sm font-bold text-[#0a0f1a] disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
           >
             {loading ? (
               <Loader2 size={18} className="animate-spin" />
@@ -241,11 +241,11 @@ export default function MyBookingsPage() {
                     {/* Date + time */}
                     <div className="flex items-center gap-4 text-xs text-white/50">
                       <span className="flex items-center gap-1">
-                        <CalendarDays size={12} />
+                        <CalendarDays size={14} />
                         {formatDate(booking.date, locale === "ar" ? "ar-EG" : "en-US")}
                       </span>
                       <span className="flex items-center gap-1">
-                        <Clock size={12} />
+                        <Clock size={14} />
                         {formatTime(booking.startTime)} - {formatTime(booking.endTime)}
                       </span>
                     </div>

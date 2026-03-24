@@ -90,7 +90,9 @@ export default function BrowsePage() {
           transition={{ delay: 0.1 }}
           className="relative mb-5"
         >
-          <Search size={20} className="absolute start-4 top-1/2 -translate-y-1/2 text-white/30" />
+          <div className="absolute start-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-11 h-11">
+            <Search size={20} className="text-white/30" />
+          </div>
           <input
             type="text"
             value={searchQuery}
@@ -114,7 +116,7 @@ export default function BrowsePage() {
               <button
                 key={area.key}
                 onClick={() => setSelectedArea(area.key)}
-                className={`shrink-0 relative flex items-center gap-1.5 rounded-full px-4 py-2.5 text-xs font-semibold transition-all ${
+                className={`shrink-0 relative flex items-center gap-1.5 rounded-full px-4 py-2.5 text-xs font-semibold transition-all cursor-pointer ${
                   isSelected
                     ? "text-[#111827] shadow-sm"
                     : "border border-white/10 text-white/60 hover:text-white/90 hover:bg-white/10"

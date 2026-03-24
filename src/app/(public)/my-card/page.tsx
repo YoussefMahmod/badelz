@@ -263,7 +263,7 @@ function MyCardContent() {
             <motion.button
               type="submit"
               whileTap={{ scale: 0.97 }}
-              className="w-full rounded-full bg-[#c8ff00] py-4 text-base font-bold text-[#111827] shadow-lg shadow-[#c8ff00]/20 transition-all hover:shadow-[0_0_30px_rgba(200,255,0,0.3)] flex items-center justify-center gap-2"
+              className="w-full rounded-full bg-[#c8ff00] py-4 text-base font-bold text-[#111827] shadow-lg shadow-[#c8ff00]/20 transition-all hover:shadow-[0_0_30px_rgba(200,255,0,0.3)] flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none cursor-pointer"
             >
               <Search size={18} />
               {t("player.searchCard")}
@@ -305,7 +305,7 @@ function MyCardContent() {
               setPlayer(null);
               setPhone("");
             }}
-            className="text-sm text-white/40 hover:text-white/60 transition-colors underline underline-offset-4"
+            className="text-sm text-white/50 hover:text-white/80 transition-colors underline underline-offset-4 decoration-white/30 hover:decoration-white/60 cursor-pointer font-medium"
           >
             {t("player.findCard")}
           </button>
@@ -428,7 +428,7 @@ function MyCardContent() {
           >
             <Link
               href="/players"
-              className="flex w-full items-center justify-center gap-2 rounded-full border border-white/10 py-3 text-sm font-semibold text-white/60 hover:text-white hover:bg-white/5 transition-all"
+              className="flex w-full items-center justify-center gap-2 rounded-full border border-white/15 py-3 text-sm font-semibold text-white/60 hover:text-white hover:bg-white/5 hover:border-white/25 transition-all cursor-pointer"
             >
               {t("player.viewRanks")}
             </Link>

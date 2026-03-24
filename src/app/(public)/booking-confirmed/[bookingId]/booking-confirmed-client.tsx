@@ -124,7 +124,7 @@ export default function BookingConfirmedClient({
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#0a0f1a] flex items-center justify-center">
         <LoadingSpinner />
       </div>
     );
@@ -132,15 +132,15 @@ export default function BookingConfirmedClient({
 
   if (!booking) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center px-4">
-        <p className="text-gray-400">{t("common.error")}</p>
+      <div className="min-h-screen bg-[#0a0f1a] flex items-center justify-center px-4">
+        <p className="text-white/40">{t("common.error")}</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center py-10 relative overflow-hidden">
-      {/* Celebration particles -- lime */}
+    <div className="min-h-screen bg-[#0a0f1a] flex flex-col items-center justify-center py-10 relative overflow-hidden">
+      {/* Celebration particles -- emerald */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
         {Array.from({ length: 12 }).map((_, i) => (
           <motion.div
@@ -149,7 +149,7 @@ export default function BookingConfirmedClient({
             style={{
               left: `${10 + Math.random() * 80}%`,
               top: `${Math.random() * 100}%`,
-              backgroundColor: i % 3 === 0 ? "#c8ff00" : i % 3 === 1 ? "#111827" : "#e5e7eb",
+              backgroundColor: i % 3 === 0 ? "#10b981" : i % 3 === 1 ? "#14b8a6" : "#065f46",
               opacity: 0.5,
             }}
             initial={{ opacity: 0, scale: 0 }}
@@ -246,7 +246,7 @@ export default function BookingConfirmedClient({
           title={t("nudge.trackBookings")}
           description={t("nudge.trackBookingsDesc")}
           returnTo="/my-profile"
-          variant="light"
+          variant="dark"
         />
       </div>
 
@@ -276,15 +276,15 @@ function CardCTA() {
       className="w-full max-w-sm mx-auto mt-6 px-4"
     >
       <Link href="/my-card" className="block">
-        <div className="bg-[#111827] border border-gray-700/50 rounded-2xl p-5 flex items-center gap-4 transition-all hover:border-[#c8ff00]/30 hover:shadow-[0_0_20px_rgba(200,255,0,0.08)]">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#c8ff00]/10">
-            <CreditCard size={22} className="text-[#c8ff00]" />
+        <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-5 flex items-center gap-4 transition-all hover:border-emerald-500/30 hover:shadow-[0_0_20px_rgba(16,185,129,0.08)]">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10">
+            <CreditCard size={22} className="text-emerald-400" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-bold text-white">
+            <p className="text-sm font-bold text-white/90">
               {t("player.viewYourCard")}
             </p>
-            <p className="text-xs text-gray-400 mt-0.5">
+            <p className="text-xs text-white/40 mt-0.5">
               {t("player.viewYourCardDesc")}
             </p>
           </div>
@@ -297,7 +297,7 @@ function CardCTA() {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="text-[#c8ff00] shrink-0 rtl:rotate-180"
+            className="text-emerald-400 shrink-0 rtl:rotate-180"
           >
             <path d="M5 12h14M12 5l7 7-7 7" />
           </svg>
