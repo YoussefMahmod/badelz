@@ -714,6 +714,22 @@ button:disabled,
   animation: marquee-rtl 30s linear infinite;
 }
 
+/* ─── Marquee Reverse (opposite direction) ─── */
+@keyframes marquee-reverse {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+.animate-marquee-reverse {
+  animation: marquee-reverse 35s linear infinite;
+}
+@keyframes marquee-reverse-rtl {
+  0% { transform: translateX(50%); }
+  100% { transform: translateX(0); }
+}
+[dir="rtl"] .animate-marquee-reverse {
+  animation: marquee-reverse-rtl 35s linear infinite;
+}
+
 /* ─── Reduced motion ─── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -721,7 +737,8 @@ button:disabled,
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  .animate-marquee {
+  .animate-marquee,
+  .animate-marquee-reverse {
     animation: none;
     overflow-x: auto;
   }

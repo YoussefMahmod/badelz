@@ -526,6 +526,7 @@ const ar: TranslationKeys = {
     sortBy: "الترتيب",
     clearFilters: "مسح الفلاتر",
     newBadge: "أُضيف حديثاً",
+    hot: "رائج",
     viewCount: "{{count}} مشاهدة",
     moreInCategory: "المزيد في {{category}}",
     relatedItems: "إعلانات مشابهة",

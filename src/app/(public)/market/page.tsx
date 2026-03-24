@@ -18,6 +18,7 @@ import {
   Watch,
   Layers,
   ChevronDown,
+  Eye,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -338,51 +339,90 @@ export default function MarketPage() {
         </AnimatePresence>
 
         {/* ════════════════════════════════════════════════════════
-            Section 2: Live Marquee — Recently Added
+            Section 2: Dual Marquees — Recently Added + Trending
             ════════════════════════════════════════════════════════ */}
-        {recentItems.length > 0 && (
+        {(recentItems.length > 0 || trending.length > 0) && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="relative overflow-hidden py-3 mb-5"
+            className="relative overflow-hidden mb-5"
           >
-            {/* Fade edges */}
-            <div className="absolute inset-y-0 start-0 w-12 bg-gradient-to-e from-[#0a0f1a] to-transparent z-10 pointer-events-none" />
-            <div className="absolute inset-y-0 end-0 w-12 bg-gradient-to-s from-[#0a0f1a] to-transparent z-10 pointer-events-none" />
+            {/* Shared fade edges */}
+            <div className="absolute inset-y-0 start-0 w-16 bg-gradient-to-e from-[#0a0f1a] to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-y-0 end-0 w-16 bg-gradient-to-s from-[#0a0f1a] to-transparent z-10 pointer-events-none" />
 
-            {/* Scrolling content — duplicated for seamless loop */}
-            <div className="flex gap-4 animate-marquee hover:[animation-play-state:paused]">
-              {[...recentItems, ...recentItems].map((item, i) => (
-                <Link
-                  key={`${item.id}-${i}`}
-                  href={`/market/${item.id}`}
-                  className="flex items-center gap-2.5 shrink-0 rounded-lg bg-white/5 border border-white/10 px-3 py-2 hover:bg-white/10 transition-colors"
-                >
-                  {/* 32px thumbnail */}
-                  <div className="w-8 h-8 rounded-md overflow-hidden shrink-0 bg-white/5 flex items-center justify-center">
-                    {item.photos?.[0] ? (
-                      <img
-                        src={item.photos[0]}
-                        alt=""
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <Package size={14} className="text-white/20" />
-                    )}
-                  </div>
-                  <span className="text-xs font-medium text-white/70 truncate max-w-[120px]">
-                    {locale === "ar" && item.titleAr ? item.titleAr : item.title}
-                  </span>
-                  <span className="text-xs font-bold text-emerald-400">
-                    {item.price} {t("common.egp")}
-                  </span>
-                  <span className="text-[10px] text-white/25">
-                    {getTimeAgo(item.createdAt)}
-                  </span>
-                </Link>
-              ))}
-            </div>
+            {/* Row 1: Recently Added → scrolls left-to-right */}
+            {recentItems.length > 0 && (
+              <div className="py-2">
+                <div className="flex gap-3 animate-marquee hover:[animation-play-state:paused]">
+                  {[...recentItems, ...recentItems].map((item, i) => (
+                    <Link
+                      key={`recent-${item.id}-${i}`}
+                      href={`/market/${item.id}`}
+                      className="flex items-center gap-2.5 shrink-0 rounded-lg bg-white/5 border border-white/10 px-3 py-2 hover:bg-white/10 transition-colors"
+                    >
+                      <span className="text-[8px] font-bold bg-emerald-500 text-white px-1.5 py-0.5 rounded-full shrink-0 whitespace-nowrap">
+                        {t("market.newBadge")}
+                      </span>
+                      <div className="w-7 h-7 rounded-md overflow-hidden shrink-0 bg-white/5 flex items-center justify-center">
+                        {item.photos?.[0] ? (
+                          <img src={item.photos[0]} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <Package size={12} className="text-white/20" />
+                        )}
+                      </div>
+                      <span className="text-xs font-medium text-white/70 truncate max-w-[120px]">
+                        {locale === "ar" && item.titleAr ? item.titleAr : item.title}
+                      </span>
+                      <span className="text-xs font-bold text-emerald-400 shrink-0">
+                        {item.price} {t("common.egp")}
+                      </span>
+                      <span className="text-[10px] text-white/25 shrink-0">
+                        {getTimeAgo(item.createdAt)}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Row 2: Trending → scrolls opposite direction */}
+            {trending.length > 0 && (
+              <div className="py-2">
+                <div className="flex gap-3 animate-marquee-reverse hover:[animation-play-state:paused]">
+                  {[...trending, ...trending].map((item, i) => (
+                    <Link
+                      key={`trend-${item.id}-${i}`}
+                      href={`/market/${item.id}`}
+                      className="flex items-center gap-2.5 shrink-0 rounded-lg bg-white/5 border border-white/10 px-3 py-2 hover:bg-white/10 transition-colors"
+                    >
+                      <span className="text-[8px] font-bold bg-orange-500 text-white px-1.5 py-0.5 rounded-full shrink-0 flex items-center gap-0.5">
+                        <Flame size={8} />
+                        {t("market.hot" as Parameters<typeof t>[0])}
+                      </span>
+                      <div className="w-7 h-7 rounded-md overflow-hidden shrink-0 bg-white/5 flex items-center justify-center">
+                        {item.photos?.[0] ? (
+                          <img src={item.photos[0]} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <Package size={12} className="text-white/20" />
+                        )}
+                      </div>
+                      <span className="text-xs font-medium text-white/70 truncate max-w-[120px]">
+                        {locale === "ar" && (item as ListingWithSeller).titleAr ? (item as ListingWithSeller).titleAr : item.title}
+                      </span>
+                      <span className="text-xs font-bold text-orange-400 shrink-0">
+                        {item.price} {t("common.egp")}
+                      </span>
+                      <span className="text-[10px] text-white/25 shrink-0 flex items-center gap-0.5">
+                        <Eye size={8} />
+                        {(item as ListingWithSeller).views ?? 0}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </motion.div>
         )}
 
@@ -444,35 +484,7 @@ export default function MarketPage() {
           })}
         </motion.div>
 
-        {/* ════════════════════════════════════════════════════════
-            Section 4: Trending
-            ════════════════════════════════════════════════════════ */}
-        {trending.length > 0 && (
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25 }}
-            className="mb-8"
-          >
-            <div className="flex items-center gap-2 mb-3">
-              <Flame size={18} className="text-orange-400" />
-              <h2 className="text-base font-bold text-white font-[family-name:var(--font-display)] uppercase tracking-wide">
-                {t("market.trendingNow")}
-              </h2>
-            </div>
-            <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-hide">
-              {trending.map((item) => (
-                <div key={item.id} className="shrink-0 snap-start w-64">
-                  <ListingCard
-                    listing={item}
-                    variant="compact"
-                    onClick={() => router.push(`/market/${item.id}`)}
-                  />
-                </div>
-              ))}
-            </div>
-          </motion.section>
-        )}
+        {/* Trending section moved to dual marquee above */}
 
         {/* ════════════════════════════════════════════════════════
             Section 5: Main Listings Grid

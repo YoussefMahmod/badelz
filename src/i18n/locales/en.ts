@@ -524,6 +524,7 @@ const en = {
     sortBy: "Sort",
     clearFilters: "Clear filters",
     newBadge: "NEW",
+    hot: "Hot",
     viewCount: "{{count}} views",
     moreInCategory: "More in {{category}}",
     relatedItems: "Similar Items",
