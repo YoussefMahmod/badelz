@@ -9,10 +9,13 @@ import {
   MessageCircle,
   Save,
   CheckCircle,
+  Crosshair,
+  Loader2,
 } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import { slideUp } from "@/lib/animations";
 import { LoadingSpinner } from "@/components/loading-spinner";
+import { AREAS } from "@/lib/constants";
 
 interface VenueSettings {
   id: string;
@@ -24,6 +27,8 @@ interface VenueSettings {
   cityAr: string | null;
   phone: string;
   whatsapp: string | null;
+  latitude: number | null;
+  longitude: number | null;
 }
 
 export default function SettingsPage() {
@@ -32,6 +37,8 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [detectingLocation, setDetectingLocation] = useState(false);
+  const [detectedAreaName, setDetectedAreaName] = useState<string | null>(null);
 
   const [form, setForm] = useState({
     name: "",
@@ -42,6 +49,8 @@ export default function SettingsPage() {
     cityAr: "",
     phone: "",
     whatsapp: "",
+    latitude: null as number | null,
+    longitude: null as number | null,
   });
 
   useEffect(() => {
@@ -61,6 +70,8 @@ export default function SettingsPage() {
             cityAr: v.cityAr || "",
             phone: v.phone || "",
             whatsapp: v.whatsapp || "",
+            latitude: v.latitude ?? null,
+            longitude: v.longitude ?? null,
           });
         }
       } catch {
@@ -75,6 +86,58 @@ export default function SettingsPage() {
   const updateField = (key: keyof typeof form, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
     setSaved(false);
+  };
+
+  const handleDetectLocation = () => {
+    setDetectingLocation(true);
+    setDetectedAreaName(null);
+    try {
+      if (typeof navigator !== "undefined" && navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+
+            let minDist = Infinity;
+            let nearest: (typeof AREAS)[number] = AREAS[1];
+            for (const area of AREAS) {
+              if (area.key === "all") continue;
+              const R = 6371;
+              const dLat = ((area.lat - latitude) * Math.PI) / 180;
+              const dLng = ((area.lng - longitude) * Math.PI) / 180;
+              const a =
+                Math.sin(dLat / 2) ** 2 +
+                Math.cos((latitude * Math.PI) / 180) *
+                  Math.cos((area.lat * Math.PI) / 180) *
+                  Math.sin(dLng / 2) ** 2;
+              const dist = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+              if (dist < minDist) {
+                minDist = dist;
+                nearest = area;
+              }
+            }
+
+            setForm((prev) => ({
+              ...prev,
+              latitude,
+              longitude,
+              city: nearest.labelEn,
+              cityAr: nearest.labelAr,
+            }));
+            setDetectedAreaName(nearest.labelEn);
+            setSaved(false);
+            setDetectingLocation(false);
+          },
+          () => {
+            setDetectingLocation(false);
+          },
+          { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 }
+        );
+      } else {
+        setDetectingLocation(false);
+      }
+    } catch {
+      setDetectingLocation(false);
+    }
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -95,6 +158,8 @@ export default function SettingsPage() {
           cityAr: form.cityAr || undefined,
           phone: form.phone,
           whatsapp: form.whatsapp || undefined,
+          latitude: form.latitude ?? undefined,
+          longitude: form.longitude ?? undefined,
         }),
       });
 
@@ -154,6 +219,44 @@ export default function SettingsPage() {
           onChange={(v) => updateField("address", v)}
           required
         />
+
+        {/* Location Detection */}
+        <div>
+          <label className="mb-1.5 flex items-center gap-2 text-xs font-medium text-gray-500">
+            <span className="text-gray-400"><Crosshair size={14} /></span>
+            {t("onboarding.detectLocation")}
+          </label>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleDetectLocation}
+              disabled={detectingLocation}
+              className="flex items-center gap-2 rounded-xl bg-gray-50 border border-gray-200 px-4 py-2.5 text-sm text-gray-700 transition-all hover:border-[#c8ff00] hover:bg-[#c8ff00]/5 disabled:opacity-50"
+            >
+              {detectingLocation ? (
+                <>
+                  <Loader2 size={14} className="animate-spin" />
+                  {t("onboarding.detectingLocation")}
+                </>
+              ) : (
+                <>
+                  <Crosshair size={14} />
+                  {t("onboarding.detectLocation")}
+                </>
+              )}
+            </button>
+            {form.latitude && form.longitude && (
+              <span className="text-xs text-gray-400">
+                {form.latitude.toFixed(4)}, {form.longitude.toFixed(4)}
+              </span>
+            )}
+            {detectedAreaName && (
+              <span className="text-xs font-medium text-emerald-500">
+                {detectedAreaName}
+              </span>
+            )}
+          </div>
+        </div>
 
         <div className="grid grid-cols-2 gap-3">
           <SettingsField
