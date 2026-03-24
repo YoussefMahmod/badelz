@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   MapPin,
   Clock,
@@ -13,6 +13,9 @@ import {
   Power,
   Sparkles,
   AlertCircle,
+  Check,
+  Loader2,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 import { useTranslation, useLocale } from "@/i18n";
@@ -53,6 +56,19 @@ export default function CoachDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [toggling, setToggling] = useState(false);
+
+  // Edit profile state
+  const [editing, setEditing] = useState(false);
+  const [editForm, setEditForm] = useState({
+    name: "",
+    bio: "",
+    areas: [] as string[],
+    pricePerHour: "",
+    experience: "",
+    whatsapp: "",
+  });
+  const [saving, setSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   const fetchProfile = useCallback(async () => {
     setLoading(true);
@@ -97,6 +113,51 @@ export default function CoachDashboardPage() {
       setToggling(false);
     }
   };
+
+  const handleSaveProfile = useCallback(async () => {
+    if (saving || !editForm.name.trim() || editForm.areas.length === 0) return;
+    setSaving(true);
+    try {
+      const areasAr = editForm.areas.map((areaKey) => {
+        const found = AREAS.find((a) => a.key === areaKey);
+        return found?.labelAr ?? areaKey;
+      });
+      const payload: Record<string, unknown> = {
+        name: editForm.name.trim(),
+        areas: editForm.areas,
+        areasAr,
+      };
+      if (editForm.bio.trim()) payload.bio = editForm.bio.trim();
+      if (editForm.pricePerHour) payload.pricePerHour = Number(editForm.pricePerHour);
+      if (editForm.experience.trim()) payload.experience = editForm.experience.trim();
+      if (editForm.whatsapp.trim()) payload.whatsapp = editForm.whatsapp.trim();
+
+      const res = await fetch("/api/coach/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) {
+        setEditing(false);
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 2000);
+        await fetchProfile();
+      }
+    } catch {
+      // Save failed silently — user can retry
+    } finally {
+      setSaving(false);
+    }
+  }, [saving, editForm, fetchProfile]);
+
+  const toggleArea = useCallback((areaKey: string) => {
+    setEditForm((prev) => ({
+      ...prev,
+      areas: prev.areas.includes(areaKey)
+        ? prev.areas.filter((a) => a !== areaKey)
+        : [...prev.areas, areaKey],
+    }));
+  }, []);
 
   const displayName =
     profile && locale === "ar" && profile.nameAr
@@ -379,10 +440,205 @@ export default function CoachDashboardPage() {
         </Link>
 
         {/* Edit profile */}
-        <button className="w-full flex items-center justify-center gap-2 rounded-full border border-white/10 py-3.5 text-sm font-semibold text-white/60 transition-all hover:bg-white/5 hover:text-white/90 active:scale-[0.98]">
-          <Edit3 size={16} />
-          {t("coachDashboard.editProfile")}
+        <button
+          onClick={() => {
+            if (editing) {
+              setEditing(false);
+            } else if (profile) {
+              setEditForm({
+                name: profile.name,
+                bio: profile.bio || "",
+                areas: [...profile.areas],
+                pricePerHour: profile.pricePerHour ? String(profile.pricePerHour) : "",
+                experience: profile.experience || "",
+                whatsapp: profile.whatsapp || "",
+              });
+              setEditing(true);
+            }
+          }}
+          className={`w-full flex items-center justify-center gap-2 rounded-full border py-3.5 text-sm font-semibold transition-all active:scale-[0.98] ${
+            editing
+              ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+              : "border-white/10 text-white/60 hover:bg-white/5 hover:text-white/90"
+          }`}
+        >
+          {editing ? <X size={16} /> : <Edit3 size={16} />}
+          {editing ? t("common.cancel") : t("coachDashboard.editProfile")}
         </button>
+
+        {/* ── Edit Form (slide down) ── */}
+        <AnimatePresence>
+          {editing && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="overflow-hidden"
+            >
+              <div className="rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 p-5 space-y-5">
+                {/* Name field */}
+                <div>
+                  <label className="block text-sm font-medium text-white/70 mb-1.5">
+                    {t("coachDashboard.name")}
+                  </label>
+                  <input
+                    type="text"
+                    value={editForm.name}
+                    onChange={(e) =>
+                      setEditForm((prev) => ({ ...prev, name: e.target.value }))
+                    }
+                    className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm text-white outline-none placeholder:text-white/30 focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                    dir="auto"
+                  />
+                </div>
+
+                {/* Bio field */}
+                <div>
+                  <label className="block text-sm font-medium text-white/70 mb-1.5">
+                    {t("coachDashboard.bio")}
+                  </label>
+                  <textarea
+                    value={editForm.bio}
+                    onChange={(e) =>
+                      setEditForm((prev) => ({ ...prev, bio: e.target.value }))
+                    }
+                    maxLength={500}
+                    rows={3}
+                    placeholder={t("coachDashboard.bioPlaceholder")}
+                    className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm text-white outline-none placeholder:text-white/30 focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all resize-none"
+                    dir="auto"
+                  />
+                  <p className="text-end text-[10px] text-white/30 mt-1">
+                    {editForm.bio.length}/500
+                  </p>
+                </div>
+
+                {/* Areas multi-select */}
+                <div>
+                  <label className="block text-sm font-medium text-white/70 mb-2">
+                    {t("coachDashboard.selectAreas")}
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {AREAS.filter((a) => a.key !== "all").map((area) => (
+                      <button
+                        key={area.key}
+                        type="button"
+                        onClick={() => toggleArea(area.key)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                          editForm.areas.includes(area.key)
+                            ? "bg-emerald-500/15 border border-emerald-500/30 text-emerald-400"
+                            : "bg-white/5 border border-white/10 text-white/50 hover:text-white/70"
+                        }`}
+                      >
+                        {locale === "ar" ? area.labelAr : area.labelEn}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Price per hour */}
+                <div>
+                  <label className="block text-sm font-medium text-white/70 mb-1.5">
+                    {t("coachDashboard.pricePerHourLabel")}
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      value={editForm.pricePerHour}
+                      onChange={(e) =>
+                        setEditForm((prev) => ({ ...prev, pricePerHour: e.target.value }))
+                      }
+                      className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 pe-16 text-sm text-white outline-none placeholder:text-white/30 focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                      dir="ltr"
+                    />
+                    <span className="absolute end-4 top-1/2 -translate-y-1/2 text-xs text-white/30 pointer-events-none">
+                      {t("common.egp")}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Experience */}
+                <div>
+                  <label className="block text-sm font-medium text-white/70 mb-1.5">
+                    {t("coachDashboard.experience")}
+                  </label>
+                  <input
+                    type="text"
+                    value={editForm.experience}
+                    onChange={(e) =>
+                      setEditForm((prev) => ({ ...prev, experience: e.target.value }))
+                    }
+                    placeholder={t("coachDashboard.experiencePlaceholder")}
+                    className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm text-white outline-none placeholder:text-white/30 focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                    dir="auto"
+                  />
+                </div>
+
+                {/* WhatsApp */}
+                <div>
+                  <label className="block text-sm font-medium text-white/70 mb-1.5">
+                    {t("coachDashboard.whatsapp")}
+                  </label>
+                  <input
+                    type="tel"
+                    inputMode="tel"
+                    value={editForm.whatsapp}
+                    onChange={(e) =>
+                      setEditForm((prev) => ({ ...prev, whatsapp: e.target.value }))
+                    }
+                    placeholder="01XXXXXXXXX"
+                    className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm text-white outline-none placeholder:text-white/30 focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                    dir="ltr"
+                  />
+                </div>
+
+                {/* Action buttons */}
+                <div className="flex gap-3 pt-1">
+                  <button
+                    onClick={handleSaveProfile}
+                    disabled={saving || !editForm.name.trim() || editForm.areas.length === 0}
+                    className="flex-1 flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/30 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {saving ? (
+                      <>
+                        <Loader2 size={16} className="animate-spin" />
+                        {t("coachDashboard.saving")}
+                      </>
+                    ) : (
+                      <>
+                        <Check size={16} />
+                        {t("common.save")}
+                      </>
+                    )}
+                  </button>
+                  <button
+                    onClick={() => setEditing(false)}
+                    className="rounded-full border border-white/10 px-6 py-3 text-sm font-medium text-white/50 transition-all hover:bg-white/5 hover:text-white/70"
+                  >
+                    {t("common.cancel")}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* ── Save Success Toast ── */}
+        <AnimatePresence>
+          {saveSuccess && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="flex items-center justify-center gap-2 rounded-full bg-emerald-500/15 border border-emerald-500/25 py-2.5 px-4 text-sm font-medium text-emerald-400"
+            >
+              <Check size={14} />
+              {t("coachDashboard.profileUpdated")}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Sign Out */}
         <button

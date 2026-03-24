@@ -15,12 +15,16 @@ import {
   ChevronRight,
   Sparkles,
   Search,
+  Check,
+  Loader2,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation, useLocale } from "@/i18n";
 import { PlayerCard } from "@/components/cards/player-card";
 import { EmptyState } from "@/components/empty-state";
+import { AREAS } from "@/lib/constants";
 import {
   slideUp,
   fadeIn,
@@ -96,6 +100,12 @@ export default function PlayerProfilePage() {
   const [loadingBookings, setLoadingBookings] = useState(true);
   const [error, setError] = useState(false);
 
+  // Edit profile state
+  const [editing, setEditing] = useState(false);
+  const [editForm, setEditForm] = useState({ name: "", area: "" });
+  const [saving, setSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+
   const fetchProfile = useCallback(async () => {
     setLoadingProfile(true);
     try {
@@ -127,6 +137,34 @@ export default function PlayerProfilePage() {
       setLoadingBookings(false);
     }
   }, []);
+
+  const handleSaveProfile = useCallback(async () => {
+    if (saving || !editForm.name.trim()) return;
+    setSaving(true);
+    try {
+      const areaObj = AREAS.find((a) => a.key === editForm.area);
+      const payload: Record<string, string> = { name: editForm.name.trim() };
+      if (editForm.area) {
+        payload.area = editForm.area;
+        payload.areaAr = areaObj?.labelAr ?? editForm.area;
+      }
+      const res = await fetch("/api/player/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) {
+        setEditing(false);
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 2000);
+        await fetchProfile();
+      }
+    } catch {
+      // Save failed silently — user can retry
+    } finally {
+      setSaving(false);
+    }
+  }, [saving, editForm, fetchProfile]);
 
   useEffect(() => {
     fetchProfile();
@@ -438,12 +476,128 @@ export default function PlayerProfilePage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
+        className="mb-3"
       >
-        <button className="w-full flex items-center justify-center gap-2 rounded-full border border-white/10 py-3.5 text-sm font-semibold text-white/60 transition-all hover:bg-white/5 hover:text-white/90 active:scale-[0.98]">
-          <Edit3 size={16} />
-          {t("playerProfile.editProfile")}
+        <button
+          onClick={() => {
+            if (editing) {
+              setEditing(false);
+            } else {
+              setEditForm({
+                name: profile.name,
+                area: profile.area || "",
+              });
+              setEditing(true);
+            }
+          }}
+          className={`w-full flex items-center justify-center gap-2 rounded-full border py-3.5 text-sm font-semibold transition-all active:scale-[0.98] ${
+            editing
+              ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+              : "border-white/10 text-white/60 hover:bg-white/5 hover:text-white/90"
+          }`}
+        >
+          {editing ? <X size={16} /> : <Edit3 size={16} />}
+          {editing ? t("common.cancel") : t("playerProfile.editProfile")}
         </button>
       </motion.div>
+
+      {/* ── Edit Form (slide down) ── */}
+      <AnimatePresence>
+        {editing && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-hidden mb-3"
+          >
+            <div className="rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 p-5 space-y-5">
+              {/* Name field */}
+              <div>
+                <label className="block text-sm font-medium text-white/70 mb-1.5">
+                  {t("playerProfile.name")}
+                </label>
+                <input
+                  type="text"
+                  value={editForm.name}
+                  onChange={(e) =>
+                    setEditForm((prev) => ({ ...prev, name: e.target.value }))
+                  }
+                  className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm text-white outline-none placeholder:text-white/30 focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                  dir="auto"
+                />
+              </div>
+
+              {/* Area selection */}
+              <div>
+                <label className="block text-sm font-medium text-white/70 mb-2">
+                  {t("playerProfile.selectArea")}
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {AREAS.filter((a) => a.key !== "all").map((area) => (
+                    <button
+                      key={area.key}
+                      type="button"
+                      onClick={() =>
+                        setEditForm((prev) => ({ ...prev, area: area.key }))
+                      }
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                        editForm.area === area.key
+                          ? "bg-emerald-500/15 border border-emerald-500/30 text-emerald-400"
+                          : "bg-white/5 border border-white/10 text-white/50 hover:text-white/70"
+                      }`}
+                    >
+                      {locale === "ar" ? area.labelAr : area.labelEn}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex gap-3 pt-1">
+                <button
+                  onClick={handleSaveProfile}
+                  disabled={saving || !editForm.name.trim()}
+                  className="flex-1 flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/30 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {saving ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" />
+                      {t("playerProfile.saving")}
+                    </>
+                  ) : (
+                    <>
+                      <Check size={16} />
+                      {t("common.save")}
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => setEditing(false)}
+                  className="rounded-full border border-white/10 px-6 py-3 text-sm font-medium text-white/50 transition-all hover:bg-white/5 hover:text-white/70"
+                >
+                  {t("common.cancel")}
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Save Success Toast ── */}
+      <AnimatePresence>
+        {saveSuccess && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="mb-3 flex items-center justify-center gap-2 rounded-full bg-emerald-500/15 border border-emerald-500/25 py-2.5 px-4 text-sm font-medium text-emerald-400"
+          >
+            <Check size={14} />
+            {t("playerProfile.profileUpdated")}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── Sign Out ── */}
       <button
