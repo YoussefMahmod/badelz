@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
@@ -8,60 +8,58 @@ import {
   X,
   SlidersHorizontal,
   Package,
-  ArrowUpRight,
+  ShoppingBag,
+  Flame,
   Zap,
   Footprints,
   Briefcase,
   Circle,
   Shirt,
   Watch,
-  LayoutGrid,
+  Layers,
+  ChevronDown,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { MainLayout } from "@/components/main-layout";
 import { ListingCard } from "@/components/cards/listing-card";
+import type { ListingData } from "@/components/cards/listing-card";
 import { EmptyState } from "@/components/empty-state";
 import { useTranslation, useLocale } from "@/i18n";
 import { useAuth } from "@/lib/auth-context";
 import { AREAS, LISTING_CATEGORY_COLORS } from "@/lib/constants";
 import { heroTextReveal, staggerItem } from "@/lib/animations";
 
-interface ListingData {
-  id: string;
-  title: string;
-  titleAr?: string | null;
-  price: number | string;
-  category: string;
-  condition: string;
-  photos: string[];
-  area: string;
-  areaAr?: string | null;
-  views: number;
-  createdAt: string;
-}
+// ─── Types ───
 
 type SortOption = "newest" | "price_asc" | "price_desc";
 
-const CATEGORY_ICONS: Record<string, React.ElementType> = {
-  all: LayoutGrid,
-  RACKETS: Zap,
-  SHOES: Footprints,
-  BAGS: Briefcase,
-  BALLS: Circle,
-  APPAREL: Shirt,
-  ACCESSORIES: Watch,
-};
+// Extend ListingData with seller info for the activity ticker
+interface ListingWithSeller extends ListingData {
+  sellerName?: string;
+}
 
-const CATEGORIES = [
-  { key: "all", labelKey: "common.viewAll" as const, color: "#9ca3af" },
-  { key: "RACKETS", labelKey: "market.rackets" as const, color: LISTING_CATEGORY_COLORS.RACKETS },
-  { key: "SHOES", labelKey: "market.shoes" as const, color: LISTING_CATEGORY_COLORS.SHOES },
-  { key: "BAGS", labelKey: "market.bags" as const, color: LISTING_CATEGORY_COLORS.BAGS },
-  { key: "BALLS", labelKey: "market.balls" as const, color: LISTING_CATEGORY_COLORS.BALLS },
-  { key: "APPAREL", labelKey: "market.apparel" as const, color: LISTING_CATEGORY_COLORS.APPAREL },
-  { key: "ACCESSORIES", labelKey: "market.accessories" as const, color: LISTING_CATEGORY_COLORS.ACCESSORIES },
+// ─── Constants ───
+
+const CATEGORY_ENTRIES = [
+  { key: "all", icon: Layers, color: "#9ca3af" },
+  { key: "RACKETS", icon: Zap, color: LISTING_CATEGORY_COLORS.RACKETS },
+  { key: "SHOES", icon: Footprints, color: LISTING_CATEGORY_COLORS.SHOES },
+  { key: "BAGS", icon: Briefcase, color: LISTING_CATEGORY_COLORS.BAGS },
+  { key: "BALLS", icon: Circle, color: LISTING_CATEGORY_COLORS.BALLS },
+  { key: "APPAREL", icon: Shirt, color: LISTING_CATEGORY_COLORS.APPAREL },
+  { key: "ACCESSORIES", icon: Watch, color: LISTING_CATEGORY_COLORS.ACCESSORIES },
 ] as const;
+
+const CATEGORY_LABEL_KEYS: Record<string, string> = {
+  all: "common.viewAll",
+  RACKETS: "market.rackets",
+  SHOES: "market.shoes",
+  BAGS: "market.bags",
+  BALLS: "market.balls",
+  APPAREL: "market.apparel",
+  ACCESSORIES: "market.accessories",
+};
 
 const SORT_OPTIONS: { key: SortOption; labelKey: string }[] = [
   { key: "newest", labelKey: "market.newest" },
@@ -69,55 +67,116 @@ const SORT_OPTIONS: { key: SortOption; labelKey: string }[] = [
   { key: "price_desc", labelKey: "market.priceHighLow" },
 ];
 
+const ITEMS_PER_PAGE = 20;
+
+// ─── Helpers ───
+
+function getTimeAgo(dateString: string): string {
+  const diffMs = Date.now() - new Date(dateString).getTime();
+  const mins = Math.floor(diffMs / 60000);
+  if (mins < 60) return `${mins}m`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h`;
+  return `${Math.floor(hours / 24)}d`;
+}
+
+// ─── Page Component ───
+
 export default function MarketPage() {
   const { t } = useTranslation();
   const { locale } = useLocale();
   const router = useRouter();
   const { isAuthenticated } = useAuth();
 
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  // Filter & search state
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedArea, setSelectedArea] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("newest");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [sortOpen, setSortOpen] = useState(false);
+
+  // Pending filter state (applied on confirm in drawer)
+  const [pendingArea, setPendingArea] = useState("all");
+
+  // Data state
   const [listings, setListings] = useState<ListingData[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [filterOpen, setFilterOpen] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
-  // Pending filter state (applied on "Apply")
-  const [pendingArea, setPendingArea] = useState("all");
-  const [pendingSort, setPendingSort] = useState<SortOption>("newest");
+  // Auxiliary data
+  const [recentItems, setRecentItems] = useState<ListingWithSeller[]>([]);
+  const [trending, setTrending] = useState<ListingData[]>([]);
+  const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({});
 
+  // Activity ticker
+  const [activityIndex, setActivityIndex] = useState(0);
+
+  // Debounce ref
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+
+  // ─── Debounced search ───
   const handleSearchChange = useCallback((value: string) => {
     setSearchQuery(value);
-    const timeout = setTimeout(() => setDebouncedSearch(value), 400);
-    return () => clearTimeout(timeout);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => setDebouncedSearch(value), 400);
   }, []);
 
+  // ─── Parallel initial fetches (recent, trending, counts) ───
+  useEffect(() => {
+    const controller = new AbortController();
+
+    Promise.allSettled([
+      fetch("/api/market?recent=true&limit=10", { signal: controller.signal })
+        .then((r) => r.json())
+        .then((d) => setRecentItems(d.data ?? [])),
+
+      fetch("/api/market?trending=true", { signal: controller.signal })
+        .then((r) => r.json())
+        .then((d) => setTrending(d.data ?? [])),
+
+      fetch("/api/market?counts=true", { signal: controller.signal })
+        .then((r) => r.json())
+        .then((d) => setCategoryCounts(d.data ?? {})),
+    ]);
+
+    return () => controller.abort();
+  }, []);
+
+  // ─── Main listings fetch (re-runs on filter changes) ───
   useEffect(() => {
     const controller = new AbortController();
 
     async function fetchListings() {
       setLoading(true);
+      setPage(1);
       try {
         const params = new URLSearchParams();
-        if (selectedCategory !== "all") params.set("category", selectedCategory);
+        if (selectedCategory) params.set("category", selectedCategory);
         if (selectedArea !== "all") params.set("area", selectedArea);
         if (debouncedSearch) params.set("search", debouncedSearch);
         params.set("sort", sortBy);
+        params.set("page", "1");
+        params.set("limit", String(ITEMS_PER_PAGE));
 
         const res = await fetch(`/api/market?${params.toString()}`, {
           signal: controller.signal,
         });
         if (!res.ok) throw new Error("Failed to fetch");
         const json = await res.json();
-        setListings(json.data ?? []);
-        setTotal(json.total ?? json.data?.length ?? 0);
+        const data: ListingData[] = json.data ?? [];
+        setListings(data);
+        setTotal(json.total ?? data.length);
+        setHasMore(data.length >= ITEMS_PER_PAGE);
       } catch (err) {
         if ((err as Error).name !== "AbortError") {
           setListings([]);
+          setTotal(0);
         }
       } finally {
         setLoading(false);
@@ -128,51 +187,85 @@ export default function MarketPage() {
     return () => controller.abort();
   }, [selectedCategory, selectedArea, debouncedSearch, sortBy]);
 
+  // ─── Load more ───
+  const loadMore = useCallback(async () => {
+    if (loadingMore || !hasMore) return;
+    setLoadingMore(true);
+    const nextPage = page + 1;
+
+    try {
+      const params = new URLSearchParams();
+      if (selectedCategory) params.set("category", selectedCategory);
+      if (selectedArea !== "all") params.set("area", selectedArea);
+      if (debouncedSearch) params.set("search", debouncedSearch);
+      params.set("sort", sortBy);
+      params.set("page", String(nextPage));
+      params.set("limit", String(ITEMS_PER_PAGE));
+
+      const res = await fetch(`/api/market?${params.toString()}`);
+      if (!res.ok) throw new Error("Failed to fetch");
+      const json = await res.json();
+      const data: ListingData[] = json.data ?? [];
+      setListings((prev) => [...prev, ...data]);
+      setPage(nextPage);
+      setHasMore(data.length >= ITEMS_PER_PAGE);
+    } catch {
+      // Silent fail on load more -- user can retry
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [loadingMore, hasMore, page, selectedCategory, selectedArea, debouncedSearch, sortBy]);
+
+  // ─── Activity ticker rotation ───
+  useEffect(() => {
+    if (recentItems.length === 0) return;
+    const interval = setInterval(() => {
+      setActivityIndex((i) => (i + 1) % recentItems.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [recentItems.length]);
+
+  // ─── Filter drawer handlers ───
   const openFilter = () => {
     setPendingArea(selectedArea);
-    setPendingSort(sortBy);
     setFilterOpen(true);
   };
 
   const applyFilters = () => {
     setSelectedArea(pendingArea);
-    setSortBy(pendingSort);
     setFilterOpen(false);
   };
 
-  const spotlightListing = useMemo(() => {
-    if (listings.length <= 2) return null;
-    return listings[0];
-  }, [listings]);
-
-  const gridListings = useMemo(() => {
-    if (!spotlightListing) return listings;
-    return listings.slice(1);
-  }, [listings, spotlightListing]);
-
-  // Count unique categories in results
-  const activeCategoriesCount = useMemo(() => {
-    const cats = new Set(listings.map((l) => l.category));
-    return cats.size;
-  }, [listings]);
-
-  const hasActiveFilters = selectedArea !== "all" || sortBy !== "newest";
+  // ─── Computed values ───
+  const hasActiveFilters = selectedArea !== "all" || debouncedSearch.length > 0;
+  const totalCount = Object.values(categoryCounts).reduce((sum, c) => sum + c, 0);
+  const currentActivityItem = recentItems[activityIndex];
 
   return (
     <MainLayout showNav navType="public">
-      <div className="mx-auto max-w-5xl px-4 py-6">
-        {/* ─── Bold Header ─── */}
-        <div className="flex items-start justify-between mb-2">
+      <div className="mx-auto max-w-5xl px-4 py-6 pb-40">
+
+        {/* ════════════════════════════════════════════════════════
+            Section 1: Hero Header
+            ════════════════════════════════════════════════════════ */}
+        <div className="flex items-start justify-between mb-1">
           <motion.div {...heroTextReveal}>
             <h1 className="text-5xl sm:text-7xl font-extrabold uppercase tracking-tight font-[family-name:var(--font-display)] text-white glow-lime-text leading-none">
               {t("market.title")}
             </h1>
-            <p className="text-white/40 text-sm mt-2">
-              {t("market.tagline")}
-            </p>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="text-white/40 text-sm mt-2"
+            >
+              <span className="text-white/60 font-semibold">{total}</span>{" "}
+              {t("market.listingsCount", { count: total })} &middot;{" "}
+              {t("market.newItemsDaily")}
+            </motion.p>
           </motion.div>
 
-          {/* Search + Filter icons */}
+          {/* Search + Filter icon buttons */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -181,13 +274,15 @@ export default function MarketPage() {
           >
             <button
               onClick={() => setSearchOpen(!searchOpen)}
-              className="w-11 h-11 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+              className="w-11 h-11 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all"
+              aria-label={t("common.search")}
             >
               {searchOpen ? <X size={18} /> : <Search size={18} />}
             </button>
             <button
               onClick={openFilter}
-              className="relative w-11 h-11 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+              className="relative w-11 h-11 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all"
+              aria-label={t("market.filterTitle")}
             >
               <SlidersHorizontal size={18} />
               {hasActiveFilters && (
@@ -197,26 +292,20 @@ export default function MarketPage() {
           </motion.div>
         </div>
 
-        {/* Stats bar + My Listings link */}
-        {!loading && (
+        {/* My Listings link */}
+        {isAuthenticated && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="flex items-center justify-between mb-5"
+            className="mb-4"
           >
-            <p className="text-white/25 text-xs font-[family-name:var(--font-display)] tracking-wider uppercase">
-              {t("market.listingsCount", { count: total })} &middot;{" "}
-              {t("market.categoriesCount", { count: activeCategoriesCount })}
-            </p>
-            {isAuthenticated && (
-              <Link
-                href="/market/mine"
-                className="text-xs font-semibold text-[#c8ff00]/70 hover:text-[#c8ff00] transition-colors"
-              >
-                {t("market.myListings")}
-              </Link>
-            )}
+            <Link
+              href="/market/mine"
+              className="text-xs font-semibold text-[#c8ff00]/70 hover:text-[#c8ff00] transition-colors"
+            >
+              {t("market.myListings")}
+            </Link>
           </motion.div>
         )}
 
@@ -231,7 +320,10 @@ export default function MarketPage() {
               className="overflow-hidden mb-4"
             >
               <div className="relative">
-                <Search size={20} className="absolute start-4 top-1/2 -translate-y-1/2 text-[#c8ff00]/50" />
+                <Search
+                  size={20}
+                  className="absolute start-4 top-1/2 -translate-y-1/2 text-[#c8ff00]/50"
+                />
                 <input
                   type="text"
                   autoFocus
@@ -245,139 +337,352 @@ export default function MarketPage() {
           )}
         </AnimatePresence>
 
-        {/* ─── Category Tab Navigation ─── */}
+        {/* ════════════════════════════════════════════════════════
+            Section 2: Live Marquee — Recently Added
+            ════════════════════════════════════════════════════════ */}
+        {recentItems.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="relative overflow-hidden py-3 mb-5"
+          >
+            {/* Fade edges */}
+            <div className="absolute inset-y-0 start-0 w-12 bg-gradient-to-e from-[#0a0f1a] to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-y-0 end-0 w-12 bg-gradient-to-s from-[#0a0f1a] to-transparent z-10 pointer-events-none" />
+
+            {/* Scrolling content — duplicated for seamless loop */}
+            <div className="flex gap-4 animate-marquee hover:[animation-play-state:paused]">
+              {[...recentItems, ...recentItems].map((item, i) => (
+                <Link
+                  key={`${item.id}-${i}`}
+                  href={`/market/${item.id}`}
+                  className="flex items-center gap-2.5 shrink-0 rounded-lg bg-white/5 border border-white/10 px-3 py-2 hover:bg-white/10 transition-colors"
+                >
+                  {/* 32px thumbnail */}
+                  <div className="w-8 h-8 rounded-md overflow-hidden shrink-0 bg-white/5 flex items-center justify-center">
+                    {item.photos?.[0] ? (
+                      <img
+                        src={item.photos[0]}
+                        alt=""
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <Package size={14} className="text-white/20" />
+                    )}
+                  </div>
+                  <span className="text-xs font-medium text-white/70 truncate max-w-[120px]">
+                    {locale === "ar" && item.titleAr ? item.titleAr : item.title}
+                  </span>
+                  <span className="text-xs font-bold text-emerald-400">
+                    {item.price} {t("common.egp")}
+                  </span>
+                  <span className="text-[10px] text-white/25">
+                    {getTimeAgo(item.createdAt)}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* ════════════════════════════════════════════════════════
+            Section 3: Category Cards
+            ════════════════════════════════════════════════════════ */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
-          className="flex overflow-x-auto hide-scrollbar border-b border-white/5 mb-6"
+          className="flex gap-2 overflow-x-auto snap-x snap-mandatory pb-2 mb-6 scrollbar-hide"
         >
-          {CATEGORIES.map((cat) => {
-            const isSelected = selectedCategory === cat.key;
-            const Icon = CATEGORY_ICONS[cat.key] ?? Package;
+          {CATEGORY_ENTRIES.map((cat) => {
+            const isActive =
+              selectedCategory === ""
+                ? cat.key === "all"
+                : selectedCategory === cat.key;
+            const Icon = cat.icon;
+            const labelKey = CATEGORY_LABEL_KEYS[cat.key] ?? "common.viewAll";
+            const count =
+              cat.key === "all" ? totalCount : (categoryCounts[cat.key] ?? 0);
+
             return (
               <button
                 key={cat.key}
-                onClick={() => setSelectedCategory(cat.key)}
-                className="relative shrink-0 flex items-center gap-2 px-4 py-3.5 transition-colors cursor-pointer"
+                onClick={() =>
+                  setSelectedCategory(cat.key === "all" ? "" : cat.key)
+                }
+                className={`shrink-0 snap-start flex flex-col items-center gap-1.5 rounded-xl px-4 py-3 w-[5.5rem] transition-all border ${
+                  isActive
+                    ? "bg-white/10 border-white/20"
+                    : "border-white/10 bg-white/5 hover:bg-white/8"
+                }`}
+                style={
+                  isActive
+                    ? {
+                        borderColor: cat.color,
+                        backgroundColor: `${cat.color}10`,
+                      }
+                    : undefined
+                }
               >
                 <Icon
-                  size={16}
-                  style={{ color: isSelected ? cat.color : undefined }}
-                  className={isSelected ? "" : "text-white/30"}
+                  size={20}
+                  style={{
+                    color: isActive ? cat.color : "rgba(255,255,255,0.3)",
+                  }}
                 />
                 <span
-                  className={`text-xs font-bold uppercase tracking-wider font-[family-name:var(--font-display)] whitespace-nowrap ${
-                    isSelected ? "text-white" : "text-white/30"
+                  className={`text-[10px] font-bold uppercase tracking-wider whitespace-nowrap ${
+                    isActive ? "text-white/90" : "text-white/40"
                   }`}
                 >
-                  {t(cat.labelKey)}
+                  {t(labelKey as Parameters<typeof t>[0])}
                 </span>
-                {isSelected && (
-                  <motion.div
-                    layoutId="market-tab-underline"
-                    className="absolute bottom-0 inset-x-0 h-[3px] rounded-full"
-                    style={{ backgroundColor: cat.color }}
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                  />
-                )}
+                <span className="text-[10px] text-white/25">{count}</span>
               </button>
             );
           })}
         </motion.div>
 
-        {/* ─── Content ─── */}
-        {loading ? (
-          <div className="space-y-4">
-            {/* Spotlight skeleton */}
-            <div className="h-48 rounded-2xl animate-pulse dark-skeleton" />
-            {/* Grid skeletons */}
-            <div className="grid grid-cols-2 gap-4">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="overflow-hidden animate-pulse">
-                  <div className="h-1 dark-skeleton" />
-                  <div className="h-44 dark-skeleton" />
-                  <div className="bg-[#0d1220] p-3 space-y-2">
-                    <div className="h-3 w-1/3 rounded dark-skeleton" />
+        {/* ════════════════════════════════════════════════════════
+            Section 4: Trending
+            ════════════════════════════════════════════════════════ */}
+        {trending.length > 0 && (
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
+            className="mb-8"
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <Flame size={18} className="text-orange-400" />
+              <h2 className="text-base font-bold text-white font-[family-name:var(--font-display)] uppercase tracking-wide">
+                {t("market.trendingNow")}
+              </h2>
+            </div>
+            <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-hide">
+              {trending.map((item) => (
+                <div key={item.id} className="shrink-0 snap-start w-64">
+                  <ListingCard
+                    listing={item}
+                    variant="compact"
+                    onClick={() => router.push(`/market/${item.id}`)}
+                  />
+                </div>
+              ))}
+            </div>
+          </motion.section>
+        )}
+
+        {/* ════════════════════════════════════════════════════════
+            Section 5: Main Listings Grid
+            ════════════════════════════════════════════════════════ */}
+        <section>
+          {/* Section header: title, active filter chips, sort dropdown */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h2 className="text-base font-bold text-white font-[family-name:var(--font-display)] uppercase tracking-wide">
+                {t("market.allListings")}
+              </h2>
+
+              {/* Dismissible area chip */}
+              {selectedArea !== "all" && (
+                <button
+                  onClick={() => setSelectedArea("all")}
+                  className="flex items-center gap-1 rounded-full bg-white/5 border border-white/10 px-2.5 py-1 text-[10px] text-white/50 hover:bg-white/10 transition-colors"
+                >
+                  <MapPin size={10} />
+                  {locale === "ar"
+                    ? AREAS.find((a) => a.key === selectedArea)?.labelAr
+                    : AREAS.find((a) => a.key === selectedArea)?.labelEn}
+                  <X size={10} className="ms-1 text-white/30" />
+                </button>
+              )}
+
+              {/* Dismissible search chip */}
+              {debouncedSearch && (
+                <button
+                  onClick={() => {
+                    setSearchQuery("");
+                    setDebouncedSearch("");
+                  }}
+                  className="flex items-center gap-1 rounded-full bg-white/5 border border-white/10 px-2.5 py-1 text-[10px] text-white/50 hover:bg-white/10 transition-colors"
+                >
+                  <Search size={10} />
+                  &ldquo;{debouncedSearch}&rdquo;
+                  <X size={10} className="ms-1 text-white/30" />
+                </button>
+              )}
+            </div>
+
+            {/* Inline sort dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setSortOpen(!sortOpen)}
+                className="flex items-center gap-1.5 rounded-lg bg-white/5 border border-white/10 px-3 py-2 text-[11px] text-white/50 hover:text-white/70 hover:bg-white/10 transition-all"
+              >
+                {t(
+                  SORT_OPTIONS.find((o) => o.key === sortBy)
+                    ?.labelKey as Parameters<typeof t>[0]
+                )}
+                <ChevronDown
+                  size={12}
+                  className={`transition-transform ${sortOpen ? "rotate-180" : ""}`}
+                />
+              </button>
+              <AnimatePresence>
+                {sortOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute top-full mt-1 end-0 z-30 min-w-[160px] rounded-xl bg-[#111827] border border-white/10 py-1 shadow-xl"
+                  >
+                    {SORT_OPTIONS.map((opt) => (
+                      <button
+                        key={opt.key}
+                        onClick={() => {
+                          setSortBy(opt.key);
+                          setSortOpen(false);
+                        }}
+                        className={`w-full text-start px-4 py-2.5 text-xs transition-colors ${
+                          sortBy === opt.key
+                            ? "text-[#c8ff00] bg-[#c8ff00]/5"
+                            : "text-white/50 hover:text-white/70 hover:bg-white/5"
+                        }`}
+                      >
+                        {t(opt.labelKey as Parameters<typeof t>[0])}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+
+          {/* Grid content */}
+          {loading ? (
+            /* Skeleton grid */
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="rounded-2xl overflow-hidden">
+                  <div className="aspect-[4/3] dark-skeleton" />
+                  <div className="bg-[#0d1220] p-3.5 space-y-2">
                     <div className="h-4 w-3/4 rounded dark-skeleton" />
-                    <div className="h-6 w-1/2 rounded dark-skeleton" />
+                    <div className="h-5 w-1/2 rounded dark-skeleton" />
+                    <div className="h-3 w-2/3 rounded dark-skeleton" />
                   </div>
                 </div>
               ))}
             </div>
-          </div>
-        ) : listings.length === 0 ? (
-          <EmptyState
-            icon={<Package size={28} />}
-            title={t("market.noListings")}
-            description={t("market.noListingsDesc")}
-            action={{
-              label: t("market.createListing"),
-              onClick: () => router.push("/market/sell"),
-            }}
-          />
-        ) : (
-          <div className="space-y-4">
-            {/* Spotlight card */}
-            {spotlightListing && (
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <ListingCard
-                  listing={spotlightListing}
-                  variant="spotlight"
-                  onClick={() => router.push(`/market/${spotlightListing.id}`)}
-                />
-              </motion.div>
-            )}
+          ) : listings.length === 0 ? (
+            <EmptyState
+              icon={<Package size={28} />}
+              title={t("market.noListings")}
+              description={t("market.noListingsDesc")}
+              action={{
+                label: t("market.createListing"),
+                onClick: () => router.push("/market/sell"),
+              }}
+            />
+          ) : (
+            <>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <AnimatePresence mode="popLayout">
+                  {listings.map((listing, i) => (
+                    <motion.div
+                      key={listing.id}
+                      {...staggerItem}
+                      transition={{ delay: i * 0.04 }}
+                    >
+                      <ListingCard
+                        listing={listing}
+                        variant="default"
+                        onClick={() => router.push(`/market/${listing.id}`)}
+                      />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
 
-            {/* Grid */}
-            <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
-              <AnimatePresence mode="popLayout">
-                {gridListings.map((listing, i) => (
-                  <motion.div
-                    key={listing.id}
-                    {...staggerItem}
-                    transition={{ delay: i * 0.04 }}
+              {/* Load More button */}
+              {hasMore && (
+                <div className="flex justify-center mt-6">
+                  <button
+                    onClick={loadMore}
+                    disabled={loadingMore}
+                    className="rounded-full bg-white/5 border border-white/10 px-8 py-3 text-sm font-semibold text-white/60 hover:text-white hover:bg-white/10 transition-all disabled:opacity-40"
                   >
-                    <ListingCard
-                      listing={listing}
-                      onClick={() => router.push(`/market/${listing.id}`)}
-                    />
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
-          </div>
-        )}
-
-        {/* ─── Bottom Sell CTA ─── */}
-        <motion.button
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          whileTap={{ scale: 0.97 }}
-          onClick={() => router.push("/market/sell")}
-          className="w-full mt-8 mb-4 rounded-xl bg-gradient-to-r from-[#c8ff00] to-[#a3d900] py-4 px-6 flex items-center justify-between group cursor-pointer"
-        >
-          <div className="text-start">
-            <p className="text-base font-extrabold text-[#111827] font-[family-name:var(--font-display)] uppercase tracking-wide">
-              {t("market.listYourGear")}
-            </p>
-            <p className="text-xs text-[#111827]/50 mt-0.5">
-              {t("market.tagline")}
-            </p>
-          </div>
-          <ArrowUpRight
-            size={22}
-            className="text-[#111827] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
-          />
-        </motion.button>
+                    {loadingMore ? (
+                      <span className="flex items-center gap-2">
+                        <span className="w-4 h-4 border-2 border-white/20 border-t-white/60 rounded-full animate-spin" />
+                        {t("common.loading")}
+                      </span>
+                    ) : (
+                      t("market.loadMore")
+                    )}
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </section>
       </div>
 
-      {/* ─── Filter Drawer ─── */}
+      {/* ════════════════════════════════════════════════════════
+          Section 7: Live Activity Ticker (floats above sell CTA)
+          ════════════════════════════════════════════════════════ */}
+      {recentItems.length > 0 && currentActivityItem && (
+        <div className="fixed bottom-36 start-4 end-4 z-20 pointer-events-none">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activityIndex}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="pointer-events-auto"
+            >
+              <Link
+                href={`/market/${currentActivityItem.id}`}
+                className="flex items-center gap-3 rounded-xl bg-white/5 backdrop-blur-lg border border-white/10 px-4 py-2.5 shadow-lg"
+              >
+                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+                <span className="text-xs text-white/60 truncate">
+                  {currentActivityItem.sellerName}{" "}
+                  {t("market.justListed")}{" "}
+                  <strong className="text-white/90">
+                    {locale === "ar" && currentActivityItem.titleAr
+                      ? currentActivityItem.titleAr
+                      : currentActivityItem.title}
+                  </strong>
+                </span>
+                <span className="text-[10px] text-white/25 shrink-0">
+                  {getTimeAgo(currentActivityItem.createdAt)}
+                </span>
+              </Link>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      )}
+
+      {/* ════════════════════════════════════════════════════════
+          Section 6: Sticky Sell CTA
+          ════════════════════════════════════════════════════════ */}
+      <div className="fixed bottom-20 start-4 end-4 z-30">
+        <Link
+          href="/market/sell"
+          className="flex items-center justify-center gap-2 w-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all active:scale-[0.98]"
+        >
+          <ShoppingBag size={18} />
+          {t("market.listForSale")}
+        </Link>
+      </div>
+
+      {/* ════════════════════════════════════════════════════════
+          Filter Drawer (area only — sort moved inline)
+          ════════════════════════════════════════════════════════ */}
       <AnimatePresence>
         {filterOpen && (
           <>
@@ -404,7 +709,8 @@ export default function MarketPage() {
                 </h2>
                 <button
                   onClick={() => setFilterOpen(false)}
-                  className="min-w-[44px] min-h-[44px] rounded-full bg-white/5 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  className="min-w-[44px] min-h-[44px] rounded-full bg-white/5 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-colors"
+                  aria-label={t("common.close")}
                 >
                   <X size={16} />
                 </button>
@@ -420,7 +726,8 @@ export default function MarketPage() {
                   <div className="space-y-1">
                     {AREAS.map((area) => {
                       const isSelected = pendingArea === area.key;
-                      const label = locale === "ar" ? area.labelAr : area.labelEn;
+                      const label =
+                        locale === "ar" ? area.labelAr : area.labelEn;
                       return (
                         <button
                           key={area.key}
@@ -435,34 +742,6 @@ export default function MarketPage() {
                             {area.key !== "all" && <MapPin size={14} />}
                             {label}
                           </span>
-                          {isSelected && (
-                            <span className="w-2 h-2 rounded-full bg-[#c8ff00]" />
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Sort */}
-                <div>
-                  <h3 className="text-xs font-bold uppercase tracking-widest text-white/30 font-[family-name:var(--font-display)] mb-3">
-                    {t("market.newest")}
-                  </h3>
-                  <div className="space-y-1">
-                    {SORT_OPTIONS.map((opt) => {
-                      const isSelected = pendingSort === opt.key;
-                      return (
-                        <button
-                          key={opt.key}
-                          onClick={() => setPendingSort(opt.key)}
-                          className={`w-full flex items-center justify-between rounded-lg px-3 py-3 text-sm transition-all ${
-                            isSelected
-                              ? "bg-[#c8ff00]/10 text-[#c8ff00]"
-                              : "text-white/50 hover:bg-white/5 hover:text-white/70"
-                          }`}
-                        >
-                          {t(opt.labelKey as Parameters<typeof t>[0])}
                           {isSelected && (
                             <span className="w-2 h-2 rounded-full bg-[#c8ff00]" />
                           )}
@@ -486,6 +765,14 @@ export default function MarketPage() {
           </>
         )}
       </AnimatePresence>
+
+      {/* Invisible overlay to close sort dropdown on outside click */}
+      {sortOpen && (
+        <div
+          className="fixed inset-0 z-20"
+          onClick={() => setSortOpen(false)}
+        />
+      )}
     </MainLayout>
   );
 }

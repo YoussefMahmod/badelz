@@ -8,6 +8,43 @@ import { Prisma } from "@prisma/client";
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = request.nextUrl;
+
+    // ─── Mode 1: Category counts ───
+    if (searchParams.get("counts") === "true") {
+      const counts = await prisma.listing.groupBy({
+        by: ["category"],
+        where: { status: "ACTIVE" },
+        _count: { id: true },
+      });
+      const result: Record<string, number> = {};
+      counts.forEach((c) => {
+        result[c.category] = c._count.id;
+      });
+      return NextResponse.json({ statusCode: 200, data: result });
+    }
+
+    // ─── Mode 2: Trending (top 6 most-viewed) ───
+    if (searchParams.get("trending") === "true") {
+      const trending = await prisma.listing.findMany({
+        where: { status: "ACTIVE" },
+        orderBy: { views: "desc" },
+        take: 6,
+      });
+      return NextResponse.json({ statusCode: 200, data: trending });
+    }
+
+    // ─── Mode 3: Recently added ───
+    if (searchParams.get("recent") === "true") {
+      const recentLimit = parseInt(searchParams.get("limit") || "10");
+      const recent = await prisma.listing.findMany({
+        where: { status: "ACTIVE" },
+        orderBy: { createdAt: "desc" },
+        take: Math.min(recentLimit, 20),
+      });
+      return NextResponse.json({ statusCode: 200, data: recent });
+    }
+
+    // ─── Main query with filters ───
     const category = searchParams.get("category");
     const area = searchParams.get("area");
     const search = searchParams.get("search");

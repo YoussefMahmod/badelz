@@ -14,6 +14,7 @@ import {
   Settings,
   User,
   Gamepad2,
+  GraduationCap,
 } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import type { ReactNode } from "react";
@@ -32,26 +33,32 @@ export function BottomNav({ variant = "public" }: { variant?: "public" | "owner"
   const publicTabs: NavItem[] = [
     {
       href: "/",
-      icon: <Home size={24} strokeWidth={1.5} />,
-      activeIcon: <Home size={24} strokeWidth={2} />,
+      icon: <Home size={22} strokeWidth={1.5} />,
+      activeIcon: <Home size={22} strokeWidth={2} />,
       labelKey: "nav.home",
     },
     {
-      href: "/play",
-      icon: <Users size={24} strokeWidth={1.5} />,
-      activeIcon: <Users size={24} strokeWidth={2} />,
-      labelKey: "nav.play",
-    },
-    {
       href: "/browse",
-      icon: <Search size={24} strokeWidth={1.5} />,
-      activeIcon: <Search size={24} strokeWidth={2} />,
+      icon: <Search size={22} strokeWidth={1.5} />,
+      activeIcon: <Search size={22} strokeWidth={2} />,
       labelKey: "nav.browse",
     },
     {
+      href: "/play",
+      icon: <Users size={22} strokeWidth={1.5} />,
+      activeIcon: <Users size={22} strokeWidth={2} />,
+      labelKey: "nav.play",
+    },
+    {
+      href: "/coaches",
+      icon: <GraduationCap size={22} strokeWidth={1.5} />,
+      activeIcon: <GraduationCap size={22} strokeWidth={2} />,
+      labelKey: "nav.coaches",
+    },
+    {
       href: "/market",
-      icon: <ShoppingBag size={24} strokeWidth={1.5} />,
-      activeIcon: <ShoppingBag size={24} strokeWidth={2} />,
+      icon: <ShoppingBag size={22} strokeWidth={1.5} />,
+      activeIcon: <ShoppingBag size={22} strokeWidth={2} />,
       labelKey: "nav.market",
     },
   ];
@@ -59,53 +66,59 @@ export function BottomNav({ variant = "public" }: { variant?: "public" | "owner"
   const ownerTabs: NavItem[] = [
     {
       href: "/dashboard",
-      icon: <LayoutDashboard size={24} strokeWidth={1.5} />,
-      activeIcon: <LayoutDashboard size={24} strokeWidth={2} />,
+      icon: <LayoutDashboard size={22} strokeWidth={1.5} />,
+      activeIcon: <LayoutDashboard size={22} strokeWidth={2} />,
       labelKey: "nav.dashboard",
     },
     {
       href: "/courts",
-      icon: <RectangleHorizontal size={24} strokeWidth={1.5} />,
-      activeIcon: <RectangleHorizontal size={24} strokeWidth={2} />,
+      icon: <RectangleHorizontal size={22} strokeWidth={1.5} />,
+      activeIcon: <RectangleHorizontal size={22} strokeWidth={2} />,
       labelKey: "nav.courts",
     },
     {
       href: "/bookings",
-      icon: <CalendarDays size={24} strokeWidth={1.5} />,
-      activeIcon: <CalendarDays size={24} strokeWidth={2} />,
+      icon: <CalendarDays size={22} strokeWidth={1.5} />,
+      activeIcon: <CalendarDays size={22} strokeWidth={2} />,
       labelKey: "nav.bookings",
     },
     {
       href: "/settings",
-      icon: <Settings size={24} strokeWidth={1.5} />,
-      activeIcon: <Settings size={24} strokeWidth={2} />,
+      icon: <Settings size={22} strokeWidth={1.5} />,
+      activeIcon: <Settings size={22} strokeWidth={2} />,
       labelKey: "nav.settings",
     },
   ];
 
   const playerTabs: NavItem[] = [
     {
-      href: "/",
-      icon: <Home size={24} strokeWidth={1.5} />,
-      activeIcon: <Home size={24} strokeWidth={2} />,
-      labelKey: "nav.home",
-    },
-    {
-      href: "/play",
-      icon: <Gamepad2 size={24} strokeWidth={1.5} />,
-      activeIcon: <Gamepad2 size={24} strokeWidth={2} />,
-      labelKey: "nav.play",
-    },
-    {
       href: "/browse",
-      icon: <Search size={24} strokeWidth={1.5} />,
-      activeIcon: <Search size={24} strokeWidth={2} />,
+      icon: <Search size={22} strokeWidth={1.5} />,
+      activeIcon: <Search size={22} strokeWidth={2} />,
       labelKey: "nav.browse",
     },
     {
+      href: "/play",
+      icon: <Gamepad2 size={22} strokeWidth={1.5} />,
+      activeIcon: <Gamepad2 size={22} strokeWidth={2} />,
+      labelKey: "nav.play",
+    },
+    {
+      href: "/coaches",
+      icon: <GraduationCap size={22} strokeWidth={1.5} />,
+      activeIcon: <GraduationCap size={22} strokeWidth={2} />,
+      labelKey: "nav.coaches",
+    },
+    {
+      href: "/market",
+      icon: <ShoppingBag size={22} strokeWidth={1.5} />,
+      activeIcon: <ShoppingBag size={22} strokeWidth={2} />,
+      labelKey: "nav.market",
+    },
+    {
       href: "/my-profile",
-      icon: <User size={24} strokeWidth={1.5} />,
-      activeIcon: <User size={24} strokeWidth={2} />,
+      icon: <User size={22} strokeWidth={1.5} />,
+      activeIcon: <User size={22} strokeWidth={2} />,
       labelKey: "nav.myProfile",
     },
   ];
@@ -113,26 +126,32 @@ export function BottomNav({ variant = "public" }: { variant?: "public" | "owner"
   const coachTabs: NavItem[] = [
     {
       href: "/coach-dashboard",
-      icon: <LayoutDashboard size={24} strokeWidth={1.5} />,
-      activeIcon: <LayoutDashboard size={24} strokeWidth={2} />,
+      icon: <LayoutDashboard size={22} strokeWidth={1.5} />,
+      activeIcon: <LayoutDashboard size={22} strokeWidth={2} />,
       labelKey: "nav.dashboard",
     },
     {
       href: "/browse",
-      icon: <Search size={24} strokeWidth={1.5} />,
-      activeIcon: <Search size={24} strokeWidth={2} />,
+      icon: <Search size={22} strokeWidth={1.5} />,
+      activeIcon: <Search size={22} strokeWidth={2} />,
       labelKey: "nav.browse",
     },
     {
       href: "/coaches",
-      icon: <Users size={24} strokeWidth={1.5} />,
-      activeIcon: <Users size={24} strokeWidth={2} />,
+      icon: <Users size={22} strokeWidth={1.5} />,
+      activeIcon: <Users size={22} strokeWidth={2} />,
       labelKey: "nav.coaches",
     },
     {
+      href: "/market",
+      icon: <ShoppingBag size={22} strokeWidth={1.5} />,
+      activeIcon: <ShoppingBag size={22} strokeWidth={2} />,
+      labelKey: "nav.market",
+    },
+    {
       href: "/settings",
-      icon: <Settings size={24} strokeWidth={1.5} />,
-      activeIcon: <Settings size={24} strokeWidth={2} />,
+      icon: <Settings size={22} strokeWidth={1.5} />,
+      activeIcon: <Settings size={22} strokeWidth={2} />,
       labelKey: "nav.settings",
     },
   ];
@@ -163,7 +182,7 @@ export function BottomNav({ variant = "public" }: { variant?: "public" | "owner"
             <Link
               key={tab.href}
               href={tab.href}
-              className="relative flex flex-col items-center gap-1 px-3 min-h-[44px] justify-center transition-colors cursor-pointer"
+              className={`relative flex flex-col items-center gap-1 min-h-[44px] justify-center transition-colors cursor-pointer ${tabs.length > 4 ? "px-1.5" : "px-3"}`}
               aria-current={active ? "page" : undefined}
             >
               <span

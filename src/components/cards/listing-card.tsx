@@ -1,11 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { MapPin, Package } from "lucide-react";
+import { Eye, Package } from "lucide-react";
 import { useTranslation, useLocale } from "@/i18n";
 import { LISTING_CATEGORY_COLORS } from "@/lib/constants";
 
-interface ListingData {
+export interface ListingData {
   id: string;
   title: string;
   titleAr?: string | null;
@@ -21,7 +21,7 @@ interface ListingData {
 
 interface ListingCardProps {
   listing: ListingData;
-  variant?: "default" | "spotlight";
+  variant?: "default" | "compact";
   onClick?: () => void;
 }
 
@@ -32,15 +32,21 @@ const CONDITION_KEYS: Record<string, string> = {
   WELL_USED: "market.wellUsed",
 };
 
-const CATEGORY_KEYS: Record<string, string> = {
-  RACKETS: "market.rackets",
-  SHOES: "market.shoes",
-  BAGS: "market.bags",
-  BALLS: "market.balls",
-  APPAREL: "market.apparel",
-  ACCESSORIES: "market.accessories",
-  OTHER: "market.other",
-};
+function getTimeAgo(dateString: string): string {
+  const now = new Date();
+  const date = new Date(dateString);
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  if (diffMins < 60) return `${diffMins}m`;
+  const diffHours = Math.floor(diffMins / 60);
+  if (diffHours < 24) return `${diffHours}h`;
+  const diffDays = Math.floor(diffHours / 24);
+  return `${diffDays}d`;
+}
+
+function isNew(dateString: string): boolean {
+  return Date.now() - new Date(dateString).getTime() < 24 * 60 * 60 * 1000;
+}
 
 export function ListingCard({
   listing,
@@ -56,95 +62,65 @@ export function ListingCard({
   const displayArea =
     locale === "ar" && listing.areaAr ? listing.areaAr : listing.area;
   const conditionKey = CONDITION_KEYS[listing.condition] ?? "market.used";
-  const categoryKey = CATEGORY_KEYS[listing.category] ?? "market.other";
   const hasPhoto = listing.photos.length > 0;
+  const showNewBadge = isNew(listing.createdAt);
 
-  /* ─── Spotlight Card (full-width landscape hero) ─── */
-  if (variant === "spotlight") {
+  /* ─── Compact Variant (for trending carousel) ─── */
+  if (variant === "compact") {
     return (
       <motion.div
-        whileTap={{ scale: 0.98 }}
+        whileTap={{ scale: 0.97 }}
         onClick={onClick}
-        className="relative h-48 sm:h-56 rounded-2xl overflow-hidden cursor-pointer group"
-        style={{
-          background: `linear-gradient(135deg, ${accentColor}12 0%, #0a0f1a 60%)`,
-        }}
+        className="h-24 rounded-xl overflow-hidden flex bg-[#0d1220] cursor-pointer group"
       >
-        {/* Background glow */}
-        <div
-          className="absolute inset-0 opacity-20"
-          style={{
-            background: `radial-gradient(circle at 70% 50%, ${accentColor}30, transparent 70%)`,
-          }}
-        />
-
-        <div className="flex h-full">
-          {/* Photo side */}
-          <div className="relative w-1/2 h-full overflow-hidden">
-            {hasPhoto ? (
-              <img
-                src={listing.photos[0]}
-                alt={displayTitle}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-            ) : (
-              <div
-                className="w-full h-full flex items-center justify-center"
-                style={{ backgroundColor: `${accentColor}08` }}
-              >
-                <Package size={48} style={{ color: accentColor }} className="opacity-30" />
-              </div>
-            )}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#0a0f1a]/80" />
-          </div>
-
-          {/* Info side */}
-          <div className="flex-1 p-5 sm:p-6 flex flex-col justify-between relative z-10">
-            {/* Category label */}
-            <span
-              className="text-[10px] font-bold uppercase tracking-[0.2em] font-[family-name:var(--font-display)]"
-              style={{ color: accentColor }}
+        {/* Photo */}
+        <div className="w-24 h-24 shrink-0 overflow-hidden">
+          {hasPhoto ? (
+            <img
+              src={listing.photos[0]}
+              alt={displayTitle}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+          ) : (
+            <div
+              className="w-full h-full flex items-center justify-center"
+              style={{ backgroundColor: `${accentColor}14` }}
             >
-              {t(categoryKey as Parameters<typeof t>[0])}
-            </span>
-
-            <div>
-              {/* Title */}
-              <h3 className="text-lg sm:text-xl font-bold text-white line-clamp-2 leading-tight mb-1">
-                {displayTitle}
-              </h3>
-
-              {/* Condition */}
-              <span className="text-[9px] font-bold uppercase tracking-widest text-white/35 font-[family-name:var(--font-display)]">
-                {t(conditionKey as Parameters<typeof t>[0])}
-              </span>
+              <Package size={24} style={{ color: accentColor }} className="opacity-30" />
             </div>
+          )}
+        </div>
 
-            {/* Price */}
-            <p className="text-2xl sm:text-3xl font-extrabold font-[family-name:var(--font-display)] text-[#c8ff00]">
-              {listing.price}{" "}
-              <span className="text-xs text-white/30 font-normal">
-                {t("common.egp")}
-              </span>
-            </p>
+        {/* Info */}
+        <div className="p-3 flex flex-col justify-center min-w-0">
+          <p className="text-xs font-bold text-white/90 line-clamp-1">
+            {displayTitle}
+          </p>
+          <p className="text-sm font-bold mt-0.5" style={{ color: accentColor }}>
+            {listing.price}{" "}
+            <span className="text-[10px] text-white/30 font-normal">
+              {t("common.egp")}
+            </span>
+          </p>
+          <div className="flex items-center gap-1 mt-1 text-[10px] text-white/30">
+            <Eye size={10} />
+            <span>{listing.views}</span>
           </div>
         </div>
       </motion.div>
     );
   }
 
-  /* ─── Default Card (sport product style) ─── */
+  /* ─── Default Variant (main grid card) ─── */
   return (
     <motion.div
       whileTap={{ scale: 0.97 }}
       onClick={onClick}
-      className="relative rounded-t-none rounded-b-2xl bg-[#0d1220] overflow-hidden cursor-pointer group"
+      className="rounded-2xl overflow-hidden bg-[#0d1220] group cursor-pointer hover:-translate-y-1 hover:shadow-lg hover:shadow-black/30 transition-all duration-300"
+      style={{ borderTop: `4px solid ${accentColor}` }}
     >
-      {/* Category color band */}
-      <div className="h-1" style={{ backgroundColor: accentColor }} />
-
-      {/* Photo area - 70% */}
-      <div className="relative h-44 bg-white/5 overflow-hidden">
+      {/* Photo area */}
+      <div className="aspect-[4/3] relative overflow-hidden">
         {hasPhoto ? (
           <img
             src={listing.photos[0]}
@@ -154,38 +130,53 @@ export function ListingCard({
         ) : (
           <div
             className="w-full h-full flex items-center justify-center"
-            style={{ backgroundColor: `${accentColor}08` }}
+            style={{ backgroundColor: `${accentColor}14` }}
           >
             <Package size={36} style={{ color: accentColor }} className="opacity-25" />
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0d1220] via-transparent to-transparent" />
-      </div>
 
-      {/* Info area */}
-      <div className="p-3 pt-2">
-        {/* Condition */}
-        <span className="text-[9px] font-bold uppercase tracking-widest text-white/35 font-[family-name:var(--font-display)]">
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0d1220] via-transparent to-transparent" />
+
+        {/* Condition pill - top right */}
+        <span className="absolute top-2.5 end-2.5 bg-black/50 backdrop-blur-sm text-[10px] text-white/80 uppercase tracking-wider px-2.5 py-1 rounded-full">
           {t(conditionKey as Parameters<typeof t>[0])}
         </span>
 
+        {/* NEW badge - top left */}
+        {showNewBadge && (
+          <span className="absolute top-2.5 start-2.5 bg-emerald-500 text-white text-[9px] font-bold uppercase px-2 py-0.5 rounded-full animate-pulse">
+            {t("market.newBadge" as Parameters<typeof t>[0])}
+          </span>
+        )}
+      </div>
+
+      {/* Info area */}
+      <div className="p-3.5">
         {/* Title */}
-        <p className="text-sm font-bold text-white line-clamp-1 leading-tight mt-1">
+        <p className="text-sm font-bold text-white/90 line-clamp-1">
           {displayTitle}
         </p>
 
         {/* Price */}
-        <p className="text-[22px] font-extrabold font-[family-name:var(--font-display)] text-[#c8ff00] mt-1">
+        <p className="text-lg font-bold mt-1" style={{ color: accentColor }}>
           {listing.price}{" "}
-          <span className="text-[10px] text-white/30 font-normal">
+          <span className="text-xs text-white/30 font-normal">
             {t("common.egp")}
           </span>
         </p>
 
-        {/* Area - shows on hover */}
-        <div className="flex items-center gap-1 mt-1.5 text-[10px] text-white/0 group-hover:text-white/30 transition-colors duration-300">
-          <MapPin size={9} />
-          <span>{displayArea}</span>
+        {/* Meta row */}
+        <div className="flex items-center gap-2 text-[10px] text-white/30 mt-1.5">
+          <span className="flex items-center gap-0.5">
+            <Eye size={10} />
+            {listing.views}
+          </span>
+          <span>&middot;</span>
+          <span>{getTimeAgo(listing.createdAt)}</span>
+          <span>&middot;</span>
+          <span className="truncate">{displayArea}</span>
         </div>
       </div>
     </motion.div>
