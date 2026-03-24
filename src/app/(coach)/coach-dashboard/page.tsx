@@ -1,0 +1,386 @@
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+import { motion } from "framer-motion";
+import {
+  MapPin,
+  Clock,
+  Banknote,
+  Eye,
+  MessageCircle,
+  ExternalLink,
+  Edit3,
+  Power,
+  Sparkles,
+  AlertCircle,
+} from "lucide-react";
+import Link from "next/link";
+import { useTranslation, useLocale } from "@/i18n";
+import { CoachCard } from "@/components/cards/coach-card";
+import { EmptyState } from "@/components/empty-state";
+import { AREAS } from "@/lib/constants";
+import {
+  slideUp,
+  fadeIn,
+  scaleInGlow,
+  staggerDarkBento,
+  darkBentoItem,
+} from "@/lib/animations";
+
+interface CoachProfileData {
+  id: string;
+  name: string;
+  nameAr?: string | null;
+  phone: string;
+  whatsapp?: string | null;
+  bio?: string | null;
+  bioAr?: string | null;
+  photo?: string | null;
+  areas: string[];
+  areasAr: string[];
+  pricePerHour: number | null;
+  experience?: string | null;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export default function CoachDashboardPage() {
+  const { t } = useTranslation();
+  const { locale } = useLocale();
+
+  const [profile, setProfile] = useState<CoachProfileData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [toggling, setToggling] = useState(false);
+
+  const fetchProfile = useCallback(async () => {
+    setLoading(true);
+    setError(false);
+    try {
+      const res = await fetch("/api/coach/profile");
+      const json = await res.json();
+      if (res.ok && json.data) {
+        setProfile(json.data);
+      } else {
+        setError(true);
+      }
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
+
+  const handleToggleStatus = async () => {
+    if (!profile || toggling) return;
+    setToggling(true);
+    try {
+      const res = await fetch("/api/coach/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isActive: !profile.isActive }),
+      });
+      const json = await res.json();
+      if (res.ok) {
+        setProfile((prev) =>
+          prev ? { ...prev, isActive: !prev.isActive } : prev
+        );
+      }
+    } catch {
+      // Failed to toggle
+    } finally {
+      setToggling(false);
+    }
+  };
+
+  const displayName =
+    profile && locale === "ar" && profile.nameAr
+      ? profile.nameAr
+      : profile?.name ?? "";
+
+  const displayBio =
+    profile && locale === "ar" && profile.bioAr
+      ? profile.bioAr
+      : profile?.bio;
+
+  const getAreaLabel = (areaKey: string): string => {
+    const area = AREAS.find((a) => a.key === areaKey);
+    if (!area) return areaKey;
+    return locale === "ar" ? area.labelAr : area.labelEn;
+  };
+
+  // Loading skeleton
+  if (loading) {
+    return (
+      <div className="mx-auto max-w-lg px-4 py-6 pb-28">
+        <div className="flex flex-col items-center gap-6">
+          <div className="w-64 card-ratio rounded-2xl animate-pulse bg-white/5 border border-white/10" />
+          <div className="w-full space-y-4">
+            <div className="h-14 rounded-2xl bg-white/5 border border-white/10 animate-pulse" />
+            <div className="h-14 rounded-2xl bg-white/5 border border-white/10 animate-pulse" style={{ animationDelay: "100ms" }} />
+            <div className="h-28 rounded-2xl bg-white/5 border border-white/10 animate-pulse" style={{ animationDelay: "200ms" }} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error / no profile
+  if (error || !profile) {
+    return (
+      <div className="mx-auto max-w-lg px-4 py-6 pb-28">
+        <EmptyState
+          icon={<AlertCircle size={28} />}
+          title={t("coachDashboard.noProfile")}
+          description={t("errors.unexpectedError")}
+          action={{
+            label: t("errors.tryAgain"),
+            onClick: fetchProfile,
+          }}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="mx-auto max-w-lg px-4 py-6 pb-28">
+      {/* ── Header ── */}
+      <motion.div {...slideUp} className="mb-6">
+        <h1 className="text-2xl font-bold text-white/90">
+          {t("coachDashboard.title")}
+        </h1>
+      </motion.div>
+
+      {/* ── Profile Card ── */}
+      <motion.div {...scaleInGlow} className="flex justify-center mb-6 relative">
+        {/* Ambient lime glow */}
+        <div className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 w-56 h-56 rounded-full blur-[100px] opacity-10 pointer-events-none bg-[#c8ff00]" />
+        <CoachCard
+          coach={{
+            id: profile.id,
+            name: profile.name,
+            nameAr: profile.nameAr,
+            photo: profile.photo,
+            areas: profile.areas,
+            areasAr: profile.areasAr,
+            pricePerHour: profile.pricePerHour,
+            experience: profile.experience,
+          }}
+          size="lg"
+          interactive
+        />
+      </motion.div>
+
+      {/* ── Status Toggle ── */}
+      <motion.div {...fadeIn} transition={{ delay: 0.15 }} className="mb-6">
+        <button
+          onClick={handleToggleStatus}
+          disabled={toggling}
+          className={`w-full flex items-center justify-between rounded-2xl p-4 border transition-all active:scale-[0.99] ${
+            profile.isActive
+              ? "bg-emerald-500/10 border-emerald-500/20 hover:bg-emerald-500/15"
+              : "bg-white/5 border-white/10 hover:bg-white/[0.07]"
+          } ${toggling ? "opacity-60" : ""}`}
+        >
+          <div className="flex items-center gap-3">
+            <div
+              className={`h-10 w-10 rounded-xl flex items-center justify-center ${
+                profile.isActive
+                  ? "bg-emerald-500/20 text-emerald-400"
+                  : "bg-white/10 text-white/40"
+              }`}
+            >
+              <Power size={18} />
+            </div>
+            <div className="text-start">
+              <p className="text-sm font-semibold text-white/90">
+                {t("coachDashboard.toggleStatus")}
+              </p>
+              <p
+                className={`text-xs font-medium ${
+                  profile.isActive ? "text-emerald-400" : "text-white/40"
+                }`}
+              >
+                {profile.isActive
+                  ? t("coachDashboard.active")
+                  : t("coachDashboard.inactive")}
+              </p>
+            </div>
+          </div>
+
+          {/* Toggle pill */}
+          <div
+            className={`relative h-7 w-12 rounded-full transition-colors ${
+              profile.isActive ? "bg-emerald-500" : "bg-white/15"
+            }`}
+          >
+            <motion.div
+              className="absolute top-0.5 h-6 w-6 rounded-full bg-white shadow-sm"
+              animate={{
+                left: profile.isActive ? "calc(100% - 1.625rem)" : "0.125rem",
+              }}
+              transition={{ type: "spring", stiffness: 500, damping: 30 }}
+            />
+          </div>
+        </button>
+      </motion.div>
+
+      {/* ── Quick Info Cards ── */}
+      <motion.div
+        variants={staggerDarkBento}
+        initial="initial"
+        animate="animate"
+        className="space-y-3 mb-6"
+      >
+        {/* Price per hour */}
+        {profile.pricePerHour !== null && (
+          <motion.div variants={darkBentoItem}>
+            <div className="rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 p-4 flex items-center gap-4">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#c8ff00]/10 text-[#c8ff00]">
+                <Banknote size={18} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-white/40 text-[11px] uppercase tracking-wider font-medium">
+                  {t("coachDashboard.pricePerHour")}
+                </p>
+                <p className="text-white/90 font-bold text-lg font-[family-name:var(--font-display)]">
+                  {profile.pricePerHour} {t("common.egp")}{" "}
+                  <span className="text-white/40 text-xs font-normal">
+                    {t("common.perHour")}
+                  </span>
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Experience */}
+        {profile.experience && (
+          <motion.div variants={darkBentoItem}>
+            <div className="rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 p-4 flex items-center gap-4">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-400">
+                <Clock size={18} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-white/40 text-[11px] uppercase tracking-wider font-medium">
+                  {t("coachDashboard.experience")}
+                </p>
+                <p className="text-white/90 font-semibold text-sm">
+                  {profile.experience}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Areas */}
+        {profile.areas.length > 0 && (
+          <motion.div variants={darkBentoItem}>
+            <div className="rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 p-4">
+              <p className="text-white/40 text-[11px] uppercase tracking-wider font-medium mb-3">
+                {t("coachDashboard.areas")}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {profile.areas.map((area) => (
+                  <span
+                    key={area}
+                    className="inline-flex items-center gap-1 rounded-full bg-[#c8ff00]/10 border border-[#c8ff00]/20 px-3 py-1.5 text-xs font-medium text-[#c8ff00]"
+                  >
+                    <MapPin size={10} />
+                    {getAreaLabel(area)}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Bio */}
+        <motion.div variants={darkBentoItem}>
+          <div className="rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 p-4">
+            <p className="text-white/40 text-[11px] uppercase tracking-wider font-medium mb-2">
+              {t("coachDashboard.bio")}
+            </p>
+            {displayBio ? (
+              <p className="text-white/80 text-sm leading-relaxed whitespace-pre-wrap">
+                {displayBio}
+              </p>
+            ) : (
+              <p className="text-white/30 text-sm italic">
+                {t("coachDashboard.noBio")}
+              </p>
+            )}
+          </div>
+        </motion.div>
+      </motion.div>
+
+      {/* ── Stats Placeholder ── */}
+      <motion.div
+        {...fadeIn}
+        transition={{ delay: 0.4 }}
+        className="mb-6"
+      >
+        <h2 className="text-lg font-bold text-white/90 mb-4">
+          {t("coachDashboard.stats")}
+        </h2>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 p-4 text-center">
+            <div className="flex h-10 w-10 mx-auto items-center justify-center rounded-xl bg-blue-500/10 text-blue-400 mb-2">
+              <Eye size={18} />
+            </div>
+            <p className="text-2xl font-black text-white/20 font-[family-name:var(--font-display)]">
+              --
+            </p>
+            <p className="text-white/30 text-[10px] uppercase tracking-wider mt-1">
+              {t("coachDashboard.profileViews")}
+            </p>
+            <p className="text-white/20 text-[9px] mt-1">
+              {t("coachDashboard.comingSoon")}
+            </p>
+          </div>
+          <div className="rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 p-4 text-center">
+            <div className="flex h-10 w-10 mx-auto items-center justify-center rounded-xl bg-green-500/10 text-green-400 mb-2">
+              <MessageCircle size={18} />
+            </div>
+            <p className="text-2xl font-black text-white/20 font-[family-name:var(--font-display)]">
+              --
+            </p>
+            <p className="text-white/30 text-[10px] uppercase tracking-wider mt-1">
+              {t("coachDashboard.whatsappClicks")}
+            </p>
+            <p className="text-white/20 text-[9px] mt-1">
+              {t("coachDashboard.comingSoon")}
+            </p>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* ── Action Buttons ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className="flex flex-col gap-3"
+      >
+        {/* View public profile */}
+        <Link
+          href={`/coaches/${profile.id}`}
+          className="w-full flex items-center justify-center gap-2 rounded-full bg-[#c8ff00] py-3.5 text-sm font-bold text-[#111827] shadow-lg shadow-[#c8ff00]/20 transition-all hover:shadow-[0_0_30px_rgba(200,255,0,0.3)] active:scale-[0.98]"
+        >
+          <ExternalLink size={16} />
+          {t("coachDashboard.viewPublicProfile")}
+        </Link>
+
+        {/* Edit profile */}
+        <button className="w-full flex items-center justify-center gap-2 rounded-full border border-white/10 py-3.5 text-sm font-semibold text-white/60 transition-all hover:bg-white/5 hover:text-white/90 active:scale-[0.98]">
+          <Edit3 size={16} />
+          {t("coachDashboard.editProfile")}
+        </button>
+      </motion.div>
+    </div>
+  );
+}

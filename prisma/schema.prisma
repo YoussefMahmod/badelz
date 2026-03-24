@@ -10,6 +10,8 @@ datasource db {
 // ─── Enums ───────────────────────────────────────────────
 
 enum UserRole {
+  PLAYER
+  COACH
   VENUE_OWNER
   ADMIN
 }
@@ -54,8 +56,13 @@ model User {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  accounts Account[]
-  venues   Venue[]
+  accounts      Account[]
+  venues        Venue[]
+  playerProfile PlayerProfile?
+  coachProfile  Coach?
+  listings      Listing[]
+  bookings      Booking[]
+  lobbies       Lobby[]
 }
 
 model Account {
@@ -148,6 +155,7 @@ model Booking {
   id               String        @id @default(cuid())
   courtId          String
   venueId          String
+  userId           String?
   playerName       String
   playerPhone      String
   date             DateTime      @db.Date
@@ -162,12 +170,14 @@ model Booking {
 
   court Court @relation(fields: [courtId], references: [id])
   venue Venue @relation(fields: [venueId], references: [id])
+  user  User?  @relation(fields: [userId], references: [id])
   game  Game?
 
   @@index([courtId, date])
   @@index([venueId, date])
   @@index([playerPhone])
   @@index([confirmationCode])
+  @@index([userId])
 }
 
 // ─── Game Link Models ────────────────────────────────────
@@ -253,6 +263,7 @@ model Lobby {
   lobbyCode  String      @unique
   hostName   String
   hostPhone  String
+  hostUserId String?
   area       String
   areaAr     String?
   date       DateTime
@@ -262,12 +273,14 @@ model Lobby {
   status     LobbyStatus @default(OPEN)
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
+  hostUser   User?       @relation(fields: [hostUserId], references: [id])
   players    LobbyPlayer[]
 
   @@index([area])
   @@index([date])
   @@index([status])
   @@index([lobbyCode])
+  @@index([hostUserId])
 }
 
 model LobbyPlayer {
@@ -295,8 +308,11 @@ model PlayerProfile {
   gamesWon    Int        @default(0)
   rating      Decimal    @default(0) @db.Decimal(3, 1)
   tier        PlayerTier @default(BRONZE)
+  userId      String?    @unique
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
+
+  user User? @relation(fields: [userId], references: [id])
 
   @@index([phone])
   @@index([tier])
@@ -317,14 +333,18 @@ model Coach {
   pricePerHour Decimal? @db.Decimal(10, 2)
   experience   String?
   isActive     Boolean  @default(true)
+  userId       String?  @unique
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  user User? @relation(fields: [userId], references: [id])
 
   @@index([isActive])
 }
 
 model Listing {
   id            String           @id @default(cuid())
+  sellerId      String?
   sellerName    String
   sellerPhone   String
   title         String
@@ -343,6 +363,9 @@ model Listing {
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
 
+  seller User? @relation(fields: [sellerId], references: [id])
+
+  @@index([sellerId])
   @@index([category])
   @@index([area])
   @@index([status])

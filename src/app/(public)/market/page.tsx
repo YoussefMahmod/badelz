@@ -18,10 +18,12 @@ import {
   LayoutGrid,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { MainLayout } from "@/components/main-layout";
 import { ListingCard } from "@/components/cards/listing-card";
 import { EmptyState } from "@/components/empty-state";
 import { useTranslation, useLocale } from "@/i18n";
+import { useAuth } from "@/lib/auth-context";
 import { AREAS, LISTING_CATEGORY_COLORS } from "@/lib/constants";
 import { heroTextReveal, staggerItem } from "@/lib/animations";
 
@@ -71,6 +73,7 @@ export default function MarketPage() {
   const { t } = useTranslation();
   const { locale } = useLocale();
   const router = useRouter();
+  const { isAuthenticated } = useAuth();
 
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedArea, setSelectedArea] = useState("all");
@@ -194,17 +197,27 @@ export default function MarketPage() {
           </motion.div>
         </div>
 
-        {/* Stats bar */}
+        {/* Stats bar + My Listings link */}
         {!loading && (
-          <motion.p
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-white/25 text-xs font-[family-name:var(--font-display)] tracking-wider uppercase mb-5"
+            className="flex items-center justify-between mb-5"
           >
-            {t("market.listingsCount", { count: total })} &middot;{" "}
-            {t("market.categoriesCount", { count: activeCategoriesCount })}
-          </motion.p>
+            <p className="text-white/25 text-xs font-[family-name:var(--font-display)] tracking-wider uppercase">
+              {t("market.listingsCount", { count: total })} &middot;{" "}
+              {t("market.categoriesCount", { count: activeCategoriesCount })}
+            </p>
+            {isAuthenticated && (
+              <Link
+                href="/market/mine"
+                className="text-xs font-semibold text-[#c8ff00]/70 hover:text-[#c8ff00] transition-colors"
+              >
+                {t("market.myListings")}
+              </Link>
+            )}
+          </motion.div>
         )}
 
         {/* ─── Expandable Search Bar ─── */}

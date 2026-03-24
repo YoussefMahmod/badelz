@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowRight,
@@ -12,10 +12,12 @@ import {
   FileText,
   AlertCircle,
   Banknote,
+  CheckCircle,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTranslation, useLocale } from "@/i18n";
+import { useAuth } from "@/lib/auth-context";
 import { AREAS } from "@/lib/constants";
 import { getNext7Days, toDateString } from "@/lib/format";
 import { slideUp } from "@/lib/animations";
@@ -51,6 +53,7 @@ export default function CreateLobbyPage() {
   const { t } = useTranslation();
   const { locale } = useLocale();
   const router = useRouter();
+  const { user, isAuthenticated } = useAuth();
 
   const [area, setArea] = useState("");
   const [date, setDate] = useState("");
@@ -68,6 +71,15 @@ export default function CreateLobbyPage() {
     name: false,
     phone: false,
   });
+
+  // Auto-fill from authenticated user
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      if (user.name && !name) setName(user.name);
+      if (user.phone && !phone) setPhone(user.phone);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, user]);
 
   const next7Days = useMemo(() => getNext7Days(), []);
   const timeSlots = useMemo(() => generateTimeSlots(), []);
@@ -312,6 +324,16 @@ export default function CreateLobbyPage() {
 
         {/* Divider */}
         <div className="border-t border-white/5" />
+
+        {/* Logged in badge */}
+        {isAuthenticated && user?.name && (
+          <div className="flex items-center gap-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-3 py-2">
+            <CheckCircle size={14} className="text-emerald-400 shrink-0" />
+            <span className="text-xs text-emerald-400 font-medium">
+              {t("nudge.loggedInAs", { name: user.name })}
+            </span>
+          </div>
+        )}
 
         {/* Name */}
         <motion.div {...slideUp} transition={{ delay: 0.25 }}>

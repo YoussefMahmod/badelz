@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, Phone, AlertCircle } from "lucide-react";
+import { User, Phone, AlertCircle, CheckCircle } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import { slideUp } from "@/lib/animations";
 
@@ -10,6 +10,9 @@ interface JoinGameFormProps {
   onSubmit: (data: { playerName: string; playerPhone: string }) => void;
   loading?: boolean;
   error?: string | null;
+  initialName?: string;
+  initialPhone?: string;
+  authenticatedName?: string;
 }
 
 function isValidEgyptPhone(phone: string): boolean {
@@ -21,10 +24,13 @@ export function JoinGameForm({
   onSubmit,
   loading = false,
   error = null,
+  initialName = "",
+  initialPhone = "",
+  authenticatedName,
 }: JoinGameFormProps) {
   const { t } = useTranslation();
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [name, setName] = useState(initialName);
+  const [phone, setPhone] = useState(initialPhone);
   const [touched, setTouched] = useState({ name: false, phone: false });
 
   const nameError = touched.name && !name.trim();
@@ -45,6 +51,16 @@ export function JoinGameForm({
 
   return (
     <motion.form {...slideUp} onSubmit={handleSubmit} className="space-y-4">
+      {/* Logged in badge */}
+      {authenticatedName && (
+        <div className="flex items-center gap-2 rounded-lg bg-emerald-50 border border-emerald-200 px-3 py-2">
+          <CheckCircle size={14} className="text-emerald-500 shrink-0" />
+          <span className="text-xs text-emerald-700 font-medium">
+            {t("nudge.loggedInAs", { name: authenticatedName })}
+          </span>
+        </div>
+      )}
+
       {/* Server error */}
       <AnimatePresence>
         {error && (

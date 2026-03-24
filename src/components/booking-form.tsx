@@ -2,13 +2,17 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { User, Phone, FileText } from "lucide-react";
+import { User, Phone, FileText, CheckCircle } from "lucide-react";
 import { slideUp } from "@/lib/animations";
 import { useTranslation } from "@/i18n";
 
 interface BookingFormProps {
   onSubmit: (data: { name: string; phone: string; notes: string }) => void;
   loading?: boolean;
+  initialName?: string;
+  initialPhone?: string;
+  /** Show a "Logged in as" badge when user is authenticated */
+  authenticatedName?: string;
 }
 
 function isValidEgyptPhone(phone: string): boolean {
@@ -16,10 +20,16 @@ function isValidEgyptPhone(phone: string): boolean {
   return /^01[0-5]\d{8}$/.test(cleaned);
 }
 
-export function BookingForm({ onSubmit, loading = false }: BookingFormProps) {
+export function BookingForm({
+  onSubmit,
+  loading = false,
+  initialName = "",
+  initialPhone = "",
+  authenticatedName,
+}: BookingFormProps) {
   const { t } = useTranslation();
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [name, setName] = useState(initialName);
+  const [phone, setPhone] = useState(initialPhone);
   const [notes, setNotes] = useState("");
   const [touched, setTouched] = useState({ name: false, phone: false });
 
@@ -38,6 +48,16 @@ export function BookingForm({ onSubmit, loading = false }: BookingFormProps) {
 
   return (
     <motion.form {...slideUp} onSubmit={handleSubmit} className="space-y-5">
+      {/* Logged in badge */}
+      {authenticatedName && (
+        <div className="flex items-center gap-2 rounded-lg bg-emerald-50 border border-emerald-200 px-3 py-2">
+          <CheckCircle size={14} className="text-emerald-500 shrink-0" />
+          <span className="text-xs text-emerald-700 font-medium">
+            {t("nudge.loggedInAs", { name: authenticatedName })}
+          </span>
+        </div>
+      )}
+
       {/* Name */}
       <div>
         <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-gray-700">

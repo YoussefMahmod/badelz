@@ -8,11 +8,13 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useTranslation, useLocale } from "@/i18n";
+import { useAuth } from "@/lib/auth-context";
 import { formatDate, formatTime } from "@/lib/format";
 import { buildLobbyShareLink } from "@/lib/whatsapp";
 import { checkmarkDraw, pulseGlow } from "@/lib/animations";
 import { AREAS } from "@/lib/constants";
 import { JoinLobbyForm } from "@/components/join-lobby-form";
+import { AuthNudge } from "@/components/auth-nudge";
 
 const MAX_PLAYERS = 4;
 
@@ -39,6 +41,7 @@ interface LobbyData {
 export default function LobbyPageClient({ code }: { code: string }) {
   const { t } = useTranslation();
   const { locale } = useLocale();
+  const { user, isAuthenticated } = useAuth();
 
   const [lobby, setLobby] = useState<LobbyData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -243,7 +246,14 @@ export default function LobbyPageClient({ code }: { code: string }) {
                 <motion.div key="form" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
                   className="bg-white/5 border border-white/10 rounded-2xl p-6">
                   <h3 className="text-base font-bold text-white mb-4">{t("lobby.joinLobby")}</h3>
-                  <JoinLobbyForm onSubmit={handleJoin} loading={joining} error={joinError} />
+                  <JoinLobbyForm
+                    onSubmit={handleJoin}
+                    loading={joining}
+                    error={joinError}
+                    initialName={isAuthenticated && user?.name ? user.name : ""}
+                    initialPhone={isAuthenticated && user?.phone ? user.phone : ""}
+                    authenticatedName={isAuthenticated && user?.name ? user.name : undefined}
+                  />
                 </motion.div>
               )}
             </motion.div>
@@ -266,7 +276,7 @@ export default function LobbyPageClient({ code }: { code: string }) {
       </div>
 
       {/* Share Section */}
-      <div className="px-4 mt-6 mb-8 space-y-3">
+      <div className="px-4 mt-6 mb-4 space-y-3">
         <motion.a initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
           whileTap={{ scale: 0.96 }} href={shareUrl} target="_blank" rel="noopener noreferrer"
           className="flex w-full items-center justify-center gap-2 rounded-full bg-green-500 py-3.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-green-600">
@@ -283,6 +293,16 @@ export default function LobbyPageClient({ code }: { code: string }) {
             <><Copy size={16} />{t("lobby.copyLink")}</>
           )}
         </motion.button>
+      </div>
+
+      {/* Auth nudge */}
+      <div className="px-4 mb-8">
+        <AuthNudge
+          title={t("nudge.manageLobbies")}
+          description={t("nudge.verifiedHost")}
+          returnTo="/my-profile"
+          variant="dark"
+        />
       </div>
     </div>
   );

@@ -2,13 +2,16 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, Phone, AlertCircle } from "lucide-react";
+import { User, Phone, AlertCircle, CheckCircle } from "lucide-react";
 import { useTranslation } from "@/i18n";
 
 interface JoinLobbyFormProps {
   onSubmit: (data: { playerName: string; playerPhone: string }) => void;
   loading?: boolean;
   error?: string | null;
+  initialName?: string;
+  initialPhone?: string;
+  authenticatedName?: string;
 }
 
 function isValidEgyptPhone(phone: string): boolean {
@@ -23,10 +26,17 @@ const inputNormal =
 const inputError =
   "bg-red-500/5 border border-red-500/30 ring-2 ring-red-500/20";
 
-export function JoinLobbyForm({ onSubmit, loading = false, error = null }: JoinLobbyFormProps) {
+export function JoinLobbyForm({
+  onSubmit,
+  loading = false,
+  error = null,
+  initialName = "",
+  initialPhone = "",
+  authenticatedName,
+}: JoinLobbyFormProps) {
   const { t } = useTranslation();
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [name, setName] = useState(initialName);
+  const [phone, setPhone] = useState(initialPhone);
   const [touched, setTouched] = useState({ name: false, phone: false });
 
   const nameErr = touched.name && !name.trim();
@@ -43,6 +53,16 @@ export function JoinLobbyForm({ onSubmit, loading = false, error = null }: JoinL
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Logged in badge */}
+      {authenticatedName && (
+        <div className="flex items-center gap-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-3 py-2">
+          <CheckCircle size={14} className="text-emerald-400 shrink-0" />
+          <span className="text-xs text-emerald-400 font-medium">
+            {t("nudge.loggedInAs", { name: authenticatedName })}
+          </span>
+        </div>
+      )}
+
       <AnimatePresence>
         {error && (
           <motion.div

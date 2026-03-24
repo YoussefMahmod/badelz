@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { z } from "zod";
-import { phoneSchema } from "@/lib/validators";
-
-const markSoldSchema = z.object({
-  sellerPhone: phoneSchema,
-});
+import { listingUpdateSchema } from "@/lib/validators";
 
 export async function GET(
   _request: NextRequest,
@@ -45,15 +42,68 @@ export async function GET(
   }
 }
 
+/**
+ * Check if the authenticated user owns the listing.
+ * If the listing has a sellerId, compare directly.
+ * For legacy listings (no sellerId), fall back to phone match and opportunistically link.
+ */
+async function checkOwnership(
+  listingId: string,
+  userId: string,
+  userPhone: string | null | undefined
+): Promise<{ owned: boolean; listing: Awaited<ReturnType<typeof prisma.listing.findUnique>> }> {
+  const listing = await prisma.listing.findUnique({ where: { id: listingId } });
+
+  if (!listing) return { owned: false, listing: null };
+
+  // Direct sellerId match
+  if (listing.sellerId === userId) return { owned: true, listing };
+
+  // Legacy: no sellerId yet, match by phone and opportunistically link
+  if (!listing.sellerId && userPhone && listing.sellerPhone === userPhone) {
+    await prisma.listing.update({
+      where: { id: listingId },
+      data: { sellerId: userId },
+    });
+    return { owned: true, listing };
+  }
+
+  return { owned: false, listing };
+}
+
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { statusCode: 401, message: "سجل دخولك الأول عشان تعدل", data: null },
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;
+    const { owned, listing } = await checkOwnership(id, session.user.id, session.user.phone);
+
+    if (!listing) {
+      return NextResponse.json(
+        { statusCode: 404, message: "غير موجود", data: null },
+        { status: 404 }
+      );
+    }
+
+    if (!owned) {
+      return NextResponse.json(
+        { statusCode: 403, message: "غير مصرح لك", data: null },
+        { status: 403 }
+      );
+    }
 
     const body = await request.json();
-    const parsed = markSoldSchema.safeParse(body);
+    const parsed = listingUpdateSchema.safeParse(body);
 
     if (!parsed.success) {
       return NextResponse.json(
@@ -66,27 +116,9 @@ export async function PATCH(
       );
     }
 
-    const listing = await prisma.listing.findUnique({
-      where: { id },
-    });
-
-    if (!listing) {
-      return NextResponse.json(
-        { statusCode: 404, message: "غير موجود", data: null },
-        { status: 404 }
-      );
-    }
-
-    if (listing.sellerPhone !== parsed.data.sellerPhone) {
-      return NextResponse.json(
-        { statusCode: 403, message: "غير مصرح لك", data: null },
-        { status: 403 }
-      );
-    }
-
     const updated = await prisma.listing.update({
       where: { id },
-      data: { status: "SOLD" },
+      data: parsed.data,
     });
 
     return NextResponse.json({
@@ -95,7 +127,57 @@ export async function PATCH(
       data: updated,
     });
   } catch (error) {
-    console.error("Mark listing sold error:", error);
+    console.error("Update listing error:", error);
+    return NextResponse.json(
+      { statusCode: 500, message: "حدث خطأ في السيرفر", data: null },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { statusCode: 401, message: "سجل دخولك الأول", data: null },
+        { status: 401 }
+      );
+    }
+
+    const { id } = await params;
+    const { owned, listing } = await checkOwnership(id, session.user.id, session.user.phone);
+
+    if (!listing) {
+      return NextResponse.json(
+        { statusCode: 404, message: "غير موجود", data: null },
+        { status: 404 }
+      );
+    }
+
+    if (!owned) {
+      return NextResponse.json(
+        { statusCode: 403, message: "غير مصرح لك", data: null },
+        { status: 403 }
+      );
+    }
+
+    const removed = await prisma.listing.update({
+      where: { id },
+      data: { status: "REMOVED" },
+    });
+
+    return NextResponse.json({
+      statusCode: 200,
+      message: "تم حذف الإعلان",
+      data: removed,
+    });
+  } catch (error) {
+    console.error("Delete listing error:", error);
     return NextResponse.json(
       { statusCode: 500, message: "حدث خطأ في السيرفر", data: null },
       { status: 500 }

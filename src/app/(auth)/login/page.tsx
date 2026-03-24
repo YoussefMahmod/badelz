@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { motion } from "framer-motion";
@@ -11,8 +11,28 @@ import { LocaleToggle } from "@/components/locale-toggle";
 import { Logo } from "@/components/logo";
 
 export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-elevated animate-pulse">
+          <div className="h-8 w-32 bg-gray-100 rounded mb-6" />
+          <div className="space-y-4">
+            <div className="h-10 bg-gray-100 rounded-xl" />
+            <div className="h-10 bg-gray-100 rounded-xl" />
+          </div>
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm() {
   const { t } = useTranslation();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const returnTo = searchParams.get("returnTo");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -32,8 +52,20 @@ export default function LoginPage() {
 
       if (result?.error) {
         setError(t("auth.invalidCredentials"));
+      } else if (returnTo) {
+        router.push(returnTo);
       } else {
-        router.push("/dashboard");
+        // Fetch session to get the user's role for correct redirect
+        const session = await fetch("/api/auth/session").then((r) => r.json());
+        const role = session?.user?.role;
+
+        if (role === "PLAYER") {
+          router.push("/my-profile");
+        } else if (role === "COACH") {
+          router.push("/coach-dashboard");
+        } else {
+          router.push("/dashboard");
+        }
       }
     } catch {
       setError(t("common.error"));
@@ -112,7 +144,7 @@ export default function LoginPage() {
       <p className="mt-5 text-center text-sm text-gray-400">
         {t("auth.noAccount")}{" "}
         <Link
-          href="/register"
+          href={`/register${returnTo ? `?returnTo=${encodeURIComponent(returnTo)}` : ""}`}
           className="font-semibold text-[#111827] hover:underline transition-colors"
         >
           {t("auth.signUp")}

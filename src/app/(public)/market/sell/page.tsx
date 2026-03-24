@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowRight,
@@ -17,12 +17,15 @@ import {
   Circle,
   Shirt,
   Watch,
+  ShoppingBag,
+  User,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { MainLayout } from "@/components/main-layout";
 import { PhotoUpload } from "@/components/photo-upload";
 import { useTranslation, useLocale } from "@/i18n";
+import { useAuth } from "@/lib/auth-context";
 import { AREAS, LISTING_CATEGORY_COLORS } from "@/lib/constants";
 import { buildListingShareLink } from "@/lib/whatsapp";
 import { scaleIn } from "@/lib/animations";
@@ -93,6 +96,7 @@ export default function SellPage() {
   const { t } = useTranslation();
   const { locale } = useLocale();
   const router = useRouter();
+  const { user, isAuthenticated, isLoading } = useAuth();
   const [form, setForm] = useState<FormData>(EMPTY);
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitting, setSubmitting] = useState(false);
@@ -109,6 +113,17 @@ export default function SellPage() {
   const clr = (key: keyof FormErrors) =>
     setErrors((p) => ({ ...p, [key]: undefined }));
 
+  // Auto-fill seller info when authenticated
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      setForm((prev) => ({
+        ...prev,
+        sellerName: user.name ?? prev.sellerName,
+        phone: user.phone ?? prev.phone,
+      }));
+    }
+  }, [isAuthenticated, user]);
+
   const validate = (): boolean => {
     const e: FormErrors = {};
     if (!form.category) e.category = t("common.required");
@@ -116,10 +131,13 @@ export default function SellPage() {
     if (!form.price || Number(form.price) <= 0) e.price = t("common.required");
     if (!form.condition) e.condition = t("common.required");
     if (!form.area) e.area = t("common.required");
-    if (!form.sellerName.trim()) e.sellerName = t("common.required");
-    const ph = form.phone.replace(/\D/g, "");
-    if (!ph || ph.length !== 11 || !/^01[0125]/.test(ph))
-      e.phone = t("common.required");
+    // Only validate seller fields if not authenticated
+    if (!isAuthenticated) {
+      if (!form.sellerName.trim()) e.sellerName = t("common.required");
+      const ph = form.phone.replace(/\D/g, "");
+      if (!ph || ph.length !== 11 || !/^01[0125]/.test(ph))
+        e.phone = t("common.required");
+    }
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -138,8 +156,8 @@ export default function SellPage() {
         condition: form.condition,
         photos: form.photos.length ? form.photos : undefined,
         area: form.area,
-        sellerName: form.sellerName.trim(),
-        phone: form.phone.replace(/\D/g, ""),
+        sellerName: isAuthenticated && user?.name ? user.name : form.sellerName.trim(),
+        sellerPhone: isAuthenticated && user?.phone ? user.phone : form.phone.replace(/\D/g, ""),
       };
       const res = await fetch("/api/market", {
         method: "POST",
@@ -167,6 +185,81 @@ export default function SellPage() {
   // Active condition index for scale visualization
   const activeCondIdx = CONDS.findIndex((c) => c.key === form.condition);
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <MainLayout showNav={false}>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <Loader2 size={32} className="animate-spin text-[#c8ff00]" />
+        </div>
+      </MainLayout>
+    );
+  }
+
+  // Auth gate: show interstitial if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <MainLayout showNav={false}>
+        <div className="mx-auto max-w-lg px-4 py-6">
+          <motion.button
+            initial={{ opacity: 0, x: locale === "ar" ? 10 : -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            onClick={() => router.back()}
+            className="flex items-center gap-1.5 text-white/60 hover:text-white mb-6 transition-colors"
+          >
+            <BackIcon size={18} />
+            <span className="text-sm">{t("common.back")}</span>
+          </motion.button>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-8 text-center"
+          >
+            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-500/10 border border-emerald-500/20">
+              <ShoppingBag size={36} className="text-emerald-400" />
+            </div>
+
+            <h2 className="text-2xl font-bold text-white mb-3 font-[family-name:var(--font-display)] uppercase tracking-tight">
+              {t("auth.signUpToSell")}
+            </h2>
+            <p className="text-sm text-white/50 leading-relaxed mb-8 max-w-xs mx-auto">
+              {t("auth.signUpToSellDesc")}
+            </p>
+
+            <div className="flex flex-col gap-3">
+              <Link
+                href="/register?returnTo=/market/sell"
+                className="flex items-center justify-center gap-2 w-full rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 py-4 text-base font-bold text-white shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/30 active:scale-[0.98]"
+              >
+                {t("market.createFreeAccount")}
+                <ArrowUpRight size={18} />
+              </Link>
+
+              <Link
+                href="/login?returnTo=/market/sell"
+                className="py-3 text-sm text-white/50 hover:text-white transition-colors"
+              >
+                {t("auth.alreadyHaveAccount")}{" "}
+                <span className="text-emerald-400 font-semibold">{t("auth.signIn")}</span>
+              </Link>
+
+              <Link
+                href="/market"
+                className="py-2 text-sm text-white/30 hover:text-white/50 transition-colors flex items-center justify-center gap-1"
+              >
+                {t("auth.browseMarket")}
+                <ArrowUpRight size={14} />
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+      </MainLayout>
+    );
+  }
+
+  // Authenticated: show the form
   return (
     <MainLayout showNav={false}>
       <div className="mx-auto max-w-lg px-4 py-6">
@@ -198,7 +291,7 @@ export default function SellPage() {
               </p>
               <div className="flex flex-col gap-3 w-full">
                 <Link
-                  href={`/market/${success.id}?manage=${form.phone.replace(/\D/g, "")}`}
+                  href={`/market/${success.id}`}
                   className="flex items-center justify-center gap-2 rounded-xl bg-[#c8ff00] py-3.5 text-sm font-bold text-[#111827]"
                 >
                   <Link2 size={16} />
@@ -215,10 +308,10 @@ export default function SellPage() {
                   {t("market.shareListing")}
                 </button>
                 <Link
-                  href="/market"
+                  href="/market/mine"
                   className="py-3 text-sm text-white/40 hover:text-white/60"
                 >
-                  {t("market.title")}
+                  {t("market.viewMyListings")}
                 </Link>
               </div>
             </motion.div>
@@ -503,51 +596,14 @@ export default function SellPage() {
                   {errors.area && <p className={ERR}>{errors.area}</p>}
                 </div>
 
-                {/* ─── YOUR INFO ─── */}
-                <div className="space-y-5">
-                  <SectionHeader>
-                    {t("market.yourInfo")}{" "}
-                  </SectionHeader>
-
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-widest text-white/30 font-[family-name:var(--font-display)] mb-1.5">
-                      {t("market.sellerName")}{" "}
-                      <span className="text-red-400">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={form.sellerName}
-                      onChange={(e) => {
-                        set({ sellerName: e.target.value });
-                        clr("sellerName");
-                      }}
-                      placeholder={locale === "ar" ? "اسمك" : "Your name"}
-                      className={INPUT}
-                    />
-                    {errors.sellerName && (
-                      <p className={ERR}>{errors.sellerName}</p>
-                    )}
+                {/* ─── LOGGED IN BADGE (replaces Your Info for authenticated users) ─── */}
+                <div className="flex items-center gap-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/20">
+                    <User size={16} className="text-emerald-400" />
                   </div>
-
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-widest text-white/30 font-[family-name:var(--font-display)] mb-1.5">
-                      {locale === "ar" ? "رقم الموبايل" : "Phone"}{" "}
-                      <span className="text-red-400">*</span>
-                    </label>
-                    <input
-                      type="tel"
-                      value={form.phone}
-                      onChange={(e) => {
-                        set({ phone: e.target.value });
-                        clr("phone");
-                      }}
-                      placeholder="01XXXXXXXXX"
-                      dir="ltr"
-                      inputMode="tel"
-                      className={INPUT}
-                    />
-                    {errors.phone && <p className={ERR}>{errors.phone}</p>}
-                  </div>
+                  <span className="text-sm text-emerald-400 font-medium">
+                    {t("market.loggedInAs", { name: user?.name ?? "" })}
+                  </span>
                 </div>
 
                 {/* Server error */}

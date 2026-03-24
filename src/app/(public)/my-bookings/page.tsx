@@ -15,6 +15,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { MainLayout } from "@/components/main-layout";
 import { EmptyState } from "@/components/empty-state";
+import { AuthNudge } from "@/components/auth-nudge";
 import { useTranslation, useLocale } from "@/i18n";
 import { formatDate, formatTime, formatPrice } from "@/lib/format";
 import { staggerContainer, staggerItem } from "@/lib/animations";
@@ -156,6 +157,16 @@ export default function MyBookingsPage() {
             )}
           </button>
         </motion.form>
+
+        {/* Auth nudge */}
+        <div className="mb-6">
+          <AuthNudge
+            title={t("nudge.trackBookings")}
+            description={t("nudge.skipPhoneEntry")}
+            returnTo="/my-profile"
+            variant="dark"
+          />
+        </div>
 
         {/* Results */}
         <AnimatePresence mode="wait">

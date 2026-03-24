@@ -51,7 +51,21 @@ export function Header() {
             </Link>
           )}
           <LocaleToggle />
-          {isAuthenticated && user?.role === "VENUE_OWNER" ? (
+          {isAuthenticated && user?.role === "PLAYER" ? (
+            <Link
+              href="/my-profile"
+              className="text-sm font-semibold text-white/70 hover:text-white transition-colors"
+            >
+              {t("nav.myProfile")}
+            </Link>
+          ) : isAuthenticated && user?.role === "COACH" ? (
+            <Link
+              href="/coach-dashboard"
+              className="text-sm font-semibold text-white/70 hover:text-white transition-colors"
+            >
+              {t("nav.dashboard")}
+            </Link>
+          ) : isAuthenticated && user?.role === "VENUE_OWNER" ? (
             <Link
               href="/dashboard"
               className="text-sm font-semibold text-white/70 hover:text-white transition-colors"

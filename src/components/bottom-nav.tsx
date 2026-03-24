@@ -12,6 +12,8 @@ import {
   RectangleHorizontal,
   CalendarDays,
   Settings,
+  User,
+  Gamepad2,
 } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import type { ReactNode } from "react";
@@ -23,7 +25,7 @@ interface NavItem {
   labelKey: string;
 }
 
-export function BottomNav({ variant = "public" }: { variant?: "public" | "owner" }) {
+export function BottomNav({ variant = "public" }: { variant?: "public" | "owner" | "player" | "coach" }) {
   const { t } = useTranslation();
   const pathname = usePathname();
 
@@ -81,7 +83,68 @@ export function BottomNav({ variant = "public" }: { variant?: "public" | "owner"
     },
   ];
 
-  const tabs = variant === "owner" ? ownerTabs : publicTabs;
+  const playerTabs: NavItem[] = [
+    {
+      href: "/",
+      icon: <Home size={24} strokeWidth={1.5} />,
+      activeIcon: <Home size={24} strokeWidth={2} />,
+      labelKey: "nav.home",
+    },
+    {
+      href: "/play",
+      icon: <Gamepad2 size={24} strokeWidth={1.5} />,
+      activeIcon: <Gamepad2 size={24} strokeWidth={2} />,
+      labelKey: "nav.play",
+    },
+    {
+      href: "/browse",
+      icon: <Search size={24} strokeWidth={1.5} />,
+      activeIcon: <Search size={24} strokeWidth={2} />,
+      labelKey: "nav.browse",
+    },
+    {
+      href: "/my-profile",
+      icon: <User size={24} strokeWidth={1.5} />,
+      activeIcon: <User size={24} strokeWidth={2} />,
+      labelKey: "nav.myProfile",
+    },
+  ];
+
+  const coachTabs: NavItem[] = [
+    {
+      href: "/coach-dashboard",
+      icon: <LayoutDashboard size={24} strokeWidth={1.5} />,
+      activeIcon: <LayoutDashboard size={24} strokeWidth={2} />,
+      labelKey: "nav.dashboard",
+    },
+    {
+      href: "/browse",
+      icon: <Search size={24} strokeWidth={1.5} />,
+      activeIcon: <Search size={24} strokeWidth={2} />,
+      labelKey: "nav.browse",
+    },
+    {
+      href: "/coaches",
+      icon: <Users size={24} strokeWidth={1.5} />,
+      activeIcon: <Users size={24} strokeWidth={2} />,
+      labelKey: "nav.coaches",
+    },
+    {
+      href: "/settings",
+      icon: <Settings size={24} strokeWidth={1.5} />,
+      activeIcon: <Settings size={24} strokeWidth={2} />,
+      labelKey: "nav.settings",
+    },
+  ];
+
+  const tabMap: Record<string, NavItem[]> = {
+    public: publicTabs,
+    owner: ownerTabs,
+    player: playerTabs,
+    coach: coachTabs,
+  };
+
+  const tabs = tabMap[variant] ?? publicTabs;
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";

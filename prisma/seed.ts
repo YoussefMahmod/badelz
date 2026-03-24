@@ -38,6 +38,38 @@ async function main() {
     },
   });
 
+  // ─── Demo Player account ───
+  const playerUser = await prisma.user.upsert({
+    where: { email: "player@badelz.app" },
+    update: {},
+    create: {
+      name: "يوسف محمد",
+      email: "player@badelz.app",
+      password: hashedPassword,
+      phone: "01023456789",
+      role: "PLAYER",
+      isOnboarded: true,
+      locale: "ar",
+    },
+  });
+  console.log(`Created player: ${playerUser.email}`);
+
+  // ─── Demo Coach account ───
+  const coachUser = await prisma.user.upsert({
+    where: { email: "coach@badelz.app" },
+    update: {},
+    create: {
+      name: "Captain Tarek",
+      email: "coach@badelz.app",
+      password: hashedPassword,
+      phone: "01055555001",
+      role: "COACH",
+      isOnboarded: true,
+      locale: "ar",
+    },
+  });
+  console.log(`Created coach: ${coachUser.email}`);
+
   // ─── Venue 1: New Cairo Padel Club ───
   const venue1 = await prisma.venue.create({
     data: {
@@ -330,6 +362,7 @@ async function main() {
         gamesWon: 0,
         rating: 3.5,
         tier: PlayerTier.BRONZE,
+        userId: playerUser.id,
       },
     }),
     prisma.playerProfile.create({
@@ -517,6 +550,7 @@ async function main() {
         pricePerHour: 300,
         experience: "5 years, FIP Level 1",
         isActive: true,
+        userId: coachUser.id,
       },
     }),
     prisma.coach.create({
@@ -672,9 +706,10 @@ async function main() {
 
   console.log("\nSeed complete!");
   console.log("─────────────────────────────────");
-  console.log("Demo venue owner login:");
-  console.log("  Email: owner@badelz.app");
-  console.log("  Password: password123");
+  console.log("Demo logins (all use password123):");
+  console.log("  Venue Owner: owner@badelz.app");
+  console.log("  Player:      player@badelz.app");
+  console.log("  Coach:       coach@badelz.app");
   console.log("─────────────────────────────────");
 }
 

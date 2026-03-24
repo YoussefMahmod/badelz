@@ -1,34 +1,101 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
-import { motion } from "framer-motion";
-import { Mail, Lock, User, Phone, UserPlus } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Mail, Lock, User, Phone, UserPlus, Users, GraduationCap, Building2 } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import { LocaleToggle } from "@/components/locale-toggle";
 import { Logo } from "@/components/logo";
+import { AreaSelector } from "@/components/area-selector";
+
+type RoleType = "PLAYER" | "COACH" | "VENUE_OWNER";
+
+const ROLE_CONFIG = {
+  PLAYER: {
+    icon: Users,
+    labelKey: "roles.player" as const,
+    descKey: "roles.playerDesc" as const,
+    signUpKey: "roles.playerSignUp" as const,
+    redirect: "/my-profile",
+  },
+  COACH: {
+    icon: GraduationCap,
+    labelKey: "roles.coach" as const,
+    descKey: "roles.coachDesc" as const,
+    signUpKey: "roles.coachSignUp" as const,
+    redirect: "/coach-dashboard",
+  },
+  VENUE_OWNER: {
+    icon: Building2,
+    labelKey: "roles.owner" as const,
+    descKey: "roles.ownerDesc" as const,
+    signUpKey: "roles.ownerSignUp" as const,
+    redirect: "/dashboard",
+  },
+} as const;
 
 export default function RegisterPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-elevated animate-pulse">
+          <div className="h-8 w-32 bg-gray-100 rounded mb-6" />
+          <div className="space-y-4">
+            <div className="h-10 bg-gray-100 rounded-xl" />
+            <div className="h-10 bg-gray-100 rounded-xl" />
+            <div className="h-10 bg-gray-100 rounded-xl" />
+          </div>
+        </div>
+      }
+    >
+      <RegisterForm />
+    </Suspense>
+  );
+}
+
+function RegisterForm() {
   const { t } = useTranslation();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const returnTo = searchParams.get("returnTo");
+  const roleParam = searchParams.get("role");
+  const validRoles: RoleType[] = ["PLAYER", "COACH", "VENUE_OWNER"];
+  const initialRole: RoleType = roleParam && validRoles.includes(roleParam as RoleType)
+    ? (roleParam as RoleType)
+    : "PLAYER";
+
   const [form, setForm] = useState({
-    name: "",
+    name: searchParams.get("name") || "",
     email: "",
     password: "",
-    phone: "",
+    phone: searchParams.get("phone") || "",
+    role: initialRole,
+    area: "",
+    areas: [] as string[],
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const updateField = (key: keyof typeof form, value: string) => {
+  const updateField = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
+
+  const roleConfig = ROLE_CONFIG[form.role];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    // Client-side phone validation for PLAYER and COACH
+    if ((form.role === "PLAYER" || form.role === "COACH") && !form.phone) {
+      setError(t("auth.phoneRequired"));
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -40,6 +107,9 @@ export default function RegisterPage() {
           email: form.email,
           password: form.password,
           phone: form.phone || undefined,
+          role: form.role,
+          area: form.role === "PLAYER" ? form.area || undefined : undefined,
+          areas: form.role === "COACH" ? form.areas : undefined,
         }),
       });
 
@@ -58,9 +128,11 @@ export default function RegisterPage() {
       });
 
       if (signInResult?.error) {
-        router.push("/login");
+        router.push(`/login${returnTo ? `?returnTo=${encodeURIComponent(returnTo)}` : ""}`);
+      } else if (returnTo) {
+        router.push(returnTo);
       } else {
-        router.push("/dashboard");
+        router.push(roleConfig.redirect);
       }
     } catch {
       setError(t("common.error"));
@@ -68,6 +140,8 @@ export default function RegisterPage() {
       setLoading(false);
     }
   };
+
+  const isPhoneRequired = form.role === "PLAYER" || form.role === "COACH";
 
   return (
     <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-elevated">
@@ -81,8 +155,59 @@ export default function RegisterPage() {
         <LocaleToggle />
       </div>
 
-      <h1 className="text-xl font-bold text-gray-900 mb-1">{t("auth.signUp")}</h1>
-      <p className="text-sm text-gray-400 mb-6">{t("auth.signUpDesc")}</p>
+      {/* Role Selector */}
+      <p className="text-xs font-medium text-gray-400 mb-2">{t("auth.selectRole")}</p>
+      <div className="grid grid-cols-3 gap-2 mb-5">
+        {(Object.keys(ROLE_CONFIG) as RoleType[]).map((roleKey) => {
+          const config = ROLE_CONFIG[roleKey];
+          const Icon = config.icon;
+          const active = form.role === roleKey;
+
+          return (
+            <motion.button
+              key={roleKey}
+              type="button"
+              whileTap={{ scale: 0.95 }}
+              onClick={() => updateField("role", roleKey)}
+              className={`relative flex flex-col items-center gap-1.5 rounded-xl p-3 cursor-pointer transition-all ${
+                active
+                  ? "border-2 border-[#111827] bg-[#111827]/5"
+                  : "border border-gray-200 bg-gray-50"
+              }`}
+            >
+              <Icon
+                size={20}
+                className={active ? "text-[#111827]" : "text-gray-400"}
+              />
+              <span
+                className={`text-xs font-medium ${
+                  active ? "text-[#111827]" : "text-gray-500"
+                }`}
+              >
+                {t(config.labelKey)}
+              </span>
+            </motion.button>
+          );
+        })}
+      </div>
+
+      {/* Dynamic heading based on role */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={form.role}
+          initial={{ opacity: 0, y: -5 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 5 }}
+          transition={{ duration: 0.2 }}
+        >
+          <h1 className="text-xl font-bold text-gray-900 mb-1">
+            {t(roleConfig.signUpKey)}
+          </h1>
+          <p className="text-sm text-gray-400 mb-6">
+            {t(roleConfig.descKey)}
+          </p>
+        </motion.div>
+      </AnimatePresence>
 
       {error && (
         <motion.div
@@ -95,6 +220,7 @@ export default function RegisterPage() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Name */}
         <div>
           <label className="mb-1.5 flex items-center gap-2 text-sm font-medium text-gray-700">
             <User size={14} className="text-gray-400" />
@@ -109,6 +235,7 @@ export default function RegisterPage() {
           />
         </div>
 
+        {/* Email */}
         <div>
           <label className="mb-1.5 flex items-center gap-2 text-sm font-medium text-gray-700">
             <Mail size={14} className="text-gray-400" />
@@ -124,6 +251,7 @@ export default function RegisterPage() {
           />
         </div>
 
+        {/* Password */}
         <div>
           <label className="mb-1.5 flex items-center gap-2 text-sm font-medium text-gray-700">
             <Lock size={14} className="text-gray-400" />
@@ -139,22 +267,67 @@ export default function RegisterPage() {
           />
         </div>
 
+        {/* Phone */}
         <div>
           <label className="mb-1.5 flex items-center gap-2 text-sm font-medium text-gray-700">
             <Phone size={14} className="text-gray-400" />
             {t("auth.phone")}
-            <span className="text-gray-300 text-xs">({t("common.optional")})</span>
+            {!isPhoneRequired && (
+              <span className="text-gray-300 text-xs">({t("common.optional")})</span>
+            )}
           </label>
           <input
             type="tel"
             value={form.phone}
             onChange={(e) => updateField("phone", e.target.value)}
+            required={isPhoneRequired}
             dir="ltr"
             placeholder="01XXXXXXXXX"
             className="w-full rounded-xl bg-gray-50 border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
           />
         </div>
 
+        {/* Area Selector -- single for PLAYER */}
+        <AnimatePresence mode="wait">
+          {form.role === "PLAYER" && (
+            <motion.div
+              key="player-area"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.25 }}
+              className="overflow-hidden"
+            >
+              <AreaSelector
+                mode="single"
+                selected={form.area}
+                onChange={(val) => updateField("area", val as string)}
+                showDetectButton
+              />
+            </motion.div>
+          )}
+
+          {/* Area Selector -- multi for COACH */}
+          {form.role === "COACH" && (
+            <motion.div
+              key="coach-areas"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.25 }}
+              className="overflow-hidden"
+            >
+              <AreaSelector
+                mode="multi"
+                selected={form.areas}
+                onChange={(val) => updateField("areas", val as string[])}
+                showDetectButton
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Submit */}
         <motion.button
           type="submit"
           whileTap={{ scale: 0.97 }}
@@ -162,14 +335,14 @@ export default function RegisterPage() {
           className="flex w-full items-center justify-center gap-2 rounded-full bg-[#111827] py-3.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-gray-800 disabled:opacity-50"
         >
           <UserPlus size={16} />
-          {loading ? t("common.loading") : t("auth.signUp")}
+          {loading ? t("common.loading") : t(roleConfig.signUpKey)}
         </motion.button>
       </form>
 
       <p className="mt-5 text-center text-sm text-gray-400">
         {t("auth.hasAccount")}{" "}
         <Link
-          href="/login"
+          href={`/login${returnTo ? `?returnTo=${encodeURIComponent(returnTo)}` : ""}`}
           className="font-semibold text-[#111827] hover:underline transition-colors"
         >
           {t("auth.signIn")}

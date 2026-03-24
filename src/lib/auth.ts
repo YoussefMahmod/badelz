@@ -30,6 +30,7 @@ export const authOptions: AuthOptions = {
           id: user.id,
           email: user.email,
           name: user.name,
+          phone: user.phone,
           role: user.role,
           isOnboarded: user.isOnboarded,
         };
@@ -44,9 +45,11 @@ export const authOptions: AuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.role = (user as unknown as Record<string, unknown>).role as string;
-        token.isOnboarded = (user as unknown as Record<string, unknown>).isOnboarded as boolean;
+        token.phone = user.phone ?? null;
+        token.role = user.role;
+        token.isOnboarded = user.isOnboarded;
       } else if (token.id) {
+        // Refresh user data from DB on subsequent requests
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id as string },
           select: { isOnboarded: true, name: true, role: true, phone: true },
@@ -62,11 +65,10 @@ export const authOptions: AuthOptions = {
     },
     async session({ session, token }) {
       if (session.user) {
-        (session.user as Record<string, unknown>).id = token.id;
-        (session.user as Record<string, unknown>).phone = token.phone ?? null;
-        (session.user as Record<string, unknown>).role = token.role;
-        (session.user as Record<string, unknown>).isOnboarded =
-          token.isOnboarded;
+        session.user.id = token.id as string;
+        session.user.phone = token.phone ?? null;
+        session.user.role = token.role as "PLAYER" | "COACH" | "VENUE_OWNER" | "ADMIN";
+        session.user.isOnboarded = token.isOnboarded as boolean;
       }
       return session;
     },

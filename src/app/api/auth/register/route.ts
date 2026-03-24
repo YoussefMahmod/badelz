@@ -19,7 +19,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { name, email, password, phone } = parsed.data;
+    const {
+      name,
+      email,
+      password,
+      phone,
+      role,
+      area,
+      areas,
+      bio,
+      pricePerHour,
+      experience,
+    } = parsed.data;
 
     const existing = await prisma.user.findUnique({
       where: { email },
@@ -36,32 +47,110 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Phone is required for PLAYER and COACH roles
+    if ((role === "PLAYER" || role === "COACH") && !phone) {
+      return NextResponse.json(
+        {
+          statusCode: 400,
+          message: "رقم الموبايل مطلوب للاعبين والمدربين",
+          data: null,
+        },
+        { status: 400 }
+      );
+    }
+
+    // Check if phone is already linked to a user-owned coach profile
+    if (role === "COACH" && phone) {
+      const existingCoach = await prisma.coach.findUnique({
+        where: { phone },
+      });
+      if (existingCoach?.userId) {
+        return NextResponse.json(
+          {
+            statusCode: 409,
+            message: "رقم الموبايل مسجل بالفعل كمدرب",
+            data: null,
+          },
+          { status: 409 }
+        );
+      }
+    }
+
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-        phone: phone ?? null,
-        role: "VENUE_OWNER",
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        phone: true,
-        role: true,
-        isOnboarded: true,
-        createdAt: true,
-      },
+    // Use a transaction to create user + role-specific profile atomically
+    const result = await prisma.$transaction(async (tx) => {
+      const user = await tx.user.create({
+        data: {
+          name,
+          email,
+          password: hashedPassword,
+          phone: phone ?? null,
+          role,
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+          role: true,
+          isOnboarded: true,
+          createdAt: true,
+        },
+      });
+
+      // Create or link PlayerProfile for PLAYER role
+      if (role === "PLAYER" && phone) {
+        await tx.playerProfile.upsert({
+          where: { phone },
+          update: {
+            userId: user.id,
+            name,
+            area: area ?? undefined,
+          },
+          create: {
+            phone,
+            name,
+            userId: user.id,
+            area: area ?? null,
+          },
+        });
+      }
+
+      // Create or link Coach profile for COACH role
+      if (role === "COACH" && phone) {
+        await tx.coach.upsert({
+          where: { phone },
+          update: {
+            userId: user.id,
+            name,
+            bio: bio ?? undefined,
+            areas: areas ?? undefined,
+            pricePerHour: pricePerHour ?? undefined,
+            experience: experience ?? undefined,
+          },
+          create: {
+            phone,
+            name,
+            userId: user.id,
+            whatsapp: phone,
+            bio: bio ?? null,
+            areas: areas ?? [],
+            areasAr: [],
+            pricePerHour: pricePerHour ?? null,
+            experience: experience ?? null,
+          },
+        });
+      }
+
+      return user;
     });
 
     return NextResponse.json(
       {
         statusCode: 201,
         message: "تم إنشاء الحساب بنجاح",
-        data: user,
+        data: result,
       },
       { status: 201 }
     );

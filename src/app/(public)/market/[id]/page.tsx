@@ -12,10 +12,16 @@ import {
   CheckCircle,
   ChevronDown,
   ChevronUp,
+  Trash2,
+  RotateCcw,
+  Loader2,
+  ShoppingBag,
 } from "lucide-react";
-import { useRouter, useParams, useSearchParams } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
+import Link from "next/link";
 import { MainLayout } from "@/components/main-layout";
 import { useTranslation, useLocale } from "@/i18n";
+import { useAuth } from "@/lib/auth-context";
 import { LISTING_CATEGORY_COLORS } from "@/lib/constants";
 import { buildSellerContactLink, buildListingShareLink } from "@/lib/whatsapp";
 import { formatPrice } from "@/lib/format";
@@ -35,6 +41,8 @@ interface ListingDetail {
   areaAr?: string | null;
   sellerName: string;
   sellerPhone: string;
+  sellerId?: string | null;
+  status: "ACTIVE" | "SOLD" | "REMOVED";
   views: number;
   createdAt: string;
   sold?: boolean;
@@ -62,19 +70,28 @@ export default function ListingDetailPage() {
   const { locale } = useLocale();
   const router = useRouter();
   const params = useParams();
-  const searchParams = useSearchParams();
   const listingId = params.id as string;
-  const managePhone = searchParams.get("manage");
+  const { user, isAuthenticated } = useAuth();
 
   const [listing, setListing] = useState<ListingDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [currentPhoto, setCurrentPhoto] = useState(0);
-  const [markingSold, setMarkingSold] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
   const [descOpen, setDescOpen] = useState(false);
 
   const galleryRef = useRef<HTMLDivElement>(null);
   const BackIcon = locale === "ar" ? ArrowRight : ArrowLeft;
+
+  // Determine if the authenticated user owns this listing
+  const isOwner = !!listing && isAuthenticated && !!user && (
+    (listing.sellerId && listing.sellerId === user.id) ||
+    (!listing.sellerId && user.phone && listing.sellerPhone === user.phone)
+  );
+
+  // Whether the listing is sold (via status or legacy sold field)
+  const isSold = listing?.status === "SOLD" || listing?.sold === true;
+  const isRemoved = listing?.status === "REMOVED";
 
   useEffect(() => {
     async function fetchListing() {
@@ -123,22 +140,26 @@ export default function ListingDetailPage() {
     }
   };
 
-  const handleMarkSold = async () => {
-    if (!listing || !managePhone) return;
-    setMarkingSold(true);
+  const updateStatus = async (status: "ACTIVE" | "SOLD" | "REMOVED") => {
+    if (!listing) return;
+    setActionLoading(true);
     try {
       const res = await fetch(`/api/market/${listing.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sold: true, phone: managePhone }),
+        body: JSON.stringify({ status }),
       });
       if (res.ok) {
-        setListing((prev) => (prev ? { ...prev, sold: true } : prev));
+        setListing((prev) =>
+          prev
+            ? { ...prev, status, sold: status === "SOLD" }
+            : prev
+        );
       }
     } catch {
       // Silently fail
     } finally {
-      setMarkingSold(false);
+      setActionLoading(false);
     }
   };
 
@@ -292,7 +313,7 @@ export default function ListingDetailPage() {
               </div>
 
               {/* Sold overlay */}
-              {listing.sold && (
+              {isSold && (
                 <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-20">
                   <div className="rounded-full bg-red-500/20 border border-red-500/50 px-8 py-3 text-red-400 font-bold text-xl font-[family-name:var(--font-display)] uppercase">
                     {t("market.markSold")}
@@ -438,18 +459,65 @@ export default function ListingDetailPage() {
               </div>
             </div>
 
-            {/* Mark as sold (seller management) */}
-            {managePhone && !listing.sold && (
-              <div className="px-4 mt-4">
-                <motion.button
-                  whileTap={{ scale: 0.97 }}
-                  onClick={handleMarkSold}
-                  disabled={markingSold}
-                  className="flex items-center justify-center gap-2 w-full rounded-xl bg-red-500/10 border border-red-500/30 py-3.5 text-sm font-semibold text-red-400 transition-all hover:bg-red-500/20 disabled:opacity-50"
+            {/* ─── Owner Management Controls ─── */}
+            {isOwner && (
+              <div className="px-4 mt-4 space-y-3">
+                {/* Status-specific actions */}
+                {listing.status === "ACTIVE" && !isSold && (
+                  <div className="flex gap-3">
+                    <motion.button
+                      whileTap={{ scale: 0.97 }}
+                      onClick={() => updateStatus("SOLD")}
+                      disabled={actionLoading}
+                      className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-amber-500/10 border border-amber-500/30 py-3.5 text-sm font-semibold text-amber-400 transition-all hover:bg-amber-500/20 disabled:opacity-50"
+                    >
+                      {actionLoading ? (
+                        <Loader2 size={16} className="animate-spin" />
+                      ) : (
+                        <CheckCircle size={16} />
+                      )}
+                      {t("market.markSold")}
+                    </motion.button>
+                    <motion.button
+                      whileTap={{ scale: 0.97 }}
+                      onClick={() => updateStatus("REMOVED")}
+                      disabled={actionLoading}
+                      className="flex items-center justify-center gap-2 rounded-xl bg-white/5 border border-white/10 px-5 py-3.5 text-sm font-semibold text-white/40 transition-all hover:bg-white/10 disabled:opacity-50"
+                    >
+                      {actionLoading ? (
+                        <Loader2 size={16} className="animate-spin" />
+                      ) : (
+                        <Trash2 size={16} />
+                      )}
+                      {t("market.remove")}
+                    </motion.button>
+                  </div>
+                )}
+
+                {(isSold || isRemoved) && (
+                  <motion.button
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => updateStatus("ACTIVE")}
+                    disabled={actionLoading}
+                    className="flex items-center justify-center gap-2 w-full rounded-xl bg-emerald-500/10 border border-emerald-500/30 py-3.5 text-sm font-semibold text-emerald-400 transition-all hover:bg-emerald-500/20 disabled:opacity-50"
+                  >
+                    {actionLoading ? (
+                      <Loader2 size={16} className="animate-spin" />
+                    ) : (
+                      <RotateCcw size={16} />
+                    )}
+                    {t("market.relist")}
+                  </motion.button>
+                )}
+
+                {/* View all my listings link */}
+                <Link
+                  href="/market/mine"
+                  className="flex items-center justify-center gap-1.5 py-2 text-sm text-white/40 hover:text-white/60 transition-colors"
                 >
-                  <CheckCircle size={16} />
-                  {t("market.markSold")}
-                </motion.button>
+                  <ShoppingBag size={14} />
+                  {t("market.viewMyListings")}
+                </Link>
               </div>
             )}
 
@@ -459,8 +527,8 @@ export default function ListingDetailPage() {
         )}
       </div>
 
-      {/* ─── Sticky WhatsApp CTA ─── */}
-      {listing && !loading && !listing.sold && (
+      {/* ─── Sticky WhatsApp CTA (only for non-owners, non-sold) ─── */}
+      {listing && !loading && !isSold && !isOwner && (
         <div className="fixed bottom-0 inset-x-0 z-40">
           <div className="bg-gradient-to-t from-[#0a0f1a] via-[#0a0f1a] to-transparent pt-6 pb-safe">
             <div className="max-w-lg mx-auto px-4 pb-4">

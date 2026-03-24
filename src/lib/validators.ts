@@ -19,6 +19,35 @@ export const registerSchema = z.object({
   email: z.string().email("البريد الإلكتروني غير صحيح"),
   password: z.string().min(6, "كلمة السر لازم تكون 6 حروف على الأقل"),
   phone: phoneSchema.optional(),
+  role: z.enum(["PLAYER", "COACH", "VENUE_OWNER"]).default("VENUE_OWNER"),
+  // Player-specific fields (used when role=PLAYER)
+  area: z.string().optional(),
+  // Coach-specific fields (used when role=COACH)
+  areas: z.array(z.string()).optional(),
+  bio: z.string().max(500).optional(),
+  pricePerHour: z.number().positive().optional(),
+  experience: z.string().optional(),
+});
+
+export const playerProfileUpdateSchema = z.object({
+  name: z.string().min(2, "الاسم مطلوب").optional(),
+  nameAr: z.string().optional(),
+  area: z.string().optional(),
+  areaAr: z.string().optional(),
+  avatar: z.string().url().optional(),
+});
+
+export const coachProfileUpdateSchema = z.object({
+  name: z.string().min(2).optional(),
+  nameAr: z.string().optional(),
+  bio: z.string().max(500).optional(),
+  bioAr: z.string().max(500).optional(),
+  photo: z.string().url().optional(),
+  areas: z.array(z.string()).min(1).optional(),
+  areasAr: z.array(z.string()).optional(),
+  pricePerHour: z.number().positive().optional(),
+  experience: z.string().optional(),
+  whatsapp: z.string().optional(),
 });
 
 export const venueSchema = z.object({
@@ -105,6 +134,20 @@ export const listingSchema = z.object({
   areaAr: z.string().optional(),
 });
 
+export const listingUpdateSchema = z.object({
+  title: z.string().min(3).max(100).optional(),
+  titleAr: z.string().optional(),
+  description: z.string().max(1000).optional(),
+  descriptionAr: z.string().optional(),
+  price: z.number().positive().optional(),
+  category: z.enum(["RACKETS", "SHOES", "BAGS", "BALLS", "APPAREL", "ACCESSORIES", "OTHER"]).optional(),
+  condition: z.enum(["NEW", "LIKE_NEW", "USED", "WELL_USED"]).optional(),
+  photos: z.array(z.string().url()).max(5).optional(),
+  area: z.string().min(2).optional(),
+  areaAr: z.string().optional(),
+  status: z.enum(["ACTIVE", "SOLD", "REMOVED"]).optional(),
+});
+
 export type BookingInput = z.infer<typeof bookingSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type VenueInput = z.infer<typeof venueSchema>;
@@ -115,3 +158,6 @@ export type LobbyInput = z.infer<typeof lobbySchema>;
 export type JoinLobbyInput = z.infer<typeof joinLobbySchema>;
 export type CoachInput = z.infer<typeof coachSchema>;
 export type ListingInput = z.infer<typeof listingSchema>;
+export type ListingUpdateInput = z.infer<typeof listingUpdateSchema>;
+export type PlayerProfileUpdateInput = z.infer<typeof playerProfileUpdateSchema>;
+export type CoachProfileUpdateInput = z.infer<typeof coachProfileUpdateSchema>;

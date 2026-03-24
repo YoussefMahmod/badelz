@@ -15,6 +15,7 @@ import { TimeSlotPicker } from "@/components/time-slot-picker";
 import { BookingForm } from "@/components/booking-form";
 import { LoadingSpinner } from "@/components/loading-spinner";
 import { useAvailableSlots } from "@/hooks/use-available-slots";
+import { useAuth } from "@/lib/auth-context";
 import { useTranslation, useLocale } from "@/i18n";
 import { formatPrice, formatDate, formatTime, getNext7Days, toDateString, formatDateShort } from "@/lib/format";
 import { stepTransition } from "@/lib/animations";
@@ -47,6 +48,7 @@ export default function BookingPage({
   const { t } = useTranslation();
   const { locale, dir } = useLocale();
   const router = useRouter();
+  const { user, isAuthenticated } = useAuth();
 
   const [step, setStep] = useState(0);
   const [court, setCourt] = useState<CourtInfo | null>(null);
@@ -316,6 +318,9 @@ export default function BookingPage({
                   setPlayerInfo(data);
                   setStep(3);
                 }}
+                initialName={isAuthenticated && user?.name ? user.name : ""}
+                initialPhone={isAuthenticated && user?.phone ? user.phone : ""}
+                authenticatedName={isAuthenticated && user?.name ? user.name : undefined}
               />
             </motion.div>
           )}

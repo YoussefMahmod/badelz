@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { listingSchema } from "@/lib/validators";
 import { Prisma } from "@prisma/client";
@@ -75,6 +77,15 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { statusCode: 401, message: "سجل دخولك الأول عشان تبيع", data: null },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const parsed = listingSchema.safeParse(body);
 
@@ -91,6 +102,7 @@ export async function POST(request: NextRequest) {
 
     const listing = await prisma.listing.create({
       data: {
+        sellerId: session.user.id,
         sellerName: parsed.data.sellerName,
         sellerPhone: parsed.data.sellerPhone,
         title: parsed.data.title,

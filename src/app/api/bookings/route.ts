@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { bookingSchema } from "@/lib/validators";
 import { customAlphabet } from "nanoid";
@@ -11,7 +13,34 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = request.nextUrl;
     const phone = searchParams.get("phone");
+    const session = await getServerSession(authOptions);
 
+    // Authenticated user: find bookings by userId OR phone
+    if (session?.user?.id) {
+      const orConditions: Record<string, unknown>[] = [{ userId: session.user.id }];
+
+      if (session.user.phone) {
+        orConditions.push({ playerPhone: session.user.phone });
+      }
+
+      const bookings = await prisma.booking.findMany({
+        where: { OR: orConditions },
+        orderBy: [{ date: "desc" }, { startTime: "desc" }],
+        take: 50,
+        include: {
+          court: { select: { name: true, nameAr: true } },
+          venue: { select: { name: true, nameAr: true } },
+        },
+      });
+
+      return NextResponse.json({
+        statusCode: 200,
+        message: "تم جلب الحجوزات",
+        data: bookings,
+      });
+    }
+
+    // Unauthenticated: require phone param (existing behavior)
     if (!phone || !/^01[0125]\d{8}$/.test(phone)) {
       return NextResponse.json(
         { statusCode: 400, message: "رقم تليفون غير صحيح", data: null },
@@ -60,6 +89,7 @@ function timeToMinutes(time: string): number {
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
     const body = await request.json();
     const parsed = bookingSchema.safeParse(body);
 
@@ -165,6 +195,7 @@ export async function POST(request: NextRequest) {
         data: {
           courtId,
           venueId: court.venue.id,
+          userId: session?.user?.id ?? null,
           playerName,
           playerPhone,
           date: new Date(date),

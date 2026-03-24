@@ -6,6 +6,7 @@ import { CreditCard } from "lucide-react";
 import Link from "next/link";
 import { BookingConfirmationCard } from "@/components/booking-confirmation-card";
 import { GameLinkCard } from "@/components/game-link-card";
+import { AuthNudge } from "@/components/auth-nudge";
 import { LoadingSpinner } from "@/components/loading-spinner";
 import { useTranslation } from "@/i18n";
 
@@ -238,6 +239,16 @@ export default function BookingConfirmedClient({
           </button>
         </motion.div>
       )}
+
+      {/* Auth nudge for anonymous users */}
+      <div className="w-full max-w-sm mx-auto mt-6 px-4">
+        <AuthNudge
+          title={t("nudge.trackBookings")}
+          description={t("nudge.trackBookingsDesc")}
+          returnTo="/my-profile"
+          variant="light"
+        />
+      </div>
 
       <CardCTA />
     </div>

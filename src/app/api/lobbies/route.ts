@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { lobbySchema } from "@/lib/validators";
 import { customAlphabet } from "nanoid";
@@ -110,6 +112,7 @@ export async function POST(request: NextRequest) {
     const { hostName, hostPhone, area, areaAr, date, startTime, priceRange, note } =
       parsed.data;
 
+    const session = await getServerSession(authOptions);
     const lobbyCode = generateCode();
 
     // Parse the date string to a Date object
@@ -123,6 +126,7 @@ export async function POST(request: NextRequest) {
           lobbyCode,
           hostName,
           hostPhone,
+          hostUserId: session?.user?.id ?? null,
           area,
           areaAr: areaAr ?? null,
           date: lobbyDate,

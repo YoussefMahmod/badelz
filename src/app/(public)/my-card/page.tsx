@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { PlayerCard } from "@/components/cards/player-card";
+import { AuthNudge } from "@/components/auth-nudge";
 import { useTranslation, useLocale } from "@/i18n";
 import { buildPlayerShareLink } from "@/lib/whatsapp";
 import { scaleInGlow, slideUp } from "@/lib/animations";
@@ -399,6 +400,23 @@ function MyCardContent() {
               <Share2 size={18} />
               {t("player.shareCard")}
             </button>
+          </motion.div>
+
+          {/* Auth nudge for anonymous users */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.45 }}
+            className="relative z-10 mx-auto max-w-md px-4 pb-4"
+          >
+            <AuthNudge
+              title={t("nudge.claimCard")}
+              description={t("nudge.claimCardDesc")}
+              returnTo="/my-profile"
+              prefillPhone={phone}
+              prefillRole="PLAYER"
+              variant="dark"
+            />
           </motion.div>
 
           {/* View leaderboard link */}

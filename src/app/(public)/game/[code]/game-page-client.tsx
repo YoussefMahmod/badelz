@@ -15,6 +15,7 @@ import {
   CreditCard,
 } from "lucide-react";
 import { useTranslation, useLocale } from "@/i18n";
+import { useAuth } from "@/lib/auth-context";
 import { formatPrice, formatDate, formatTime } from "@/lib/format";
 import { buildGameShareLink } from "@/lib/whatsapp";
 import { checkmarkDraw, pulseGlow } from "@/lib/animations";
@@ -51,6 +52,7 @@ interface GameData {
 export default function GamePageClient({ code }: { code: string }) {
   const { t } = useTranslation();
   const { locale } = useLocale();
+  const { user, isAuthenticated } = useAuth();
 
   const [game, setGame] = useState<GameData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -432,6 +434,9 @@ export default function GamePageClient({ code }: { code: string }) {
                     onSubmit={handleJoin}
                     loading={joining}
                     error={joinError}
+                    initialName={isAuthenticated && user?.name ? user.name : ""}
+                    initialPhone={isAuthenticated && user?.phone ? user.phone : ""}
+                    authenticatedName={isAuthenticated && user?.name ? user.name : undefined}
                   />
                 </motion.div>
               )}
