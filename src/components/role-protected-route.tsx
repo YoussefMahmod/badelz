@@ -33,13 +33,16 @@ export function RoleProtectedRoute({ children, allowedRoles }: RoleProtectedRout
     if (!isLoading && isAuthenticated && user?.role && !allowedRoles.includes(user.role)) {
       router.replace("/");
     }
-  }, [isLoading, isAuthenticated, user?.role, router, allowedRoles]);
+    if (!isLoading && isAuthenticated && !user?.isOnboarded) {
+      router.replace("/onboarding");
+    }
+  }, [isLoading, isAuthenticated, user?.role, user?.isOnboarded, router, allowedRoles]);
 
   if (isLoading) {
     return <DarkFullPageSpinner />;
   }
 
-  if (!isAuthenticated || !user?.role || !allowedRoles.includes(user.role)) {
+  if (!isAuthenticated || !user?.role || !allowedRoles.includes(user.role) || !user?.isOnboarded) {
     return <DarkFullPageSpinner />;
   }
 

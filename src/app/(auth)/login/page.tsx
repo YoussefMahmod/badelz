@@ -52,19 +52,19 @@ function LoginForm() {
 
       if (result?.error) {
         setError(t("auth.invalidCredentials"));
-      } else if (returnTo) {
-        router.push(returnTo);
       } else {
-        // Fetch session to get the user's role for correct redirect
+        // Fetch session to determine redirect
         const session = await fetch("/api/auth/session").then((r) => r.json());
-        const role = session?.user?.role;
 
-        if (role === "PLAYER") {
-          router.push("/my-profile");
-        } else if (role === "COACH") {
-          router.push("/coach-dashboard");
+        if (returnTo) {
+          router.push(returnTo);
+        } else if (!session?.user?.isOnboarded) {
+          router.push("/onboarding");
         } else {
-          router.push("/dashboard");
+          const role = session?.user?.role;
+          if (role === "PLAYER") router.push("/my-profile");
+          else if (role === "COACH") router.push("/coach-dashboard");
+          else router.push("/dashboard");
         }
       }
     } catch {

@@ -9,7 +9,6 @@ import { Mail, Lock, User, Phone, UserPlus, Users, GraduationCap, Building2 } fr
 import { useTranslation } from "@/i18n";
 import { LocaleToggle } from "@/components/locale-toggle";
 import { Logo } from "@/components/logo";
-import { AreaSelector } from "@/components/area-selector";
 
 type RoleType = "PLAYER" | "COACH" | "VENUE_OWNER";
 
@@ -19,21 +18,18 @@ const ROLE_CONFIG = {
     labelKey: "roles.player" as const,
     descKey: "roles.playerDesc" as const,
     signUpKey: "roles.playerSignUp" as const,
-    redirect: "/my-profile",
   },
   COACH: {
     icon: GraduationCap,
     labelKey: "roles.coach" as const,
     descKey: "roles.coachDesc" as const,
     signUpKey: "roles.coachSignUp" as const,
-    redirect: "/coach-dashboard",
   },
   VENUE_OWNER: {
     icon: Building2,
     labelKey: "roles.owner" as const,
     descKey: "roles.ownerDesc" as const,
     signUpKey: "roles.ownerSignUp" as const,
-    redirect: "/dashboard",
   },
 } as const;
 
@@ -64,18 +60,16 @@ function RegisterForm() {
   const returnTo = searchParams.get("returnTo");
   const roleParam = searchParams.get("role");
   const validRoles: RoleType[] = ["PLAYER", "COACH", "VENUE_OWNER"];
-  const initialRole: RoleType = roleParam && validRoles.includes(roleParam as RoleType)
+  const validRole: RoleType | undefined = roleParam && validRoles.includes(roleParam as RoleType)
     ? (roleParam as RoleType)
-    : "PLAYER";
+    : undefined;
 
   const [form, setForm] = useState({
     name: searchParams.get("name") || "",
     email: "",
     password: "",
     phone: searchParams.get("phone") || "",
-    role: initialRole,
-    area: "",
-    areas: [] as string[],
+    role: (validRole || "PLAYER") as "PLAYER" | "COACH" | "VENUE_OWNER",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -90,8 +84,7 @@ function RegisterForm() {
     e.preventDefault();
     setError("");
 
-    // Client-side phone validation for PLAYER and COACH
-    if ((form.role === "PLAYER" || form.role === "COACH") && !form.phone) {
+    if (!form.phone) {
       setError(t("auth.phoneRequired"));
       return;
     }
@@ -106,10 +99,8 @@ function RegisterForm() {
           name: form.name,
           email: form.email,
           password: form.password,
-          phone: form.phone || undefined,
+          phone: form.phone,
           role: form.role,
-          area: form.role === "PLAYER" ? form.area || undefined : undefined,
-          areas: form.role === "COACH" ? form.areas : undefined,
         }),
       });
 
@@ -132,7 +123,7 @@ function RegisterForm() {
       } else if (returnTo) {
         router.push(returnTo);
       } else {
-        router.push(roleConfig.redirect);
+        router.push("/onboarding");
       }
     } catch {
       setError(t("common.error"));
@@ -140,8 +131,6 @@ function RegisterForm() {
       setLoading(false);
     }
   };
-
-  const isPhoneRequired = form.role === "PLAYER" || form.role === "COACH";
 
   return (
     <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-elevated">
@@ -272,60 +261,17 @@ function RegisterForm() {
           <label className="mb-1.5 flex items-center gap-2 text-sm font-medium text-gray-700">
             <Phone size={14} className="text-gray-400" />
             {t("auth.phone")}
-            {!isPhoneRequired && (
-              <span className="text-gray-300 text-xs">({t("common.optional")})</span>
-            )}
           </label>
           <input
             type="tel"
             value={form.phone}
             onChange={(e) => updateField("phone", e.target.value)}
-            required={isPhoneRequired}
+            required
             dir="ltr"
             placeholder="01XXXXXXXXX"
             className="w-full rounded-xl bg-gray-50 border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
           />
         </div>
-
-        {/* Area Selector -- single for PLAYER */}
-        <AnimatePresence mode="wait">
-          {form.role === "PLAYER" && (
-            <motion.div
-              key="player-area"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.25 }}
-              className="overflow-hidden"
-            >
-              <AreaSelector
-                mode="single"
-                selected={form.area}
-                onChange={(val) => updateField("area", val as string)}
-                showDetectButton
-              />
-            </motion.div>
-          )}
-
-          {/* Area Selector -- multi for COACH */}
-          {form.role === "COACH" && (
-            <motion.div
-              key="coach-areas"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.25 }}
-              className="overflow-hidden"
-            >
-              <AreaSelector
-                mode="multi"
-                selected={form.areas}
-                onChange={(val) => updateField("areas", val as string[])}
-                showDetectButton
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* Submit */}
         <motion.button

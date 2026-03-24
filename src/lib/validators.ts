@@ -18,15 +18,8 @@ export const registerSchema = z.object({
   name: z.string().min(2, "الاسم مطلوب"),
   email: z.string().email("البريد الإلكتروني غير صحيح"),
   password: z.string().min(6, "كلمة السر لازم تكون 6 حروف على الأقل"),
-  phone: phoneSchema.optional(),
-  role: z.enum(["PLAYER", "COACH", "VENUE_OWNER"]).default("VENUE_OWNER"),
-  // Player-specific fields (used when role=PLAYER)
-  area: z.string().optional(),
-  // Coach-specific fields (used when role=COACH)
-  areas: z.array(z.string()).optional(),
-  bio: z.string().max(500).optional(),
-  pricePerHour: z.number().positive().optional(),
-  experience: z.string().optional(),
+  phone: phoneSchema,
+  role: z.enum(["PLAYER", "COACH", "VENUE_OWNER"]).default("PLAYER"),
 });
 
 export const playerProfileUpdateSchema = z.object({

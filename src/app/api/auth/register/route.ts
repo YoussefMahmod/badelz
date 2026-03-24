@@ -19,18 +19,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const {
-      name,
-      email,
-      password,
-      phone,
-      role,
-      area,
-      areas,
-      bio,
-      pricePerHour,
-      experience,
-    } = parsed.data;
+    const { name, email, password, phone, role } = parsed.data;
 
     const existing = await prisma.user.findUnique({
       where: { email },
@@ -47,20 +36,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Phone is required for PLAYER and COACH roles
-    if ((role === "PLAYER" || role === "COACH") && !phone) {
-      return NextResponse.json(
-        {
-          statusCode: 400,
-          message: "رقم الموبايل مطلوب للاعبين والمدربين",
-          data: null,
-        },
-        { status: 400 }
-      );
-    }
-
     // Check if phone is already linked to a user-owned coach profile
-    if (role === "COACH" && phone) {
+    if (role === "COACH") {
       const existingCoach = await prisma.coach.findUnique({
         where: { phone },
       });
@@ -85,7 +62,7 @@ export async function POST(request: NextRequest) {
           name,
           email,
           password: hashedPassword,
-          phone: phone ?? null,
+          phone,
           role,
         },
         select: {
@@ -100,48 +77,41 @@ export async function POST(request: NextRequest) {
       });
 
       // Create or link PlayerProfile for PLAYER role
-      if (role === "PLAYER" && phone) {
+      if (role === "PLAYER") {
         await tx.playerProfile.upsert({
           where: { phone },
           update: {
             userId: user.id,
             name,
-            area: area ?? undefined,
           },
           create: {
             phone,
             name,
             userId: user.id,
-            area: area ?? null,
           },
         });
       }
 
       // Create or link Coach profile for COACH role
-      if (role === "COACH" && phone) {
+      if (role === "COACH") {
         await tx.coach.upsert({
           where: { phone },
           update: {
             userId: user.id,
             name,
-            bio: bio ?? undefined,
-            areas: areas ?? undefined,
-            pricePerHour: pricePerHour ?? undefined,
-            experience: experience ?? undefined,
           },
           create: {
             phone,
             name,
             userId: user.id,
             whatsapp: phone,
-            bio: bio ?? null,
-            areas: areas ?? [],
+            areas: [],
             areasAr: [],
-            pricePerHour: pricePerHour ?? null,
-            experience: experience ?? null,
           },
         });
       }
+
+      // VENUE_OWNER: just create User, no venue creation
 
       return user;
     });
