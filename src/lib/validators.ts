@@ -57,6 +57,7 @@ export const venueSchema = z.object({
   cityAr: z.string().optional(),
   latitude: z.number().optional(),
   longitude: z.number().optional(),
+  coverPhoto: z.string().url().optional(),
 });
 
 export const courtSchema = z.object({

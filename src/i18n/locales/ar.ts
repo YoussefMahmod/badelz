@@ -322,6 +322,7 @@ const ar: TranslationKeys = {
     venuePhone: "رقم التليفون",
     venueWhatsApp: "واتساب",
     saveChanges: "حفظ التغييرات",
+    venuePhoto: "صورة الملعب",
   },
   game: {
     title: "ماتش بادل",
@@ -583,6 +584,7 @@ const ar: TranslationKeys = {
     profileUpdated: "تم تحديث البروفايل",
     saving: "جاري الحفظ...",
     selectArea: "اختار منطقتك",
+    profilePhoto: "صورة البروفايل",
   },
   coachDashboard: {
     title: "لوحة التحكم",
@@ -610,6 +612,7 @@ const ar: TranslationKeys = {
     selectAreas: "اختار مناطقك",
     bioPlaceholder: "قول للاعبين عن نفسك...",
     experiencePlaceholder: "مثلاً 3 سنين",
+    profilePhoto: "صورة البروفايل",
   },
   nudge: {
     trackBookings: "تابع كل حجوزاتك",

@@ -30,6 +30,7 @@ import {
   darkBentoItem,
 } from "@/lib/animations";
 import { OnboardingBanner } from "@/components/onboarding-banner";
+import { PhotoUpload } from "@/components/photo-upload";
 
 interface CoachProfileData {
   id: string;
@@ -62,6 +63,7 @@ export default function CoachDashboardPage() {
   const [editForm, setEditForm] = useState({
     name: "",
     bio: "",
+    photo: "",
     areas: [] as string[],
     pricePerHour: "",
     experience: "",
@@ -128,6 +130,7 @@ export default function CoachDashboardPage() {
         areasAr,
       };
       if (editForm.bio.trim()) payload.bio = editForm.bio.trim();
+      if (editForm.photo) payload.photo = editForm.photo;
       if (editForm.pricePerHour) payload.pricePerHour = Number(editForm.pricePerHour);
       if (editForm.experience.trim()) payload.experience = editForm.experience.trim();
       if (editForm.whatsapp.trim()) payload.whatsapp = editForm.whatsapp.trim();
@@ -448,6 +451,7 @@ export default function CoachDashboardPage() {
               setEditForm({
                 name: profile.name,
                 bio: profile.bio || "",
+                photo: profile.photo || "",
                 areas: [...profile.areas],
                 pricePerHour: profile.pricePerHour ? String(profile.pricePerHour) : "",
                 experience: profile.experience || "",
@@ -477,6 +481,20 @@ export default function CoachDashboardPage() {
               className="overflow-hidden"
             >
               <div className="rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 p-5 space-y-5">
+                {/* Profile Photo */}
+                <div>
+                  <label className="block text-sm font-medium text-white/70 mb-1.5">
+                    {t("coachDashboard.profilePhoto")}
+                  </label>
+                  <PhotoUpload
+                    photos={editForm.photo ? [editForm.photo] : []}
+                    onChange={(photos) =>
+                      setEditForm((prev) => ({ ...prev, photo: photos[0] || "" }))
+                    }
+                    max={1}
+                  />
+                </div>
+
                 {/* Name field */}
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-1.5">

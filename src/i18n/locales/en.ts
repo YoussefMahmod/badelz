@@ -320,6 +320,7 @@ const en = {
     venuePhone: "Phone",
     venueWhatsApp: "WhatsApp",
     saveChanges: "Save Changes",
+    venuePhoto: "Venue Cover Photo",
   },
   game: {
     title: "Padel Game",
@@ -581,6 +582,7 @@ const en = {
     profileUpdated: "Profile updated",
     saving: "Saving...",
     selectArea: "Select your area",
+    profilePhoto: "Profile Photo",
   },
   coachDashboard: {
     title: "Dashboard",
@@ -608,6 +610,7 @@ const en = {
     selectAreas: "Select your areas",
     bioPlaceholder: "Tell players about yourself...",
     experiencePlaceholder: "e.g. 3 years",
+    profilePhoto: "Profile Photo",
   },
   nudge: {
     trackBookings: "Track all your bookings",

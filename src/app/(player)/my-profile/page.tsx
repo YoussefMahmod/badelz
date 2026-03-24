@@ -33,6 +33,7 @@ import {
   darkBentoItem,
 } from "@/lib/animations";
 import { OnboardingBanner } from "@/components/onboarding-banner";
+import { PhotoUpload } from "@/components/photo-upload";
 
 type PlayerTier =
   | "BRONZE"
@@ -102,7 +103,7 @@ export default function PlayerProfilePage() {
 
   // Edit profile state
   const [editing, setEditing] = useState(false);
-  const [editForm, setEditForm] = useState({ name: "", area: "" });
+  const [editForm, setEditForm] = useState({ name: "", area: "", avatar: "" });
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
@@ -147,6 +148,9 @@ export default function PlayerProfilePage() {
       if (editForm.area) {
         payload.area = editForm.area;
         payload.areaAr = areaObj?.labelAr ?? editForm.area;
+      }
+      if (editForm.avatar) {
+        payload.avatar = editForm.avatar;
       }
       const res = await fetch("/api/player/profile", {
         method: "PATCH",
@@ -486,6 +490,7 @@ export default function PlayerProfilePage() {
               setEditForm({
                 name: profile.name,
                 area: profile.area || "",
+                avatar: profile.avatar || "",
               });
               setEditing(true);
             }
@@ -512,6 +517,20 @@ export default function PlayerProfilePage() {
             className="overflow-hidden mb-3"
           >
             <div className="rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 p-5 space-y-5">
+              {/* Profile Photo */}
+              <div>
+                <label className="block text-sm font-medium text-white/70 mb-1.5">
+                  {t("playerProfile.profilePhoto")}
+                </label>
+                <PhotoUpload
+                  photos={editForm.avatar ? [editForm.avatar] : []}
+                  onChange={(photos) =>
+                    setEditForm((prev) => ({ ...prev, avatar: photos[0] || "" }))
+                  }
+                  max={1}
+                />
+              </div>
+
               {/* Name field */}
               <div>
                 <label className="block text-sm font-medium text-white/70 mb-1.5">

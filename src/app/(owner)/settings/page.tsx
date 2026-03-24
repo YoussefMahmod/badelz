@@ -16,6 +16,7 @@ import { useTranslation } from "@/i18n";
 import { slideUp } from "@/lib/animations";
 import { LoadingSpinner } from "@/components/loading-spinner";
 import { AREAS } from "@/lib/constants";
+import { PhotoUpload } from "@/components/photo-upload";
 
 interface VenueSettings {
   id: string;
@@ -29,6 +30,7 @@ interface VenueSettings {
   whatsapp: string | null;
   latitude: number | null;
   longitude: number | null;
+  coverPhoto: string | null;
 }
 
 export default function SettingsPage() {
@@ -51,6 +53,7 @@ export default function SettingsPage() {
     whatsapp: "",
     latitude: null as number | null,
     longitude: null as number | null,
+    coverPhoto: "",
   });
 
   useEffect(() => {
@@ -72,6 +75,7 @@ export default function SettingsPage() {
             whatsapp: v.whatsapp || "",
             latitude: v.latitude ?? null,
             longitude: v.longitude ?? null,
+            coverPhoto: v.coverPhoto || "",
           });
         }
       } catch {
@@ -160,6 +164,7 @@ export default function SettingsPage() {
           whatsapp: form.whatsapp || undefined,
           latitude: form.latitude ?? undefined,
           longitude: form.longitude ?? undefined,
+          coverPhoto: form.coverPhoto || undefined,
         }),
       });
 
@@ -195,6 +200,20 @@ export default function SettingsPage() {
       </motion.p>
 
       <motion.form {...slideUp} onSubmit={handleSave} className="space-y-4">
+        {/* Cover Photo */}
+        <div>
+          <label className="mb-1.5 flex items-center gap-2 text-xs font-medium text-white/50">
+            {t("owner.venuePhoto")}
+          </label>
+          <PhotoUpload
+            photos={form.coverPhoto ? [form.coverPhoto] : []}
+            onChange={(photos) =>
+              setForm((prev) => ({ ...prev, coverPhoto: photos[0] || "" }))
+            }
+            max={1}
+          />
+        </div>
+
         <div className="grid grid-cols-2 gap-3">
           <SettingsField
             icon={<Building2 size={14} />}
