@@ -147,6 +147,8 @@ const ar: TranslationKeys = {
     everyGameLevels: "كل ماتش بيرفع كارتك",
     everyGameLevelsDesc: "العب ماتشات، اكسب رانك، واطلع الليدربورد. من برونز لجراند ماستر.",
     seeLeaderboard: "شوف الليدربورد",
+    marketShowcaseTitle: "اشتري وبيع معدات بادل",
+    marketShowcaseDesc: "اعرض مضاربك وجزمك ومعداتك في ثواني. لاقي عروض حلوة من مجتمع البادل.",
     ownACourt: "عندك ملعب بادل؟",
     registerVenue: "سجّل ملعبك",
     statCourtsLabel: "كورت",

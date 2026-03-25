@@ -145,6 +145,8 @@ const en = {
     everyGameLevels: "Every Game Levels Up Your Card",
     everyGameLevelsDesc: "Play games, earn your rank, and climb the leaderboard. From Bronze to Grandmaster.",
     seeLeaderboard: "See Leaderboard",
+    marketShowcaseTitle: "Buy & Sell Padel Gear",
+    marketShowcaseDesc: "List your rackets, shoes, and accessories in seconds. Find great deals from the padel community.",
     ownACourt: "Own a Padel Court?",
     registerVenue: "Register Your Venue",
     statCourtsLabel: "Courts",

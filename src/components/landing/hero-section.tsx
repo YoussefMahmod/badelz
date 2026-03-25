@@ -797,7 +797,7 @@ function PlayerCardsSection() {
             </Link>
           </motion.div>
 
-          {/* Card stack side */}
+          {/* Leaderboard screenshot */}
           <motion.div
             className="flex-1 flex justify-center"
             initial={{ opacity: 0, x: 40 }}
@@ -805,7 +805,13 @@ function PlayerCardsSection() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.7, ease: easePremium }}
           >
-            <TierCardStack />
+            <div className="relative rounded-2xl border border-white/10 overflow-hidden shadow-2xl shadow-black/40 max-w-md w-full">
+              <img
+                src="/screenshots/leaderboard.png"
+                alt="Player leaderboard and tier rankings"
+                className="w-full h-auto"
+              />
+            </div>
           </motion.div>
         </div>
       </div>
@@ -814,7 +820,62 @@ function PlayerCardsSection() {
 }
 
 // ════════════════════════════════════════════════════
-// Section 5: For Venue Owners
+// Section 5: Marketplace Showcase
+// ════════════════════════════════════════════════════
+function MarketplaceSection() {
+  const { t } = useTranslation();
+
+  return (
+    <section className="relative py-24 sm:py-32 px-5 sm:px-8 overflow-hidden">
+      <div className="mx-auto max-w-5xl">
+        <div className="flex flex-col-reverse lg:flex-row items-center gap-8 lg:gap-20">
+          {/* Screenshot side */}
+          <motion.div
+            className="flex-1 flex justify-center"
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.7, ease: easePremium }}
+          >
+            <div className="relative rounded-2xl border border-white/10 overflow-hidden shadow-2xl shadow-black/40 max-w-md w-full">
+              <img
+                src="/screenshots/marketplace.png"
+                alt="Padel gear marketplace"
+                className="w-full h-auto"
+              />
+            </div>
+          </motion.div>
+
+          {/* Text side */}
+          <motion.div
+            className="flex-1 text-center lg:text-start"
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.7, ease: easePremium }}
+          >
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+              {t("landing.marketShowcaseTitle")}
+            </h2>
+            <p className="text-white/50 text-lg max-w-md mx-auto lg:mx-0 mb-8 leading-relaxed">
+              {t("landing.marketShowcaseDesc")}
+            </p>
+            <Link
+              href="/market"
+              className="inline-flex items-center gap-2 text-[#c8ff00] font-semibold hover:gap-3 transition-all"
+            >
+              {t("landing.browseMarket")}
+              <ArrowUpRight size={18} />
+            </Link>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ════════════════════════════════════════════════════
+// Section 6: For Venue Owners
 // ════════════════════════════════════════════════════
 function VenueOwnerSection() {
   const { t } = useTranslation();
@@ -964,6 +1025,7 @@ export function HeroSection() {
       <FeatureShowcase />
       <HowItWorksSection />
       <PlayerCardsSection />
+      <MarketplaceSection />
       <VenueOwnerSection />
       {/* Stats section removed */}
       <FinalCta />
