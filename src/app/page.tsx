@@ -20,6 +20,7 @@ import { MainLayout } from "@/components/main-layout";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation, useLocale } from "@/i18n";
 import { ListingCard, type ListingData } from "@/components/cards/listing-card";
+import { CoachCard } from "@/components/cards/coach-card";
 
 /* ─── Types ─── */
 interface Venue {
@@ -45,9 +46,11 @@ interface Coach {
   id: string;
   name: string;
   nameAr?: string | null;
+  photo?: string | null;
   areas?: string[];
   areasAr?: string[];
   pricePerHour?: number | string | null;
+  heartCount?: number;
 }
 
 interface Player {
@@ -337,30 +340,22 @@ export default function DiscoverPage() {
             href="/coaches"
           >
             {coaches.map((coach) => (
-              <Link
-                key={coach.id}
-                href={`/coaches/${coach.id}`}
-                className="shrink-0 snap-start w-44 rounded-xl bg-white/5 border border-white/10 p-3.5 text-center hover:-translate-y-1 transition-transform"
-              >
-                <div className="w-12 h-12 mx-auto rounded-full bg-gradient-to-br from-purple-500 to-fuchsia-500 flex items-center justify-center text-white font-bold text-lg mb-2">
-                  {(coach.name || "?").charAt(0).toUpperCase()}
-                </div>
-                <p className="text-sm font-bold text-white/90 truncate">
-                  {locale === "ar" && coach.nameAr ? coach.nameAr : coach.name}
-                </p>
-                {coach.areas?.[0] && (
-                  <p className="text-[10px] text-white/40 mt-1 truncate">
-                    {locale === "ar" && coach.areasAr?.[0]
-                      ? coach.areasAr[0]
-                      : coach.areas[0]}
-                  </p>
-                )}
-                {coach.pricePerHour && (
-                  <p className="text-xs font-bold text-emerald-400 mt-1">
-                    {Number(coach.pricePerHour)} {t("common.egp")}
-                  </p>
-                )}
-              </Link>
+              <div key={coach.id} className="shrink-0 snap-start">
+                <CoachCard
+                  coach={{
+                    id: coach.id,
+                    name: coach.name,
+                    nameAr: coach.nameAr,
+                    photo: coach.photo,
+                    areas: coach.areas ?? [],
+                    areasAr: coach.areasAr,
+                    pricePerHour: coach.pricePerHour ? Number(coach.pricePerHour) : null,
+                    heartCount: coach.heartCount ?? 0,
+                  }}
+                  size="sm"
+                  onClick={() => router.push(`/coaches/${coach.id}`)}
+                />
+              </div>
             ))}
           </FeedSection>
         )}
