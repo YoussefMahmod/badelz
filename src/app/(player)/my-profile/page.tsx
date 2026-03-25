@@ -24,7 +24,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useTranslation, useLocale } from "@/i18n";
 import { PlayerCard } from "@/components/cards/player-card";
 import { EmptyState } from "@/components/empty-state";
-import { AREAS } from "@/lib/constants";
+import { AREAS, PLAYER_TIER_COLORS, type PlayerTier } from "@/lib/constants";
 import {
   slideUp,
   fadeIn,
@@ -34,14 +34,6 @@ import {
 } from "@/lib/animations";
 import { OnboardingBanner } from "@/components/onboarding-banner";
 import { PhotoUpload } from "@/components/photo-upload";
-
-type PlayerTier =
-  | "BRONZE"
-  | "GOLD"
-  | "EMERALD"
-  | "DIAMOND"
-  | "MASTER"
-  | "GRANDMASTER";
 
 interface PlayerProfileData {
   id: string;
@@ -73,14 +65,7 @@ interface BookingData {
   venue: { name: string; nameAr?: string | null };
 }
 
-const TIER_COLORS: Record<PlayerTier, string> = {
-  BRONZE: "#cd7f32",
-  GOLD: "#ffd700",
-  EMERALD: "#50c878",
-  DIAMOND: "#b9f2ff",
-  MASTER: "#ff4655",
-  GRANDMASTER: "#c8ff00",
-};
+const TIER_COLORS = PLAYER_TIER_COLORS;
 
 const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
   CONFIRMED: { bg: "bg-emerald-500/15", text: "text-emerald-400" },

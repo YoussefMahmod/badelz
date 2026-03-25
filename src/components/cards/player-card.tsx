@@ -4,14 +4,7 @@ import Image from "next/image";
 import { MapPin, Crown, Sparkles, Gamepad2 } from "lucide-react";
 import { useTranslation, useLocale } from "@/i18n";
 import { CardShell } from "./card-shell";
-
-type PlayerTier =
-  | "BRONZE"
-  | "GOLD"
-  | "EMERALD"
-  | "DIAMOND"
-  | "MASTER"
-  | "GRANDMASTER";
+import { PLAYER_TIER_COLORS, type PlayerTier } from "@/lib/constants";
 type ShellTier =
   | "bronze"
   | "gold"
@@ -39,14 +32,7 @@ interface PlayerCardProps {
   isHost?: boolean;
 }
 
-const TIER_COLORS: Record<PlayerTier, string> = {
-  BRONZE: "#cd7f32",
-  GOLD: "#ffd700",
-  EMERALD: "#50c878",
-  DIAMOND: "#b9f2ff",
-  MASTER: "#ff4655",
-  GRANDMASTER: "#c8ff00",
-};
+const TIER_COLORS = PLAYER_TIER_COLORS;
 
 /* Tiers that show a sparkle icon next to the badge label */
 const TIERS_WITH_SPARKLE: Set<PlayerTier> = new Set([

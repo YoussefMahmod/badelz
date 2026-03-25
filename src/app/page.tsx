@@ -21,6 +21,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useTranslation, useLocale } from "@/i18n";
 import { ListingCard, type ListingData } from "@/components/cards/listing-card";
 import { CoachCard } from "@/components/cards/coach-card";
+import { PLAYER_TIER_COLORS } from "@/lib/constants";
 
 /* ─── Types ─── */
 interface Venue {
@@ -367,26 +368,57 @@ export default function DiscoverPage() {
             icon={<Trophy size={16} className="text-amber-400" />}
             href="/players"
           >
-            {players.map((player, i) => (
-              <Link
-                key={player.id || player.phone}
-                href={`/players/${player.id}`}
-                className="shrink-0 snap-start w-40 rounded-xl bg-white/5 border border-white/10 p-3.5 text-center hover:-translate-y-1 transition-transform"
-              >
-                <div className="text-lg font-black text-white/20 mb-1">
-                  #{i + 1}
-                </div>
-                <p className="text-sm font-bold text-white/90 truncate">
-                  {player.name}
-                </p>
-                <p className="text-[10px] text-white/30 uppercase tracking-wider mt-1">
-                  {player.tier}
-                </p>
-                <p className="text-xs text-white/40 mt-0.5">
-                  {player.gamesPlayed} {t("player.gamesPlayed")}
-                </p>
-              </Link>
-            ))}
+            {players.map((player, i) => {
+              const tierColor = PLAYER_TIER_COLORS[player.tier as keyof typeof PLAYER_TIER_COLORS] ?? "#9ca3af";
+              return (
+                <Link
+                  key={player.id || player.phone}
+                  href={`/players/${player.id}`}
+                  className="relative shrink-0 snap-start w-28 h-[156px] rounded-2xl bg-white/[0.04] border border-white/[0.08] overflow-hidden hover:-translate-y-1 transition-all"
+                  style={{ boxShadow: `0 0 15px ${tierColor}15` }}
+                >
+                  {/* Tier top stripe */}
+                  <div
+                    className="absolute top-0 inset-x-0 h-[3px]"
+                    style={{ background: `linear-gradient(90deg, ${tierColor}, ${tierColor}40)` }}
+                  />
+
+                  {/* Rank pill */}
+                  <div
+                    className="absolute top-2 end-2 text-[9px] font-black px-1.5 py-0.5 rounded-md z-10"
+                    style={{ background: `${tierColor}25`, color: tierColor }}
+                  >
+                    #{i + 1}
+                  </div>
+
+                  <div className="flex flex-col items-center justify-center h-full p-2 gap-1.5">
+                    {/* Avatar circle */}
+                    <div
+                      className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs"
+                      style={{
+                        border: `2px solid ${tierColor}`,
+                        background: `${tierColor}12`,
+                        color: tierColor,
+                      }}
+                    >
+                      {player.name.split(" ").slice(0, 2).map(w => w[0]).join("").toUpperCase()}
+                    </div>
+                    <p className="text-xs font-bold text-white/90 truncate max-w-full text-center">
+                      {player.name}
+                    </p>
+                    <span
+                      className="text-[8px] font-bold px-2 py-0.5 rounded-full"
+                      style={{ background: `${tierColor}20`, color: tierColor }}
+                    >
+                      {player.tier}
+                    </span>
+                    <p className="text-[10px] text-white/40">
+                      {player.gamesPlayed} {t("player.gamesPlayed")}
+                    </p>
+                  </div>
+                </Link>
+              );
+            })}
           </FeedSection>
         )}
 

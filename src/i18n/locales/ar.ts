@@ -782,6 +782,12 @@ const ar: TranslationKeys = {
     newBooking: "حجز جديد وصل!",
     playerJoined: "لاعب جديد انضم!",
   },
+  install: {
+    title: "حمّل بادلز",
+    desc: "ضيفه على شاشتك الرئيسية عشان توصله بسرعة — من غير متجر",
+    button: "تحميل التطبيق",
+    notNow: "مش دلوقتي",
+  },
 };
 
 export default ar;

@@ -22,6 +22,7 @@ export const COACH_TIER_CONFIG: Record<
     color: string;
     bg: string;
     border: string;
+    colorHex: string;
     sparkle: TierSparkleConfig | null;
   }
 > = {
@@ -30,6 +31,7 @@ export const COACH_TIER_CONFIG: Record<
     color: "text-white/60",
     bg: "bg-white/10",
     border: "border-white/20",
+    colorHex: "#9ca3af",
     sparkle: null,
   },
   RISING: {
@@ -37,6 +39,7 @@ export const COACH_TIER_CONFIG: Record<
     color: "text-blue-400",
     bg: "bg-blue-500/10",
     border: "border-blue-500/20",
+    colorHex: "#60a5fa",
     sparkle: {
       colorHex: "#60a5fa",
       borderColor: "rgba(96,165,250,0.4)",
@@ -50,6 +53,7 @@ export const COACH_TIER_CONFIG: Record<
     color: "text-purple-400",
     bg: "bg-purple-500/10",
     border: "border-purple-500/20",
+    colorHex: "#c084fc",
     sparkle: {
       colorHex: "#c084fc",
       borderColor: "rgba(192,132,252,0.45)",
@@ -63,6 +67,7 @@ export const COACH_TIER_CONFIG: Record<
     color: "text-[#c8ff00]",
     bg: "bg-[#c8ff00]/10",
     border: "border-[#c8ff00]/20",
+    colorHex: "#c8ff00",
     sparkle: {
       colorHex: "#c8ff00",
       borderColor: "rgba(200,255,0,0.5)",

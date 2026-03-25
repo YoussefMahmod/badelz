@@ -3,6 +3,7 @@
 import { ReactNode } from "react";
 import { Header } from "./header";
 import { BottomNav } from "./bottom-nav";
+import { InstallPrompt } from "./install-prompt";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -22,6 +23,7 @@ export function MainLayout({
       {showHeader && <Header />}
       <main className={`flex-1 ${showNav ? "pb-20" : ""}`}>{children}</main>
       {showNav && <BottomNav variant={navType} />}
+      {showNav && <InstallPrompt />}
     </div>
   );
 }

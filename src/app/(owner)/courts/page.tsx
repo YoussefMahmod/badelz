@@ -359,7 +359,7 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
         </div>
 
         {/* Content area (scrollable) */}
-        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+        <div className="flex-1 overflow-y-auto px-5 py-4 pb-24 space-y-4">
           {/* Feedback */}
           <InlineFeedback message={feedback} />
 

@@ -46,13 +46,13 @@ export function LobbyCard({ lobby }: LobbyCardProps) {
       {...darkBentoItem}
       whileTap={{ scale: 0.97 }}
       onClick={() => router.push(`/lobby/${lobby.lobbyCode}`)}
-      className="cursor-pointer rounded-2xl bg-white/5 border border-white/10 p-4 transition-all hover:border-[#c8ff00]/20 hover:shadow-[0_0_30px_rgba(200,255,0,0.08)]"
+      className="cursor-pointer rounded-2xl bg-white/5 border border-white/10 p-3 transition-all hover:border-[#c8ff00]/20 hover:shadow-[0_0_30px_rgba(200,255,0,0.08)]"
     >
       {/* Area name */}
-      <div className="flex items-start justify-between gap-2 mb-3">
+      <div className="flex items-start justify-between gap-2 mb-2">
         <div className="flex items-center gap-1.5 min-w-0">
           <MapPin size={14} className="shrink-0 text-white/40" />
-          <h3 className="text-base font-bold text-white truncate">{areaName}</h3>
+          <h3 className="text-sm font-bold text-white truncate">{areaName}</h3>
         </div>
         {lobby.priceRange && (
           <span className="shrink-0 text-sm font-bold text-[#c8ff00]">
@@ -62,7 +62,7 @@ export function LobbyCard({ lobby }: LobbyCardProps) {
       </div>
 
       {/* Date + time */}
-      <div className="flex items-center gap-3 mb-3 text-white/55 text-xs">
+      <div className="flex items-center gap-2.5 mb-2 text-white/55 text-xs">
         <div className="flex items-center gap-1">
           <Calendar size={12} />
           <span>{dateStr}</span>
@@ -79,7 +79,7 @@ export function LobbyCard({ lobby }: LobbyCardProps) {
       </div>
 
       {/* Host name */}
-      <p className="text-xs text-white/40 mb-3">
+      <p className="text-xs text-white/40 mb-2">
         {t("lobby.hostedBy", { name: lobby.hostName })}
       </p>
 
@@ -113,7 +113,7 @@ export function LobbyCard({ lobby }: LobbyCardProps) {
             return (
               <div
                 key={i}
-                className={`h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                className={`h-5 w-5 rounded-full flex items-center justify-center text-[9px] font-bold ${
                   filled
                     ? "bg-[#c8ff00] text-[#111827]"
                     : "border border-dashed border-white/20 text-white/20"

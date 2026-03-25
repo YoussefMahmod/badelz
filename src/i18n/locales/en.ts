@@ -780,6 +780,12 @@ const en = {
     newBooking: "New booking received!",
     playerJoined: "A new player joined!",
   },
+  install: {
+    title: "Install Badelz",
+    desc: "Add to your home screen for quick access — no app store needed",
+    button: "Install App",
+    notNow: "Not now",
+  },
 };
 
 export type TranslationKeys = typeof en;

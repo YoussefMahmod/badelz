@@ -28,6 +28,17 @@ export function calculateTier(gamesPlayed: number): "BRONZE" | "GOLD" | "EMERALD
   return "BRONZE";
 }
 
+export type PlayerTier = "BRONZE" | "GOLD" | "EMERALD" | "DIAMOND" | "MASTER" | "GRANDMASTER";
+
+export const PLAYER_TIER_COLORS: Record<PlayerTier, string> = {
+  BRONZE: "#cd7f32",
+  GOLD: "#ffd700",
+  EMERALD: "#50c878",
+  DIAMOND: "#b9f2ff",
+  MASTER: "#ff4655",
+  GRANDMASTER: "#c8ff00",
+};
+
 export const LISTING_CATEGORY_COLORS: Record<string, string> = {
   RACKETS: "#c8ff00",
   SHOES: "#00d4ff",
