@@ -48,11 +48,11 @@ const STATUS_CONFIG: Record<
   BookingStatus,
   { color: string; bg: string; borderColor: string }
 > = {
-  PENDING: { color: "text-amber-600", bg: "bg-amber-50", borderColor: "border-amber-200" },
-  CONFIRMED: { color: "text-green-600", bg: "bg-green-50", borderColor: "border-green-200" },
-  CANCELLED: { color: "text-red-600", bg: "bg-red-50", borderColor: "border-red-200" },
-  COMPLETED: { color: "text-blue-600", bg: "bg-blue-50", borderColor: "border-blue-200" },
-  NO_SHOW: { color: "text-gray-500", bg: "bg-gray-50", borderColor: "border-gray-200" },
+  PENDING: { color: "text-amber-400", bg: "bg-amber-500/10", borderColor: "border-amber-500/20" },
+  CONFIRMED: { color: "text-emerald-400", bg: "bg-emerald-500/10", borderColor: "border-emerald-500/20" },
+  CANCELLED: { color: "text-red-400", bg: "bg-red-500/10", borderColor: "border-red-500/20" },
+  COMPLETED: { color: "text-blue-400", bg: "bg-blue-500/10", borderColor: "border-blue-500/20" },
+  NO_SHOW: { color: "text-white/40", bg: "bg-white/5", borderColor: "border-white/10" },
 };
 
 const STATUS_KEYS: BookingStatus[] = ["PENDING", "CONFIRMED", "CANCELLED", "COMPLETED", "NO_SHOW"];
@@ -189,7 +189,7 @@ export default function OwnerBookingsPage() {
       <motion.h1
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-xl font-bold text-gray-900 mb-4"
+        className="text-xl font-bold text-white/90 mb-4"
       >
         {t("owner.bookingsList")}
       </motion.h1>
@@ -200,8 +200,8 @@ export default function OwnerBookingsPage() {
           onClick={() => setViewMode("list")}
           className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all cursor-pointer ${
             viewMode === "list"
-              ? "bg-[#111827] text-white"
-              : "text-gray-500 hover:text-gray-900"
+              ? "bg-white/15 text-white"
+              : "text-white/40 hover:text-white/70"
           }`}
         >
           <List size={14} />
@@ -211,8 +211,8 @@ export default function OwnerBookingsPage() {
           onClick={() => setViewMode("schedule")}
           className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all cursor-pointer ${
             viewMode === "schedule"
-              ? "bg-[#111827] text-white"
-              : "text-gray-500 hover:text-gray-900"
+              ? "bg-white/15 text-white"
+              : "text-white/40 hover:text-white/70"
           }`}
         >
           <CalendarDays size={14} />
@@ -239,8 +239,8 @@ export default function OwnerBookingsPage() {
                 }}
                 className={`shrink-0 rounded-full px-4 py-2 text-xs font-medium transition-all cursor-pointer ${
                   activeFilter === filter.key
-                    ? "bg-[#111827] text-white"
-                    : "border border-gray-200 text-gray-500 hover:text-gray-900 hover:border-gray-300"
+                    ? "bg-white/15 text-white"
+                    : "border border-white/10 text-white/50 hover:text-white/80 hover:border-white/20"
                 }`}
               >
                 {filter.label}
@@ -269,7 +269,7 @@ export default function OwnerBookingsPage() {
                   <motion.div
                     key={booking.id}
                     variants={staggerItem}
-                    className="bg-white border border-gray-200 rounded-2xl p-4"
+                    className="bg-white/5 border border-white/10 rounded-2xl p-4"
                   >
                     <div className="flex items-start gap-3">
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#c8ff00]/20">
@@ -277,7 +277,7 @@ export default function OwnerBookingsPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="text-sm font-semibold text-gray-900 truncate">
+                          <h3 className="text-sm font-semibold text-white/90 truncate">
                             {booking.playerName}
                           </h3>
                           <span
@@ -286,7 +286,7 @@ export default function OwnerBookingsPage() {
                             {getStatusLabel(booking.status)}
                           </span>
                         </div>
-                        <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-400">
+                        <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-white/40">
                           <span className="flex items-center gap-1">
                             <Phone size={10} />
                             <span dir="ltr">{booking.playerPhone}</span>
@@ -300,7 +300,7 @@ export default function OwnerBookingsPage() {
                             {formatTime(booking.startTime)} - {formatTime(booking.endTime)}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-300 mt-1">
+                        <p className="text-xs text-white/30 mt-1">
                           {booking.court.name} | {booking.confirmationCode}
                         </p>
                         {booking.notes && (
@@ -314,11 +314,11 @@ export default function OwnerBookingsPage() {
 
                     {/* Actions */}
                     {booking.status === "PENDING" && (
-                      <div className="flex gap-2 mt-3 pt-3 border-t border-gray-100">
+                      <div className="flex gap-2 mt-3 pt-3 border-t border-white/5">
                         <motion.button
                           whileTap={{ scale: 0.95 }}
                           onClick={() => handleAction(booking.id, "confirm")}
-                          className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-green-50 border border-green-200 py-2 text-xs font-medium text-green-600 hover:bg-green-100 transition-all cursor-pointer"
+                          className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 py-2 text-xs font-medium text-emerald-400 hover:bg-emerald-500/20 transition-all cursor-pointer"
                         >
                           <Check size={14} />
                           {t("owner.confirmBooking")}
@@ -326,7 +326,7 @@ export default function OwnerBookingsPage() {
                         <motion.button
                           whileTap={{ scale: 0.95 }}
                           onClick={() => handleAction(booking.id, "cancel")}
-                          className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-red-50 border border-red-200 py-2 text-xs font-medium text-red-600 hover:bg-red-100 transition-all cursor-pointer"
+                          className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-red-500/10 border border-red-500/20 py-2 text-xs font-medium text-red-400 hover:bg-red-500/20 transition-all cursor-pointer"
                         >
                           <X size={14} />
                           {t("owner.cancelBooking")}
@@ -334,11 +334,11 @@ export default function OwnerBookingsPage() {
                       </div>
                     )}
                     {booking.status === "CONFIRMED" && (
-                      <div className="mt-3 pt-3 border-t border-gray-100">
+                      <div className="mt-3 pt-3 border-t border-white/5">
                         <motion.button
                           whileTap={{ scale: 0.95 }}
                           onClick={() => handleAction(booking.id, "complete")}
-                          className="flex w-full items-center justify-center gap-1.5 rounded-full bg-blue-50 border border-blue-200 py-2 text-xs font-medium text-blue-600 hover:bg-blue-100 transition-all cursor-pointer"
+                          className="flex w-full items-center justify-center gap-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 py-2 text-xs font-medium text-blue-400 hover:bg-blue-500/20 transition-all cursor-pointer"
                         >
                           <CheckCircle size={14} />
                           {t("owner.completeBooking")}

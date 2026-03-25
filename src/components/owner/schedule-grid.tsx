@@ -73,19 +73,19 @@ const TIME_SLOTS = generateTimeSlots();
 
 const STATUS_STYLES: Record<string, { bg: string; border: string; text: string }> = {
   CONFIRMED: {
-    bg: "bg-emerald-50",
-    border: "border-emerald-500",
-    text: "text-emerald-800",
+    bg: "bg-emerald-500/10",
+    border: "border-emerald-500/50",
+    text: "text-emerald-400",
   },
   PENDING: {
-    bg: "bg-amber-50",
-    border: "border-amber-500",
-    text: "text-amber-800",
+    bg: "bg-amber-500/10",
+    border: "border-amber-500/50",
+    text: "text-amber-400",
   },
   COMPLETED: {
-    bg: "bg-blue-50",
-    border: "border-blue-500",
-    text: "text-blue-800",
+    bg: "bg-blue-500/10",
+    border: "border-blue-500/50",
+    text: "text-blue-400",
   },
 };
 
@@ -230,25 +230,25 @@ export function ScheduleGrid({ venueId, onSlotTap }: ScheduleGridProps) {
           {Array.from({ length: 7 }).map((_, i) => (
             <div
               key={i}
-              className="h-16 w-14 shrink-0 animate-pulse rounded-xl bg-gray-100"
+              className="h-16 w-14 shrink-0 animate-pulse rounded-xl bg-white/10"
             />
           ))}
         </div>
         {/* Grid skeleton */}
-        <div className="overflow-hidden rounded-xl border border-gray-200">
+        <div className="overflow-hidden rounded-xl border border-white/10">
           {Array.from({ length: 6 }).map((_, row) => (
-            <div key={row} className="flex border-b border-gray-100 last:border-b-0">
+            <div key={row} className="flex border-b border-white/5 last:border-b-0">
               <div className="w-16 shrink-0 p-3">
-                <div className="h-3 w-10 animate-pulse rounded bg-gray-100" />
+                <div className="h-3 w-10 animate-pulse rounded bg-white/10" />
               </div>
               {Array.from({ length: 3 }).map((_, col) => (
                 <div
                   key={col}
-                  className="flex-1 border-s border-gray-100 p-3"
+                  className="flex-1 border-s border-white/5 p-3"
                   style={{ minWidth: 120 }}
                 >
                   <div
-                    className="h-5 animate-pulse rounded bg-gray-100"
+                    className="h-5 animate-pulse rounded bg-white/10"
                     style={{ animationDelay: `${(row * 3 + col) * 80}ms` }}
                   />
                 </div>
@@ -268,7 +268,7 @@ export function ScheduleGrid({ venueId, onSlotTap }: ScheduleGridProps) {
         <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50">
           <CalendarDays size={24} className="text-red-400" />
         </div>
-        <p className="text-sm font-medium text-gray-900 mb-1">
+        <p className="text-sm font-medium text-white/90 mb-1">
           {t("common.error")}
         </p>
         <button
@@ -286,10 +286,10 @@ export function ScheduleGrid({ venueId, onSlotTap }: ScheduleGridProps) {
   if (courts.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100">
-          <CalendarDays size={24} className="text-gray-400" />
+        <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10">
+          <CalendarDays size={24} className="text-white/40" />
         </div>
-        <p className="text-sm font-medium text-gray-900 mb-1">
+        <p className="text-sm font-medium text-white/90 mb-1">
           {t("owner.noCourts")}
         </p>
         <Link
@@ -316,7 +316,7 @@ export function ScheduleGrid({ venueId, onSlotTap }: ScheduleGridProps) {
       <div className="flex items-center gap-2">
         <button
           onClick={() => shiftDate(-1)}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-gray-200 text-gray-400 transition-colors hover:border-gray-300 hover:text-gray-600"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 text-white/40 transition-colors hover:border-white/20 hover:text-white/60"
           aria-label="Previous day"
         >
           {isRTL ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
@@ -335,7 +335,7 @@ export function ScheduleGrid({ venueId, onSlotTap }: ScheduleGridProps) {
                 className={`flex shrink-0 flex-col items-center justify-center rounded-xl px-3 py-2 transition-all ${
                   isSelected
                     ? "bg-[#111827] text-white shadow-sm"
-                    : "border border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                    : "border border-white/10 text-white/50 hover:border-white/20 hover:text-white/70"
                 }`}
                 style={{ minWidth: 52 }}
                 aria-label={new Intl.DateTimeFormat(locale === "ar" ? "ar-EG" : "en-US", {
@@ -346,7 +346,7 @@ export function ScheduleGrid({ venueId, onSlotTap }: ScheduleGridProps) {
                 aria-pressed={isSelected}
               >
                 <span className={`text-[10px] font-medium leading-tight ${
-                  isSelected ? "text-white/70" : "text-gray-400"
+                  isSelected ? "text-white/70" : "text-white/40"
                 }`}>
                   {formatWeekday(day)}
                 </span>
@@ -364,7 +364,7 @@ export function ScheduleGrid({ venueId, onSlotTap }: ScheduleGridProps) {
         {/* Calendar picker for arbitrary date */}
         <button
           onClick={() => dateInputRef.current?.showPicker()}
-          className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-gray-200 text-gray-400 transition-colors hover:border-gray-300 hover:text-gray-600"
+          className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 text-white/40 transition-colors hover:border-white/20 hover:text-white/60"
           aria-label="Pick date"
         >
           <CalendarDays size={16} />
@@ -383,7 +383,7 @@ export function ScheduleGrid({ venueId, onSlotTap }: ScheduleGridProps) {
 
         <button
           onClick={() => shiftDate(1)}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-gray-200 text-gray-400 transition-colors hover:border-gray-300 hover:text-gray-600"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 text-white/40 transition-colors hover:border-white/20 hover:text-white/60"
           aria-label="Next day"
         >
           {isRTL ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
@@ -410,22 +410,22 @@ export function ScheduleGrid({ venueId, onSlotTap }: ScheduleGridProps) {
       <div className="flex flex-wrap gap-3 text-[10px] font-medium">
         <span className="flex items-center gap-1.5">
           <span className="h-2.5 w-2.5 rounded-sm bg-emerald-500" />
-          <span className="text-gray-500">{t("owner.confirmed")}</span>
+          <span className="text-white/50">{t("owner.confirmed")}</span>
         </span>
         <span className="flex items-center gap-1.5">
           <span className="h-2.5 w-2.5 rounded-sm bg-amber-500" />
-          <span className="text-gray-500">{t("owner.pending")}</span>
+          <span className="text-white/50">{t("owner.pending")}</span>
         </span>
         <span className="flex items-center gap-1.5">
           <span className="h-2.5 w-2.5 rounded-sm bg-blue-500" />
-          <span className="text-gray-500">{t("owner.completed")}</span>
+          <span className="text-white/50">{t("owner.completed")}</span>
         </span>
       </div>
 
       {/* Grid */}
       <div
         ref={scrollRef}
-        className="overflow-auto rounded-xl border border-gray-200 bg-white"
+        className="overflow-auto rounded-xl border border-white/10 bg-white/[0.02]"
         style={{ maxHeight: "calc(100vh - 280px)" }}
       >
         <table className="w-full border-collapse" role="grid" aria-label={t("owner.scheduleView")}>
@@ -434,23 +434,23 @@ export function ScheduleGrid({ venueId, onSlotTap }: ScheduleGridProps) {
             <tr>
               {/* Time column header */}
               <th
-                className="sticky top-0 start-0 z-30 bg-white/95 backdrop-blur-sm border-b border-e border-gray-200 p-2"
+                className="sticky top-0 start-0 z-30 bg-[#0a0f1a]/95 backdrop-blur-sm border-b border-e border-white/10 p-2"
                 style={{ minWidth: 64 }}
               >
-                <span className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">
+                <span className="text-[10px] font-medium text-white/40 uppercase tracking-wider">
                   {/* Empty — time column */}
                 </span>
               </th>
               {courts.map((court) => (
                 <th
                   key={court.id}
-                  className="sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b border-e border-gray-200 p-2 text-center last:border-e-0"
+                  className="sticky top-0 z-20 bg-[#0a0f1a]/95 backdrop-blur-sm border-b border-e border-white/10 p-2 text-center last:border-e-0"
                   style={{ minWidth: 120 }}
                 >
-                  <span className="block text-xs font-semibold text-gray-900 truncate">
+                  <span className="block text-xs font-semibold text-white/90 truncate">
                     {locale === "ar" && court.nameAr ? court.nameAr : court.name}
                   </span>
-                  <span className="block text-[10px] text-gray-400 mt-0.5">
+                  <span className="block text-[10px] text-white/40 mt-0.5">
                     {Number(court.pricePerHour)} {t("common.egp")}{t("common.perHour")}
                   </span>
                 </th>
@@ -467,15 +467,15 @@ export function ScheduleGrid({ venueId, onSlotTap }: ScheduleGridProps) {
               return (
                 <tr
                   key={slotMinute}
-                  className={isHourMark ? "border-t border-gray-200" : "border-t border-gray-100"}
+                  className={isHourMark ? "border-t border-white/10" : "border-t border-white/5"}
                 >
                   {/* Time label — only show on hour marks */}
                   <td
-                    className="sticky start-0 z-10 bg-white border-e border-gray-200 px-2 align-top"
+                    className="sticky start-0 z-10 bg-[#0a0f1a] border-e border-white/10 px-2 align-top"
                     style={{ height: 48 }}
                   >
                     {isHourMark && (
-                      <span className="text-xs text-gray-400 font-mono whitespace-nowrap">
+                      <span className="text-xs text-white/40 font-mono whitespace-nowrap">
                         {formatTime(timeStr)}
                       </span>
                     )}
@@ -503,7 +503,7 @@ export function ScheduleGrid({ venueId, onSlotTap }: ScheduleGridProps) {
                         <td
                           key={cellKey}
                           rowSpan={spanRows}
-                          className="border-e border-gray-100 p-1 align-top last:border-e-0"
+                          className="border-e border-white/5 p-1 align-top last:border-e-0"
                           style={{ height: spanRows * 48 }}
                         >
                           <div
@@ -533,7 +533,7 @@ export function ScheduleGrid({ venueId, onSlotTap }: ScheduleGridProps) {
                     return (
                       <td
                         key={cellKey}
-                        className="border-e border-gray-100 p-1 last:border-e-0"
+                        className="border-e border-white/5 p-1 last:border-e-0"
                         style={{ height: 48 }}
                       >
                         <button
@@ -545,7 +545,7 @@ export function ScheduleGrid({ venueId, onSlotTap }: ScheduleGridProps) {
                               endTime: minutesToTime(slotMinute + 30),
                             })
                           }
-                          className="flex h-full w-full items-center justify-center rounded-lg border border-dashed border-gray-200 text-gray-300 transition-all hover:bg-gray-50 hover:border-gray-300 hover:text-gray-400 cursor-pointer group"
+                          className="flex h-full w-full items-center justify-center rounded-lg border border-dashed border-white/10 text-white/30 transition-all hover:bg-white/5 hover:border-white/20 hover:text-white/40 cursor-pointer group"
                           aria-label={`${t("owner.tapToBook")} - ${locale === "ar" && court.nameAr ? court.nameAr : court.name} - ${formatTime(timeStr)}`}
                         >
                           <Plus
