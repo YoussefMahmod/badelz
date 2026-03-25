@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { track } from "@/lib/analytics";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Calendar,
@@ -103,6 +104,7 @@ export default function GamePageClient({ code }: { code: string }) {
         if (typeof window !== "undefined") {
           localStorage.setItem("badelz-player-phone", data.playerPhone);
         }
+        track.gameJoined({ gameCode: code });
         setJoinSuccess(true);
         setShowJoinForm(false);
         await fetchGame();

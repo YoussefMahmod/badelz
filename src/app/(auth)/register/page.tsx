@@ -298,7 +298,14 @@ function RegisterForm() {
         </motion.button>
       </form>
 
-      <p className="mt-5 text-center text-sm text-gray-400">
+      <p className="mt-4 text-center text-[11px] text-gray-400">
+        {t("legal.agreeToTerms")}{" "}
+        <Link href="/terms" className="text-[#111827] hover:underline">{t("legal.terms")}</Link>
+        {" "}{t("legal.and")}{" "}
+        <Link href="/privacy" className="text-[#111827] hover:underline">{t("legal.privacy")}</Link>
+      </p>
+
+      <p className="mt-3 text-center text-sm text-gray-400">
         {t("auth.hasAccount")}{" "}
         <Link
           href={`/login${returnTo ? `?returnTo=${encodeURIComponent(returnTo)}` : ""}`}

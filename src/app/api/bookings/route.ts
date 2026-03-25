@@ -6,6 +6,7 @@ import { bookingSchema } from "@/lib/validators";
 import { customAlphabet } from "nanoid";
 import { DayOfWeek } from "@prisma/client";
 import { buildGameShareLink } from "@/lib/whatsapp";
+import { sendBookingNotification } from "@/lib/email";
 
 const generateCode = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 6);
 
@@ -122,7 +123,17 @@ export async function POST(request: NextRequest) {
     // Look up the court and its venue
     const court = await prisma.court.findUnique({
       where: { id: courtId },
-      include: { venue: { select: { id: true, name: true, nameAr: true, isActive: true } } },
+      include: {
+        venue: {
+          select: {
+            id: true,
+            name: true,
+            nameAr: true,
+            isActive: true,
+            owner: { select: { email: true } },
+          },
+        },
+      },
     });
 
     if (!court || !court.isActive) {
@@ -231,6 +242,21 @@ export async function POST(request: NextRequest) {
     const courtName = court.nameAr ?? court.name;
     const pricePerPlayer = Math.ceil(Number(totalPrice) / 4);
     const gameLink = `https://badelz.app/game/${gameCode}`;
+
+    // Fire-and-forget email notification to venue owner
+    if (court.venue.owner?.email) {
+      sendBookingNotification(court.venue.owner.email, {
+        playerName,
+        playerPhone,
+        courtName,
+        venueName,
+        date,
+        startTime,
+        endTime,
+        totalPrice: Number(totalPrice),
+        confirmationCode: booking.confirmationCode,
+      }).catch((err) => console.error("Email notification failed:", err));
+    }
 
     // Build WhatsApp share link using the game-aware format
     const whatsappShareLink = buildGameShareLink({

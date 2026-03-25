@@ -1,6 +1,7 @@
 "use client";
 
 import { use, useState, useEffect, useMemo } from "react";
+import { track } from "@/lib/analytics";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -151,6 +152,7 @@ export default function BookingPage({
         if (typeof window !== "undefined") {
           localStorage.setItem("badelz-player-phone", playerInfo.phone);
         }
+        track.bookingCompleted({ venueId: court?.venue?.id || "", courtId, price, date: selectedDate });
         router.push(`/booking-confirmed/${json.data.id}`);
       } else {
         setSubmitError(json.message || t("common.error"));

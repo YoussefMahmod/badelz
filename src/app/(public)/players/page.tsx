@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Users, MapPin, Crown, Gamepad2, Sparkles } from "lucide-react";
@@ -107,7 +108,7 @@ function ListAvatar({
 }) {
   return (
     <div
-      className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs border-2 overflow-hidden shrink-0"
+      className="relative w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs border-2 overflow-hidden shrink-0"
       style={{
         borderColor: tierColor,
         backgroundColor: `${tierColor}15`,
@@ -115,7 +116,7 @@ function ListAvatar({
       }}
     >
       {src ? (
-        <img src={src} alt={name} className="w-full h-full object-cover" />
+        <Image src={src} alt={name} fill sizes="48px" className="object-cover" />
       ) : (
         initials(name)
       )}

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { MapPin, Crown, Sparkles, Gamepad2 } from "lucide-react";
 import { useTranslation, useLocale } from "@/i18n";
 import { CardShell } from "./card-shell";
@@ -114,7 +115,7 @@ function Avatar({
   tier: PlayerTier;
 }) {
   const avatarContent = src ? (
-    <img src={src} alt={name} className="w-full h-full object-cover" />
+    <Image src={src} alt={name} fill sizes="80px" className="object-cover" />
   ) : (
     initials(name)
   );
@@ -131,7 +132,7 @@ function Avatar({
         }}
       >
         <div
-          className={`${AVATAR_CLS[size]} rounded-full flex items-center justify-center font-bold overflow-hidden`}
+          className={`relative ${AVATAR_CLS[size]} rounded-full flex items-center justify-center font-bold overflow-hidden`}
           style={{ backgroundColor: "#0a0f1a", color }}
         >
           {avatarContent}
@@ -145,7 +146,7 @@ function Avatar({
 
   return (
     <div
-      className={`${AVATAR_CLS[size]} rounded-full flex items-center justify-center font-bold overflow-hidden`}
+      className={`relative ${AVATAR_CLS[size]} rounded-full flex items-center justify-center font-bold overflow-hidden`}
       style={{
         border: `${borderWidth}px solid ${color}`,
         backgroundColor: `${color}15`,

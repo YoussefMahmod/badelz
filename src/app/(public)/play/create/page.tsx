@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import { track } from "@/lib/analytics";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowRight,
@@ -120,6 +121,7 @@ export default function CreateLobbyPage() {
       });
       const json = await res.json();
       if (res.ok && json.data?.lobbyCode) {
+        track.lobbyCreated({ area, date });
         router.push(`/lobby/${json.data.lobbyCode}`);
       } else {
         setError(json.message || t("common.error"));

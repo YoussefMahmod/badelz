@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Heart, MapPin } from "lucide-react";
 import { useTranslation, useLocale } from "@/i18n";
 import { CardShell } from "./card-shell";
@@ -80,7 +81,7 @@ function Avatar({
   if (!sparkle) {
     return (
       <div
-        className={`shrink-0 rounded-full flex items-center justify-center font-bold overflow-hidden border-2 border-white/20 ${fontSize[size]}`}
+        className={`relative shrink-0 rounded-full flex items-center justify-center font-bold overflow-hidden border-2 border-white/20 ${fontSize[size]}`}
         style={{
           width: inner,
           height: inner,
@@ -89,7 +90,7 @@ function Avatar({
         }}
       >
         {photo ? (
-          <img src={photo} alt={displayName} className="w-full h-full rounded-full object-cover" />
+          <Image src={photo} alt={displayName} fill sizes="64px" className="rounded-full object-cover" />
         ) : (
           getInitials(name)
         )}
@@ -167,7 +168,7 @@ function Avatar({
         }}
       >
         {photo ? (
-          <img src={photo} alt={displayName} className="w-full h-full rounded-full object-cover" />
+          <Image src={photo} alt={displayName} fill sizes="64px" className="rounded-full object-cover" />
         ) : (
           getInitials(name)
         )}

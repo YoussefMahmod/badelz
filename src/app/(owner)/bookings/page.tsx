@@ -13,6 +13,7 @@ import {
   FileText,
   Plus,
   List,
+  MessageCircle,
 } from "lucide-react";
 import { useTranslation, useLocale } from "@/i18n";
 import { staggerContainer, staggerItem } from "@/lib/animations";
@@ -21,6 +22,7 @@ import { LoadingSpinner } from "@/components/loading-spinner";
 import { EmptyState } from "@/components/empty-state";
 import { ManualBookingModal } from "@/components/owner/manual-booking-modal";
 import { ScheduleGrid } from "@/components/owner/schedule-grid";
+import { buildOwnerToPlayerLink } from "@/lib/whatsapp";
 
 type BookingStatus = "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED" | "NO_SHOW";
 
@@ -63,6 +65,7 @@ export default function OwnerBookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState<BookingStatus | "ALL">("ALL");
+  const [dateFilter, setDateFilter] = useState<string>("");
 
   // Phase 2 state
   const [viewMode, setViewMode] = useState<"list" | "schedule">(() => {
@@ -112,6 +115,7 @@ export default function OwnerBookingsPage() {
     try {
       const params = new URLSearchParams();
       if (activeFilter !== "ALL") params.set("status", activeFilter);
+      if (dateFilter) params.set("date", dateFilter);
 
       const res = await fetch(`/api/owner/bookings?${params.toString()}`);
       const json = await res.json();
@@ -125,7 +129,7 @@ export default function OwnerBookingsPage() {
     } finally {
       setLoading(false);
     }
-  }, [activeFilter]);
+  }, [activeFilter, dateFilter]);
 
   useEffect(() => {
     fetchBookings();
@@ -223,6 +227,49 @@ export default function OwnerBookingsPage() {
       {/* List view */}
       {viewMode === "list" && (
         <>
+          {/* Date filter */}
+          <div className="flex items-center gap-2 mb-3">
+            <input
+              type="date"
+              value={dateFilter}
+              onChange={(e) => {
+                setDateFilter(e.target.value);
+                setLoading(true);
+              }}
+              className="rounded-lg bg-white/5 border border-white/10 px-3 py-1.5 text-xs text-white/90 focus:outline-none focus:border-white/30 [color-scheme:dark]"
+            />
+            {[
+              { label: t("owner.today"), value: new Date().toISOString().split("T")[0] },
+              { label: t("owner.tomorrow"), value: new Date(Date.now() + 86400000).toISOString().split("T")[0] },
+            ].map((chip) => (
+              <button
+                key={chip.label}
+                onClick={() => {
+                  setDateFilter(dateFilter === chip.value ? "" : chip.value);
+                  setLoading(true);
+                }}
+                className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-all cursor-pointer ${
+                  dateFilter === chip.value
+                    ? "bg-[#c8ff00]/20 text-[#c8ff00] border border-[#c8ff00]/30"
+                    : "border border-white/10 text-white/50 hover:text-white/80"
+                }`}
+              >
+                {chip.label}
+              </button>
+            ))}
+            {dateFilter && (
+              <button
+                onClick={() => {
+                  setDateFilter("");
+                  setLoading(true);
+                }}
+                className="text-xs text-white/40 hover:text-white/70 cursor-pointer"
+              >
+                {t("owner.allDates")}
+              </button>
+            )}
+          </div>
+
           {/* Status filter tabs */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -290,6 +337,22 @@ export default function OwnerBookingsPage() {
                           <span className="flex items-center gap-1">
                             <Phone size={10} />
                             <span dir="ltr">{booking.playerPhone}</span>
+                            {booking.playerPhone && (
+                              <a
+                                href={buildOwnerToPlayerLink({
+                                  playerName: booking.playerName,
+                                  playerPhone: booking.playerPhone,
+                                  date: formatDateShort(booking.date, locale === "ar" ? "ar-EG" : "en-US"),
+                                  startTime: formatTime(booking.startTime),
+                                })}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#25D366]/20 hover:bg-[#25D366]/30 transition-colors"
+                                title={t("owner.contactPlayer")}
+                              >
+                                <MessageCircle size={10} className="text-[#25D366]" />
+                              </a>
+                            )}
                           </span>
                           <span className="flex items-center gap-1">
                             <CalendarDays size={10} />

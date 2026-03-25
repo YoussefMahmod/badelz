@@ -7,6 +7,7 @@ import {
   Link2, ChevronDown, Sparkles, Crown, Banknote, FileText, CreditCard,
 } from "lucide-react";
 import Link from "next/link";
+import { track } from "@/lib/analytics";
 import { useTranslation, useLocale } from "@/i18n";
 import { useAuth } from "@/lib/auth-context";
 import { formatDate, formatTime } from "@/lib/format";
@@ -79,6 +80,7 @@ export default function LobbyPageClient({ code }: { code: string }) {
         if (typeof window !== "undefined") {
           localStorage.setItem("badelz-player-phone", data.playerPhone);
         }
+        track.lobbyJoined({ lobbyCode: code });
         setJoinSuccess(true); setShowJoinForm(false); await fetchLobby();
       }
       else setJoinError(json.message || t("common.error"));

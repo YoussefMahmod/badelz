@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { track } from "@/lib/analytics";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowRight,
@@ -272,6 +273,7 @@ export default function SellPage() {
         setErrors({ server: json.message || t("common.error") });
         return;
       }
+      track.listingCreated({ category: form.category, price: Number(form.price) });
       setSuccess({
         id: json.data?.id,
         title: form.title.trim(),

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { track } from "@/lib/analytics";
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowLeft, MapPin, Share2, Heart } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
@@ -229,6 +230,7 @@ function CoachProfileContent({
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => {
+                  track.coachContacted({ coachId });
                   fetch(`/api/coaches/${coachId}/whatsapp-click`, { method: "POST" }).catch(() => {});
                 }}
                 data-testid="coach-whatsapp-cta"

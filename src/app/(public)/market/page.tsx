@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -364,9 +365,9 @@ export default function MarketPage() {
                       <span className="text-[8px] font-bold bg-emerald-500 text-white px-1.5 py-0.5 rounded-full shrink-0 whitespace-nowrap">
                         {t("market.newBadge")}
                       </span>
-                      <div className="w-7 h-7 rounded-md overflow-hidden shrink-0 bg-white/5 flex items-center justify-center">
+                      <div className="relative w-7 h-7 rounded-md overflow-hidden shrink-0 bg-white/5 flex items-center justify-center">
                         {item.photos?.[0] ? (
-                          <img src={item.photos[0]} alt="" className="w-full h-full object-cover" />
+                          <Image src={item.photos[0]} alt="" fill sizes="28px" className="object-cover" />
                         ) : (
                           <Package size={12} className="text-white/20" />
                         )}
@@ -400,9 +401,9 @@ export default function MarketPage() {
                         <Flame size={8} />
                         {t("market.hot" as Parameters<typeof t>[0])}
                       </span>
-                      <div className="w-7 h-7 rounded-md overflow-hidden shrink-0 bg-white/5 flex items-center justify-center">
+                      <div className="relative w-7 h-7 rounded-md overflow-hidden shrink-0 bg-white/5 flex items-center justify-center">
                         {item.photos?.[0] ? (
-                          <img src={item.photos[0]} alt="" className="w-full h-full object-cover" />
+                          <Image src={item.photos[0]} alt="" fill sizes="28px" className="object-cover" />
                         ) : (
                           <Package size={12} className="text-white/20" />
                         )}

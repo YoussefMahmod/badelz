@@ -1,7 +1,8 @@
 "use client";
 
-import { use } from "react";
+import { use, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { track } from "@/lib/analytics";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -31,6 +32,10 @@ export default function VenueDetailPage({
   const { locale, dir } = useLocale();
   const router = useRouter();
   const { venue, loading, error } = useVenueDetail(id);
+
+  useEffect(() => {
+    if (id) track.venueViewed({ venueId: id });
+  }, [id]);
 
   if (loading) {
     return (

@@ -128,6 +128,15 @@ function LoginForm() {
           />
         </div>
 
+        <div className="flex justify-end">
+          <Link
+            href="/forgot-password"
+            className="text-xs text-gray-400 hover:text-[#111827] transition-colors"
+          >
+            {t("auth.forgotPassword")}
+          </Link>
+        </div>
+
         <motion.button
           type="submit"
           whileTap={{ scale: 0.97 }}

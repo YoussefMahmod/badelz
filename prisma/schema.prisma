@@ -56,13 +56,14 @@ model User {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  accounts      Account[]
-  venues        Venue[]
-  playerProfile PlayerProfile?
-  coachProfile  Coach?
-  listings      Listing[]
-  bookings      Booking[]
-  lobbies       Lobby[]
+  accounts       Account[]
+  venues         Venue[]
+  playerProfile  PlayerProfile?
+  coachProfile   Coach?
+  listings       Listing[]
+  bookings       Booking[]
+  lobbies        Lobby[]
+  passwordResets PasswordReset[]
 }
 
 model Account {
@@ -82,6 +83,20 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+}
+
+model PasswordReset {
+  id        String    @id @default(cuid())
+  userId    String
+  token     String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
 }
 
 model Venue {

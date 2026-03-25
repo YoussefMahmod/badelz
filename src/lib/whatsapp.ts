@@ -78,6 +78,16 @@ export function buildLobbyShareLink(params: {
   return `https://wa.me/?text=${encodeURIComponent(lines.join("\n"))}`;
 }
 
+export function buildOwnerToPlayerLink(params: {
+  playerName: string;
+  playerPhone: string;
+  date: string;
+  startTime: string;
+}) {
+  const message = `مرحبا ${params.playerName}، حجزك في بادلز يوم ${params.date} الساعة ${params.startTime} متأكد. نستناك!`;
+  return buildWhatsAppDirectLink(params.playerPhone, message);
+}
+
 export function buildCoachContactLink(params: {
   coachName: string;
   phone: string;
