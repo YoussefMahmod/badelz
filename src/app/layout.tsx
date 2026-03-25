@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     title: "بادلز - Badelz",
     description: "احجز كورت بادل في مصر في ثواني",
     type: "website",
-    images: [{ url: "/api/og", width: 1200, height: 630 }],
+    images: [{ url: "/icons/icon-512.png", width: 512, height: 512 }],
   },
 };
 

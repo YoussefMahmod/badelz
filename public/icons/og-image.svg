@@ -1,0 +1,8 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#0a0f1a"/>
+  <rect x="560" y="210" width="80" height="4" rx="2" fill="#c8ff00"/>
+  <text x="600" y="180" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="#c8ff00" letter-spacing="4">BADELZ</text>
+  <text x="600" y="320" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" font-weight="800" fill="white">Book Padel Courts in Egypt</text>
+  <text x="600" y="385" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" fill="rgba(255,255,255,0.5)">No app. No account. No fees.</text>
+  <text x="600" y="575" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="600" fill="#c8ff00">badelz.app</text>
+</svg>
