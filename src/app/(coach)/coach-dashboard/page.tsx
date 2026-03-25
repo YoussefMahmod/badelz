@@ -16,10 +16,12 @@ import {
   Check,
   Loader2,
   X,
+  Heart,
 } from "lucide-react";
 import Link from "next/link";
 import { useTranslation, useLocale } from "@/i18n";
 import { CoachCard } from "@/components/cards/coach-card";
+import { getCoachTier, COACH_TIER_CONFIG } from "@/lib/coach-tiers";
 import { EmptyState } from "@/components/empty-state";
 import { AREAS } from "@/lib/constants";
 import {
@@ -46,6 +48,9 @@ interface CoachProfileData {
   pricePerHour: number | null;
   experience?: string | null;
   isActive: boolean;
+  viewCount: number;
+  whatsappClicks: number;
+  heartCount: number;
   createdAt: string;
 }
 
@@ -336,7 +341,7 @@ export default function CoachDashboardPage() {
                 <p className="text-white/40 text-[11px] uppercase tracking-wider font-medium">
                   {t("coachDashboard.experience")}
                 </p>
-                <p className="text-white/90 font-semibold text-sm">
+                <p className="text-white/90 font-semibold text-sm" dir="auto">
                   {profile.experience}
                 </p>
               </div>
@@ -385,7 +390,7 @@ export default function CoachDashboardPage() {
         </motion.div>
       </motion.div>
 
-      {/* ── Stats Placeholder ── */}
+      {/* ── Stats ── */}
       <motion.div
         {...fadeIn}
         transition={{ delay: 0.4 }}
@@ -394,36 +399,54 @@ export default function CoachDashboardPage() {
         <h2 className="text-lg font-bold text-white/90 mb-4">
           {t("coachDashboard.stats")}
         </h2>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-3 gap-3">
+          <div className="rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 p-4 text-center">
+            <div className="flex h-10 w-10 mx-auto items-center justify-center rounded-xl bg-rose-500/10 text-rose-400 mb-2">
+              <Heart size={18} />
+            </div>
+            <p className="text-2xl font-black text-white/90 font-[family-name:var(--font-display)]" data-testid="coach-heart-count">
+              {profile.heartCount}
+            </p>
+            <p className="text-white/50 text-[10px] uppercase tracking-wider mt-1">
+              {t("coachDashboard.hearts")}
+            </p>
+          </div>
           <div className="rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 p-4 text-center">
             <div className="flex h-10 w-10 mx-auto items-center justify-center rounded-xl bg-blue-500/10 text-blue-400 mb-2">
               <Eye size={18} />
             </div>
-            <p className="text-2xl font-black text-white/20 font-[family-name:var(--font-display)]">
-              --
+            <p className="text-2xl font-black text-white/90 font-[family-name:var(--font-display)]" data-testid="coach-view-count">
+              {profile.viewCount}
             </p>
-            <p className="text-white/30 text-[10px] uppercase tracking-wider mt-1">
+            <p className="text-white/50 text-[10px] uppercase tracking-wider mt-1">
               {t("coachDashboard.profileViews")}
-            </p>
-            <p className="text-white/20 text-[9px] mt-1">
-              {t("coachDashboard.comingSoon")}
             </p>
           </div>
           <div className="rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 p-4 text-center">
             <div className="flex h-10 w-10 mx-auto items-center justify-center rounded-xl bg-green-500/10 text-green-400 mb-2">
               <MessageCircle size={18} />
             </div>
-            <p className="text-2xl font-black text-white/20 font-[family-name:var(--font-display)]">
-              --
+            <p className="text-2xl font-black text-white/90 font-[family-name:var(--font-display)]" data-testid="coach-whatsapp-clicks">
+              {profile.whatsappClicks}
             </p>
-            <p className="text-white/30 text-[10px] uppercase tracking-wider mt-1">
+            <p className="text-white/50 text-[10px] uppercase tracking-wider mt-1">
               {t("coachDashboard.whatsappClicks")}
-            </p>
-            <p className="text-white/20 text-[9px] mt-1">
-              {t("coachDashboard.comingSoon")}
             </p>
           </div>
         </div>
+        {/* Current tier badge */}
+        {(() => {
+          const tier = getCoachTier(profile.heartCount);
+          const config = COACH_TIER_CONFIG[tier];
+          return (
+            <div className={`mt-3 rounded-xl ${config.bg} border ${config.border} p-3 flex items-center justify-center gap-2`}>
+              <Heart size={14} className={config.color} />
+              <span className={`text-sm font-bold ${config.color}`}>
+                {t(config.labelKey as Parameters<typeof t>[0])}
+              </span>
+            </div>
+          );
+        })()}
       </motion.div>
 
       {/* ── Action Buttons ── */}

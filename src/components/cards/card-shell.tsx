@@ -391,6 +391,7 @@ export function CardShell({
       onMouseLeave={interactive ? handleMouseLeave : undefined}
       whileTap={interactive ? { scale: 0.97 } : undefined}
       onClick={onClick}
+      data-card-shell=""
       className={[
         "relative rounded-2xl cursor-pointer",
         "transition-shadow duration-300",

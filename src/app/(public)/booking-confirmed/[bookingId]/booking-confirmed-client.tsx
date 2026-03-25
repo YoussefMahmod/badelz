@@ -31,6 +31,7 @@ interface BookingData {
   endTime: string;
   totalPrice: string | number;
   status: string;
+  notes?: string | null;
   court: { name: string; nameAr?: string | null };
   venue: { name: string; nameAr?: string | null };
   game?: GameOnBooking;
@@ -177,6 +178,7 @@ export default function BookingConfirmedClient({
           endTime: booking.endTime,
           totalPrice: booking.totalPrice,
           playerName: booking.playerName,
+          notes: booking.notes,
         }}
         gameCode={booking.game?.gameCode}
         gameLink={

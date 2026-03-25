@@ -9,15 +9,21 @@ export async function GET(
     const { id } = await params;
 
     const coach = await prisma.coach.findUnique({
-      where: { id, isActive: true },
+      where: { id },
     });
 
-    if (!coach) {
+    if (!coach || !coach.isActive) {
       return NextResponse.json(
         { statusCode: 404, message: "غير موجود", data: null },
         { status: 404 }
       );
     }
+
+    // Increment view count in the background (fire-and-forget)
+    prisma.coach.update({
+      where: { id },
+      data: { viewCount: { increment: 1 } },
+    }).catch(() => {});
 
     return NextResponse.json({
       statusCode: 200,

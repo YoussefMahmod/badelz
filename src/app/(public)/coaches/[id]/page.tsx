@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowLeft, MapPin, Share2 } from "lucide-react";
+import { ArrowRight, ArrowLeft, MapPin, Share2, Heart } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import { MainLayout } from "@/components/main-layout";
 import { CoachCard } from "@/components/cards/coach-card";
@@ -10,6 +10,7 @@ import { useTranslation, useLocale } from "@/i18n";
 import { AREAS } from "@/lib/constants";
 import { buildCoachContactLink } from "@/lib/whatsapp";
 import { slideUp } from "@/lib/animations";
+import { useCoachHeart } from "@/hooks/use-coach-heart";
 
 interface CoachDetail {
   id: string;
@@ -23,7 +24,7 @@ interface CoachDetail {
   pricePerHour?: number | string | null;
   experience?: string | null;
   bio?: string | null;
-  rating?: number | string;
+  heartCount?: number;
 }
 
 export default function CoachProfilePage() {
@@ -124,10 +125,35 @@ export default function CoachProfilePage() {
 
         {/* Coach profile */}
         {coach && !loading && (
+          <CoachProfileContent coach={coach} coachId={coachId} t={t} locale={locale} handleShare={handleShare} getAreaLabel={getAreaLabel} />
+        )}
+      </div>
+    </MainLayout>
+  );
+}
+
+function CoachProfileContent({
+  coach,
+  coachId,
+  t,
+  locale,
+  handleShare,
+  getAreaLabel,
+}: {
+  coach: NonNullable<CoachDetail>;
+  coachId: string;
+  t: ReturnType<typeof useTranslation>["t"];
+  locale: string;
+  handleShare: () => void;
+  getAreaLabel: (key: string) => string;
+}) {
+  const { isHearted, heartCount, toggleHeart, loading: heartLoading } = useCoachHeart(coachId, coach.heartCount ?? 0);
+
+  return (
           <div className="flex flex-col items-center gap-6">
             {/* Large coach card */}
             <motion.div {...slideUp}>
-              <CoachCard coach={coach} size="lg" interactive />
+              <CoachCard coach={{ ...coach, heartCount }} size="lg" interactive />
             </motion.div>
 
             {/* Bio section */}
@@ -183,7 +209,7 @@ export default function CoachProfilePage() {
                 <h3 className="text-sm font-semibold text-white/40 uppercase tracking-wider mb-2">
                   {t("coach.experience")}
                 </h3>
-                <p className="text-white/80 text-sm">{coach.experience}</p>
+                <p className="text-white/80 text-sm" dir="auto">{coach.experience}</p>
               </motion.div>
             )}
 
@@ -202,6 +228,10 @@ export default function CoachProfilePage() {
                 })}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => {
+                  fetch(`/api/coaches/${coachId}/whatsapp-click`, { method: "POST" }).catch(() => {});
+                }}
+                data-testid="coach-whatsapp-cta"
                 className="flex items-center justify-center gap-2 w-full rounded-full bg-green-500 py-4 text-base font-bold text-white shadow-lg shadow-green-500/20 transition-all hover:bg-green-600 active:scale-[0.98]"
               >
                 <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current">
@@ -210,6 +240,24 @@ export default function CoachProfilePage() {
                 </svg>
                 {t("coach.contactCoach")}
               </a>
+
+              {/* Heart button */}
+              <button
+                onClick={toggleHeart}
+                disabled={heartLoading}
+                data-testid="coach-heart-btn"
+                className={`flex items-center justify-center gap-2 w-full rounded-full py-3.5 text-sm font-semibold transition-all active:scale-[0.98] ${
+                  isHearted
+                    ? "bg-rose-500/15 border border-rose-500/30 text-rose-400"
+                    : "border border-white/10 text-white/70 hover:bg-white/5 hover:text-white"
+                }`}
+              >
+                <Heart size={16} className={isHearted ? "fill-rose-400" : ""} />
+                {isHearted ? t("coach.hearted") : t("coach.heart")}
+                {heartCount > 0 && (
+                  <span className="text-xs opacity-70">({heartCount})</span>
+                )}
+              </button>
 
               {/* Share button */}
               <button
@@ -221,8 +269,5 @@ export default function CoachProfilePage() {
               </button>
             </motion.div>
           </div>
-        )}
-      </div>
-    </MainLayout>
   );
 }

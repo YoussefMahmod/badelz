@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Coach" ADD COLUMN     "viewCount" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "whatsappClicks" INTEGER NOT NULL DEFAULT 0;

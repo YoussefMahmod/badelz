@@ -523,6 +523,20 @@ input::placeholder, textarea::placeholder { color: var(--text-tertiary); }
 }
 
 /* Badge glow pulse */
+@keyframes ring-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes ring-spin-reverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 15px rgba(200,255,0,0.6), 0 0 35px rgba(200,255,0,0.3), 0 0 60px rgba(200,255,0,0.15); }
+  50%      { box-shadow: 0 0 20px rgba(200,255,0,0.8), 0 0 45px rgba(200,255,0,0.4), 0 0 80px rgba(200,255,0,0.2), 0 0 110px rgba(200,255,0,0.08); }
+}
+
 @keyframes badge-glow-pulse {
   0%, 100% { box-shadow: 0 0 6px var(--badge-glow, rgba(255,70,85,0.3)); }
   50%      { box-shadow: 0 0 14px var(--badge-glow, rgba(255,70,85,0.6)), 0 0 30px var(--badge-glow, rgba(255,70,85,0.2)); }

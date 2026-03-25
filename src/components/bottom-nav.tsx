@@ -17,7 +17,8 @@ import {
   GraduationCap,
 } from "lucide-react";
 import { useTranslation } from "@/i18n";
-import type { ReactNode } from "react";
+import { useAuth } from "@/lib/auth-context";
+import { useState, useEffect, type ReactNode } from "react";
 
 interface NavItem {
   href: string;
@@ -26,9 +27,24 @@ interface NavItem {
   labelKey: string;
 }
 
+const ROLE_TO_VARIANT: Record<string, "owner" | "player" | "coach"> = {
+  VENUE_OWNER: "owner",
+  PLAYER: "player",
+  COACH: "coach",
+};
+
 export function BottomNav({ variant = "public" }: { variant?: "public" | "owner" | "player" | "coach" }) {
   const { t } = useTranslation();
   const pathname = usePathname();
+  const { user, isLoading } = useAuth();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => { setMounted(true); }, []);
+
+  // Only auto-detect after mount to avoid hydration mismatch
+  const effectiveVariant = mounted && variant === "public" && user?.role && !isLoading
+    ? ROLE_TO_VARIANT[user.role] ?? "public"
+    : variant;
 
   const publicTabs: NavItem[] = [
     {
@@ -126,9 +142,9 @@ export function BottomNav({ variant = "public" }: { variant?: "public" | "owner"
   const coachTabs: NavItem[] = [
     {
       href: "/coach-dashboard",
-      icon: <LayoutDashboard size={22} strokeWidth={1.5} />,
-      activeIcon: <LayoutDashboard size={22} strokeWidth={2} />,
-      labelKey: "nav.dashboard",
+      icon: <User size={22} strokeWidth={1.5} />,
+      activeIcon: <User size={22} strokeWidth={2} />,
+      labelKey: "nav.myProfile",
     },
     {
       href: "/browse",
@@ -143,16 +159,16 @@ export function BottomNav({ variant = "public" }: { variant?: "public" | "owner"
       labelKey: "nav.coaches",
     },
     {
+      href: "/play",
+      icon: <Gamepad2 size={22} strokeWidth={1.5} />,
+      activeIcon: <Gamepad2 size={22} strokeWidth={2} />,
+      labelKey: "nav.play",
+    },
+    {
       href: "/market",
       icon: <ShoppingBag size={22} strokeWidth={1.5} />,
       activeIcon: <ShoppingBag size={22} strokeWidth={2} />,
       labelKey: "nav.market",
-    },
-    {
-      href: "/settings",
-      icon: <Settings size={22} strokeWidth={1.5} />,
-      activeIcon: <Settings size={22} strokeWidth={2} />,
-      labelKey: "nav.settings",
     },
   ];
 
@@ -163,7 +179,7 @@ export function BottomNav({ variant = "public" }: { variant?: "public" | "owner"
     coach: coachTabs,
   };
 
-  const tabs = tabMap[variant] ?? publicTabs;
+  const tabs = tabMap[effectiveVariant] ?? publicTabs;
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";

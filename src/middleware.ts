@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// Rate limit config
+// Rate limit config — higher in dev to avoid blocking tests
+const isDev = process.env.NODE_ENV !== "production";
 const RATE_LIMIT_WINDOW = 15 * 60 * 1000; // 15 minutes
-const MAX_ATTEMPTS = 5;
+const MAX_ATTEMPTS = isDev ? 100 : 5;
 
 // In-memory store
 // TODO: Upgrade to @upstash/ratelimit with Redis for multi-instance production deployment

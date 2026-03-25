@@ -10,6 +10,7 @@ import {
   Check,
   X,
   CheckCircle,
+  FileText,
 } from "lucide-react";
 import { useTranslation, useLocale } from "@/i18n";
 import { staggerContainer, staggerItem } from "@/lib/animations";
@@ -28,6 +29,7 @@ interface Booking {
   endTime: string;
   status: BookingStatus;
   confirmationCode: string;
+  notes?: string | null;
   court: { name: string; nameAr: string | null };
 }
 
@@ -207,6 +209,12 @@ export default function OwnerBookingsPage() {
                     <p className="text-xs text-gray-300 mt-1">
                       {booking.court.name} | {booking.confirmationCode}
                     </p>
+                    {booking.notes && (
+                      <div className="flex items-start gap-1.5 mt-1.5 px-2 py-1 rounded-lg bg-amber-500/5 border border-amber-500/10" data-testid="booking-notes">
+                        <FileText size={12} className="text-amber-400/70 mt-0.5 shrink-0" />
+                        <p className="text-xs text-amber-300/80 leading-relaxed">{booking.notes}</p>
+                      </div>
+                    )}
                   </div>
                 </div>
 

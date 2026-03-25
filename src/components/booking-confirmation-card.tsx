@@ -20,6 +20,7 @@ interface BookingConfirmationCardProps {
     endTime: string;
     totalPrice: number | string;
     playerName: string;
+    notes?: string | null;
   };
   gameCode?: string;
   gameLink?: string;
@@ -158,6 +159,9 @@ export function BookingConfirmationCard({
           value={`${formatTime(booking.startTime)} - ${formatTime(booking.endTime)}`}
         />
         <DetailRow label={t("booking.price")} value={formatPrice(price)} highlight />
+        {booking.notes && (
+          <DetailRow label={t("booking.notes")} value={booking.notes} />
+        )}
 
         {/* Pay at venue badge */}
         <div className="flex items-center justify-center gap-2 rounded-full bg-amber-500/10 px-4 py-2.5 mt-4 border border-amber-500/20">

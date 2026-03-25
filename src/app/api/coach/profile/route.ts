@@ -68,6 +68,9 @@ export async function GET() {
         pricePerHour: coach.pricePerHour ? Number(coach.pricePerHour) : null,
         experience: coach.experience,
         isActive: coach.isActive,
+        viewCount: coach.viewCount,
+        whatsappClicks: coach.whatsappClicks,
+        heartCount: coach.heartCount,
         createdAt: coach.createdAt,
       },
     });

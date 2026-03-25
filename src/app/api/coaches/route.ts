@@ -31,6 +31,8 @@ export async function GET(request: NextRequest) {
       orderBy = { name: "asc" };
     } else if (sort === "price") {
       orderBy = { pricePerHour: "asc" };
+    } else if (sort === "hearts") {
+      orderBy = { heartCount: "desc" } as Prisma.CoachOrderByWithRelationInput;
     }
     // "newest" or default both resolve to createdAt desc
 

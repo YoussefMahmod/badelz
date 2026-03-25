@@ -20,7 +20,7 @@ interface CoachData {
   areasAr?: string[];
   pricePerHour?: number | string | null;
   experience?: string | null;
-  rating?: number | string;
+  heartCount?: number;
 }
 
 export default function CoachesPage() {
@@ -31,6 +31,7 @@ export default function CoachesPage() {
   const [selectedArea, setSelectedArea] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [sortBy, setSortBy] = useState("hearts");
   const [coaches, setCoaches] = useState<CoachData[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -49,6 +50,7 @@ export default function CoachesPage() {
         const params = new URLSearchParams();
         if (selectedArea !== "all") params.set("area", selectedArea);
         if (debouncedSearch) params.set("search", debouncedSearch);
+        if (sortBy) params.set("sort", sortBy);
 
         const res = await fetch(`/api/coaches?${params.toString()}`, {
           signal: controller.signal,
@@ -67,7 +69,7 @@ export default function CoachesPage() {
 
     fetchCoaches();
     return () => controller.abort();
-  }, [selectedArea, debouncedSearch]);
+  }, [selectedArea, debouncedSearch, sortBy]);
 
   const skeletons = useMemo(
     () =>
@@ -150,9 +152,35 @@ export default function CoachesPage() {
           })}
         </motion.div>
 
+        {/* Sort pills */}
+        <div className="flex gap-2 mb-5 overflow-x-auto hide-scrollbar">
+          {(["hearts", "newest", "name", "price"] as const).map((s) => {
+            const labels: Record<string, string> = {
+              hearts: t("coach.sortHearts"),
+              newest: t("common.newest"),
+              name: t("common.name"),
+              price: t("common.price"),
+            };
+            const isActive = sortBy === s;
+            return (
+              <button
+                key={s}
+                onClick={() => setSortBy(s)}
+                className={`shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition-all cursor-pointer ${
+                  isActive
+                    ? "bg-[#c8ff00] text-[#111827] shadow-sm shadow-[#c8ff00]/20"
+                    : "bg-white/5 border border-white/[0.08] text-white/50 hover:text-white/80 hover:bg-white/[0.08]"
+                }`}
+              >
+                {labels[s]}
+              </button>
+            );
+          })}
+        </div>
+
         {/* Content */}
         {loading ? (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {skeletons}
           </div>
         ) : coaches.length === 0 ? (
@@ -181,7 +209,7 @@ export default function CoachesPage() {
         ) : (
           <motion.div
             {...revealUp}
-            className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
+            className="grid grid-cols-1 gap-3 sm:grid-cols-2"
           >
             <AnimatePresence mode="popLayout">
               {coaches.map((coach, i) => (
@@ -189,7 +217,6 @@ export default function CoachesPage() {
                   key={coach.id}
                   {...staggerItem}
                   transition={{ delay: i * 0.05 }}
-                  className="flex justify-center"
                 >
                   <CoachCard
                     coach={coach}
