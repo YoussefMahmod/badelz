@@ -126,7 +126,7 @@ function LoginForm() {
               onChange={(e) => setPassword(e.target.value)}
               required
               dir="ltr"
-              className="w-full rounded-xl bg-gray-50 border border-gray-200 px-4 py-3 pe-10 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
+              className="w-full rounded-xl bg-gray-50 border border-gray-200 px-4 py-3 pe-12 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
             />
             <button
               type="button"
