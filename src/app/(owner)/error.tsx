@@ -17,7 +17,7 @@ export default function OwnerError({
   const { t } = useTranslation();
 
   useEffect(() => {
-    console.error("Owner dashboard error:", error);
+    // Error logged server-side; no client console output
   }, [error]);
 
   return (

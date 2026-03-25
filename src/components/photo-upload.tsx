@@ -39,11 +39,11 @@ export function PhotoUpload({ photos, onChange, max = 5 }: PhotoUploadProps) {
       );
       const data = await res.json();
       if (data.secure_url) return data.secure_url;
-      console.error("Cloudinary upload error:", data);
+      // Cloudinary returned an error — surface it to the user
       setUploadError(data?.error?.message || "Upload failed");
       return null;
     } catch (err) {
-      console.error("Cloudinary upload exception:", err);
+      // Network or unexpected error during upload
       setUploadError("Upload failed — check connection");
       return null;
     }

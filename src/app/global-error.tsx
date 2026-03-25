@@ -33,7 +33,7 @@ export default function GlobalError({
       const stored = localStorage.getItem("badelz-locale");
       if (stored === "en") setLocale("en");
     } catch {}
-    console.error("Global error:", error);
+    // Error logged server-side; no client console output
   }, [error]);
 
   return (

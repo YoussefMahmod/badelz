@@ -18,7 +18,7 @@ export default function PublicError({
   const { t } = useTranslation();
 
   useEffect(() => {
-    console.error("Public route error:", error);
+    // Error logged server-side; no client console output
   }, [error]);
 
   return (

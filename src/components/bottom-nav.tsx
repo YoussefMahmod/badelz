@@ -200,6 +200,7 @@ export function BottomNav({ variant = "public" }: { variant?: "public" | "owner"
               href={tab.href}
               className={`relative flex flex-col items-center gap-1 min-h-[44px] justify-center transition-colors cursor-pointer ${tabs.length > 4 ? "px-1.5" : "px-3"}`}
               aria-current={active ? "page" : undefined}
+              aria-label={t(tab.labelKey as Parameters<typeof t>[0])}
             >
               <span
                 className={

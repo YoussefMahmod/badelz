@@ -251,6 +251,9 @@ export function ManualBookingModal({
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ type: "spring", damping: 28, stiffness: 300 }}
+        role="dialog"
+        aria-modal="true"
+        aria-label={t("owner.manualBooking")}
         className="relative z-10 w-full sm:max-w-lg bg-[#111827] rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col overflow-hidden"
       >
         {/* Handle bar (mobile) */}
