@@ -524,9 +524,16 @@ input::placeholder, textarea::placeholder { color: var(--text-tertiary); }
 
 /* Badge glow pulse */
 @keyframes flame-rise {
-  0% { opacity: 0; transform: translateY(0) scale(1) rotate(0deg); }
+  0% { opacity: 0; transform: translateY(0) translateX(0) scale(1); }
+  15% { opacity: 0.9; }
+  50% { opacity: 0.5; transform: translateY(-14px) translateX(2px) scale(0.7); }
+  100% { opacity: 0; transform: translateY(-28px) translateX(-1px) scale(0.15); }
+}
+@keyframes flame-rise-alt {
+  0% { opacity: 0; transform: translateY(0) translateX(0) scale(1); }
   15% { opacity: 0.85; }
-  100% { opacity: 0; transform: translateY(-20px) scale(0.2) rotate(15deg); }
+  50% { opacity: 0.45; transform: translateY(-12px) translateX(-2px) scale(0.65); }
+  100% { opacity: 0; transform: translateY(-26px) translateX(1px) scale(0.1); }
 }
 
 @keyframes ring-spin {

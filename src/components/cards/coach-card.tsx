@@ -103,15 +103,20 @@ function Avatar({
     );
   }
 
-  // Generate flame particles positioned around the circle
+  // Generate flame particles — biased toward bottom/sides, all rise upward
   const particles = Array.from({ length: flame.particleCount }, (_, i) => {
-    const angle = (i / flame.particleCount) * Math.PI * 2;
-    const radius = outer / 2;
-    const x = Math.cos(angle) * radius + radius;
-    const y = Math.sin(angle) * radius + radius;
+    // Spread particles across bottom 270° arc (skip top center)
+    // Range: 45° to 315° (bottom-heavy)
+    const arcStart = Math.PI * 0.25;  // 45°
+    const arcEnd = Math.PI * 1.75;    // 315°
+    const angle = arcStart + (i / flame.particleCount) * (arcEnd - arcStart);
+    const radius = outer / 2 - 1;
+    const x = Math.cos(angle) * radius + outer / 2;
+    const y = Math.sin(angle) * radius + outer / 2;
     const delay = (i / flame.particleCount) * dynamicDuration;
-    const sizeVar = 4 + Math.random() * 4; // 4-8px
-    return { x, y, delay, size: sizeVar, angle };
+    const sizeVar = 4 + (i % 3) * 2; // 4, 6, 8px alternating
+    const useAlt = i % 2 === 0; // alternate animation for variety
+    return { x, y, delay, size: sizeVar, useAlt };
   });
 
   return (
@@ -125,7 +130,7 @@ function Avatar({
         style={{ boxShadow: flame.ringGlow }}
       />
 
-      {/* Flame particles */}
+      {/* Flame particles — all rise upward */}
       {particles.map((p, i) => (
         <div
           key={i}
@@ -134,12 +139,12 @@ function Avatar({
             left: p.x - p.size / 2,
             top: p.y - p.size / 2,
             width: p.size,
-            height: p.size * 1.5,
+            height: p.size * 1.6,
             borderRadius: "50% 50% 50% 50% / 60% 60% 40% 40%",
             background: flame.colorHex,
-            boxShadow: `0 0 ${p.size}px ${flame.glowColor}`,
+            boxShadow: `0 0 ${p.size + 2}px ${flame.glowColor}`,
             filter: "blur(1.5px)",
-            animation: `flame-rise ${dynamicDuration.toFixed(1)}s ease-out infinite`,
+            animation: `${p.useAlt ? "flame-rise-alt" : "flame-rise"} ${dynamicDuration.toFixed(1)}s ease-out infinite`,
             animationDelay: `${p.delay.toFixed(2)}s`,
           }}
         />
