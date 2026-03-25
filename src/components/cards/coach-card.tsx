@@ -60,35 +60,30 @@ function Avatar({
   size: "sm" | "md" | "lg";
   heartCount?: number;
 }) {
-  // Outer ring sizes (avatar + ring padding)
   const outerSizes = { sm: 48, md: 56, lg: 92 };
   const innerSizes = { sm: 40, md: 48, lg: 80 };
-  const ringGap = { sm: 2, md: 2, lg: 3 };
   const fontSize = { sm: "text-xs", md: "text-sm", lg: "text-lg" };
 
   const tier = getCoachTier(heartCount);
   const tierConfig = COACH_TIER_CONFIG[tier];
-  const ring = tierConfig.ring;
+  const flame = tierConfig.flame;
 
   const outer = outerSizes[size];
   const inner = innerSizes[size];
-  const gap = ringGap[size];
 
-  // Dynamic speed within tier — more hearts = faster spin
+  // Dynamic speed: more hearts within tier = faster flames
   const dynamicDuration = (() => {
-    if (!ring) return "4s";
-    const baseDuration = parseFloat(ring.duration);
+    if (!flame) return 2;
     const ranges: Record<string, [number, number]> = { RISING: [5, 14], POPULAR: [15, 49], PRO: [50, 150] };
     const range = ranges[tier];
-    if (!range) return `${baseDuration}s`;
+    if (!range) return flame.duration;
     const [min, max] = range;
     const intensity = Math.min(1, (heartCount - min) / (max - min));
-    const speed = baseDuration - intensity * baseDuration * 0.4;
-    return `${Math.max(0.8, speed).toFixed(1)}s`;
+    return flame.duration - intensity * flame.duration * 0.3;
   })();
 
-  // No ring for NEW tier
-  if (!ring) {
+  // No flames for NEW tier
+  if (!flame) {
     return (
       <div
         className={`shrink-0 rounded-full flex items-center justify-center font-bold overflow-hidden border-2 border-white/20 ${fontSize[size]}`}
@@ -108,51 +103,61 @@ function Avatar({
     );
   }
 
-  // Animated plasma ring for RISING / POPULAR / PRO
-  const secondDuration = (parseFloat(dynamicDuration) * 1.3).toFixed(1) + "s";
+  // Generate flame particles positioned around the circle
+  const particles = Array.from({ length: flame.particleCount }, (_, i) => {
+    const angle = (i / flame.particleCount) * Math.PI * 2;
+    const radius = outer / 2;
+    const x = Math.cos(angle) * radius + radius;
+    const y = Math.sin(angle) * radius + radius;
+    const delay = (i / flame.particleCount) * dynamicDuration;
+    const sizeVar = 4 + Math.random() * 4; // 4-8px
+    return { x, y, delay, size: sizeVar, angle };
+  });
 
   return (
     <div
-      className="shrink-0 relative rounded-full flex items-center justify-center"
+      className="shrink-0 relative flex items-center justify-center"
       style={{ width: outer, height: outer }}
     >
       {/* Ambient glow */}
       <div
         className="absolute inset-0 rounded-full animate-pulse"
-        style={{ boxShadow: ring.glow }}
+        style={{ boxShadow: flame.ringGlow }}
       />
 
-      {/* Primary spinning plasma ring */}
+      {/* Flame particles */}
+      {particles.map((p, i) => (
+        <div
+          key={i}
+          className="absolute pointer-events-none"
+          style={{
+            left: p.x - p.size / 2,
+            top: p.y - p.size / 2,
+            width: p.size,
+            height: p.size * 1.5,
+            borderRadius: "50% 50% 50% 50% / 60% 60% 40% 40%",
+            background: flame.colorHex,
+            boxShadow: `0 0 ${p.size}px ${flame.glowColor}`,
+            filter: "blur(1.5px)",
+            animation: `flame-rise ${dynamicDuration.toFixed(1)}s ease-out infinite`,
+            animationDelay: `${p.delay.toFixed(2)}s`,
+          }}
+        />
+      ))}
+
+      {/* Tier-colored ring border */}
       <div
         className="absolute rounded-full"
         style={{
-          inset: -2,
-          background: ring.gradient,
-          animation: `ring-spin ${dynamicDuration} linear infinite`,
-          filter: `blur(${ring.blur}px)`,
+          inset: (outer - inner) / 2 - 2,
+          border: `2px solid ${flame.colorHex}`,
+          opacity: 0.3,
         }}
-      />
-
-      {/* Secondary counter-rotating plasma layer */}
-      <div
-        className="absolute rounded-full opacity-60"
-        style={{
-          inset: -1,
-          background: ring.gradient2,
-          animation: `ring-spin-reverse ${secondDuration} linear infinite`,
-          filter: `blur(${ring.blur2}px)`,
-        }}
-      />
-
-      {/* Dark mask — reveals ring as border only */}
-      <div
-        className="absolute rounded-full bg-[#0a0f1a]"
-        style={{ inset: gap + 2 }}
       />
 
       {/* Avatar content */}
       <div
-        className={`relative rounded-full flex items-center justify-center font-bold overflow-hidden ${fontSize[size]}`}
+        className={`relative rounded-full flex items-center justify-center font-bold overflow-hidden z-10 ${fontSize[size]}`}
         style={{
           width: inner,
           height: inner,

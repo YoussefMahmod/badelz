@@ -523,6 +523,12 @@ input::placeholder, textarea::placeholder { color: var(--text-tertiary); }
 }
 
 /* Badge glow pulse */
+@keyframes flame-rise {
+  0% { opacity: 0; transform: translateY(0) scale(1) rotate(0deg); }
+  15% { opacity: 0.85; }
+  100% { opacity: 0; transform: translateY(-20px) scale(0.2) rotate(15deg); }
+}
+
 @keyframes ring-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
