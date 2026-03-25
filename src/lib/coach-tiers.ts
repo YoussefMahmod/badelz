@@ -7,12 +7,12 @@ export function getCoachTier(heartCount: number): CoachTier {
   return "NEW";
 }
 
-export interface TierFlameConfig {
+export interface TierSparkleConfig {
   colorHex: string;
-  glowColor: string;
-  particleCount: number;
-  duration: number; // seconds per particle cycle
-  ringGlow: string;
+  borderColor: string;
+  sparkleCount: number;
+  duration: number;
+  glow: string;
 }
 
 export const COACH_TIER_CONFIG: Record<
@@ -22,7 +22,7 @@ export const COACH_TIER_CONFIG: Record<
     color: string;
     bg: string;
     border: string;
-    flame: TierFlameConfig | null;
+    sparkle: TierSparkleConfig | null;
   }
 > = {
   NEW: {
@@ -30,19 +30,19 @@ export const COACH_TIER_CONFIG: Record<
     color: "text-white/60",
     bg: "bg-white/10",
     border: "border-white/20",
-    flame: null,
+    sparkle: null,
   },
   RISING: {
     labelKey: "coach.tierRising",
     color: "text-blue-400",
     bg: "bg-blue-500/10",
     border: "border-blue-500/20",
-    flame: {
+    sparkle: {
       colorHex: "#60a5fa",
-      glowColor: "rgba(96,165,250,0.6)",
-      particleCount: 6,
-      duration: 2.2,
-      ringGlow: "0 0 12px rgba(96,165,250,0.3), 0 0 25px rgba(96,165,250,0.1)",
+      borderColor: "rgba(96,165,250,0.4)",
+      sparkleCount: 4,
+      duration: 2.5,
+      glow: "0 0 10px rgba(96,165,250,0.2)",
     },
   },
   POPULAR: {
@@ -50,12 +50,12 @@ export const COACH_TIER_CONFIG: Record<
     color: "text-purple-400",
     bg: "bg-purple-500/10",
     border: "border-purple-500/20",
-    flame: {
+    sparkle: {
       colorHex: "#c084fc",
-      glowColor: "rgba(192,132,252,0.6)",
-      particleCount: 8,
-      duration: 1.6,
-      ringGlow: "0 0 15px rgba(192,132,252,0.35), 0 0 30px rgba(192,132,252,0.12)",
+      borderColor: "rgba(192,132,252,0.45)",
+      sparkleCount: 6,
+      duration: 2,
+      glow: "0 0 14px rgba(192,132,252,0.25)",
     },
   },
   PRO: {
@@ -63,12 +63,12 @@ export const COACH_TIER_CONFIG: Record<
     color: "text-[#c8ff00]",
     bg: "bg-[#c8ff00]/10",
     border: "border-[#c8ff00]/20",
-    flame: {
+    sparkle: {
       colorHex: "#c8ff00",
-      glowColor: "rgba(200,255,0,0.6)",
-      particleCount: 12,
-      duration: 1.2,
-      ringGlow: "0 0 20px rgba(200,255,0,0.4), 0 0 40px rgba(200,255,0,0.15)",
+      borderColor: "rgba(200,255,0,0.5)",
+      sparkleCount: 8,
+      duration: 1.5,
+      glow: "0 0 18px rgba(200,255,0,0.3)",
     },
   },
 };

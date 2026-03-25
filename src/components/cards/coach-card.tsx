@@ -47,6 +47,9 @@ function TierBadge({ heartCount }: { heartCount: number }) {
   );
 }
 
+// 4-point star clip path
+const STAR_CLIP = "polygon(50% 0%, 61% 35%, 100% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 0% 35%, 39% 35%)";
+
 function Avatar({
   photo,
   name,
@@ -63,27 +66,18 @@ function Avatar({
   const outerSizes = { sm: 48, md: 56, lg: 92 };
   const innerSizes = { sm: 40, md: 48, lg: 80 };
   const fontSize = { sm: "text-xs", md: "text-sm", lg: "text-lg" };
+  const starSizes = { sm: 6, md: 7, lg: 10 };
 
   const tier = getCoachTier(heartCount);
   const tierConfig = COACH_TIER_CONFIG[tier];
-  const flame = tierConfig.flame;
+  const sparkle = tierConfig.sparkle;
 
   const outer = outerSizes[size];
   const inner = innerSizes[size];
+  const starSize = starSizes[size];
 
-  // Dynamic speed: more hearts within tier = faster flames
-  const dynamicDuration = (() => {
-    if (!flame) return 2;
-    const ranges: Record<string, [number, number]> = { RISING: [5, 14], POPULAR: [15, 49], PRO: [50, 150] };
-    const range = ranges[tier];
-    if (!range) return flame.duration;
-    const [min, max] = range;
-    const intensity = Math.min(1, (heartCount - min) / (max - min));
-    return flame.duration - intensity * flame.duration * 0.3;
-  })();
-
-  // No flames for NEW tier
-  if (!flame) {
+  // No sparkles for NEW tier
+  if (!sparkle) {
     return (
       <div
         className={`shrink-0 rounded-full flex items-center justify-center font-bold overflow-hidden border-2 border-white/20 ${fontSize[size]}`}
@@ -103,20 +97,25 @@ function Avatar({
     );
   }
 
-  // Generate flame particles — biased toward bottom/sides, all rise upward
-  const particles = Array.from({ length: flame.particleCount }, (_, i) => {
-    // Spread particles across bottom 270° arc (skip top center)
-    // Range: 45° to 315° (bottom-heavy)
-    const arcStart = Math.PI * 0.25;  // 45°
-    const arcEnd = Math.PI * 1.75;    // 315°
-    const angle = arcStart + (i / flame.particleCount) * (arcEnd - arcStart);
-    const radius = outer / 2 - 1;
+  // Dynamic speed: more hearts = faster twinkle
+  const dynamicDuration = (() => {
+    const ranges: Record<string, [number, number]> = { RISING: [5, 14], POPULAR: [15, 49], PRO: [50, 150] };
+    const range = ranges[tier];
+    if (!range) return sparkle.duration;
+    const [min, max] = range;
+    const intensity = Math.min(1, (heartCount - min) / (max - min));
+    return sparkle.duration - intensity * sparkle.duration * 0.3;
+  })();
+
+  // Generate sparkles evenly around the circumference
+  const sparkles = Array.from({ length: sparkle.sparkleCount }, (_, i) => {
+    const angle = (i / sparkle.sparkleCount) * Math.PI * 2 - Math.PI / 2;
+    const radius = outer / 2;
     const x = Math.cos(angle) * radius + outer / 2;
     const y = Math.sin(angle) * radius + outer / 2;
-    const delay = (i / flame.particleCount) * dynamicDuration;
-    const sizeVar = 4 + (i % 3) * 2; // 4, 6, 8px alternating
-    const useAlt = i % 2 === 0; // alternate animation for variety
-    return { x, y, delay, size: sizeVar, useAlt };
+    const delay = (i / sparkle.sparkleCount) * dynamicDuration;
+    const useAlt = i % 2 === 0;
+    return { x, y, delay, useAlt };
   });
 
   return (
@@ -126,39 +125,36 @@ function Avatar({
     >
       {/* Ambient glow */}
       <div
-        className="absolute inset-0 rounded-full animate-pulse"
-        style={{ boxShadow: flame.ringGlow }}
+        className="absolute inset-0 rounded-full"
+        style={{ boxShadow: sparkle.glow }}
       />
-
-      {/* Flame particles — all rise upward */}
-      {particles.map((p, i) => (
-        <div
-          key={i}
-          className="absolute pointer-events-none"
-          style={{
-            left: p.x - p.size / 2,
-            top: p.y - p.size / 2,
-            width: p.size,
-            height: p.size * 1.6,
-            borderRadius: "50% 50% 50% 50% / 60% 60% 40% 40%",
-            background: flame.colorHex,
-            boxShadow: `0 0 ${p.size + 2}px ${flame.glowColor}`,
-            filter: "blur(1.5px)",
-            animation: `${p.useAlt ? "flame-rise-alt" : "flame-rise"} ${dynamicDuration.toFixed(1)}s ease-out infinite`,
-            animationDelay: `${p.delay.toFixed(2)}s`,
-          }}
-        />
-      ))}
 
       {/* Tier-colored ring border */}
       <div
         className="absolute rounded-full"
         style={{
           inset: (outer - inner) / 2 - 2,
-          border: `2px solid ${flame.colorHex}`,
-          opacity: 0.3,
+          border: `2px solid ${sparkle.borderColor}`,
         }}
       />
+
+      {/* Twinkling star sparkles */}
+      {sparkles.map((s, i) => (
+        <div
+          key={i}
+          className="absolute pointer-events-none"
+          style={{
+            left: s.x - starSize / 2,
+            top: s.y - starSize / 2,
+            width: starSize,
+            height: starSize,
+            background: sparkle.colorHex,
+            clipPath: STAR_CLIP,
+            animation: `${s.useAlt ? "sparkle-twinkle-alt" : "sparkle-twinkle"} ${dynamicDuration.toFixed(1)}s ease-in-out infinite`,
+            animationDelay: `${s.delay.toFixed(2)}s`,
+          }}
+        />
+      ))}
 
       {/* Avatar content */}
       <div
