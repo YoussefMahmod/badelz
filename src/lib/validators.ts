@@ -14,6 +14,16 @@ export const bookingSchema = z.object({
   notes: z.string().optional(),
 });
 
+export const ownerBookingSchema = z.object({
+  courtId: z.string().min(1),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  startTime: z.string().regex(/^\d{2}:\d{2}$/),
+  endTime: z.string().regex(/^\d{2}:\d{2}$/),
+  playerName: z.string().min(2, "الاسم مطلوب"),
+  playerPhone: z.string().regex(/^01[0125]\d{8}$/).optional().or(z.literal("")),
+  notes: z.string().optional(),
+});
+
 export const registerSchema = z.object({
   name: z.string().min(2, "الاسم مطلوب"),
   email: z.string().email("البريد الإلكتروني غير صحيح"),
