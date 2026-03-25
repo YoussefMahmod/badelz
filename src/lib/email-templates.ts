@@ -19,6 +19,7 @@ export function ownerBookingNotificationTemplate(
   <div style="max-width:480px;margin:0 auto;padding:24px 16px;">
     <!-- Header -->
     <div style="text-align:center;margin-bottom:24px;">
+      <img src="https://badelz.app/icons/icon-192.png" alt="Badelz" width="56" height="56" style="border-radius:12px;margin-bottom:8px;" />
       <h1 style="color:#c8ff00;font-size:24px;margin:0;">بادلز</h1>
       <p style="color:rgba(255,255,255,0.5);font-size:13px;margin:4px 0 0;">حجز جديد!</p>
     </div>
@@ -90,6 +91,7 @@ export function passwordResetTemplate(params: {
 <body style="margin:0;padding:0;background:#0a0f1a;font-family:Arial,Tahoma,sans-serif;">
   <div style="max-width:480px;margin:0 auto;padding:24px 16px;">
     <div style="text-align:center;margin-bottom:24px;">
+      <img src="https://badelz.app/icons/icon-192.png" alt="Badelz" width="56" height="56" style="border-radius:12px;margin-bottom:8px;" />
       <h1 style="color:#c8ff00;font-size:24px;margin:0;">بادلز</h1>
       <p style="color:rgba(255,255,255,0.5);font-size:13px;margin:4px 0 0;">إعادة تعيين كلمة المرور</p>
     </div>
