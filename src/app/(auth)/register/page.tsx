@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Lock, User, Phone, UserPlus, Users, GraduationCap, Building2, Loader2 } from "lucide-react";
+import { Mail, Lock, User, Phone, UserPlus, Users, GraduationCap, Building2, Loader2, Eye, EyeOff } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import { LocaleToggle } from "@/components/locale-toggle";
 import { Logo } from "@/components/logo";
@@ -73,6 +73,7 @@ function RegisterForm() {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const updateField = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -250,14 +251,23 @@ function RegisterForm() {
             <Lock size={14} className="text-gray-400" />
             {t("auth.password")}
           </label>
-          <input
-            type="password"
-            value={form.password}
-            onChange={(e) => updateField("password", e.target.value)}
-            required
-            dir="ltr"
-            className="w-full rounded-xl bg-gray-50 border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              value={form.password}
+              onChange={(e) => updateField("password", e.target.value)}
+              required
+              dir="ltr"
+              className="w-full rounded-xl bg-gray-50 border border-gray-200 px-4 py-3 pe-10 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute end-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+            >
+              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
         </div>
 
         {/* Phone */}

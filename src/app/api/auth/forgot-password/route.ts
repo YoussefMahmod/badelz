@@ -20,35 +20,35 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    // If user exists, generate token and send email
+    if (user) {
+      const token = generateToken();
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+      await prisma.passwordReset.create({
+        data: {
+          userId: user.id,
+          token,
+          expiresAt,
+        },
+      });
+
+      const baseUrl = process.env.NEXTAUTH_URL || "https://badelz.app";
+      const resetLink = `${baseUrl}/reset-password?token=${token}`;
+
+      sendPasswordResetEmail(email, { resetLink }).catch((err) =>
+        console.error("Password reset email failed:", err)
+      );
+    }
+
     // Always return success to avoid leaking whether the email exists
-    const successResponse = NextResponse.json({
+    return NextResponse.json({
       statusCode: 200,
       message: "لو الإيميل موجود عندنا، هتوصلك رسالة فيها لينك إعادة تعيين كلمة المرور",
       data: null,
     });
-
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) return successResponse;
-
-    const token = generateToken();
-    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
-
-    await prisma.passwordReset.create({
-      data: {
-        userId: user.id,
-        token,
-        expiresAt,
-      },
-    });
-
-    const baseUrl = process.env.NEXTAUTH_URL || "https://badelz.app";
-    const resetLink = `${baseUrl}/reset-password?token=${token}`;
-
-    sendPasswordResetEmail(email, { resetLink }).catch((err) =>
-      console.error("Password reset email failed:", err)
-    );
-
-    return successResponse;
   } catch (error) {
     console.error("Forgot password error:", error);
     return NextResponse.json(
