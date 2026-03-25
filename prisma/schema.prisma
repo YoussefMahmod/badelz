@@ -56,14 +56,15 @@ model User {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  accounts       Account[]
-  venues         Venue[]
-  playerProfile  PlayerProfile?
-  coachProfile   Coach?
-  listings       Listing[]
-  bookings       Booking[]
-  lobbies        Lobby[]
-  passwordResets PasswordReset[]
+  accounts          Account[]
+  venues            Venue[]
+  playerProfile     PlayerProfile?
+  coachProfile      Coach?
+  listings          Listing[]
+  bookings          Booking[]
+  lobbies           Lobby[]
+  passwordResets    PasswordReset[]
+  pushSubscriptions PushSubscription[]
 }
 
 model Account {
@@ -388,4 +389,25 @@ model Listing {
   @@index([area])
   @@index([status])
   @@index([createdAt])
+}
+
+// ─── Push Notifications ─────────────────────────────────
+
+model PushSubscription {
+  id       String  @id @default(cuid())
+  endpoint String  @unique
+  p256dh   String
+  auth     String
+  userId   String?
+  phone    String?
+  locale   String  @default("ar")
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([phone])
+  @@index([isActive])
 }

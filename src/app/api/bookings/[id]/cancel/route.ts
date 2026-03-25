@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { sendPushToUser } from "@/lib/push";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
@@ -23,10 +24,18 @@ export async function POST(
       where: { id },
       select: {
         id: true,
+        playerName: true,
         playerPhone: true,
         status: true,
         date: true,
         startTime: true,
+        court: {
+          select: {
+            name: true,
+            nameAr: true,
+            venue: { select: { ownerId: true } },
+          },
+        },
       },
     });
 
@@ -64,6 +73,18 @@ export async function POST(
       where: { bookingId: id },
       data: { status: "CANCELLED" },
     });
+
+    // Notify venue owner of cancellation
+    if (booking.court?.venue?.ownerId) {
+      const courtName = booking.court.nameAr ?? booking.court.name;
+      sendPushToUser(booking.court.venue.ownerId, {
+        title: "تم إلغاء حجز",
+        body: `${booking.playerName} ألغى حجز ${courtName} الساعة ${booking.startTime}`,
+        url: "/bookings",
+        tag: `cancel-${id}`,
+        lang: "ar",
+      }).catch((err) => console.error("Cancel push failed:", err));
+    }
 
     return NextResponse.json({
       statusCode: 200,

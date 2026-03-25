@@ -16,6 +16,7 @@ import { TimeSlotPicker } from "@/components/time-slot-picker";
 import { BookingForm } from "@/components/booking-form";
 import { LoadingSpinner } from "@/components/loading-spinner";
 import { useAvailableSlots } from "@/hooks/use-available-slots";
+import { usePolling } from "@/hooks/use-polling";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation, useLocale } from "@/i18n";
 import { formatPrice, formatDate, formatTime, getNext7Days, toDateString, formatDateShort } from "@/lib/format";
@@ -90,11 +91,14 @@ export default function BookingPage({
   }, [courtId]);
 
   const venueId = court?.venue?.id || "";
-  const { slots, loading: slotsLoading } = useAvailableSlots(
+  const { slots, loading: slotsLoading, refetch: refetchSlots } = useAvailableSlots(
     venueId,
     courtId,
     selectedDate
   );
+
+  // Poll slot availability every 10s while on time selection step
+  usePolling(refetchSlots, 10000, step === 1 && !!selectedDate);
 
   const selectedSlot = slots.find((s) => s.id === selectedSlotId);
 

@@ -23,6 +23,7 @@ import { EmptyState } from "@/components/empty-state";
 import { ManualBookingModal } from "@/components/owner/manual-booking-modal";
 import { ScheduleGrid } from "@/components/owner/schedule-grid";
 import { buildOwnerToPlayerLink } from "@/lib/whatsapp";
+import { usePolling } from "@/hooks/use-polling";
 
 type BookingStatus = "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED" | "NO_SHOW";
 
@@ -134,6 +135,9 @@ export default function OwnerBookingsPage() {
   useEffect(() => {
     fetchBookings();
   }, [fetchBookings]);
+
+  // Poll every 10s for new bookings
+  usePolling(fetchBookings, 10000, true);
 
   const handleAction = async (bookingId: string, action: "confirm" | "cancel" | "complete") => {
     try {

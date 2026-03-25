@@ -7,6 +7,7 @@ import { customAlphabet } from "nanoid";
 import { DayOfWeek } from "@prisma/client";
 import { buildGameShareLink } from "@/lib/whatsapp";
 import { sendBookingNotification } from "@/lib/email";
+import { sendPushToPhone, sendPushToUser } from "@/lib/push";
 
 const generateCode = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 6);
 
@@ -130,7 +131,7 @@ export async function POST(request: NextRequest) {
             name: true,
             nameAr: true,
             isActive: true,
-            owner: { select: { email: true } },
+            owner: { select: { id: true, email: true } },
           },
         },
       },
@@ -256,6 +257,26 @@ export async function POST(request: NextRequest) {
         totalPrice: Number(totalPrice),
         confirmationCode: booking.confirmationCode,
       }).catch((err) => console.error("Email notification failed:", err));
+    }
+
+    // Fire-and-forget push notification to player
+    sendPushToPhone(playerPhone, {
+      title: "تم تأكيد الحجز",
+      body: `كورتك في ${venueName} الساعة ${startTime}`,
+      url: `/booking-confirmed/${booking.id}`,
+      tag: `booking-${booking.confirmationCode}`,
+      lang: "ar",
+    }).catch((err) => console.error("Player push failed:", err));
+
+    // Fire-and-forget push notification to venue owner
+    if (court.venue.owner?.id) {
+      sendPushToUser(court.venue.owner.id, {
+        title: "حجز جديد!",
+        body: `${playerName} حجز ${courtName} الساعة ${startTime}`,
+        url: "/bookings",
+        tag: `owner-booking-${booking.confirmationCode}`,
+        lang: "ar",
+      }).catch((err) => console.error("Owner push failed:", err));
     }
 
     // Build WhatsApp share link using the game-aware format

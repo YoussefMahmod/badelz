@@ -16,6 +16,7 @@ import { checkmarkDraw, pulseGlow } from "@/lib/animations";
 import { AREAS } from "@/lib/constants";
 import { JoinLobbyForm } from "@/components/join-lobby-form";
 import { AuthNudge } from "@/components/auth-nudge";
+import { usePolling } from "@/hooks/use-polling";
 
 const MAX_PLAYERS = 4;
 
@@ -65,6 +66,9 @@ export default function LobbyPageClient({ code }: { code: string }) {
   }, [code]);
 
   useEffect(() => { fetchLobby(); }, [fetchLobby]);
+
+  // Poll every 5s while lobby is OPEN
+  usePolling(fetchLobby, 5000, lobby?.status === "OPEN");
 
   const handleJoin = async (data: { playerName: string; playerPhone: string }) => {
     setJoining(true);

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { joinLobbySchema } from "@/lib/validators";
+import { sendPushToPhone } from "@/lib/push";
 
 type RouteParams = { params: Promise<{ code: string }> };
 
@@ -125,10 +126,22 @@ export async function POST(
         position: nextPosition,
         playerName,
         playerPhone,
+        hostPhone: lobby.hostPhone,
         spotsLeft: MAX_PLAYERS - newPlayerCount,
         lobbyStatus: isFull ? ("FULL" as const) : lobby.status,
       };
     });
+
+    // Fire-and-forget push notification to lobby host
+    sendPushToPhone(result.hostPhone, {
+      title: "لاعب جديد في اللوبي!",
+      body: result.spotsLeft === 0
+        ? `${result.playerName} انضم — اللوبي مكتمل!`
+        : `${result.playerName} انضم — فاضل ${result.spotsLeft}`,
+      url: `/lobby/${code.toUpperCase()}`,
+      tag: `lobby-${code.toUpperCase()}`,
+      lang: "ar",
+    }).catch((err) => console.error("Lobby push failed:", err));
 
     return NextResponse.json(
       {

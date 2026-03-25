@@ -774,6 +774,14 @@ const ar: TranslationKeys = {
     and: "و",
     privacy: "سياسة الخصوصية",
   },
+  notifications: {
+    enableTitle: "فعّل الإشعارات",
+    enableDesc: "عشان نفكّرك قبل الماتش ونبلّغك لو حد انضم للوبي",
+    enable: "فعّل الإشعارات",
+    notNow: "مش دلوقتي",
+    newBooking: "حجز جديد وصل!",
+    playerJoined: "لاعب جديد انضم!",
+  },
 };
 
 export default ar;

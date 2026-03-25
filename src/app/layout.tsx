@@ -57,7 +57,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl" className={`${cairo.variable} ${barlowCondensed.variable} antialiased`}>
-      <body className="min-h-screen bg-white text-gray-900 font-sans selection:bg-lime-300/40">
+      <body className="min-h-screen bg-[#0a0f1a] text-white/90 font-sans selection:bg-lime-300/40">
         <Providers>{children}</Providers>
       </body>
     </html>

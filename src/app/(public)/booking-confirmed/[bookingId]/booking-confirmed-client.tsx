@@ -8,6 +8,7 @@ import { BookingConfirmationCard } from "@/components/booking-confirmation-card"
 import { GameLinkCard } from "@/components/game-link-card";
 import { AuthNudge } from "@/components/auth-nudge";
 import { LoadingSpinner } from "@/components/loading-spinner";
+import { NotificationPrompt } from "@/components/notification-prompt";
 import { useTranslation } from "@/i18n";
 
 interface GameOnBooking {
@@ -251,6 +252,8 @@ export default function BookingConfirmedClient({
           variant="dark"
         />
       </div>
+
+      <NotificationPrompt phone={booking.playerPhone} />
 
       <CardCTA />
     </div>

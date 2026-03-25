@@ -772,6 +772,14 @@ const en = {
     and: "and",
     privacy: "Privacy Policy",
   },
+  notifications: {
+    enableTitle: "Enable Notifications",
+    enableDesc: "Get reminders before your match and updates when players join your lobby",
+    enable: "Enable Notifications",
+    notNow: "Not now",
+    newBooking: "New booking received!",
+    playerJoined: "A new player joined!",
+  },
 };
 
 export type TranslationKeys = typeof en;
