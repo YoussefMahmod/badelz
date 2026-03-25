@@ -257,7 +257,21 @@ function MarketMockup() {
   );
 }
 
-const FEATURE_MOCKUPS = [CourtsMockup, PlayersMockup, CoachesMockup, MarketMockup];
+// ─── Screenshot Phone (real app screenshots) ───
+function ScreenshotPhone({ src, alt }: { src: string; alt: string }) {
+  return (
+    <div className="relative w-[240px] h-[480px] rounded-[32px] border-[3px] border-white/10 bg-[#0a0f1a] overflow-hidden shadow-2xl shadow-black/50 animate-float-slow">
+      <img src={src} alt={alt} className="w-full h-full object-cover object-top" />
+    </div>
+  );
+}
+
+const FEATURE_MOCKUPS = [
+  () => <ScreenshotPhone src="/screenshots/booking.png" alt="Book a court" />,
+  PlayersMockup,
+  () => <ScreenshotPhone src="/screenshots/coaches.png" alt="Find coaches" />,
+  () => <ScreenshotPhone src="/screenshots/market.png" alt="Gear market" />,
+];
 
 // ─── Value Chip ───
 function ValueChip({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
@@ -464,7 +478,7 @@ function Hero() {
                 className="absolute -bottom-12 -start-12 w-40 h-40 rounded-full bg-teal-500/8 blur-3xl pointer-events-none"
                 aria-hidden="true"
               />
-              <HeroPhoneMockup />
+              <ScreenshotPhone src="/screenshots/discover.png" alt="Badelz app" />
             </motion.div>
           </div>
         </div>
@@ -608,7 +622,7 @@ function FeatureShowcase() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.35, ease: easePremium }}
-            className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16"
+            className="flex flex-col-reverse lg:flex-row items-center gap-8 lg:gap-16"
           >
             {/* Text side */}
             <div className="flex-1 max-w-lg">
@@ -661,7 +675,7 @@ function FeatureShowcase() {
             </div>
 
             {/* Phone mockup side */}
-            <div className="hidden sm:flex justify-center perspective-container">
+            <div className="flex justify-center perspective-container">
               <ActiveMockup />
             </div>
           </motion.div>

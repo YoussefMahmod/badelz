@@ -786,6 +786,21 @@ const en = {
     button: "Install App",
     notNow: "Not now",
   },
+  tour: {
+    skip: "Skip",
+    next: "Next",
+    done: "Start Exploring",
+    step1Title: "Welcome to Badelz",
+    step1Desc: "Egypt's padel app — book courts, find players, and connect with the community",
+    step2Title: "Book a Court",
+    step2Desc: "Browse venues near you and book in seconds — no account needed",
+    step3Title: "Find Players",
+    step3Desc: "Create or join open games and share with friends via WhatsApp",
+    step4Title: "Padel Coaches",
+    step4Desc: "Find coaches in your area and connect with them directly",
+    step5Title: "Gear Market",
+    step5Desc: "Buy and sell padel rackets, shoes, bags, and accessories",
+  },
 };
 
 export type TranslationKeys = typeof en;

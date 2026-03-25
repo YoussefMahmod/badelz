@@ -21,6 +21,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useTranslation, useLocale } from "@/i18n";
 import { ListingCard, type ListingData } from "@/components/cards/listing-card";
 import { CoachCard } from "@/components/cards/coach-card";
+import { FeatureTour } from "@/components/feature-tour";
 import { PLAYER_TIER_COLORS } from "@/lib/constants";
 
 /* ─── Types ─── */
@@ -170,6 +171,7 @@ export default function DiscoverPage() {
 
   return (
     <MainLayout navType="public">
+      <FeatureTour />
       <div className="max-w-lg mx-auto px-4 pt-4 pb-28">
         {/* ─── Header ─── */}
         <motion.div className="mb-6" variants={fadeUp} initial="hidden" animate="show">
