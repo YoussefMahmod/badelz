@@ -273,6 +273,177 @@ const FEATURE_MOCKUPS = [
   () => <ScreenshotPhone src="/screenshots/market.png" alt="Gear market" />,
 ];
 
+// ─── Leaderboard Mockup (CSS-built) ───
+function LeaderboardMockup() {
+  const podium = [
+    { rank: 2, name: "أحمد سعيد", tier: "DIAMOND", color: "#b9f2ff", games: 30, h: "h-28" },
+    { rank: 1, name: "محمد إبراهيم", tier: "MASTER", color: "#ff4655", games: 55, h: "h-36" },
+    { rank: 3, name: "عمر حسن", tier: "GOLD", color: "#ffd700", games: 15, h: "h-24" },
+  ];
+
+  return (
+    <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-[#0d1220] p-5 shadow-2xl shadow-black/40">
+      {/* Header */}
+      <div className="text-center mb-5">
+        <div className="flex items-center justify-center gap-2 mb-1">
+          <Trophy size={16} className="text-amber-400" />
+          <span className="text-sm font-bold text-white/80">لاعبين بادلز</span>
+        </div>
+        <p className="text-[10px] text-white/30">ليدربورد ورانكينج اللاعبين</p>
+      </div>
+
+      {/* Podium */}
+      <div className="flex items-end justify-center gap-3 mb-5">
+        {podium.map((p) => (
+          <div key={p.rank} className="flex flex-col items-center gap-1.5">
+            {/* Avatar */}
+            <div
+              className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold"
+              style={{
+                border: `2px solid ${p.color}`,
+                background: `${p.color}15`,
+                color: p.color,
+                boxShadow: `0 0 12px ${p.color}30`,
+              }}
+            >
+              {p.name.split(" ").map(w => w[0]).join("")}
+            </div>
+            {/* Name */}
+            <span className="text-[10px] font-semibold text-white/70 truncate w-16 text-center">{p.name}</span>
+            {/* Podium bar */}
+            <div
+              className={`w-16 ${p.h} rounded-t-lg flex flex-col items-center justify-start pt-2`}
+              style={{
+                background: `linear-gradient(to top, ${p.color}08, ${p.color}20)`,
+                borderTop: `2px solid ${p.color}`,
+              }}
+            >
+              <span className="text-lg font-black" style={{ color: p.color }}>#{p.rank}</span>
+              <span
+                className="text-[8px] font-bold mt-0.5 px-1.5 py-0.5 rounded-full"
+                style={{ background: `${p.color}20`, color: p.color }}
+              >
+                {p.tier}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Ranked list */}
+      <div className="space-y-2">
+        {[
+          { rank: 4, name: "خالد محمود", tier: "EMERALD", color: "#50c878", games: 12 },
+          { rank: 5, name: "يوسف محمد", tier: "GOLD", color: "#ffd700", games: 8 },
+        ].map((p) => (
+          <div key={p.rank} className="flex items-center gap-3 rounded-xl bg-white/[0.03] border border-white/[0.06] px-3 py-2">
+            <span className="text-xs font-bold text-white/25 w-5">#{p.rank}</span>
+            <div
+              className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-bold shrink-0"
+              style={{ border: `1.5px solid ${p.color}`, background: `${p.color}10`, color: p.color }}
+            >
+              {p.name.split(" ").map(w => w[0]).join("")}
+            </div>
+            <span className="text-xs font-medium text-white/70 flex-1 truncate">{p.name}</span>
+            <span
+              className="text-[8px] font-bold px-1.5 py-0.5 rounded-full"
+              style={{ background: `${p.color}15`, color: p.color }}
+            >
+              {p.tier}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Marketplace Mockup (CSS-built) ───
+function MarketplaceMockup() {
+  const categories = [
+    { name: "مضارب", active: true },
+    { name: "جزم", active: false },
+    { name: "شنط", active: false },
+    { name: "كور", active: false },
+  ];
+
+  const listings = [
+    { title: "Metalbone مضرب", price: "4,500", condition: "NEW", color: "#c8ff00" },
+    { title: "جزم بادل Head", price: "1,200", condition: "USED", color: "#00d4ff" },
+    { title: "شنطة Nox Pro", price: "800", condition: "NEW", color: "#c084fc" },
+    { title: "كور Head Pro S", price: "350", condition: "NEW", color: "#c8ff00" },
+  ];
+
+  return (
+    <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-[#0d1220] p-5 shadow-2xl shadow-black/40">
+      {/* Header */}
+      <div className="text-center mb-4">
+        <div className="flex items-center justify-center gap-2 mb-1">
+          <ShoppingBag size={16} className="text-[#c8ff00]" />
+          <span className="text-sm font-bold text-white/80">سوق بادلز</span>
+        </div>
+        <p className="text-[10px] text-white/30">اشتري وبيع معدات بادل</p>
+      </div>
+
+      {/* Category pills */}
+      <div className="flex gap-1.5 mb-4 overflow-hidden">
+        {categories.map((cat) => (
+          <div
+            key={cat.name}
+            className={`px-3 py-1 rounded-full text-[10px] font-semibold shrink-0 ${
+              cat.active
+                ? "bg-[#c8ff00]/15 border border-[#c8ff00]/30 text-[#c8ff00]"
+                : "bg-white/5 border border-white/10 text-white/40"
+            }`}
+          >
+            {cat.name}
+          </div>
+        ))}
+      </div>
+
+      {/* Listing grid */}
+      <div className="grid grid-cols-2 gap-2.5">
+        {listings.map((item, i) => (
+          <div
+            key={i}
+            className="rounded-xl bg-white/[0.03] border border-white/[0.06] overflow-hidden"
+          >
+            {/* Image placeholder */}
+            <div
+              className="h-20 relative"
+              style={{ background: `linear-gradient(135deg, ${item.color}08, ${item.color}03)` }}
+            >
+              <div className="absolute inset-0 flex items-center justify-center">
+                <ShoppingBag size={20} style={{ color: `${item.color}30` }} />
+              </div>
+              {item.condition === "NEW" && (
+                <div className="absolute top-1.5 start-1.5">
+                  <span
+                    className="text-[7px] font-bold px-1.5 py-0.5 rounded"
+                    style={{ background: `${item.color}20`, color: item.color }}
+                  >
+                    NEW
+                  </span>
+                </div>
+              )}
+            </div>
+            {/* Info */}
+            <div className="p-2 space-y-1">
+              <p className="text-[10px] font-semibold text-white/70 truncate">{item.title}</p>
+              <p className="text-xs font-bold" style={{ color: item.color }}>{item.price} ج.م</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* CTA */}
+      <div className="mt-4 h-9 rounded-xl bg-[#c8ff00]/10 border border-[#c8ff00]/20 flex items-center justify-center">
+        <span className="text-[11px] font-semibold text-[#c8ff00]/70">اعرض للبيع</span>
+      </div>
+    </div>
+  );
+}
+
 // ─── Value Chip ───
 function ValueChip({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
   return (
@@ -797,7 +968,7 @@ function PlayerCardsSection() {
             </Link>
           </motion.div>
 
-          {/* Leaderboard screenshot */}
+          {/* Leaderboard mockup */}
           <motion.div
             className="flex-1 flex justify-center"
             initial={{ opacity: 0, x: 40 }}
@@ -805,13 +976,7 @@ function PlayerCardsSection() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.7, ease: easePremium }}
           >
-            <div className="relative rounded-2xl border border-white/10 overflow-hidden shadow-2xl shadow-black/40 max-w-md w-full">
-              <img
-                src="/screenshots/leaderboard.png"
-                alt="Player leaderboard and tier rankings"
-                className="w-full h-auto"
-              />
-            </div>
+            <LeaderboardMockup />
           </motion.div>
         </div>
       </div>
@@ -829,7 +994,7 @@ function MarketplaceSection() {
     <section className="relative py-24 sm:py-32 px-5 sm:px-8 overflow-hidden">
       <div className="mx-auto max-w-5xl">
         <div className="flex flex-col-reverse lg:flex-row items-center gap-8 lg:gap-20">
-          {/* Screenshot side */}
+          {/* Marketplace mockup */}
           <motion.div
             className="flex-1 flex justify-center"
             initial={{ opacity: 0, x: -40 }}
@@ -837,13 +1002,7 @@ function MarketplaceSection() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.7, ease: easePremium }}
           >
-            <div className="relative rounded-2xl border border-white/10 overflow-hidden shadow-2xl shadow-black/40 max-w-md w-full">
-              <img
-                src="/screenshots/marketplace.png"
-                alt="Padel gear marketplace"
-                className="w-full h-auto"
-              />
-            </div>
+            <MarketplaceMockup />
           </motion.div>
 
           {/* Text side */}
