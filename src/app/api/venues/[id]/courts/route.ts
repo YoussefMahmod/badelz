@@ -24,7 +24,7 @@ export async function GET(
     }
 
     const courts = await prisma.court.findMany({
-      where: { venueId, isActive: true },
+      where: { venueId },
       orderBy: { sortOrder: "asc" },
       select: {
         id: true,
