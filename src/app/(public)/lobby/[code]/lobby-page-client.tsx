@@ -57,6 +57,13 @@ export default function LobbyPageClient({ code }: { code: string }) {
   const [cancelling, setCancelling] = useState(false);
   const [cancelError, setCancelError] = useState<string | null>(null);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [hasStoredPhone, setHasStoredPhone] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setHasStoredPhone(!!localStorage.getItem("badelz-player-phone"));
+    }
+  }, []);
 
   const fetchLobby = useCallback(async () => {
     try {
@@ -346,7 +353,7 @@ export default function LobbyPageClient({ code }: { code: string }) {
         </motion.button>
 
         {/* Cancel lobby (host only) */}
-        {(status === "OPEN" || status === "FULL") && (
+        {(status === "OPEN" || status === "FULL") && (hasStoredPhone || isAuthenticated) && (
           <div className="pt-2">
             {!showCancelConfirm ? (
               <motion.button

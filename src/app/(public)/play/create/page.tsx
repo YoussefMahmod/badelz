@@ -124,6 +124,9 @@ export default function CreateLobbyPage() {
       });
       const json = await res.json();
       if (res.ok && json.data?.lobbyCode) {
+        if (typeof window !== "undefined") {
+          localStorage.setItem("badelz-player-phone", phone.replace(/\D/g, ""));
+        }
         track.lobbyCreated({ area, date });
         router.push(`/lobby/${json.data.lobbyCode}`);
       } else {
