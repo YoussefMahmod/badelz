@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { courtId, date, startTime, endTime, playerName, playerPhone, notes } =
+    const { courtId, date, startTime, endTime, playerName, playerPhone, notes, level } =
       parsed.data;
 
     // Validate startTime < endTime
@@ -225,6 +225,7 @@ export async function POST(request: NextRequest) {
         data: {
           bookingId: booking.id,
           gameCode,
+          level: level ?? null,
           players: {
             create: {
               position: 0,
@@ -289,6 +290,7 @@ export async function POST(request: NextRequest) {
       endTime,
       pricePerPlayer,
       spotsLeft: 3, // creator is already in, 3 spots remain
+      level: level ?? undefined,
     });
 
     return NextResponse.json(

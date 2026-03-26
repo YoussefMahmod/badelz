@@ -74,6 +74,7 @@ export async function GET(
       data: {
         gameCode: game.gameCode,
         status: game.status,
+        level: game.level,
         date: game.booking.date,
         startTime: game.booking.startTime,
         endTime: game.booking.endTime,

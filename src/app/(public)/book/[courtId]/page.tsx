@@ -10,7 +10,9 @@ import {
   Clock,
   User,
   CheckCircle,
+  Gauge,
 } from "lucide-react";
+import { LOBBY_LEVELS } from "@/lib/constants";
 import { MainLayout } from "@/components/main-layout";
 import { TimeSlotPicker } from "@/components/time-slot-picker";
 import { BookingForm } from "@/components/booking-form";
@@ -60,6 +62,7 @@ export default function BookingPage({
   const [selectedDate, setSelectedDate] = useState(toDateString(days[0]));
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
   const [playerInfo, setPlayerInfo] = useState({ name: "", phone: "", notes: "" });
+  const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   // Fetch court info
@@ -147,6 +150,7 @@ export default function BookingPage({
           playerName: playerInfo.name,
           playerPhone: playerInfo.phone,
           notes: playerInfo.notes || undefined,
+          level: selectedLevel || undefined,
         }),
       });
 
@@ -319,6 +323,49 @@ export default function BookingPage({
               <h2 className="text-base font-bold text-white/70 mb-4">
                 {t("booking.yourInfo")}
               </h2>
+
+              {/* Level selector */}
+              <div className="mb-6">
+                <label className="flex items-center gap-2 text-sm font-semibold text-white/50 mb-3">
+                  <Gauge size={14} />
+                  {locale === "ar" ? "مستوى اللعب" : "Skill Level"}
+                  <span className="text-[10px] text-white/30 font-normal">
+                    ({locale === "ar" ? "اختياري" : "optional"})
+                  </span>
+                </label>
+                <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedLevel(null)}
+                    className={`shrink-0 rounded-full px-4 py-2.5 text-xs font-semibold transition-all ${
+                      selectedLevel === null
+                        ? "bg-[#c8ff00] text-[#111827] shadow-sm shadow-[#c8ff00]/20"
+                        : "border border-white/10 text-white/50 hover:text-white/80 hover:bg-white/10"
+                    }`}
+                  >
+                    {locale === "ar" ? "أي مستوى" : "Any Level"}
+                  </button>
+                  {LOBBY_LEVELS.map((lvl) => {
+                    const isActive = selectedLevel === lvl.key;
+                    const label = locale === "ar" ? lvl.labelAr : lvl.labelEn;
+                    return (
+                      <button
+                        key={lvl.key}
+                        type="button"
+                        onClick={() => setSelectedLevel(isActive ? null : lvl.key)}
+                        className={`shrink-0 rounded-full px-4 py-2.5 text-xs font-semibold transition-all ${
+                          isActive
+                            ? "bg-[#c8ff00] text-[#111827] shadow-sm shadow-[#c8ff00]/20"
+                            : "border border-white/10 text-white/50 hover:text-white/80 hover:bg-white/10"
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               <BookingForm
                 onSubmit={(data) => {
                   setPlayerInfo(data);
@@ -360,6 +407,18 @@ export default function BookingPage({
                 <div className="border-t border-white/10 pt-3.5 space-y-2">
                   <SummaryRow label={t("booking.name")} value={playerInfo.name} />
                   <SummaryRow label={t("booking.phone")} value={playerInfo.phone} />
+                  {selectedLevel && (
+                    <SummaryRow
+                      label={locale === "ar" ? "المستوى" : "Level"}
+                      value={
+                        LOBBY_LEVELS.find((l) => l.key === selectedLevel)
+                          ? locale === "ar"
+                            ? LOBBY_LEVELS.find((l) => l.key === selectedLevel)!.labelAr
+                            : LOBBY_LEVELS.find((l) => l.key === selectedLevel)!.labelEn
+                          : selectedLevel
+                      }
+                    />
+                  )}
                   {playerInfo.notes && (
                     <SummaryRow label={t("booking.notes")} value={playerInfo.notes} />
                   )}

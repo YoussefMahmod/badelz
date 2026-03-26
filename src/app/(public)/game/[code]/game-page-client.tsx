@@ -14,8 +14,10 @@ import {
   ChevronDown,
   Sparkles,
   CreditCard,
+  Gauge,
 } from "lucide-react";
 import { useTranslation, useLocale } from "@/i18n";
+import { LOBBY_LEVELS } from "@/lib/constants";
 import { useAuth } from "@/lib/auth-context";
 import { formatPrice, formatDate, formatTime } from "@/lib/format";
 import { buildGameShareLink } from "@/lib/whatsapp";
@@ -35,6 +37,7 @@ interface GamePlayer {
 interface GameData {
   gameCode: string;
   status: "OPEN" | "FULL" | "CANCELLED";
+  level?: string | null;
   pricePerPlayer: number;
   spotsLeft: number;
   date: string;
@@ -201,6 +204,7 @@ export default function GamePageClient({ code }: { code: string }) {
     endTime: formatTime(endTime),
     pricePerPlayer,
     spotsLeft,
+    level: game.level ?? undefined,
   });
 
   return (
@@ -271,26 +275,40 @@ export default function GamePageClient({ code }: { code: string }) {
           </div>
         </div>
 
-        {/* Spots indicator */}
-        <div className="mt-4 flex items-center gap-2">
-          {!isFull && (
-            <motion.div
-              animate={{ scale: [1, 1.3, 1] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-              className="h-2 w-2 rounded-full bg-[#c8ff00]"
-            />
-          )}
-          <span
-            className={`text-sm font-semibold ${
-              isFull
-                ? "text-gray-900"
-                : "text-gray-500"
-            }`}
-          >
-            {isFull
-              ? t("game.spotsFull")
-              : t("game.spotsLeft", { count: spotsLeft })}
-          </span>
+        {/* Spots indicator + Level badge */}
+        <div className="mt-4 flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            {!isFull && (
+              <motion.div
+                animate={{ scale: [1, 1.3, 1] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+                className="h-2 w-2 rounded-full bg-[#c8ff00]"
+              />
+            )}
+            <span
+              className={`text-sm font-semibold ${
+                isFull
+                  ? "text-gray-900"
+                  : "text-gray-500"
+              }`}
+            >
+              {isFull
+                ? t("game.spotsFull")
+                : t("game.spotsLeft", { count: spotsLeft })}
+            </span>
+          </div>
+          {game.level && (() => {
+            const levelObj = LOBBY_LEVELS.find((l) => l.key === game.level);
+            const levelLabel = levelObj
+              ? locale === "ar" ? levelObj.labelAr : levelObj.labelEn
+              : game.level;
+            return (
+              <span className="flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-600">
+                <Gauge size={12} />
+                {levelLabel}
+              </span>
+            );
+          })()}
         </div>
       </motion.div>
 

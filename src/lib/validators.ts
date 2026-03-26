@@ -12,6 +12,7 @@ export const bookingSchema = z.object({
   playerName: z.string().min(2, "الاسم مطلوب"),
   playerPhone: phoneSchema,
   notes: z.string().optional(),
+  level: z.enum(["BEGINNER", "INTERMEDIATE", "ADVANCED", "PRO"]).optional(),
 });
 
 export const ownerBookingSchema = z.object({
@@ -104,6 +105,7 @@ export const lobbySchema = z.object({
   startTime: z.string().regex(/^\d{2}:\d{2}$/).optional(),
   priceRange: z.string().optional(),
   note: z.string().max(200).optional(),
+  level: z.enum(["BEGINNER", "INTERMEDIATE", "ADVANCED", "PRO"]).optional(),
 });
 
 export const joinLobbySchema = z.object({

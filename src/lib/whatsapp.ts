@@ -28,6 +28,13 @@ https://badelz.app/venues/${venue.id}`;
   return `https://wa.me/?text=${encodeURIComponent(text)}`;
 }
 
+const LEVEL_LABELS_AR: Record<string, string> = {
+  BEGINNER: "مبتدئ",
+  INTERMEDIATE: "متوسط",
+  ADVANCED: "متقدم",
+  PRO: "محترف",
+};
+
 export function buildGameShareLink(game: {
   gameCode: string;
   venueName: string;
@@ -37,10 +44,14 @@ export function buildGameShareLink(game: {
   endTime: string;
   pricePerPlayer: number;
   spotsLeft: number;
+  level?: string;
 }) {
+  const levelLine = game.level
+    ? `\n🎯 المستوى: ${LEVEL_LABELS_AR[game.level] ?? game.level}`
+    : "";
   const text = `حجزت كورت بادل في ${game.venueName} - ${game.courtName}
 ${game.date} من ${game.startTime} لـ ${game.endTime}
-${game.pricePerPlayer} جنيه للفرد
+${game.pricePerPlayer} جنيه للفرد${levelLine}
 ناقصنا ${game.spotsLeft} — أكد مكانك:
 https://badelz.app/game/${game.gameCode}`;
 
@@ -64,6 +75,7 @@ export function buildLobbyShareLink(params: {
   date: string;
   startTime?: string;
   priceRange?: string;
+  level?: string;
   spotsLeft: number;
 }) {
   const lines = [
@@ -71,6 +83,7 @@ export function buildLobbyShareLink(params: {
     `📍 ${params.area}`,
     `📅 ${params.date}${params.startTime ? ` - ${params.startTime}` : ""}`,
     params.priceRange ? `💰 ~${params.priceRange} جنيه للفرد` : "",
+    params.level ? `🎯 المستوى: ${LEVEL_LABELS_AR[params.level] ?? params.level}` : "",
     `ناقصنا ${params.spotsLeft}!`,
     "",
     `انضم من هنا: ${BASE_URL}/lobby/${params.lobbyCode}`,
