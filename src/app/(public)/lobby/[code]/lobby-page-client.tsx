@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Calendar, Clock, MapPin, MessageCircle, Copy, Check,
-  Link2, ChevronDown, Sparkles, Crown, Banknote, FileText, CreditCard, Gauge,
+  Link2, ChevronDown, Sparkles, Crown, Banknote, FileText, CreditCard, Gauge, XCircle, Loader2,
 } from "lucide-react";
 import Link from "next/link";
 import { track } from "@/lib/analytics";
@@ -54,6 +54,9 @@ export default function LobbyPageClient({ code }: { code: string }) {
   const [joinError, setJoinError] = useState<string | null>(null);
   const [joinSuccess, setJoinSuccess] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
+  const [cancelError, setCancelError] = useState<string | null>(null);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
   const fetchLobby = useCallback(async () => {
     try {
@@ -99,6 +102,37 @@ export default function LobbyPageClient({ code }: { code: string }) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch { /* clipboard unavailable */ }
+  };
+
+  const handleCancel = async () => {
+    const hostPhone =
+      (typeof window !== "undefined" && localStorage.getItem("badelz-player-phone")) ||
+      (isAuthenticated && user?.phone) ||
+      null;
+    if (!hostPhone) {
+      setCancelError(t("lobby.cancelError"));
+      return;
+    }
+    setCancelling(true);
+    setCancelError(null);
+    try {
+      const res = await fetch(`/api/lobbies/${code}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ hostPhone }),
+      });
+      if (res.ok) {
+        setShowCancelConfirm(false);
+        await fetchLobby();
+      } else {
+        const json = await res.json();
+        setCancelError(json.message || t("lobby.cancelError"));
+      }
+    } catch {
+      setCancelError(t("lobby.cancelError"));
+    } finally {
+      setCancelling(false);
+    }
   };
 
   if (loading) return <div className="min-h-screen bg-[#0a0f1a]"><SkeletonPage /></div>;
@@ -310,6 +344,53 @@ export default function LobbyPageClient({ code }: { code: string }) {
             <><Copy size={16} />{t("lobby.copyLink")}</>
           )}
         </motion.button>
+
+        {/* Cancel lobby (host only) */}
+        {(status === "OPEN" || status === "FULL") && (
+          <div className="pt-2">
+            {!showCancelConfirm ? (
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8 }}
+                onClick={() => setShowCancelConfirm(true)}
+                className="flex w-full items-center justify-center gap-2 rounded-full border border-red-500/20 py-3 text-sm font-semibold text-red-400/70 transition-colors hover:bg-red-500/5 hover:text-red-400"
+              >
+                <XCircle size={16} />
+                {t("lobby.cancelLobby")}
+              </motion.button>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="rounded-2xl bg-red-500/10 border border-red-500/20 p-4 space-y-3"
+              >
+                <p className="text-sm text-red-400 text-center font-semibold">
+                  {t("lobby.cancelConfirm")}
+                </p>
+                {cancelError && (
+                  <p className="text-xs text-red-300 text-center">{cancelError}</p>
+                )}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => { setShowCancelConfirm(false); setCancelError(null); }}
+                    className="flex-1 rounded-full border border-white/10 py-2.5 text-sm font-semibold text-white/60 hover:bg-white/5 transition-colors"
+                  >
+                    {t("common.back")}
+                  </button>
+                  <button
+                    onClick={handleCancel}
+                    disabled={cancelling}
+                    className="flex-1 flex items-center justify-center gap-1.5 rounded-full bg-red-500 py-2.5 text-sm font-bold text-white transition-all hover:bg-red-600 disabled:opacity-50"
+                  >
+                    {cancelling ? <Loader2 size={14} className="animate-spin" /> : <XCircle size={14} />}
+                    {t("lobby.cancelLobby")}
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Auth nudge */}
