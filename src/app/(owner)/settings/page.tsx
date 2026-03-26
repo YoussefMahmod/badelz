@@ -11,6 +11,9 @@ import {
   CheckCircle,
   Crosshair,
   Loader2,
+  Lock,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import { slideUp } from "@/lib/animations";
@@ -332,21 +335,193 @@ export default function SettingsPage() {
           )}
         </motion.button>
 
-        {/* Sign Out */}
-        <button
-          type="button"
-          onClick={() => {
-            import("next-auth/react").then(({ signOut }) =>
-              signOut({ callbackUrl: "/" })
-            );
-          }}
-          className="flex w-full items-center justify-center gap-2 rounded-full border border-red-500/30 py-3 text-sm font-medium text-red-400 transition-all hover:bg-red-500/10 hover:border-red-500/50 mt-3"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-          {t("auth.signOut")}
-        </button>
       </motion.form>
+
+      {/* Change Password Section */}
+      <ChangePasswordSection />
+
+      {/* Sign Out */}
+      <button
+        type="button"
+        onClick={() => {
+          import("next-auth/react").then(({ signOut }) =>
+            signOut({ callbackUrl: "/" })
+          );
+        }}
+        className="flex w-full items-center justify-center gap-2 rounded-full border border-red-500/30 py-3 text-sm font-medium text-red-400 transition-all hover:bg-red-500/10 hover:border-red-500/50 mt-4"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        {t("auth.signOut")}
+      </button>
     </div>
+  );
+}
+
+function ChangePasswordSection() {
+  const { t } = useTranslation();
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showCurrent, setShowCurrent] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setMessage(null);
+
+    if (newPassword.length < 6) {
+      setMessage({ type: "error", text: t("auth.passwordTooShort") });
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setMessage({ type: "error", text: t("auth.passwordMismatch") });
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const res = await fetch("/api/auth/change-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ currentPassword, newPassword }),
+      });
+
+      if (res.ok) {
+        setMessage({ type: "success", text: t("auth.passwordChanged") });
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+        setTimeout(() => setMessage(null), 4000);
+      } else {
+        const data = await res.json();
+        setMessage({
+          type: "error",
+          text: data.message || t("auth.wrongCurrentPassword"),
+        });
+      }
+    } catch {
+      setMessage({ type: "error", text: t("common.error") });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <motion.form
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.2 }}
+      onSubmit={handleChangePassword}
+      className="mt-6 space-y-4"
+    >
+      <div className="border-t border-white/10 pt-6">
+        <h2 className="flex items-center gap-2 text-sm font-bold text-white/80 mb-4">
+          <Lock size={14} className="text-white/40" />
+          {t("auth.changePassword")}
+        </h2>
+
+        {message && (
+          <motion.div
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={`mb-4 rounded-xl px-4 py-3 text-sm ${
+              message.type === "success"
+                ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400"
+                : "bg-red-500/10 border border-red-500/20 text-red-400"
+            }`}
+          >
+            {message.text}
+          </motion.div>
+        )}
+
+        <div className="space-y-3">
+          {/* Current Password */}
+          <div>
+            <label className="mb-1.5 flex items-center gap-2 text-xs font-medium text-white/50">
+              {t("auth.currentPassword")}
+            </label>
+            <div className="relative">
+              <input
+                type={showCurrent ? "text" : "password"}
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                required
+                dir="ltr"
+                placeholder={t("auth.currentPasswordPlaceholder")}
+                className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 pe-12 text-sm text-white outline-none placeholder:text-white/25 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
+              />
+              <button
+                type="button"
+                onClick={() => setShowCurrent(!showCurrent)}
+                className="absolute end-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
+              >
+                {showCurrent ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+          </div>
+
+          {/* New Password */}
+          <div>
+            <label className="mb-1.5 flex items-center gap-2 text-xs font-medium text-white/50">
+              {t("auth.newPassword")}
+            </label>
+            <div className="relative">
+              <input
+                type={showNew ? "text" : "password"}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+                dir="ltr"
+                placeholder={t("auth.newPasswordPlaceholder")}
+                className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 pe-12 text-sm text-white outline-none placeholder:text-white/25 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
+              />
+              <button
+                type="button"
+                onClick={() => setShowNew(!showNew)}
+                className="absolute end-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
+              >
+                {showNew ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+          </div>
+
+          {/* Confirm Password */}
+          <div>
+            <label className="mb-1.5 flex items-center gap-2 text-xs font-medium text-white/50">
+              {t("auth.confirmPassword")}
+            </label>
+            <input
+              type={showNew ? "text" : "password"}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              dir="ltr"
+              placeholder={t("auth.confirmPasswordPlaceholder")}
+              className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 text-sm text-white outline-none placeholder:text-white/25 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
+            />
+          </div>
+        </div>
+
+        <motion.button
+          type="submit"
+          whileTap={{ scale: 0.97 }}
+          disabled={saving}
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-white/10 border border-white/10 py-3 text-sm font-bold text-white/80 shadow-sm transition-all hover:bg-white/15 disabled:opacity-50"
+        >
+          {saving ? (
+            <Loader2 size={16} className="animate-spin" />
+          ) : (
+            <>
+              <Lock size={14} />
+              {t("auth.changePassword")}
+            </>
+          )}
+        </motion.button>
+      </div>
+    </motion.form>
   );
 }
 

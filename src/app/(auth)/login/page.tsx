@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { motion } from "framer-motion";
-import { Mail, Lock, LogIn, Loader2, Eye, EyeOff } from "lucide-react";
-import { useTranslation } from "@/i18n";
-import { LocaleToggle } from "@/components/locale-toggle";
+import { Loader2, Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { useTranslation, useLocale } from "@/i18n";
+import Link from "next/link";
 import { Logo } from "@/components/logo";
 
 export default function LoginPage() {
@@ -17,8 +16,8 @@ export default function LoginPage() {
         <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-elevated animate-pulse">
           <div className="h-8 w-32 bg-gray-100 rounded mb-6" />
           <div className="space-y-4">
-            <div className="h-10 bg-gray-100 rounded-xl" />
-            <div className="h-10 bg-gray-100 rounded-xl" />
+            <div className="h-12 bg-gray-100 rounded-xl" />
+            <div className="h-12 bg-gray-100 rounded-xl" />
           </div>
         </div>
       }
@@ -30,6 +29,7 @@ export default function LoginPage() {
 
 function LoginForm() {
   const { t } = useTranslation();
+  const { locale, setLocale } = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
   const returnTo = searchParams.get("returnTo");
@@ -38,6 +38,11 @@ function LoginForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +59,6 @@ function LoginForm() {
       if (result?.error) {
         setError(t("auth.invalidCredentials"));
       } else {
-        // Fetch session to determine redirect
         const session = await fetch("/api/auth/session").then((r) => r.json());
 
         if (returnTo) {
@@ -73,26 +77,43 @@ function LoginForm() {
     }
   };
 
-  return (
-    <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-elevated">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <Link href="/" className="transition-opacity hover:opacity-80">
-            <Logo size={32} variant="full" colorMode="light" />
-          </Link>
+  if (!mounted) {
+    return (
+      <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-xl animate-pulse">
+        <div className="flex justify-center mb-6">
+          <div className="h-10 w-32 bg-gray-100 rounded" />
         </div>
-        <LocaleToggle />
+        <div className="h-5 w-40 bg-gray-100 rounded mx-auto mb-2" />
+        <div className="h-4 w-52 bg-gray-100 rounded mx-auto mb-6" />
+        <div className="space-y-4">
+          <div className="h-12 bg-gray-100 rounded-xl" />
+          <div className="h-12 bg-gray-100 rounded-xl" />
+          <div className="h-12 bg-gray-100 rounded-full" />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-xl">
+      {/* Logo centered */}
+      <div className="flex justify-center mb-6">
+        <Logo size={40} variant="full" colorMode="light" />
       </div>
 
-      <h1 className="text-xl font-bold text-gray-900 mb-1">{t("auth.signIn")}</h1>
-      <p className="text-sm text-gray-400 mb-6">{t("auth.signInDesc")}</p>
+      {/* Title */}
+      <h1 className="text-center text-lg font-bold text-gray-900 mb-1">
+        {t("auth.signInTitle")}
+      </h1>
+      <p className="text-center text-sm text-gray-400 mb-6">
+        {t("auth.signInSubtitle")}
+      </p>
 
       {error && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600"
+          className="mb-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600 text-center"
         >
           {error}
         </motion.div>
@@ -110,7 +131,8 @@ function LoginForm() {
             onChange={(e) => setEmail(e.target.value)}
             required
             dir="ltr"
-            className="w-full rounded-xl bg-gray-50 border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
+            placeholder={t("auth.emailPlaceholder")}
+            className="w-full rounded-xl bg-gray-50 border border-gray-200 px-4 py-3.5 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
           />
         </div>
 
@@ -120,49 +142,43 @@ function LoginForm() {
             {t("auth.password")}
           </label>
           <div className="relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              dir="ltr"
-              className="w-full rounded-xl bg-gray-50 border border-gray-200 px-4 py-3 pe-12 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute end-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
-            >
-              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-            </button>
-          </div>
-        </div>
-
-        <div className="flex justify-end">
-          <Link
-            href="/forgot-password"
-            className="text-xs text-gray-400 hover:text-[#111827] transition-colors"
+          <input
+            type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            dir="ltr"
+            placeholder={t("auth.passwordPlaceholder")}
+            className="w-full rounded-xl bg-gray-50 border border-gray-200 px-4 py-3.5 pe-12 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute end-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
           >
-            {t("auth.forgotPassword")}
-          </Link>
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+          </div>
+          <div className="mt-1.5 flex justify-end">
+            <Link
+              href="/forgot-password"
+              className="text-xs text-gray-400 hover:text-[#111827] transition-colors"
+            >
+              {t("auth.forgotPassword")}
+            </Link>
+          </div>
         </div>
 
         <motion.button
           type="submit"
           whileTap={{ scale: 0.97 }}
           disabled={loading}
-          className="flex w-full items-center justify-center gap-2 rounded-full bg-[#111827] py-3.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-gray-800 disabled:opacity-50"
+          className="flex w-full items-center justify-center gap-2 rounded-full bg-[#111827] py-4 text-base font-bold text-white shadow-sm transition-all hover:bg-gray-800 disabled:opacity-50"
         >
           {loading ? (
-            <>
-              <Loader2 size={16} className="animate-spin" />
-              {t("common.loading")}
-            </>
+            <Loader2 size={18} className="animate-spin" />
           ) : (
-            <>
-              <LogIn size={16} />
-              {t("auth.signIn")}
-            </>
+            t("auth.signIn")
           )}
         </motion.button>
       </form>
@@ -176,6 +192,17 @@ function LoginForm() {
           {t("auth.signUp")}
         </Link>
       </p>
+
+      {/* Language toggle */}
+      <div className="mt-3 flex justify-center">
+        <button
+          type="button"
+          onClick={() => setLocale(locale === "ar" ? "en" : "ar")}
+          className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+        >
+          {locale === "ar" ? "English" : "عربي"}
+        </button>
+      </div>
     </div>
   );
 }
