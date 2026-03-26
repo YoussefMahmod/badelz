@@ -15,6 +15,7 @@ import {
   Calendar,
   Trophy,
   ArrowUpRight,
+  MessageCircle,
 } from "lucide-react";
 import { MainLayout } from "@/components/main-layout";
 import { useAuth } from "@/lib/auth-context";
@@ -422,6 +423,36 @@ export default function DiscoverPage() {
               );
             })}
           </FeedSection>
+        )}
+
+        {/* ─── WhatsApp Support ─── */}
+        {!loading && (
+          <motion.div
+            className="mb-6"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+          >
+            <a
+              href="https://wa.me/201100775031"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 rounded-2xl bg-[#25D366]/10 border border-[#25D366]/20 px-4 py-3.5 transition-all hover:bg-[#25D366]/15 group"
+            >
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#25D366]">
+                <MessageCircle size={20} className="text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-white/90">
+                  {t("common.support")}
+                </p>
+                <p className="text-xs text-white/40">
+                  {t("discover.supportDesc")}
+                </p>
+              </div>
+              <ArrowUpRight size={16} className="text-[#25D366] shrink-0 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </a>
+          </motion.div>
         )}
 
         {/* ─── Footer Link to Landing ─── */}

@@ -2,6 +2,7 @@ const en = {
   common: {
     appName: "Badelz",
     loading: "Loading...",
+    support: "Support",
     save: "Save",
     cancel: "Cancel",
     delete: "Delete",
@@ -168,6 +169,7 @@ const en = {
     bookCourt: "Book a Court",
     findPlayers: "Find Players",
     sellGear: "Sell Gear",
+    supportDesc: "Need help? Chat with us on WhatsApp",
     newHere: "New here? See what Badelz is about",
   },
   browse: {

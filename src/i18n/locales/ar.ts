@@ -4,6 +4,7 @@ const ar: TranslationKeys = {
   common: {
     appName: "بادلز",
     loading: "جاري التحميل...",
+    support: "الدعم",
     save: "حفظ",
     cancel: "إلغاء",
     delete: "حذف",
@@ -170,6 +171,7 @@ const ar: TranslationKeys = {
     bookCourt: "احجز كورت",
     findPlayers: "اكتشف لاعبين جدد",
     sellGear: "بيع معداتك",
+    supportDesc: "محتاج مساعدة؟ كلمنا على واتساب",
     newHere: "جديد هنا؟ اعرف أكتر عن بادلز",
   },
   browse: {
