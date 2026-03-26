@@ -32,7 +32,7 @@ interface LobbyData {
   players: LobbyPlayer[];
 }
 
-export default function PlayPage() {
+export default function PlayClient() {
   const { t } = useTranslation();
   const { locale } = useLocale();
   const router = useRouter();
@@ -202,6 +202,7 @@ export default function PlayPage() {
           transition={{ delay: 0.25 }}
           className="relative flex gap-2 overflow-x-auto hide-scrollbar pb-5"
         >
+          {/* "All" chip */}
           <button
             onClick={() => setSelectedLevel(null)}
             className={`shrink-0 relative flex items-center gap-1.5 rounded-full px-4 py-2.5 text-xs font-semibold transition-all cursor-pointer ${

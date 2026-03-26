@@ -4,6 +4,7 @@ export async function getGameForMeta(code: string) {
   const game = await prisma.game.findUnique({
     where: { gameCode: code.toUpperCase() },
     select: {
+      level: true,
       status: true,
       players: { select: { position: true } },
       booking: {
