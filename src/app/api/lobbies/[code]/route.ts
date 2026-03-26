@@ -70,6 +70,7 @@ export async function GET(
         startTime: lobby.startTime,
         priceRange: lobby.priceRange,
         note: lobby.note,
+        level: lobby.level,
         status: lobby.status,
         spotsLeft,
         playerCount: lobby.players.length,

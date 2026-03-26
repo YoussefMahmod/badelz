@@ -1,11 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { MapPin, Calendar, Clock, Users } from "lucide-react";
+import { MapPin, Calendar, Clock, Users, Gauge } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslation, useLocale } from "@/i18n";
 import { formatDateShort, formatTime } from "@/lib/format";
 import { darkBentoItem } from "@/lib/animations";
+import { LOBBY_LEVELS } from "@/lib/constants";
 
 const MAX_PLAYERS = 4;
 
@@ -22,6 +23,7 @@ interface LobbyCardProps {
     date: string;
     startTime?: string | null;
     priceRange?: string | null;
+    level?: string | null;
     hostName: string;
     status: "OPEN" | "FULL" | "CANCELLED" | "EXPIRED";
     players?: LobbyPlayer[];
@@ -36,6 +38,8 @@ export function LobbyCard({ lobby }: LobbyCardProps) {
   const router = useRouter();
 
   const areaName = locale === "ar" && lobby.areaAr ? lobby.areaAr : lobby.area;
+  const levelObj = lobby.level ? LOBBY_LEVELS.find((l) => l.key === lobby.level) : null;
+  const levelLabel = levelObj ? (locale === "ar" ? levelObj.labelAr : levelObj.labelEn) : null;
   const playerCount = lobby.playerCount ?? lobby.players?.length ?? 0;
   const spotsLeft = lobby.spotsLeft ?? (MAX_PLAYERS - playerCount);
   const isFull = spotsLeft <= 0;
@@ -48,11 +52,17 @@ export function LobbyCard({ lobby }: LobbyCardProps) {
       onClick={() => router.push(`/lobby/${lobby.lobbyCode}`)}
       className="cursor-pointer rounded-2xl bg-white/5 border border-white/10 p-3 transition-all hover:border-[#c8ff00]/20 hover:shadow-[0_0_30px_rgba(200,255,0,0.08)]"
     >
-      {/* Area name */}
+      {/* Area name + level badge */}
       <div className="flex items-start justify-between gap-2 mb-2">
         <div className="flex items-center gap-1.5 min-w-0">
           <MapPin size={14} className="shrink-0 text-white/40" />
           <h3 className="text-sm font-bold text-white truncate">{areaName}</h3>
+          {levelLabel && (
+            <span className="shrink-0 flex items-center gap-0.5 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-semibold text-white/70">
+              <Gauge size={10} />
+              {levelLabel}
+            </span>
+          )}
         </div>
         {lobby.priceRange && (
           <span className="shrink-0 text-sm font-bold text-[#c8ff00]">

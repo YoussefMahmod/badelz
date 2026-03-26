@@ -14,12 +14,13 @@ import {
   AlertCircle,
   Banknote,
   CheckCircle,
+  Gauge,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTranslation, useLocale } from "@/i18n";
 import { useAuth } from "@/lib/auth-context";
-import { AREAS } from "@/lib/constants";
+import { AREAS, LOBBY_LEVELS } from "@/lib/constants";
 import { getNext7Days, toDateString } from "@/lib/format";
 import { slideUp } from "@/lib/animations";
 
@@ -60,6 +61,7 @@ export default function CreateLobbyPage() {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [priceRange, setPriceRange] = useState("");
+  const [level, setLevel] = useState("");
   const [note, setNote] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -114,6 +116,7 @@ export default function CreateLobbyPage() {
           date,
           startTime: time || undefined,
           priceRange: priceRange || undefined,
+          level: level || undefined,
           note: note || undefined,
           hostName: name.trim(),
           hostPhone: phone.replace(/\D/g, ""),
@@ -306,8 +309,50 @@ export default function CreateLobbyPage() {
           />
         </motion.div>
 
+        {/* Level (optional) */}
+        <motion.div {...slideUp} transition={{ delay: 0.175 }}>
+          <label className={labelCls}>
+            <Gauge size={15} className="text-white/40" />
+            {t("lobby.level")}
+            <span className="text-white/30 text-xs font-normal">
+              ({t("lobby.optional")})
+            </span>
+          </label>
+          <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
+            <button
+              type="button"
+              onClick={() => setLevel("")}
+              className={`shrink-0 rounded-xl px-3 py-2.5 text-xs font-semibold transition-all ${
+                level === ""
+                  ? "bg-[#c8ff00] text-[#111827] shadow-sm"
+                  : "bg-white/5 border border-white/10 text-white/60 hover:bg-white/10 hover:text-white/90"
+              }`}
+            >
+              {t("lobby.anyLevel")}
+            </button>
+            {LOBBY_LEVELS.map((lvl) => {
+              const isSelected = level === lvl.key;
+              const label = locale === "ar" ? lvl.labelAr : lvl.labelEn;
+              return (
+                <button
+                  key={lvl.key}
+                  type="button"
+                  onClick={() => setLevel(lvl.key)}
+                  className={`shrink-0 rounded-xl px-3 py-2.5 text-xs font-semibold transition-all ${
+                    isSelected
+                      ? "bg-[#c8ff00] text-[#111827] shadow-sm"
+                      : "bg-white/5 border border-white/10 text-white/60 hover:bg-white/10 hover:text-white/90"
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        </motion.div>
+
         {/* Note (optional) */}
-        <motion.div {...slideUp} transition={{ delay: 0.2 }}>
+        <motion.div {...slideUp} transition={{ delay: 0.225 }}>
           <label className={labelCls}>
             <FileText size={15} className="text-white/40" />
             {t("lobby.note")}
@@ -338,7 +383,7 @@ export default function CreateLobbyPage() {
         )}
 
         {/* Name */}
-        <motion.div {...slideUp} transition={{ delay: 0.25 }}>
+        <motion.div {...slideUp} transition={{ delay: 0.275 }}>
           <label className={labelCls}>
             <User size={15} className="text-white/40" />
             {t("lobby.yourName")}
@@ -360,7 +405,7 @@ export default function CreateLobbyPage() {
         </motion.div>
 
         {/* Phone */}
-        <motion.div {...slideUp} transition={{ delay: 0.3 }}>
+        <motion.div {...slideUp} transition={{ delay: 0.325 }}>
           <label className={labelCls}>
             <Phone size={15} className="text-white/40" />
             {t("lobby.yourPhone")}

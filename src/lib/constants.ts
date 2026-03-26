@@ -19,6 +19,15 @@ export const AREAS = [
 
 export type AreaKey = (typeof AREAS)[number]["key"];
 
+export const LOBBY_LEVELS = [
+  { key: "BEGINNER", labelEn: "Beginner", labelAr: "مبتدئ" },
+  { key: "INTERMEDIATE", labelEn: "Intermediate", labelAr: "متوسط" },
+  { key: "ADVANCED", labelEn: "Advanced", labelAr: "متقدم" },
+  { key: "PRO", labelEn: "Pro", labelAr: "محترف" },
+] as const;
+
+export type LobbyLevelKey = (typeof LOBBY_LEVELS)[number]["key"];
+
 export function calculateTier(gamesPlayed: number): "BRONZE" | "GOLD" | "EMERALD" | "DIAMOND" | "MASTER" | "GRANDMASTER" {
   if (gamesPlayed >= 100) return "GRANDMASTER";
   if (gamesPlayed >= 50) return "MASTER";

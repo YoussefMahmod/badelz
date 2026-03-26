@@ -39,6 +39,11 @@ export async function GET(request: NextRequest) {
       where.area = area;
     }
 
+    const level = searchParams.get("level");
+    if (level) {
+      where.level = level;
+    }
+
     if (date) {
       const [y, m, d] = date.split("-").map(Number);
       const filterDate = new Date(y, m - 1, d);
@@ -61,6 +66,7 @@ export async function GET(request: NextRequest) {
           startTime: true,
           priceRange: true,
           note: true,
+          level: true,
           status: true,
           createdAt: true,
           _count: { select: { players: true } },
@@ -109,7 +115,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { hostName, hostPhone, area, areaAr, date, startTime, priceRange, note } =
+    const { hostName, hostPhone, area, areaAr, date, startTime, priceRange, note, level } =
       parsed.data;
 
     const session = await getServerSession(authOptions);
@@ -133,6 +139,7 @@ export async function POST(request: NextRequest) {
           startTime: startTime ?? null,
           priceRange: priceRange ?? null,
           note: note ?? null,
+          level: level ?? null,
         },
       });
 
@@ -157,6 +164,7 @@ export async function POST(request: NextRequest) {
       date,
       startTime: lobby.startTime ?? undefined,
       priceRange: lobby.priceRange ?? undefined,
+      level: lobby.level ?? undefined,
       spotsLeft: MAX_PLAYERS - 1, // Host is already in
     });
 
@@ -174,6 +182,7 @@ export async function POST(request: NextRequest) {
           startTime: lobby.startTime,
           priceRange: lobby.priceRange,
           note: lobby.note,
+          level: lobby.level,
           status: lobby.status,
           spotsLeft: MAX_PLAYERS - 1,
           shareLink,

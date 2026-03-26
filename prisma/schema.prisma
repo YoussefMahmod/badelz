@@ -205,12 +205,13 @@ enum GameStatus {
 }
 
 model Game {
-  id        String     @id @default(cuid())
-  bookingId String     @unique
-  gameCode  String     @unique
-  status    GameStatus @default(OPEN)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id        String      @id @default(cuid())
+  bookingId String      @unique
+  gameCode  String      @unique
+  level     LobbyLevel?
+  status    GameStatus  @default(OPEN)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
 
   booking Booking      @relation(fields: [bookingId], references: [id], onDelete: Cascade)
   players GamePlayer[]
@@ -240,6 +241,13 @@ enum LobbyStatus {
   FULL
   CANCELLED
   EXPIRED
+}
+
+enum LobbyLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  PRO
 }
 
 enum PlayerTier {
@@ -286,6 +294,7 @@ model Lobby {
   startTime  String?     // Optional preferred time "HH:MM"
   priceRange String?     // e.g., "200-300"
   note       String?
+  level      LobbyLevel?
   status     LobbyStatus @default(OPEN)
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt

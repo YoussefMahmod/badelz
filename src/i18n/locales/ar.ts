@@ -434,6 +434,12 @@ const ar: TranslationKeys = {
     joinSuccess: "تم الانضمام!",
     joinSuccessDesc: "انت دلوقتي في اللوبي",
     hostedBy: "المنظم: {{name}}",
+    level: "المستوى",
+    anyLevel: "أي مستوى",
+    beginner: "مبتدئ",
+    intermediate: "متوسط",
+    advanced: "متقدم",
+    pro: "محترف",
   },
   player: {
     card: "كارت اللاعب",

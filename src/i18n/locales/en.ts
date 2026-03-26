@@ -432,6 +432,12 @@ const en = {
     joinSuccess: "You're in!",
     joinSuccessDesc: "You've been added to the lobby",
     hostedBy: "Hosted by {{name}}",
+    level: "Level",
+    anyLevel: "Any Level",
+    beginner: "Beginner",
+    intermediate: "Intermediate",
+    advanced: "Advanced",
+    pro: "Pro",
   },
   player: {
     card: "Player Card",

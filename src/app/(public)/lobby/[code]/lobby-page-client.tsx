@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Calendar, Clock, MapPin, MessageCircle, Copy, Check,
-  Link2, ChevronDown, Sparkles, Crown, Banknote, FileText, CreditCard,
+  Link2, ChevronDown, Sparkles, Crown, Banknote, FileText, CreditCard, Gauge,
 } from "lucide-react";
 import Link from "next/link";
 import { track } from "@/lib/analytics";
@@ -13,7 +13,7 @@ import { useAuth } from "@/lib/auth-context";
 import { formatDate, formatTime } from "@/lib/format";
 import { buildLobbyShareLink } from "@/lib/whatsapp";
 import { checkmarkDraw, pulseGlow } from "@/lib/animations";
-import { AREAS } from "@/lib/constants";
+import { AREAS, LOBBY_LEVELS } from "@/lib/constants";
 import { JoinLobbyForm } from "@/components/join-lobby-form";
 import { AuthNudge } from "@/components/auth-nudge";
 import { usePolling } from "@/hooks/use-polling";
@@ -36,6 +36,7 @@ interface LobbyData {
   startTime?: string | null;
   priceRange?: string | null;
   note?: string | null;
+  level?: string | null;
   hostName: string;
   players: LobbyPlayer[];
 }
@@ -121,10 +122,12 @@ export default function LobbyPageClient({ code }: { code: string }) {
     );
   }
 
-  const { players, status, lobbyCode, area, areaAr, date: lobbyDate, startTime, priceRange, note } = lobby;
+  const { players, status, lobbyCode, area, areaAr, date: lobbyDate, startTime, priceRange, note, level } = lobby;
   const loc = locale === "ar" ? "ar-EG" : "en-US";
   const areaName = locale === "ar" && areaAr ? areaAr : area;
   const areaObj = AREAS.find((a) => a.key === area);
+  const levelObj = level ? LOBBY_LEVELS.find((l) => l.key === level) : null;
+  const levelLabel = levelObj ? (locale === "ar" ? levelObj.labelAr : levelObj.labelEn) : null;
   const spotsLeft = MAX_PLAYERS - players.length;
   const isFull = status === "FULL" || spotsLeft <= 0;
   const isOpen = status === "OPEN" && !isFull;
@@ -135,6 +138,7 @@ export default function LobbyPageClient({ code }: { code: string }) {
     date: formatDate(lobbyDate, loc),
     startTime: startTime ? formatTime(startTime) : undefined,
     priceRange: priceRange || undefined,
+    level: level || undefined,
     spotsLeft,
   });
 
@@ -190,6 +194,13 @@ export default function LobbyPageClient({ code }: { code: string }) {
           <div className="flex items-center gap-1.5 mb-3 ps-7">
             <Banknote size={14} className="text-[#c8ff00]" />
             <span className="text-sm font-bold text-[#c8ff00]">~{priceRange} {locale === "ar" ? "\u062C.\u0645" : "EGP"}</span>
+          </div>
+        )}
+
+        {levelLabel && (
+          <div className="flex items-center gap-1.5 mb-3 ps-7">
+            <Gauge size={14} className="text-white/50" />
+            <span className="text-sm font-semibold text-white/70">{levelLabel}</span>
           </div>
         )}
 
