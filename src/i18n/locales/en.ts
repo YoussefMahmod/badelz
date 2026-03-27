@@ -244,6 +244,8 @@ const en = {
     signUp: "Sign Up",
     email: "Email",
     emailPlaceholder: "your@email.com",
+    emailOrPhone: "Email or Phone",
+    emailOrPhonePlaceholder: "your@email.com or 01XXXXXXXXX",
     password: "Password",
     passwordPlaceholder: "Your password",
     name: "Name",

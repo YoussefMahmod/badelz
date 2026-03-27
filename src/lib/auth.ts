@@ -8,15 +8,18 @@ export const authOptions: AuthOptions = {
     CredentialsProvider({
       name: "credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
+        email: { label: "Email or Phone", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
-        });
+        const input = credentials.email.trim();
+        const isPhone = /^01[0125]\d{8}$/.test(input);
+
+        const user = isPhone
+          ? await prisma.user.findFirst({ where: { phone: input } })
+          : await prisma.user.findUnique({ where: { email: input } });
 
         if (!user || !user.password) return null;
 

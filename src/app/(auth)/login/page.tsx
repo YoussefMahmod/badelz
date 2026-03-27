@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { motion } from "framer-motion";
-import { Loader2, Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { Loader2, Eye, EyeOff, UserCircle, Lock } from "lucide-react";
 import { useTranslation, useLocale } from "@/i18n";
 import Link from "next/link";
 import { Logo } from "@/components/logo";
@@ -65,7 +65,8 @@ function LoginForm() {
           router.push(returnTo);
         } else {
           const role = session?.user?.role;
-          if (role === "PLAYER") router.push("/my-profile");
+          if (role === "ADMIN") router.push("/admin/dashboard");
+          else if (role === "PLAYER") router.push("/my-profile");
           else if (role === "COACH") router.push("/coach-dashboard");
           else router.push("/dashboard");
         }
@@ -122,16 +123,16 @@ function LoginForm() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="mb-1.5 flex items-center gap-2 text-sm font-medium text-gray-700">
-            <Mail size={14} className="text-gray-400" />
-            {t("auth.email")}
+            <UserCircle size={14} className="text-gray-400" />
+            {t("auth.emailOrPhone")}
           </label>
           <input
-            type="email"
+            type="text"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
             dir="ltr"
-            placeholder={t("auth.emailPlaceholder")}
+            placeholder={t("auth.emailOrPhonePlaceholder")}
             className="w-full rounded-xl bg-gray-50 border border-gray-200 px-4 py-3.5 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
           />
         </div>

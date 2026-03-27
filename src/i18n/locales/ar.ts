@@ -246,6 +246,8 @@ const ar: TranslationKeys = {
     signUp: "إنشاء حساب",
     email: "البريد الإلكتروني",
     emailPlaceholder: "الإيميل بتاعك",
+    emailOrPhone: "الإيميل أو الموبايل",
+    emailOrPhonePlaceholder: "الإيميل أو رقم الموبايل",
     password: "كلمة السر",
     passwordPlaceholder: "كلمة السر",
     name: "الاسم",
