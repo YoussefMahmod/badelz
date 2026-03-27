@@ -71,6 +71,22 @@ async function main() {
   });
   console.log(`Created coach: ${coachUser.email}`);
 
+  // ─── Admin account ───
+  const adminUser = await prisma.user.upsert({
+    where: { email: "admin@badelz.app" },
+    update: {},
+    create: {
+      name: "Badelz Admin",
+      email: "admin@badelz.app",
+      password: hashedPassword,
+      phone: "01000000000",
+      role: "ADMIN",
+      isOnboarded: true,
+      locale: "en",
+    },
+  });
+  console.log(`Created admin: ${adminUser.email}`);
+
   // ─── Venue 1: New Cairo Padel Club ───
   const venue1 = await prisma.venue.create({
     data: {

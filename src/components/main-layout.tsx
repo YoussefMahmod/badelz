@@ -9,7 +9,7 @@ interface MainLayoutProps {
   children: ReactNode;
   showHeader?: boolean;
   showNav?: boolean;
-  navType?: "public" | "owner" | "player" | "coach";
+  navType?: "public" | "owner" | "player" | "coach" | "admin";
 }
 
 export function MainLayout({

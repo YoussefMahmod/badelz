@@ -15,6 +15,9 @@ import {
   User,
   Gamepad2,
   GraduationCap,
+  Building2,
+  UserPlus,
+  Clock,
 } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import { useAuth } from "@/lib/auth-context";
@@ -27,13 +30,14 @@ interface NavItem {
   labelKey: string;
 }
 
-const ROLE_TO_VARIANT: Record<string, "owner" | "player" | "coach"> = {
+const ROLE_TO_VARIANT: Record<string, "owner" | "player" | "coach" | "admin"> = {
   VENUE_OWNER: "owner",
   PLAYER: "player",
   COACH: "coach",
+  ADMIN: "admin",
 };
 
-export function BottomNav({ variant = "public" }: { variant?: "public" | "owner" | "player" | "coach" }) {
+export function BottomNav({ variant = "public" }: { variant?: "public" | "owner" | "player" | "coach" | "admin" }) {
   const { t } = useTranslation();
   const pathname = usePathname();
   const { user, isLoading } = useAuth();
@@ -172,11 +176,39 @@ export function BottomNav({ variant = "public" }: { variant?: "public" | "owner"
     },
   ];
 
+  const adminTabs: NavItem[] = [
+    {
+      href: "/admin/dashboard",
+      icon: <LayoutDashboard size={22} strokeWidth={1.5} />,
+      activeIcon: <LayoutDashboard size={22} strokeWidth={2} />,
+      labelKey: "admin.dashboard",
+    },
+    {
+      href: "/admin/venues",
+      icon: <Building2 size={22} strokeWidth={1.5} />,
+      activeIcon: <Building2 size={22} strokeWidth={2} />,
+      labelKey: "admin.venues",
+    },
+    {
+      href: "/admin/onboard",
+      icon: <UserPlus size={22} strokeWidth={1.5} />,
+      activeIcon: <UserPlus size={22} strokeWidth={2} />,
+      labelKey: "admin.onboard",
+    },
+    {
+      href: "/admin/templates",
+      icon: <Clock size={22} strokeWidth={1.5} />,
+      activeIcon: <Clock size={22} strokeWidth={2} />,
+      labelKey: "admin.templates",
+    },
+  ];
+
   const tabMap: Record<string, NavItem[]> = {
     public: publicTabs,
     owner: ownerTabs,
     player: playerTabs,
     coach: coachTabs,
+    admin: adminTabs,
   };
 
   const tabs = tabMap[effectiveVariant] ?? publicTabs;
@@ -205,7 +237,7 @@ export function BottomNav({ variant = "public" }: { variant?: "public" | "owner"
               <span
                 className={
                   active
-                    ? "flex items-center justify-center rounded-xl p-1.5 text-[#c8ff00]"
+                    ? `flex items-center justify-center rounded-xl p-1.5 ${effectiveVariant === "admin" ? "text-indigo-400" : "text-[#c8ff00]"}`
                     : "flex items-center justify-center p-1.5 text-white/30"
                 }
               >
@@ -214,13 +246,13 @@ export function BottomNav({ variant = "public" }: { variant?: "public" | "owner"
               {active && (
                 <motion.div
                   layoutId="nav-dot"
-                  className="h-1.5 w-1.5 rounded-full bg-[#c8ff00]"
+                  className={`h-1.5 w-1.5 rounded-full ${effectiveVariant === "admin" ? "bg-indigo-400" : "bg-[#c8ff00]"}`}
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 />
               )}
               <span
                 className={`text-xs font-medium leading-tight ${
-                  active ? "text-[#c8ff00]" : "text-white/30"
+                  active ? (effectiveVariant === "admin" ? "text-indigo-400" : "text-[#c8ff00]") : "text-white/30"
                 }`}
               >
                 {t(tab.labelKey as Parameters<typeof t>[0])}
