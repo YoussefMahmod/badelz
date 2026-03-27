@@ -1039,27 +1039,39 @@ function MarketplaceSection() {
 function VenueOwnerSection() {
   const { t } = useTranslation();
   const [foundingCount, setFoundingCount] = useState(0);
+  const [coachCount, setCoachCount] = useState(0);
 
   useEffect(() => {
     fetch("/api/stats/founding")
       .then((r) => r.json())
-      .then((d) => setFoundingCount(d.data?.venues ?? 0))
+      .then((d) => {
+        setFoundingCount(d.data?.venues ?? 0);
+        setCoachCount(d.data?.coaches ?? 0);
+      })
       .catch(() => {});
   }, []);
 
   const MAX_FOUNDING = 20;
-  const progress = Math.min(100, (foundingCount / MAX_FOUNDING) * 100);
+  const venueProgress = Math.min(100, (foundingCount / MAX_FOUNDING) * 100);
+  const coachProgress = Math.min(100, (coachCount / MAX_FOUNDING) * 100);
 
-  const bullets = [
+  const venueBullets = [
     t("landing.ctaBullet1"),
     t("landing.ctaBullet2"),
     t("landing.ctaBullet3"),
     t("landing.ctaBullet4"),
   ];
 
+  const coachBullets = [
+    t("landing.coachCtaBullet1"),
+    t("landing.coachCtaBullet2"),
+    t("landing.coachCtaBullet3"),
+    t("landing.coachCtaBullet4"),
+  ];
+
   return (
     <section className="relative py-20 sm:py-28 px-5 sm:px-8 overflow-hidden">
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto max-w-5xl">
         <motion.div
           className="relative glass-dark-strong rounded-3xl p-8 sm:p-12 gradient-border overflow-hidden"
           initial={{ opacity: 0, scale: 0.9 }}
@@ -1074,87 +1086,130 @@ function VenueOwnerSection() {
           />
 
           <div className="relative z-10 flex flex-col items-center text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-8">
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-10">
               {t("landing.ownACourt")}
             </h2>
 
-            {/* Founding venue counter */}
-            <motion.div
-              className="w-full max-w-md mb-8 rounded-2xl bg-white/[0.04] border border-[#ffd700]/20 p-5"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-[#ffd700] font-bold text-sm tracking-wide uppercase">
-                  {t("landing.freeForever")}
-                </span>
-                <span className="text-white/70 text-sm font-bold tabular-nums">
-                  {foundingCount}/{MAX_FOUNDING}
-                </span>
-              </div>
-              {/* Progress bar */}
-              <div className="w-full h-2 rounded-full bg-white/10 mb-3 overflow-hidden">
-                <motion.div
-                  className="h-full rounded-full"
-                  style={{
-                    background: "linear-gradient(90deg, #ffd700, #ffaa00)",
-                    boxShadow: "0 0 10px rgba(255,215,0,0.3)",
-                  }}
-                  initial={{ width: 0 }}
-                  whileInView={{ width: `${progress}%` }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
-                />
-              </div>
-              <p className="text-white/50 text-xs text-center">
-                {t("landing.foundingCounter", { count: foundingCount })}
-              </p>
-              <p className="text-white/30 text-[11px] text-center mt-1">
-                {t("landing.afterFoundingPrice")}
-              </p>
-            </motion.div>
-
-            {/* Bullet points */}
-            <ul className="space-y-4 mb-10 text-start">
-              {bullets.map((bullet, i) => (
-                <motion.li
-                  key={i}
-                  className="flex items-center gap-3"
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: 0.4,
-                    delay: 0.2 + i * 0.1,
-                    ease: easePremium,
-                  }}
-                >
-                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500/15">
-                    <CheckCircle size={14} className="text-emerald-400" />
-                  </div>
-                  <span className="text-white/70 text-base sm:text-lg">
-                    {bullet}
-                  </span>
-                </motion.li>
-              ))}
-            </ul>
-
-            <Link href="/register">
-              <motion.span
-                whileHover={{
-                  scale: 1.05,
-                  boxShadow:
-                    "0 0 40px rgba(16,185,129,0.3), 0 0 80px rgba(16,185,129,0.1)",
-                }}
-                whileTap={{ scale: 0.97 }}
-                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-10 py-4 text-lg font-bold cursor-pointer transition-all"
+            {/* Two founding partner cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full mb-10">
+              {/* Venue card — gold theme */}
+              <motion.div
+                className="rounded-2xl bg-white/[0.04] border border-[#ffd700]/20 p-5 flex flex-col"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.2 }}
               >
-                {t("landing.registerVenue")}
-                <ArrowUpRight size={18} />
-              </motion.span>
-            </Link>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[#ffd700] font-bold text-sm tracking-wide uppercase">
+                    {t("landing.freeForever")}
+                  </span>
+                  <span className="text-white/70 text-sm font-bold tabular-nums">
+                    {foundingCount}/{MAX_FOUNDING}
+                  </span>
+                </div>
+                <div className="w-full h-2 rounded-full bg-white/10 mb-3 overflow-hidden">
+                  <motion.div
+                    className="h-full rounded-full"
+                    style={{
+                      background: "linear-gradient(90deg, #ffd700, #ffaa00)",
+                      boxShadow: "0 0 10px rgba(255,215,0,0.3)",
+                    }}
+                    initial={{ width: 0 }}
+                    whileInView={{ width: `${venueProgress}%` }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+                  />
+                </div>
+                <p className="text-white/50 text-xs text-center mb-4">
+                  {t("landing.foundingCounter", { count: foundingCount })}
+                </p>
+
+                <ul className="space-y-3 text-start mb-6 flex-1">
+                  {venueBullets.map((bullet, i) => (
+                    <li key={i} className="flex items-center gap-2.5">
+                      <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/15">
+                        <CheckCircle size={12} className="text-emerald-400" />
+                      </div>
+                      <span className="text-white/70 text-sm">{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Link href="/register" className="mt-auto">
+                  <motion.span
+                    whileHover={{
+                      scale: 1.05,
+                      boxShadow: "0 0 30px rgba(16,185,129,0.3)",
+                    }}
+                    whileTap={{ scale: 0.97 }}
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-6 py-3 text-sm font-bold cursor-pointer transition-all"
+                  >
+                    {t("landing.registerVenue")}
+                    <ArrowUpRight size={16} />
+                  </motion.span>
+                </Link>
+              </motion.div>
+
+              {/* Coach card — purple theme */}
+              <motion.div
+                className="rounded-2xl bg-white/[0.04] border border-[#a78bfa]/20 p-5 flex flex-col"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.35 }}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[#a78bfa] font-bold text-sm tracking-wide uppercase">
+                    {t("landing.freeForever")}
+                  </span>
+                  <span className="text-white/70 text-sm font-bold tabular-nums">
+                    {coachCount}/{MAX_FOUNDING}
+                  </span>
+                </div>
+                <div className="w-full h-2 rounded-full bg-white/10 mb-3 overflow-hidden">
+                  <motion.div
+                    className="h-full rounded-full"
+                    style={{
+                      background: "linear-gradient(90deg, #a78bfa, #7c3aed)",
+                      boxShadow: "0 0 10px rgba(167,139,250,0.3)",
+                    }}
+                    initial={{ width: 0 }}
+                    whileInView={{ width: `${coachProgress}%` }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1, delay: 0.65, ease: "easeOut" }}
+                  />
+                </div>
+                <p className="text-white/50 text-xs text-center mb-4">
+                  {t("landing.foundingCoachCounter", { count: coachCount })}
+                </p>
+
+                <ul className="space-y-3 text-start mb-6 flex-1">
+                  {coachBullets.map((bullet, i) => (
+                    <li key={i} className="flex items-center gap-2.5">
+                      <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-purple-500/15">
+                        <CheckCircle size={12} className="text-purple-400" />
+                      </div>
+                      <span className="text-white/70 text-sm">{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Link href="/coaches/register" className="mt-auto">
+                  <motion.span
+                    whileHover={{
+                      scale: 1.05,
+                      boxShadow: "0 0 30px rgba(167,139,250,0.3)",
+                    }}
+                    whileTap={{ scale: 0.97 }}
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-violet-600 text-white px-6 py-3 text-sm font-bold cursor-pointer transition-all"
+                  >
+                    {t("landing.registerCoachCta")}
+                    <ArrowUpRight size={16} />
+                  </motion.span>
+                </Link>
+              </motion.div>
+            </div>
           </div>
         </motion.div>
       </div>
