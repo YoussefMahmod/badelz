@@ -201,6 +201,24 @@ export function BottomNav({ variant = "public" }: { variant?: "public" | "owner"
       activeIcon: <Clock size={22} strokeWidth={2} />,
       labelKey: "admin.templates",
     },
+    {
+      href: "/admin/players",
+      icon: <Users size={22} strokeWidth={1.5} />,
+      activeIcon: <Users size={22} strokeWidth={2} />,
+      labelKey: "admin.players",
+    },
+    {
+      href: "/admin/coaches",
+      icon: <GraduationCap size={22} strokeWidth={1.5} />,
+      activeIcon: <GraduationCap size={22} strokeWidth={2} />,
+      labelKey: "admin.coaches",
+    },
+    {
+      href: "/admin/market",
+      icon: <ShoppingBag size={22} strokeWidth={1.5} />,
+      activeIcon: <ShoppingBag size={22} strokeWidth={2} />,
+      labelKey: "admin.market",
+    },
   ];
 
   const tabMap: Record<string, NavItem[]> = {
