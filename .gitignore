@@ -41,3 +41,6 @@ yarn-error.log*
 next-env.d.ts
 .playwright-mcp/
 test-*.png
+
+# admin setup script (contains production credentials usage)
+scripts/create-admin.ts

@@ -216,7 +216,7 @@ export default function OnboardPage() {
   // Form state
   const [form, setForm] = useState<OnboardFormData>(INITIAL_FORM);
   const [showVenueArabic, setShowVenueArabic] = useState(false);
-  const [locationLoading, setLocationLoading] = useState(false);
+  const [mapsLink, setMapsLink] = useState("");
   const [locationDetected, setLocationDetected] = useState(false);
 
   // Submission state
@@ -248,24 +248,34 @@ export default function OnboardPage() {
       courts: f.courts.length > 1 ? f.courts.filter((c) => c.id !== id) : f.courts,
     }));
 
-  // ─── Location detect ───
+  // ─── Parse Google Maps link for coordinates ───
 
-  const detectLocation = useCallback(() => {
-    if (!navigator.geolocation) return;
-    setLocationLoading(true);
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        updateVenue("latitude", pos.coords.latitude);
-        updateVenue("longitude", pos.coords.longitude);
-        setLocationLoading(false);
-        setLocationDetected(true);
-        setTimeout(() => setLocationDetected(false), 3000);
-      },
-      () => {
-        setLocationLoading(false);
-      },
-      { enableHighAccuracy: true, timeout: 10000 }
-    );
+  const parseMapsLink = useCallback((url: string) => {
+    setMapsLink(url);
+    if (!url.trim()) return;
+
+    // Match patterns like @30.0444,31.2357 or ?q=30.0444,31.2357 or /place/30.0444,31.2357
+    const patterns = [
+      /@(-?\d+\.?\d*),(-?\d+\.?\d*)/,
+      /[?&]q=(-?\d+\.?\d*),(-?\d+\.?\d*)/,
+      /place\/(-?\d+\.?\d*),(-?\d+\.?\d*)/,
+      /ll=(-?\d+\.?\d*),(-?\d+\.?\d*)/,
+    ];
+
+    for (const pattern of patterns) {
+      const match = url.match(pattern);
+      if (match) {
+        const lat = parseFloat(match[1]);
+        const lng = parseFloat(match[2]);
+        if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+          updateVenue("latitude", lat);
+          updateVenue("longitude", lng);
+          setLocationDetected(true);
+          setTimeout(() => setLocationDetected(false), 3000);
+          return;
+        }
+      }
+    }
   }, []);
 
   // ─── Submit ───
@@ -338,6 +348,7 @@ export default function OnboardPage() {
     setCopied(false);
     setEmailError(false);
     setShowVenueArabic(false);
+    setMapsLink("");
     setLocationDetected(false);
   };
 
@@ -598,24 +609,29 @@ export default function OnboardPage() {
               />
             </Field>
 
-            {/* Location detect */}
-            <button
-              type="button"
-              onClick={detectLocation}
-              disabled={locationLoading}
-              className="flex items-center gap-2 text-sm text-indigo-400 hover:text-indigo-300 transition-colors disabled:opacity-50"
-            >
-              {locationLoading ? (
-                <Loader2 size={14} className="animate-spin" />
-              ) : locationDetected ? (
-                <Check size={14} className="text-emerald-400" />
-              ) : (
-                <MapPin size={14} />
-              )}
-              {locationDetected
-                ? t("admin.locationDetected")
-                : t("admin.detectLocation")}
-            </button>
+            {/* Google Maps link */}
+            <Field label={t("admin.detectLocation")}>
+              <div className="relative">
+                <input
+                  type="url"
+                  value={mapsLink}
+                  onChange={(e) => parseMapsLink(e.target.value)}
+                  placeholder="https://maps.google.com/..."
+                  className={INPUT_CLASS}
+                  dir="ltr"
+                />
+                {locationDetected && (
+                  <span className="absolute start-3 top-1/2 -translate-y-1/2">
+                    <Check size={14} className="text-emerald-400" />
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-white/30 mt-1">
+                {form.venue.latitude
+                  ? `${form.venue.latitude.toFixed(4)}, ${form.venue.longitude?.toFixed(4)}`
+                  : "Paste a Google Maps link to extract coordinates"}
+              </p>
+            </Field>
 
             {/* Arabic sub-section */}
             <button
