@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Heart, MapPin } from "lucide-react";
+import { Heart, MapPin, Sparkles } from "lucide-react";
 import { useTranslation, useLocale } from "@/i18n";
 import { CardShell } from "./card-shell";
 import { getCoachTier, COACH_TIER_CONFIG } from "@/lib/coach-tiers";
@@ -16,6 +16,7 @@ interface CoachData {
   pricePerHour?: number | string | null;
   experience?: string | null;
   heartCount?: number;
+  isPioneerCoach?: boolean;
 }
 
 interface CoachCardProps {
@@ -44,6 +45,23 @@ function TierBadge({ heartCount }: { heartCount: number }) {
       className={`${config.bg} ${config.color} border ${config.border} text-[10px] font-semibold px-2 py-0.5 rounded-full`}
     >
       {t(config.labelKey as Parameters<typeof t>[0])}
+    </span>
+  );
+}
+
+function PioneerCoachBadge() {
+  const { t } = useTranslation();
+  return (
+    <span
+      className="text-[10px] font-semibold px-2 py-0.5 rounded-full inline-flex items-center gap-1"
+      style={{
+        backgroundColor: "rgba(255,215,0,0.12)",
+        color: "#ffd700",
+        border: "1px solid rgba(255,215,0,0.25)",
+      }}
+    >
+      <Sparkles size={9} style={{ color: "#ffd700" }} />
+      {t("coach.pioneerCoach")}
     </span>
   );
 }
@@ -218,6 +236,7 @@ export function CoachCard({
             {displayName}
           </p>
           <TierBadge heartCount={hearts} />
+          {coach.isPioneerCoach && <PioneerCoachBadge />}
           {price && (
             <p className="text-[10px] font-bold" style={{ color: tierColor }}>{price} {t("common.egp")}</p>
           )}
@@ -263,8 +282,9 @@ export function CoachCard({
             )}
 
             {/* Tier badge */}
-            <div className="mb-2">
+            <div className="flex items-center gap-2 mb-2">
               <TierBadge heartCount={hearts} />
+              {coach.isPioneerCoach && <PioneerCoachBadge />}
             </div>
 
             {/* Stats line: experience · price */}
@@ -303,8 +323,9 @@ export function CoachCard({
           </div>
 
           {/* Tier + hearts inline */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap justify-center">
             <TierBadge heartCount={hearts} />
+            {coach.isPioneerCoach && <PioneerCoachBadge />}
             {hearts > 0 && (
               <span className="flex items-center gap-1 text-rose-400/70">
                 <Heart size={11} className="fill-rose-400/70" />

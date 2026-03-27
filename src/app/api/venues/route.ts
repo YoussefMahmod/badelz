@@ -59,6 +59,7 @@ export async function GET(request: NextRequest) {
           sportTypes: true,
           rating: true,
           ratingCount: true,
+          isFoundingVenue: true,
           _count: { select: { courts: { where: { isActive: true } } } },
         },
       }),

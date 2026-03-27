@@ -110,9 +110,13 @@ const ar: TranslationKeys = {
     communityPlayerCard: "تابع رانكك",
     communityCoaches: "اكتشف المدربين",
     communityMarket: "اشتري وبيع معدات",
-    ctaBullet1: "صفر عمولة — بدون رسوم خفية",
+    ctaBullet1: "مجاني للأبد للملاعب المؤسسة",
     ctaBullet2: "لوحة تحكم الحجوزات",
     ctaBullet3: "إشعارات حجز واتساب",
+    ctaBullet4: "لاعبين جداد يلاقوك أوتوماتيك",
+    foundingCounter: "{{count}} من 20 مكان ملعب مؤسس اتحجز",
+    freeForever: "مجاني للأبد",
+    afterFoundingPrice: "بعد 20 ملعب، الاشتراك يبدأ من 999 جنيه/شهر",
     madeInEgypt: "",
     platformBadge: "منصة البادل #1 في مصر",
     heroLine1: "احجز كورت.",
@@ -197,6 +201,7 @@ const ar: TranslationKeys = {
     photos: "الصور",
     about: "عن الملعب",
     noCourts: "مفيش كورتات متاحة دلوقتي",
+    foundingVenue: "ملعب مؤسس",
   },
   booking: {
     title: "احجز كورت",
@@ -493,6 +498,7 @@ const ar: TranslationKeys = {
     noCardYet: "مفيش كارت لسه",
     noCardYetDesc: "العب ماتش عشان تحصل على كارت!",
     checkYourCard: "شوف كارتك واعرف رانكك",
+    earlyAdopter: "لاعب مؤسس",
   },
   coach: {
     title: "دليل المدربين",
@@ -521,6 +527,7 @@ const ar: TranslationKeys = {
     hearts: "إعجابات",
     hearted: "أعجبك",
     sortHearts: "الأكثر إعجاباً",
+    pioneerCoach: "مدرب رائد",
   },
   market: {
     title: "سوق بادلز",

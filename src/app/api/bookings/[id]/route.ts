@@ -157,6 +157,7 @@ export async function PATCH(
             name,
             gamesPlayed: 1,
             tier: calculateTier(1),
+            isEarlyAdopter: true,
           },
           update: {
             gamesPlayed: { increment: 1 },

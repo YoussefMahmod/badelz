@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { MapPin, Star, RectangleHorizontal } from "lucide-react";
+import { MapPin, Star, RectangleHorizontal, Sparkles } from "lucide-react";
 import { bentoItem, cardHover, cardHoverSubtle } from "@/lib/animations";
 import { useTranslation, useLocale } from "@/i18n";
 import { formatPrice } from "@/lib/format";
@@ -19,6 +19,7 @@ interface VenueCardProps {
     ratingCount: number;
     courtCount: number;
     sportTypes?: string[];
+    isFoundingVenue?: boolean;
   };
   minPrice?: number;
   size?: "standard" | "large";
@@ -68,6 +69,16 @@ export function VenueCard({ venue, minPrice, size = "standard" }: VenueCardProps
                 {t("browse.courts", { count: venue.courtCount })}
               </span>
             </div>
+
+            {/* Founding venue badge */}
+            {venue.isFoundingVenue && (
+              <div className="absolute bottom-3 start-3 z-10">
+                <span className="inline-flex items-center gap-1 rounded-full bg-[#ffd700]/90 px-3 py-1 text-xs font-bold text-[#111827] shadow-[0_0_15px_rgba(255,215,0,0.3)]">
+                  <Sparkles size={11} />
+                  {t("venue.foundingVenue")}
+                </span>
+              </div>
+            )}
 
             {/* Price badge */}
             {minPrice !== undefined && (

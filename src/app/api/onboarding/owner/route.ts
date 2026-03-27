@@ -81,6 +81,7 @@ export async function POST(request: NextRequest) {
           phone: venueData.phone,
           whatsapp: venueData.whatsapp,
           sportTypes: ["PADEL"],
+          isFoundingVenue: true,
         },
       });
 

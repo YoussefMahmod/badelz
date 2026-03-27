@@ -120,8 +120,9 @@ model Venue {
   sportTypes    SportType[]
   rating        Float       @default(0)
   ratingCount   Int         @default(0)
-  isActive      Boolean     @default(true)
-  currency      String      @default("EGP")
+  isActive        Boolean     @default(true)
+  isFoundingVenue Boolean     @default(false)
+  currency        String      @default("EGP")
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 
@@ -332,8 +333,9 @@ model PlayerProfile {
   gamesPlayed Int        @default(0)
   gamesWon    Int        @default(0)
   rating      Decimal    @default(0) @db.Decimal(3, 1)
-  tier        PlayerTier @default(BRONZE)
-  userId      String?    @unique
+  tier           PlayerTier @default(BRONZE)
+  isEarlyAdopter Boolean    @default(false)
+  userId         String?    @unique
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
@@ -361,6 +363,7 @@ model Coach {
   viewCount      Int      @default(0)
   whatsappClicks Int      @default(0)
   heartCount     Int      @default(0)
+  isPioneerCoach Boolean  @default(false)
   userId         String?  @unique
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt

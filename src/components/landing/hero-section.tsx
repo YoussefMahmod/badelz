@@ -1038,11 +1038,23 @@ function MarketplaceSection() {
 // ════════════════════════════════════════════════════
 function VenueOwnerSection() {
   const { t } = useTranslation();
+  const [foundingCount, setFoundingCount] = useState(0);
+
+  useEffect(() => {
+    fetch("/api/stats/founding")
+      .then((r) => r.json())
+      .then((d) => setFoundingCount(d.data?.venues ?? 0))
+      .catch(() => {});
+  }, []);
+
+  const MAX_FOUNDING = 20;
+  const progress = Math.min(100, (foundingCount / MAX_FOUNDING) * 100);
 
   const bullets = [
     t("landing.ctaBullet1"),
     t("landing.ctaBullet2"),
     t("landing.ctaBullet3"),
+    t("landing.ctaBullet4"),
   ];
 
   return (
@@ -1065,6 +1077,44 @@ function VenueOwnerSection() {
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-8">
               {t("landing.ownACourt")}
             </h2>
+
+            {/* Founding venue counter */}
+            <motion.div
+              className="w-full max-w-md mb-8 rounded-2xl bg-white/[0.04] border border-[#ffd700]/20 p-5"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-[#ffd700] font-bold text-sm tracking-wide uppercase">
+                  {t("landing.freeForever")}
+                </span>
+                <span className="text-white/70 text-sm font-bold tabular-nums">
+                  {foundingCount}/{MAX_FOUNDING}
+                </span>
+              </div>
+              {/* Progress bar */}
+              <div className="w-full h-2 rounded-full bg-white/10 mb-3 overflow-hidden">
+                <motion.div
+                  className="h-full rounded-full"
+                  style={{
+                    background: "linear-gradient(90deg, #ffd700, #ffaa00)",
+                    boxShadow: "0 0 10px rgba(255,215,0,0.3)",
+                  }}
+                  initial={{ width: 0 }}
+                  whileInView={{ width: `${progress}%` }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+                />
+              </div>
+              <p className="text-white/50 text-xs text-center">
+                {t("landing.foundingCounter", { count: foundingCount })}
+              </p>
+              <p className="text-white/30 text-[11px] text-center mt-1">
+                {t("landing.afterFoundingPrice")}
+              </p>
+            </motion.div>
 
             {/* Bullet points */}
             <ul className="space-y-4 mb-10 text-start">

@@ -7,7 +7,8 @@ async function main() {
   console.log("Seeding Mala3eb database...");
 
   // Create demo venue owner
-  const hashedPassword = await bcrypt.hash("password123", 12);
+  const demoPassword = process.env.DEMO_PASSWORD || "password123";
+  const hashedPassword = await bcrypt.hash(demoPassword, 12);
   const owner = await prisma.user.upsert({
     where: { email: "owner@badelz.app" },
     update: {},
@@ -95,6 +96,7 @@ async function main() {
         "https://images.unsplash.com/photo-1709587824751-dd30420f5cf3?w=800&h=600&fit=crop",
       ],
       sportTypes: [SportType.PADEL],
+      isFoundingVenue: true,
       rating: 4.7,
       ratingCount: 42,
       isActive: true,
@@ -126,6 +128,7 @@ async function main() {
         "https://images.unsplash.com/photo-1709587825415-814c2d7cfce7?w=800&h=600&fit=crop",
       ],
       sportTypes: [SportType.PADEL],
+      isFoundingVenue: true,
       rating: 4.5,
       ratingCount: 28,
       isActive: true,
@@ -155,12 +158,107 @@ async function main() {
         "https://images.unsplash.com/photo-1646649853703-7645147474ba?w=800&h=400&fit=crop",
       photos: [],
       sportTypes: [SportType.PADEL],
+      isFoundingVenue: true,
       rating: 4.3,
       ratingCount: 15,
       isActive: true,
     },
   });
   console.log(`Created venue: ${venue3.name}`);
+
+  // ─── Venue 4: Heliopolis Padel Hub ───
+  const venue4 = await prisma.venue.create({
+    data: {
+      ownerId: owner2.id,
+      name: "Heliopolis Padel Hub",
+      nameAr: "هليوبوليس بادل هب",
+      description:
+        "Modern padel facility in the heart of Heliopolis. 3 courts with professional lighting and cafe.",
+      descriptionAr:
+        "مركز بادل حديث في قلب مصر الجديدة. 3 كورتات بإضاءة احترافية وكافيه.",
+      phone: "01312345678",
+      whatsapp: "01312345678",
+      address: "Merghany Street, Heliopolis",
+      addressAr: "شارع المرغني، مصر الجديدة",
+      city: "Heliopolis",
+      cityAr: "مصر الجديدة",
+      latitude: 30.0866,
+      longitude: 31.3225,
+      coverPhoto:
+        "https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=800&h=400&fit=crop",
+      photos: [
+        "https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=800&h=600&fit=crop",
+      ],
+      sportTypes: [SportType.PADEL],
+      isFoundingVenue: true,
+      rating: 4.6,
+      ratingCount: 35,
+      isActive: true,
+    },
+  });
+  console.log(`Created venue: ${venue4.name}`);
+
+  // ─── Venue 5: Nasr City Padel Zone ───
+  const venue5 = await prisma.venue.create({
+    data: {
+      ownerId: owner.id,
+      name: "Nasr City Padel Zone",
+      nameAr: "بادل زون مدينة نصر",
+      description:
+        "Affordable padel courts in Nasr City. Great for beginners. Equipment rental available.",
+      descriptionAr:
+        "كورتات بادل بأسعار مناسبة في مدينة نصر. ممتاز للمبتدئين. تأجير معدات متاح.",
+      phone: "01412345678",
+      whatsapp: "01412345678",
+      address: "Abbas El-Akkad Street, Nasr City",
+      addressAr: "شارع عباس العقاد، مدينة نصر",
+      city: "Nasr City",
+      cityAr: "مدينة نصر",
+      latitude: 30.0561,
+      longitude: 31.3465,
+      coverPhoto:
+        "https://images.unsplash.com/photo-1709587824751-dd30420f5cf3?w=800&h=400&fit=crop",
+      photos: [],
+      sportTypes: [SportType.PADEL],
+      isFoundingVenue: true,
+      rating: 4.1,
+      ratingCount: 19,
+      isActive: true,
+    },
+  });
+  console.log(`Created venue: ${venue5.name}`);
+
+  // ─── Venue 6: October Padel Park ───
+  const venue6 = await prisma.venue.create({
+    data: {
+      ownerId: owner2.id,
+      name: "October Padel Park",
+      nameAr: "أكتوبر بادل بارك",
+      description:
+        "Open-air padel park in 6th of October City. 3 courts with evening floodlights and parking.",
+      descriptionAr:
+        "بارك بادل مفتوح في 6 أكتوبر. 3 كورتات بكشافات ليلية وباركينج.",
+      phone: "01512345678",
+      whatsapp: "01512345678",
+      address: "Mehwar Road, 6th of October City",
+      addressAr: "طريق المحور، مدينة 6 أكتوبر",
+      city: "6th of October",
+      cityAr: "6 أكتوبر",
+      latitude: 29.9723,
+      longitude: 30.9465,
+      coverPhoto:
+        "https://images.unsplash.com/photo-1646649853703-7645147474ba?w=800&h=400&fit=crop&q=80",
+      photos: [
+        "https://images.unsplash.com/photo-1646649853703-7645147474ba?w=800&h=600&fit=crop",
+      ],
+      sportTypes: [SportType.PADEL],
+      isFoundingVenue: true,
+      rating: 4.4,
+      ratingCount: 22,
+      isActive: true,
+    },
+  });
+  console.log(`Created venue: ${venue6.name}`);
 
   // ─── Courts for Venue 1 ───
   const courts1 = await Promise.all([
@@ -245,8 +343,45 @@ async function main() {
     }),
   ]);
 
+  // ─── Courts for Venue 4 ───
+  const courts4 = await Promise.all([
+    prisma.court.create({
+      data: { venueId: venue4.id, name: "Court 1", nameAr: "كورت 1", sportType: SportType.PADEL, pricePerHour: 550, sortOrder: 1 },
+    }),
+    prisma.court.create({
+      data: { venueId: venue4.id, name: "Court 2", nameAr: "كورت 2", sportType: SportType.PADEL, pricePerHour: 550, sortOrder: 2 },
+    }),
+    prisma.court.create({
+      data: { venueId: venue4.id, name: "Court 3 (VIP)", nameAr: "كورت 3 (VIP)", sportType: SportType.PADEL, pricePerHour: 750, sortOrder: 3 },
+    }),
+  ]);
+
+  // ─── Courts for Venue 5 ───
+  const courts5 = await Promise.all([
+    prisma.court.create({
+      data: { venueId: venue5.id, name: "Court 1", nameAr: "كورت 1", sportType: SportType.PADEL, pricePerHour: 400, sortOrder: 1 },
+    }),
+    prisma.court.create({
+      data: { venueId: venue5.id, name: "Court 2", nameAr: "كورت 2", sportType: SportType.PADEL, pricePerHour: 400, sortOrder: 2 },
+    }),
+  ]);
+
+  // ─── Courts for Venue 6 ───
+  const courts6 = await Promise.all([
+    prisma.court.create({
+      data: { venueId: venue6.id, name: "Court A", nameAr: "كورت A", sportType: SportType.PADEL, pricePerHour: 500, sortOrder: 1 },
+    }),
+    prisma.court.create({
+      data: { venueId: venue6.id, name: "Court B", nameAr: "كورت B", sportType: SportType.PADEL, pricePerHour: 500, sortOrder: 2 },
+    }),
+    prisma.court.create({
+      data: { venueId: venue6.id, name: "Court C (Night)", nameAr: "كورت C (ليلي)", sportType: SportType.PADEL, pricePerHour: 600, sortOrder: 3 },
+    }),
+  ]);
+  console.log(`Created courts for venues 4-6`);
+
   // ─── Time Slots (all courts, all days) ───
-  const allCourts = [...courts1, ...courts2, ...courts3];
+  const allCourts = [...courts1, ...courts2, ...courts3, ...courts4, ...courts5, ...courts6];
   const days = Object.values(DayOfWeek);
   const timeSlots = [
     { start: "10:00", end: "11:00" },
@@ -362,6 +497,7 @@ async function main() {
         gamesWon: 0,
         rating: 3.5,
         tier: PlayerTier.BRONZE,
+        isEarlyAdopter: true,
         userId: playerUser.id,
       },
     }),
@@ -376,6 +512,7 @@ async function main() {
         gamesWon: 3,
         rating: 4.0,
         tier: PlayerTier.GOLD,
+        isEarlyAdopter: true,
       },
     }),
     prisma.playerProfile.create({
@@ -389,6 +526,7 @@ async function main() {
         gamesWon: 10,
         rating: 4.5,
         tier: PlayerTier.EMERALD,
+        isEarlyAdopter: true,
       },
     }),
     prisma.playerProfile.create({
@@ -402,6 +540,7 @@ async function main() {
         gamesWon: 22,
         rating: 4.7,
         tier: PlayerTier.DIAMOND,
+        isEarlyAdopter: true,
       },
     }),
     prisma.playerProfile.create({
@@ -415,6 +554,7 @@ async function main() {
         gamesWon: 40,
         rating: 4.9,
         tier: PlayerTier.MASTER,
+        isEarlyAdopter: true,
       },
     }),
     prisma.playerProfile.create({
@@ -428,6 +568,7 @@ async function main() {
         gamesWon: 95,
         rating: 5.0,
         tier: PlayerTier.GRANDMASTER,
+        isEarlyAdopter: true,
       },
     }),
     prisma.playerProfile.create({
@@ -441,6 +582,7 @@ async function main() {
         gamesWon: 1,
         rating: 3.8,
         tier: PlayerTier.BRONZE,
+        isEarlyAdopter: true,
       },
     }),
   ]);
@@ -533,7 +675,47 @@ async function main() {
       },
     },
   });
-  console.log(`Created 4 lobbies (2 open, 1 full, 1 almost full)`);
+  const lobby5 = await prisma.lobby.create({
+    data: {
+      lobbyCode: "PLAY04",
+      hostName: "علي حسام",
+      hostPhone: "01012345678",
+      area: "Heliopolis",
+      areaAr: "مصر الجديدة",
+      date: tomorrow,
+      startTime: "17:00",
+      priceRange: "200-250",
+      note: "مستوى متقدم",
+      status: "OPEN",
+      players: {
+        create: [
+          { position: 0, playerName: "علي حسام", playerPhone: "01012345678" },
+          { position: 1, playerName: "ياسر عمر", playerPhone: "01612345679" },
+        ],
+      },
+    },
+  });
+
+  const lobby6 = await prisma.lobby.create({
+    data: {
+      lobbyCode: "PLAY05",
+      hostName: "كريم مصطفى",
+      hostPhone: "01187654321",
+      area: "Nasr City",
+      areaAr: "مدينة نصر",
+      date: dayAfterTomorrow,
+      startTime: "16:00",
+      priceRange: "100-150",
+      note: "مبتدئين welcome",
+      status: "OPEN",
+      players: {
+        create: [
+          { position: 0, playerName: "كريم مصطفى", playerPhone: "01187654321" },
+        ],
+      },
+    },
+  });
+  console.log(`Created 6 lobbies (3 open, 1 full, 1 almost full, 1 beginner)`);
 
   // ─── Coaches ───
   const coaches = await Promise.all([
@@ -543,12 +725,15 @@ async function main() {
         nameAr: "كابتن طارق",
         phone: "01055555001",
         whatsapp: "01055555001",
+        photo: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=200&h=200&fit=crop&crop=face",
         bio: "Former professional padel player with 5+ years of coaching experience. Specialized in beginners and intermediate players.",
         bioAr: "لاعب بادل محترف سابق مع خبرة أكتر من 5 سنين في التدريب. متخصص في تدريب المبتدئين والمتوسطين.",
         areas: ["New Cairo", "Heliopolis"],
         areasAr: ["القاهرة الجديدة", "مصر الجديدة"],
         pricePerHour: 300,
         experience: "5 years, FIP Level 1",
+        heartCount: 52,
+        isPioneerCoach: true,
         isActive: true,
         userId: coachUser.id,
       },
@@ -559,12 +744,15 @@ async function main() {
         nameAr: "كابتن سارة",
         phone: "01055555002",
         whatsapp: "01055555002",
+        photo: "https://images.unsplash.com/photo-1594381898411-846e7d193883?w=200&h=200&fit=crop&crop=face",
         bio: "Women's padel specialist. Group and private lessons available.",
         bioAr: "متخصصة في تدريب السيدات بادل. حصص جماعية وخاصة.",
         areas: ["Sheikh Zayed", "6th of October"],
         areasAr: ["الشيخ زايد", "6 أكتوبر"],
         pricePerHour: 250,
         experience: "3 years",
+        heartCount: 28,
+        isPioneerCoach: true,
         isActive: true,
       },
     }),
@@ -574,12 +762,15 @@ async function main() {
         nameAr: "كابتن حسام",
         phone: "01055555003",
         whatsapp: "01055555003",
+        photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
         bio: "National team player. High-performance coaching for competitive players.",
         bioAr: "لاعب منتخب مصر. تدريب عالي الأداء للاعبين المحترفين.",
         areas: ["New Cairo", "Maadi", "Nasr City"],
         areasAr: ["القاهرة الجديدة", "المعادي", "مدينة نصر"],
         pricePerHour: 500,
         experience: "8 years, National Team",
+        heartCount: 87,
+        isPioneerCoach: true,
         isActive: true,
       },
     }),
@@ -589,12 +780,15 @@ async function main() {
         nameAr: "كابتن ياسر",
         phone: "01055555004",
         whatsapp: "01055555004",
+        photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=face",
         bio: "Kids and youth padel training. Making padel fun for the next generation!",
         bioAr: "تدريب بادل للأطفال والشباب. نخلي البادل ممتع للجيل الجاي!",
         areas: ["Sheikh Zayed", "New Cairo"],
         areasAr: ["الشيخ زايد", "القاهرة الجديدة"],
         pricePerHour: 200,
         experience: "4 years, Youth Specialist",
+        heartCount: 12,
+        isPioneerCoach: true,
         isActive: true,
       },
     }),
@@ -699,6 +893,72 @@ async function main() {
         area: "Nasr City",
         areaAr: "مدينة نصر",
         views: 5,
+      },
+    }),
+    prisma.listing.create({
+      data: {
+        sellerName: "حسن علي",
+        sellerPhone: "01612345678",
+        title: "Wilson Bela Pro V2",
+        titleAr: "ويلسون بيلا برو V2",
+        description: "Pro-level racket. Diamond shape. 4 months old.",
+        descriptionAr: "مضرب مستوى محترف. شكل ماسي. عمره 4 شهور.",
+        price: 5200,
+        category: ListingCategory.RACKETS,
+        condition: ListingCondition.LIKE_NEW,
+        photos: ["https://images.unsplash.com/photo-1617083934551-43e146bc39ef?w=400&h=400&fit=crop&q=80"],
+        area: "Sheikh Zayed",
+        areaAr: "الشيخ زايد",
+        views: 37,
+      },
+    }),
+    prisma.listing.create({
+      data: {
+        sellerName: "طارق محمود",
+        sellerPhone: "01712345678",
+        title: "Nike Court Zoom Pro Padel",
+        titleAr: "نايكي كورت زوم برو بادل",
+        description: "Size 44. Like new, played 5 times only.",
+        descriptionAr: "مقاس 44. شبه جديد، لعبت بيه 5 مرات بس.",
+        price: 3200,
+        category: ListingCategory.SHOES,
+        condition: ListingCondition.LIKE_NEW,
+        area: "New Cairo",
+        areaAr: "القاهرة الجديدة",
+        views: 19,
+      },
+    }),
+    prisma.listing.create({
+      data: {
+        sellerName: "مروان سامي",
+        sellerPhone: "01812345678",
+        title: "Head Pro Padel Overgrip (30 pack)",
+        titleAr: "هيد برو أوفرجريب بادل (30 قطعة)",
+        description: "Brand new sealed box. White color.",
+        descriptionAr: "علبة جديدة متبرشمة. لون أبيض.",
+        price: 350,
+        category: ListingCategory.ACCESSORIES,
+        condition: ListingCondition.NEW,
+        area: "Maadi",
+        areaAr: "المعادي",
+        views: 11,
+      },
+    }),
+    prisma.listing.create({
+      data: {
+        sellerName: "نور أحمد",
+        sellerPhone: "01912345678",
+        title: "Nox Padel Bag + 2 Rackets Bundle",
+        titleAr: "شنطة نوكس بادل + 2 مضرب باندل",
+        description: "Selling together. Bag fits 3 rackets. Both rackets intermediate level.",
+        descriptionAr: "بيعهم مع بعض. الشنطة تسع 3 مضارب. المضربين مستوى متوسط.",
+        price: 8000,
+        category: ListingCategory.RACKETS,
+        condition: ListingCondition.USED,
+        photos: ["https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=400&h=400&fit=crop&q=80"],
+        area: "6th of October",
+        areaAr: "6 أكتوبر",
+        views: 56,
       },
     }),
   ]);

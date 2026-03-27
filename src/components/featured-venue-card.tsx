@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { MapPin, Star, RectangleHorizontal, ArrowUpRight } from "lucide-react";
+import { MapPin, Star, RectangleHorizontal, ArrowUpRight, Sparkles } from "lucide-react";
 import { revealScale } from "@/lib/animations";
 import { useTranslation, useLocale } from "@/i18n";
 
@@ -17,6 +17,7 @@ interface FeaturedVenueCardProps {
     rating: number;
     ratingCount: number;
     courtCount: number;
+    isFoundingVenue?: boolean;
   };
 }
 
@@ -54,6 +55,16 @@ export function FeaturedVenueCard({ venue }: FeaturedVenueCardProps) {
               {t("landing.featuredVenue")}
             </span>
           </div>
+
+          {/* Founding venue badge */}
+          {venue.isFoundingVenue && (
+            <div className="absolute top-14 start-4 z-10">
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#ffd700]/90 px-3 py-1 text-xs font-bold text-[#111827] shadow-[0_0_15px_rgba(255,215,0,0.3)]">
+                <Sparkles size={11} />
+                {t("venue.foundingVenue")}
+              </span>
+            </div>
+          )}
 
           {/* Court count badge -- lime */}
           <div className="absolute top-4 end-4 z-10">

@@ -88,6 +88,7 @@ export async function POST(request: NextRequest) {
             phone,
             name,
             userId: user.id,
+            isEarlyAdopter: true,
           },
         });
       }
@@ -107,6 +108,7 @@ export async function POST(request: NextRequest) {
             whatsapp: phone,
             areas: [],
             areasAr: [],
+            isPioneerCoach: true,
           },
         });
       }

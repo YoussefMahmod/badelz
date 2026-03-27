@@ -25,6 +25,7 @@ interface PlayerCardProps {
     rating: number | string;
     tier: PlayerTier;
     avatar?: string | null;
+    isEarlyAdopter?: boolean;
   };
   size?: "sm" | "md" | "lg";
   interactive?: boolean;
@@ -181,6 +182,26 @@ function TierBadge({
   );
 }
 
+function EarlyAdopterBadge({ small }: { small?: boolean }) {
+  const { t } = useTranslation();
+  return (
+    <span
+      className={[
+        "font-bold rounded-full inline-flex items-center gap-1",
+        small ? "text-[8px] px-2 py-0.5" : "text-xs px-3 py-1",
+      ].join(" ")}
+      style={{
+        backgroundColor: "rgba(0,212,255,0.15)",
+        color: "#00d4ff",
+        boxShadow: "0 0 10px rgba(0,212,255,0.2)",
+      }}
+    >
+      <Sparkles size={small ? 8 : 10} style={{ color: "#00d4ff" }} />
+      {t("player.earlyAdopter")}
+    </span>
+  );
+}
+
 function HostCrown({ size }: { size: "sm" | "md" | "lg" }) {
   return (
     <Crown
@@ -222,6 +243,7 @@ export function PlayerCard({
             color={color}
             small
           />
+          {player.isEarlyAdopter && <EarlyAdopterBadge small />}
           <div className="relative">
             {isHost && <HostCrown size="sm" />}
             <Avatar
@@ -252,11 +274,14 @@ export function PlayerCard({
           <span className="bg-white/10 rounded-lg px-2 py-1 text-white/70 text-[10px] font-bold font-[family-name:var(--font-display)]">
             {player.gamesPlayed}
           </span>
-          <TierBadge
-            tier={tierLabel}
-            tierKey={player.tier}
-            color={color}
-          />
+          <div className="flex flex-col items-end gap-1">
+            <TierBadge
+              tier={tierLabel}
+              tierKey={player.tier}
+              color={color}
+            />
+            {player.isEarlyAdopter && <EarlyAdopterBadge />}
+          </div>
         </div>
 
         <div className="flex-1 flex flex-col items-center justify-center gap-2 py-2">

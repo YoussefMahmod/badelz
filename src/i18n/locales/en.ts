@@ -108,9 +108,13 @@ const en = {
     communityPlayerCard: "Track your rank",
     communityCoaches: "Find a coach",
     communityMarket: "Buy & sell gear",
-    ctaBullet1: "Zero commission — no hidden fees",
+    ctaBullet1: "Free forever for founding venues",
     ctaBullet2: "Booking management dashboard",
     ctaBullet3: "WhatsApp booking alerts",
+    ctaBullet4: "New players discover you automatically",
+    foundingCounter: "{{count}} of 20 founding venue spots claimed",
+    freeForever: "Free Forever",
+    afterFoundingPrice: "After 20 venues, subscriptions start at 999 EGP/month",
     madeInEgypt: "",
     platformBadge: "Egypt's #1 Padel Platform",
     heroLine1: "Book Courts.",
@@ -195,6 +199,7 @@ const en = {
     photos: "Photos",
     about: "About",
     noCourts: "No courts available yet",
+    foundingVenue: "Founding Venue",
   },
   booking: {
     title: "Book a Court",
@@ -491,6 +496,7 @@ const en = {
     noCardYet: "No card yet",
     noCardYetDesc: "Play a game to get your card!",
     checkYourCard: "Check your card and rank",
+    earlyAdopter: "Early Player",
   },
   coach: {
     title: "Coach Directory",
@@ -519,6 +525,7 @@ const en = {
     hearts: "Hearts",
     hearted: "Hearted",
     sortHearts: "Most Loved",
+    pioneerCoach: "Pioneer Coach",
   },
   market: {
     title: "Padel Market",

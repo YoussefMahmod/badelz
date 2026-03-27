@@ -103,6 +103,7 @@ export async function POST(request: NextRequest) {
         areasAr: parsed.data.areasAr ?? [],
         pricePerHour: parsed.data.pricePerHour,
         experience: parsed.data.experience,
+        isPioneerCoach: true,
       },
     });
 
