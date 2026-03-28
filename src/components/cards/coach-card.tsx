@@ -232,13 +232,13 @@ export function CoachCard({
 
         <div className="flex flex-col items-center justify-center h-full p-2 gap-1.5">
           <Avatar photo={coach.photo} name={coach.name} displayName={displayName} size="sm" heartCount={hearts} />
-          <p className="text-white font-bold text-xs text-center leading-tight line-clamp-1">
+          <p className="text-white font-heading font-bold text-xs text-center leading-tight line-clamp-1">
             {displayName}
           </p>
           <TierBadge heartCount={hearts} />
           {coach.isPioneerCoach && <PioneerCoachBadge />}
           {price && (
-            <p className="text-[10px] font-bold" style={{ color: tierColor }}>{price} {t("common.egp")}</p>
+            <p className="text-[10px] font-heading font-bold" style={{ color: tierColor }}>{price} {t("common.egp")}</p>
           )}
         </div>
       </div>
