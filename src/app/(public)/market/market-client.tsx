@@ -646,7 +646,7 @@ export default function MarketClient() {
           Section 7: Live Activity Ticker (floats above sell CTA)
           ════════════════════════════════════════════════════════ */}
       {recentItems.length > 0 && currentActivityItem && (
-        <div className="fixed bottom-44 start-4 end-4 z-20 pointer-events-none">
+        <div className="fixed bottom-48 start-4 end-4 z-20 pointer-events-none">
           <AnimatePresence mode="wait">
             <motion.div
               key={activityIndex}
@@ -682,7 +682,7 @@ export default function MarketClient() {
       {/* ════════════════════════════════════════════════════════
           Section 6: Sticky Sell CTA
           ════════════════════════════════════════════════════════ */}
-      <div className="fixed bottom-24 start-4 end-4 z-30">
+      <div className="fixed bottom-28 start-4 end-4 z-30">
         <Link
           href="/market/sell"
           className="flex items-center justify-center gap-2 w-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all active:scale-[0.98]"

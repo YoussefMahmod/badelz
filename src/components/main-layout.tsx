@@ -21,7 +21,7 @@ export function MainLayout({
   return (
     <div className="min-h-screen flex flex-col bg-[#0a0f1a]">
       {showHeader && <Header />}
-      <main className={`flex-1 ${showNav ? "pb-20" : ""}`}>{children}</main>
+      <main className={`flex-1 ${showNav ? "pb-24" : ""}`}>{children}</main>
       {showNav && <BottomNav variant={navType} />}
       {showNav && <InstallPrompt />}
     </div>

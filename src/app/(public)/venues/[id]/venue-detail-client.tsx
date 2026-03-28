@@ -274,7 +274,7 @@ export default function VenueDetailClient({ id }: { id: string }) {
           initial={{ opacity: 0, scale: 0.8, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="fixed bottom-24 end-4 z-40 sm:bottom-6 sm:end-6"
+          className="fixed bottom-28 end-4 z-40 sm:bottom-6 sm:end-6"
         >
           <a
             href={shareUrl}

@@ -432,7 +432,7 @@ export default function OwnerBookingsPage() {
           setPrefill(undefined);
           setShowModal(true);
         }}
-        className="fixed bottom-20 end-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#111827] text-white shadow-xl hover:shadow-2xl transition-shadow cursor-pointer"
+        className="fixed bottom-28 end-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#111827] text-white shadow-xl hover:shadow-2xl transition-shadow cursor-pointer"
         aria-label={t("owner.addBooking")}
       >
         <Plus size={24} />

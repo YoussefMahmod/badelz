@@ -312,7 +312,7 @@ export default function PlayClient() {
       {/* Floating create CTA */}
       <Link
         href="/play/create"
-        className="fixed bottom-24 end-4 z-40 flex items-center gap-2 rounded-full bg-[#c8ff00] px-5 py-3.5 text-sm font-bold text-[#111827] shadow-lg shadow-[#c8ff00]/20 transition-all hover:shadow-[0_0_30px_rgba(200,255,0,0.3)] active:scale-95"
+        className="fixed bottom-28 end-4 z-40 flex items-center gap-2 rounded-full bg-[#c8ff00] px-5 py-3.5 text-sm font-bold text-[#111827] shadow-lg shadow-[#c8ff00]/20 transition-all hover:shadow-[0_0_30px_rgba(200,255,0,0.3)] active:scale-95"
       >
         <Plus size={18} strokeWidth={2.5} />
         {t("lobby.createLobby")}

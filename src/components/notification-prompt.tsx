@@ -52,7 +52,7 @@ export function NotificationPrompt({ phone }: NotificationPromptProps) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 60 }}
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
-          className="fixed bottom-24 inset-x-4 z-50 max-w-lg mx-auto"
+          className="fixed bottom-28 inset-x-4 z-50 max-w-lg mx-auto"
         >
           <div className="relative bg-white/10 backdrop-blur-xl border border-white/15 rounded-2xl p-4 shadow-2xl">
             <button

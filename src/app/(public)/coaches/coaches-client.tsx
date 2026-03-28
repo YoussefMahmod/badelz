@@ -234,7 +234,7 @@ export default function CoachesClient() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className="fixed bottom-24 sm:bottom-6 inset-x-0 z-30 flex justify-center px-4 pointer-events-none"
+        className="fixed bottom-28 sm:bottom-6 inset-x-0 z-30 flex justify-center px-4 pointer-events-none"
       >
         <motion.button
           whileTap={{ scale: 0.95 }}
