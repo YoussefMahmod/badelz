@@ -3,7 +3,6 @@
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { motion } from "framer-motion";
 import { Loader2, Eye, EyeOff, UserCircle, Lock } from "lucide-react";
 import { useTranslation, useLocale } from "@/i18n";
 import Link from "next/link";
@@ -13,11 +12,11 @@ export default function LoginPage() {
   return (
     <Suspense
       fallback={
-        <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-elevated animate-pulse">
-          <div className="h-8 w-32 bg-gray-100 rounded mb-6" />
+        <div className="bg-[#1a1a1a] border border-[#333] rounded-sm p-6 sm:p-8 animate-pulse">
+          <div className="h-8 w-32 bg-[#222] rounded mx-auto mb-6" />
           <div className="space-y-4">
-            <div className="h-12 bg-gray-100 rounded-xl" />
-            <div className="h-12 bg-gray-100 rounded-xl" />
+            <div className="h-12 bg-[#222] rounded-sm" />
+            <div className="h-12 bg-[#222] rounded-sm" />
           </div>
         </div>
       }
@@ -80,50 +79,46 @@ function LoginForm() {
 
   if (!mounted) {
     return (
-      <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-xl animate-pulse">
+      <div className="bg-[#1a1a1a] border border-[#333] rounded-sm p-6 sm:p-8 animate-pulse">
         <div className="flex justify-center mb-6">
-          <div className="h-10 w-32 bg-gray-100 rounded" />
+          <div className="h-10 w-32 bg-[#222] rounded" />
         </div>
-        <div className="h-5 w-40 bg-gray-100 rounded mx-auto mb-2" />
-        <div className="h-4 w-52 bg-gray-100 rounded mx-auto mb-6" />
+        <div className="h-5 w-40 bg-[#222] rounded mx-auto mb-2" />
+        <div className="h-4 w-52 bg-[#222] rounded mx-auto mb-6" />
         <div className="space-y-4">
-          <div className="h-12 bg-gray-100 rounded-xl" />
-          <div className="h-12 bg-gray-100 rounded-xl" />
-          <div className="h-12 bg-gray-100 rounded-full" />
+          <div className="h-12 bg-[#222] rounded-sm" />
+          <div className="h-12 bg-[#222] rounded-sm" />
+          <div className="h-12 bg-[#222] rounded-sm" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-xl">
+    <div className="bg-[#1a1a1a] border border-[#333] rounded-sm p-6 sm:p-8">
       {/* Logo centered */}
       <div className="flex justify-center mb-6">
-        <Logo size={40} variant="full" colorMode="light" />
+        <Logo size={40} variant="full" colorMode="dark" />
       </div>
 
       {/* Title */}
-      <h1 className="text-center text-lg font-bold text-gray-900 mb-1">
+      <h1 className="text-center text-lg font-bold text-white mb-1">
         {t("auth.signInTitle")}
       </h1>
-      <p className="text-center text-sm text-gray-400 mb-6">
+      <p className="text-center text-sm text-[#666] mb-6">
         {t("auth.signInSubtitle")}
       </p>
 
       {error && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600 text-center"
-        >
+        <div className="mb-4 rounded-sm bg-[#ff4d4d]/10 border border-[#ff4d4d]/30 px-4 py-3 text-sm text-[#ff4d4d] text-center">
           {error}
-        </motion.div>
+        </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="mb-1.5 flex items-center gap-2 text-sm font-medium text-gray-700">
-            <UserCircle size={14} className="text-gray-400" />
+          <label className="mb-1.5 flex items-center gap-2 text-sm font-medium text-[#999]">
+            <UserCircle size={14} className="text-[#666]" />
             {t("auth.emailOrPhone")}
           </label>
           <input
@@ -133,13 +128,13 @@ function LoginForm() {
             required
             dir="ltr"
             placeholder={t("auth.emailOrPhonePlaceholder")}
-            className="w-full rounded-xl bg-gray-50 border border-gray-200 px-4 py-3.5 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
+            className="w-full rounded-sm bg-[#0d0d0d] border-2 border-[#333] px-4 py-3.5 text-sm text-white outline-none placeholder:text-[#555] focus:border-[#d4ff00] transition-all"
           />
         </div>
 
         <div>
-          <label className="mb-1.5 flex items-center gap-2 text-sm font-medium text-gray-700">
-            <Lock size={14} className="text-gray-400" />
+          <label className="mb-1.5 flex items-center gap-2 text-sm font-medium text-[#999]">
+            <Lock size={14} className="text-[#666]" />
             {t("auth.password")}
           </label>
           <div className="relative">
@@ -150,12 +145,12 @@ function LoginForm() {
             required
             dir="ltr"
             placeholder={t("auth.passwordPlaceholder")}
-            className="w-full rounded-xl bg-gray-50 border border-gray-200 px-4 py-3.5 pe-12 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
+            className="w-full rounded-sm bg-[#0d0d0d] border-2 border-[#333] px-4 py-3.5 pe-12 text-sm text-white outline-none placeholder:text-[#555] focus:border-[#d4ff00] transition-all"
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute end-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+            className="absolute end-3 top-1/2 -translate-y-1/2 text-[#666] hover:text-[#999] transition-colors cursor-pointer"
           >
             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
@@ -163,32 +158,32 @@ function LoginForm() {
           <div className="mt-1.5 flex justify-end">
             <Link
               href="/forgot-password"
-              className="text-xs text-gray-400 hover:text-[#111827] transition-colors"
+              className="text-xs text-[#666] hover:text-[#d4ff00] transition-colors"
             >
               {t("auth.forgotPassword")}
             </Link>
           </div>
         </div>
 
-        <motion.button
+        <button
           type="submit"
-          whileTap={{ scale: 0.97 }}
           disabled={loading}
-          className="flex w-full items-center justify-center gap-2 rounded-full bg-[#111827] py-4 text-base font-bold text-white shadow-sm transition-all hover:bg-gray-800 disabled:opacity-50"
+          className="relative flex w-full items-center justify-center gap-2 rounded-sm bg-[#d4ff00] py-4 text-base font-bold text-[#0d0d0d] transition-all active:scale-[0.97] disabled:opacity-50"
         >
           {loading ? (
             <Loader2 size={18} className="animate-spin" />
           ) : (
             t("auth.signIn")
           )}
-        </motion.button>
+          <span className="absolute bottom-0 inset-x-0 h-1 bg-[#a0c200]" />
+        </button>
       </form>
 
-      <p className="mt-5 text-center text-sm text-gray-400">
+      <p className="mt-5 text-center text-sm text-[#666]">
         {t("auth.noAccount")}{" "}
         <Link
           href={`/register${returnTo ? `?returnTo=${encodeURIComponent(returnTo)}` : ""}`}
-          className="font-semibold text-[#111827] hover:underline transition-colors"
+          className="font-semibold text-[#d4ff00] hover:underline transition-colors"
         >
           {t("auth.signUp")}
         </Link>
@@ -199,7 +194,7 @@ function LoginForm() {
         <button
           type="button"
           onClick={() => setLocale(locale === "ar" ? "en" : "ar")}
-          className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+          className="text-xs text-[#666] hover:text-[#999] transition-colors"
         >
           {locale === "ar" ? "English" : "عربي"}
         </button>

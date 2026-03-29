@@ -9,7 +9,6 @@ import { FeaturedVenueCard } from "@/components/featured-venue-card";
 import { EmptyState } from "@/components/empty-state";
 import { useVenues } from "@/hooks/use-venues";
 import { useTranslation, useLocale } from "@/i18n";
-import { revealUp } from "@/lib/animations";
 
 const AREAS = [
   { key: "all", labelEn: "All Areas", labelAr: "كل المناطق" },
@@ -53,7 +52,7 @@ export default function BrowseClient() {
   const skeletons = useMemo(
     () =>
       Array.from({ length: 6 }).map((_, i) => (
-        <div key={i} className="rounded-2xl overflow-hidden animate-pulse bg-white/5 border border-white/10">
+        <div key={i} className="rounded-sm overflow-hidden animate-pulse bg-[#1a1a1a] border border-[#333]">
           <div className="h-48 dark-skeleton" />
           <div className="p-4 space-y-3">
             <div className="h-5 w-3/4 rounded-lg dark-skeleton" />
@@ -66,7 +65,7 @@ export default function BrowseClient() {
 
   const featuredSkeleton = useMemo(
     () => (
-      <div className="h-64 sm:h-80 rounded-2xl overflow-hidden animate-pulse dark-skeleton border border-white/10 mb-6" />
+      <div className="h-64 sm:h-80 rounded-sm overflow-hidden animate-pulse dark-skeleton border border-[#333] mb-6" />
     ),
     []
   );
@@ -78,7 +77,7 @@ export default function BrowseClient() {
         <motion.h1
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-3xl sm:text-4xl font-bold text-white mb-6"
+          className="text-2xl uppercase font-[family-name:var(--font-display-en)] font-bold text-white mb-6"
         >
           {t("browse.title")}
         </motion.h1>
@@ -91,14 +90,14 @@ export default function BrowseClient() {
           className="relative mb-5"
         >
           <div className="absolute start-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-11 h-11">
-            <Search size={20} className="text-white/30" />
+            <Search size={20} className="text-[#666]" />
           </div>
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
             placeholder={t("browse.searchPlaceholder")}
-            className="w-full rounded-full bg-white/5 border border-white/10 ps-12 pe-4 py-4 text-base text-white outline-none placeholder:text-white/30 focus:border-[#c8ff00]/50 focus:ring-2 focus:ring-[#c8ff00]/30 transition-all"
+            className="w-full rounded-sm bg-[#1a1a1a] border-2 border-[#333] ps-12 pe-4 py-4 text-base text-white outline-none placeholder:text-[#666] focus:border-[#d4ff00] transition-all"
           />
         </motion.div>
 
@@ -116,19 +115,12 @@ export default function BrowseClient() {
               <button
                 key={area.key}
                 onClick={() => setSelectedArea(area.key)}
-                className={`shrink-0 relative flex items-center gap-1.5 rounded-full px-4 py-2.5 text-xs font-semibold transition-all cursor-pointer ${
+                className={`shrink-0 flex items-center gap-1.5 rounded-sm px-4 py-2.5 text-xs font-semibold transition-all cursor-pointer active:scale-[0.97] transition-transform duration-75 ${
                   isSelected
-                    ? "text-[#111827] shadow-sm"
-                    : "border border-white/10 text-white/60 hover:text-white/90 hover:bg-white/10"
+                    ? "bg-[#d4ff00] text-[#0d0d0d]"
+                    : "border border-[#333] text-[#999] hover:text-white hover:bg-[#222]"
                 }`}
               >
-                {isSelected && (
-                  <motion.div
-                    layoutId="area-chip"
-                    className="absolute inset-0 rounded-full bg-[#c8ff00]"
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                  />
-                )}
                 <span className="relative flex items-center gap-1.5">
                   {area.key !== "all" && <MapPin size={12} />}
                   {label}
@@ -168,8 +160,7 @@ export default function BrowseClient() {
             )}
 
             {/* Venue grid */}
-            <motion.div
-              {...revealUp}
+            <div
               className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
             >
               <AnimatePresence mode="popLayout">
@@ -177,7 +168,7 @@ export default function BrowseClient() {
                   <VenueCard key={venue.id} venue={venue} />
                 ))}
               </AnimatePresence>
-            </motion.div>
+            </div>
           </>
         )}
       </div>

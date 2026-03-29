@@ -22,7 +22,7 @@ import { usePolling } from "@/hooks/use-polling";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation, useLocale } from "@/i18n";
 import { formatPrice, formatDate, formatTime, getNext7Days, toDateString, formatDateShort } from "@/lib/format";
-import { stepTransition } from "@/lib/animations";
+import { stepFade } from "@/lib/animations";
 
 const STEPS = [
   { icon: CalendarDays, key: "date", labelKey: "booking.selectDate" },
@@ -220,14 +220,14 @@ export default function BookingPage({
         >
           <button
             onClick={() => (step > 0 ? setStep(step - 1) : router.back())}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-white/40 hover:text-white/90 hover:border-white/20 transition-colors"
+            className="flex h-10 w-10 items-center justify-center rounded-sm border border-[#333] text-[#666] hover:text-white hover:border-[#666] transition-colors"
             aria-label={t("common.back")}
           >
             <ArrowRight size={18} className={dir === "ltr" ? "rotate-180" : ""} />
           </button>
           <div>
-            <h1 className="text-lg font-bold text-white/90">{t("booking.title")}</h1>
-            <p className="text-xs text-white/40">
+            <h1 className="text-lg font-bold text-white">{t("booking.title")}</h1>
+            <p className="text-xs text-[#666]">
               {venueName} - {courtName}
             </p>
           </div>
@@ -245,12 +245,12 @@ export default function BookingPage({
                     animate={{
                       scale: isActive ? 1.1 : 1,
                     }}
-                    className={`flex h-8 w-8 items-center justify-center rounded-full transition-all duration-300 ${
+                    className={`flex h-8 w-8 items-center justify-center rounded-sm transition-all duration-300 ${
                       isActive
-                        ? "bg-emerald-500 shadow-lg shadow-emerald-500/20 text-white"
+                        ? "bg-[#d4ff00] text-[#0d0d0d]"
                         : isDone
-                          ? "bg-emerald-500/20 text-emerald-400"
-                          : "bg-white/5 text-white/30"
+                          ? "bg-[#d4ff00]/20 text-[#d4ff00]"
+                          : "bg-[#1a1a1a] text-[#666]"
                     }`}
                   >
                     <s.icon size={14} />
@@ -258,10 +258,10 @@ export default function BookingPage({
                   <span
                     className={`text-[10px] font-medium transition-colors ${
                       isActive
-                        ? "text-white/90"
+                        ? "text-white"
                         : isDone
-                          ? "text-emerald-400/70"
-                          : "text-white/30"
+                          ? "text-[#d4ff00]/70"
+                          : "text-[#666]"
                     }`}
                   >
                     {t(s.labelKey as Parameters<typeof t>[0])}
@@ -272,12 +272,12 @@ export default function BookingPage({
           </div>
 
           {/* Progress track */}
-          <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+          <div className="h-1.5 bg-[#333] overflow-hidden">
             <motion.div
-              className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500"
+              className="h-full bg-[#d4ff00]"
               initial={{ width: "25%" }}
               animate={{ width: `${progressWidth}%` }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+             
             />
           </div>
         </div>
@@ -285,11 +285,11 @@ export default function BookingPage({
         {/* Steps content */}
         <AnimatePresence mode="wait">
           {step === 0 && (
-            <motion.div
+            <div
               key="step-date"
-              {...stepTransition}
+              {...stepFade}
             >
-              <h2 className="text-base font-bold text-white/70 mb-4">
+              <h2 className="text-base font-bold text-[#999] mb-4">
                 {t("booking.selectDate")}
               </h2>
               <div className="grid grid-cols-4 sm:grid-cols-7 gap-3">
@@ -299,38 +299,38 @@ export default function BookingPage({
                   const dayName = getDayLabel(day);
                   const monthAbbr = new Intl.DateTimeFormat(locale === "ar" ? "ar-EG" : "en-US", { month: "short" }).format(day);
                   return (
-                    <motion.button
+                    <button
                       key={ds}
-                      whileTap={{ scale: 0.95 }}
+                      
                       onClick={() => handleDateSelect(ds)}
-                      className={`flex flex-col items-center gap-0.5 rounded-2xl py-5 transition-all ${
+                      className={`flex flex-col items-center gap-0.5 rounded-sm py-5 transition-all active:scale-[0.97] transition-transform duration-75 ${
                         active
-                          ? "bg-gradient-to-b from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20"
-                          : "border border-white/10 bg-white/5 text-white/60 hover:border-white/20 hover:bg-white/10"
+                          ? "bg-[#d4ff00] text-[#0d0d0d]"
+                          : "border border-[#333] bg-[#1a1a1a] text-[#999] hover:border-[#666] hover:bg-[#222]"
                       }`}
                     >
-                      <span className={`text-[10px] font-medium ${active ? "text-white/70" : "text-white/40"}`}>
+                      <span className={`text-[10px] font-medium ${active ? "text-[#0d0d0d]/60" : "text-[#666]"}`}>
                         {dayName}
                       </span>
-                      <span className={`text-xl font-bold ${active ? "text-white" : "text-white/90"}`}>
+                      <span className={`text-xl font-bold ${active ? "text-[#0d0d0d]" : "text-white"}`}>
                         {day.getDate()}
                       </span>
-                      <span className={`text-[10px] ${active ? "text-white/50" : "text-white/30"}`}>
+                      <span className={`text-[10px] ${active ? "text-[#0d0d0d]/50" : "text-[#666]"}`}>
                         {monthAbbr}
                       </span>
-                    </motion.button>
+                    </button>
                   );
                 })}
               </div>
-            </motion.div>
+            </div>
           )}
 
           {step === 1 && (
-            <motion.div
+            <div
               key="step-time"
-              {...stepTransition}
+              {...stepFade}
             >
-              <h2 className="text-base font-bold text-white/70 mb-4">
+              <h2 className="text-base font-bold text-[#999] mb-4">
                 {t("booking.selectTime")}
               </h2>
               <TimeSlotPicker
@@ -341,24 +341,24 @@ export default function BookingPage({
                 onSelectBlocks={setSelectedBlockCount}
                 loading={slotsLoading}
               />
-            </motion.div>
+            </div>
           )}
 
           {step === 2 && (
-            <motion.div
+            <div
               key="step-info"
-              {...stepTransition}
+              {...stepFade}
             >
-              <h2 className="text-base font-bold text-white/70 mb-4">
+              <h2 className="text-base font-bold text-[#999] mb-4">
                 {t("booking.yourInfo")}
               </h2>
 
               {/* Level selector */}
               <div className="mb-6">
-                <label className="flex items-center gap-2 text-sm font-semibold text-white/50 mb-3">
+                <label className="flex items-center gap-2 text-sm font-semibold text-[#999] mb-3">
                   <Gauge size={14} />
                   {locale === "ar" ? "مستوى اللعب" : "Skill Level"}
-                  <span className="text-[10px] text-white/30 font-normal">
+                  <span className="text-[10px] text-[#666] font-normal">
                     ({locale === "ar" ? "اختياري" : "optional"})
                   </span>
                 </label>
@@ -366,10 +366,10 @@ export default function BookingPage({
                   <button
                     type="button"
                     onClick={() => setSelectedLevel(null)}
-                    className={`shrink-0 rounded-full px-4 py-2.5 text-xs font-semibold transition-all ${
+                    className={`shrink-0 rounded-sm px-4 py-2.5 text-xs font-semibold transition-all ${
                       selectedLevel === null
-                        ? "bg-[#c8ff00] text-[#111827] shadow-sm shadow-[#c8ff00]/20"
-                        : "border border-white/10 text-white/50 hover:text-white/80 hover:bg-white/10"
+                        ? "bg-[#d4ff00] text-[#0d0d0d]"
+                        : "border border-[#333] text-[#999] hover:text-[#999] hover:bg-[#222]"
                     }`}
                   >
                     {locale === "ar" ? "أي مستوى" : "Any Level"}
@@ -382,10 +382,10 @@ export default function BookingPage({
                         key={lvl.key}
                         type="button"
                         onClick={() => setSelectedLevel(isActive ? null : lvl.key)}
-                        className={`shrink-0 rounded-full px-4 py-2.5 text-xs font-semibold transition-all ${
+                        className={`shrink-0 rounded-sm px-4 py-2.5 text-xs font-semibold transition-all ${
                           isActive
-                            ? "bg-[#c8ff00] text-[#111827] shadow-sm shadow-[#c8ff00]/20"
-                            : "border border-white/10 text-white/50 hover:text-white/80 hover:bg-white/10"
+                            ? "bg-[#d4ff00] text-[#0d0d0d]"
+                            : "border border-[#333] text-[#999] hover:text-[#999] hover:bg-[#222]"
                         }`}
                       >
                         {label}
@@ -404,19 +404,19 @@ export default function BookingPage({
                 initialPhone={isAuthenticated && user?.phone ? user.phone : ""}
                 authenticatedName={isAuthenticated && user?.name ? user.name : undefined}
               />
-            </motion.div>
+            </div>
           )}
 
           {step === 3 && (
-            <motion.div
+            <div
               key="step-confirm"
-              {...stepTransition}
+              {...stepFade}
             >
-              <h2 className="text-base font-bold text-white/70 mb-4">
+              <h2 className="text-base font-bold text-[#999] mb-4">
                 {t("booking.summary")}
               </h2>
 
-              <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-5 space-y-3.5 mb-6">
+              <div className="bg-[#1a1a1a] rounded-sm border-s-[3px] border-s-[#d4ff00] p-5 space-y-3.5 mb-6">
                 <SummaryRow label={t("booking.court")} value={`${venueName} - ${courtName}`} />
                 <SummaryRow
                   label={t("booking.date")}
@@ -439,7 +439,7 @@ export default function BookingPage({
                   value={formatPrice(totalPrice)}
                   highlight
                 />
-                <div className="border-t border-white/10 pt-3.5 space-y-2">
+                <div className="border-t border-[#333] pt-3.5 space-y-2">
                   <SummaryRow label={t("booking.name")} value={playerInfo.name} />
                   <SummaryRow label={t("booking.phone")} value={playerInfo.phone} />
                   {selectedLevel && (
@@ -475,19 +475,19 @@ export default function BookingPage({
                 </div>
               )}
 
-              <motion.button
-                whileTap={{ scale: 0.97 }}
+              <button
+                
                 onClick={handleConfirm}
                 disabled={submitting}
-                className="w-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 py-4 text-base font-bold text-white shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/30 disabled:opacity-50"
+                className="w-full rounded-sm bg-[#d4ff00] text-[#0d0d0d] py-4 text-lg font-bold uppercase transition-all disabled:opacity-50 active:scale-[0.97] transition-transform duration-75"
               >
                 {submitting
                   ? t("common.loading")
                   : locale === "ar"
                     ? "إرسال طلب الحجز"
                     : "Send Booking Request"}
-              </motion.button>
-            </motion.div>
+              </button>
+            </div>
           )}
         </AnimatePresence>
 
@@ -499,14 +499,14 @@ export default function BookingPage({
             transition={{ delay: 0.3 }}
             className="mt-6"
           >
-            <motion.button
-              whileTap={{ scale: 0.97 }}
+            <button
+              
               onClick={() => setStep(step + 1)}
               disabled={!canProceed()}
-              className="w-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 py-4 text-base font-bold text-white shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/30 disabled:opacity-30 disabled:cursor-not-allowed"
+              className="w-full rounded-sm bg-[#d4ff00] text-[#0d0d0d] py-4 text-lg font-bold uppercase transition-all disabled:opacity-30 disabled:cursor-not-allowed"
             >
               {t("common.next")}
-            </motion.button>
+            </button>
           </motion.div>
         )}
       </div>
@@ -525,9 +525,9 @@ function SummaryRow({
 }) {
   return (
     <div className="flex items-start justify-between gap-4 text-sm">
-      <span className="text-white/40 shrink-0">{label}</span>
+      <span className="text-[#666] shrink-0">{label}</span>
       <span
-        className={`text-end ${highlight ? "font-bold text-emerald-400" : "text-white/70 font-medium"}`}
+        className={`text-end ${highlight ? "font-bold text-[#d4ff00]" : "text-[#999] font-medium"}`}
       >
         {value}
       </span>

@@ -20,13 +20,6 @@ import {
 } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import { Header } from "@/components/header";
-import {
-  heroTextReveal,
-  staggerDarkBento,
-  darkBentoItem,
-  scaleInGlow,
-  revealUp,
-} from "@/lib/animations";
 import type { Easing } from "framer-motion";
 import type { LucideIcon } from "lucide-react";
 
@@ -35,14 +28,14 @@ const easePremium = [0.22, 1, 0.36, 1] as unknown as Easing;
 // ─── Phone Mockup Frame ───
 function PhoneFrame({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative w-[240px] h-[480px] rounded-[32px] border-[3px] border-white/10 bg-[#0a0f1a] overflow-hidden shadow-2xl shadow-black/50 animate-float-slow">
+    <div className="relative w-[240px] h-[480px] rounded-sm border-[3px] border-[#333] bg-[#0d0d0d] overflow-hidden shadow-2xl shadow-black/50 animate-float-slow">
       {/* Notch */}
-      <div className="mx-auto w-24 h-6 bg-black rounded-b-2xl" />
+      <div className="mx-auto w-24 h-6 bg-black rounded-b-sm" />
       {/* Screen content */}
       <div className="p-3 space-y-3">{children}</div>
       {/* Bottom nav mockup */}
-      <div className="absolute bottom-0 inset-x-0 h-12 bg-[#0a0f1a]/90 border-t border-white/5 flex items-center justify-around px-4">
-        <div className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+      <div className="absolute bottom-0 inset-x-0 h-12 bg-[#0d0d0d]/90 border-t border-[#222] flex items-center justify-around px-4">
+        <div className="h-1.5 w-1.5 rounded-sm bg-[#d4ff00]" />
         <div className="h-1.5 w-1.5 rounded-full bg-white/20" />
         <div className="h-1.5 w-1.5 rounded-full bg-white/20" />
         <div className="h-1.5 w-1.5 rounded-full bg-white/20" />
@@ -52,70 +45,70 @@ function PhoneFrame({ children }: { children: React.ReactNode }) {
   );
 }
 
-// ─── Hero Phone Mockup (Discover Feed) ───
+// ─── Hero Phone Mockup (Brutalist Stadium Discover) ───
 function HeroPhoneMockup() {
   return (
     <PhoneFrame>
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="h-3 w-16 rounded bg-white/20" />
-        <div className="h-3 w-3 rounded-full bg-emerald-400/40" />
+      {/* Header — lime bottom border */}
+      <div className="flex items-center justify-between pb-1.5 border-b-2 border-b-[#d4ff00] mb-1">
+        <div className="text-[8px] font-bold text-[#d4ff00] uppercase">BADELZ</div>
+        <div className="h-2.5 w-2.5 rounded-sm bg-[#333]" />
       </div>
-      {/* Quick actions */}
-      <div className="flex gap-1.5">
-        <div className="h-7 flex-1 rounded-full bg-emerald-500/15 border border-emerald-500/20" />
-        <div className="h-7 flex-1 rounded-full bg-white/5 border border-white/10" />
+      {/* Featured venue — lime block with clip-path */}
+      <div className="bg-[#d4ff00] text-[#0d0d0d] p-2.5 mb-0" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 6px), 0 100%)" }}>
+        <div className="text-[5px] font-bold uppercase opacity-50 tracking-widest">COURTS NEAR YOU</div>
+        <div className="text-[11px] font-bold uppercase leading-none mt-0.5">NEW CAIRO PADEL</div>
+        <div className="text-[7px] font-bold mt-1">250 EGP</div>
       </div>
-      {/* Venue cards row */}
-      <div className="flex gap-2">
-        <div className="w-24 rounded-xl bg-white/5 border border-white/10 overflow-hidden">
-          <div className="h-14 bg-emerald-500/10" />
-          <div className="p-1.5 space-y-1">
-            <div className="h-2 w-14 rounded bg-white/15" />
-            <div className="h-2 w-8 rounded bg-emerald-400/30" />
-          </div>
+      {/* Stadium buttons */}
+      <div className="grid grid-cols-3 gap-0 mb-1">
+        <div className="bg-[#d4ff00] text-[#0d0d0d] text-center py-1.5 text-[6px] font-bold uppercase relative">
+          BOOK
+          <span className="absolute bottom-0 inset-x-0 h-[2px] bg-[#a0c200]" />
         </div>
-        <div className="w-24 rounded-xl bg-white/5 border border-white/10 overflow-hidden">
-          <div className="h-14 bg-cyan-500/10" />
-          <div className="p-1.5 space-y-1">
-            <div className="h-2 w-14 rounded bg-white/15" />
-            <div className="h-2 w-8 rounded bg-emerald-400/30" />
-          </div>
-        </div>
+        <div className="bg-[#161616] text-[#666] text-center py-1.5 text-[6px] font-bold uppercase border-x border-x-[#0d0d0d]">PLAYERS</div>
+        <div className="bg-[#161616] text-[#666] text-center py-1.5 text-[6px] font-bold uppercase">SELL</div>
       </div>
-      {/* Lobby cards */}
-      <div className="flex gap-2">
-        <div className="flex-1 rounded-lg bg-white/5 border border-white/10 p-2 space-y-1.5">
-          <div className="flex items-center gap-1">
-            <div className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-            <div className="h-2 w-12 rounded bg-white/15" />
-          </div>
-          <div className="h-2 w-16 rounded bg-white/10" />
-        </div>
-        <div className="flex-1 rounded-lg bg-white/5 border border-white/10 p-2 space-y-1.5">
-          <div className="flex items-center gap-1">
-            <div className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-            <div className="h-2 w-12 rounded bg-white/15" />
-          </div>
-          <div className="h-2 w-16 rounded bg-white/10" />
-        </div>
+      {/* Section header block */}
+      <div className="bg-[#111] px-2 py-1.5 flex items-center justify-between border-b-2 border-b-[#d4ff00]">
+        <div className="text-[7px] font-bold uppercase text-white">COURTS</div>
+        <div className="text-[5px] text-[#555] uppercase">SEE ALL</div>
       </div>
-      {/* Market cards */}
-      <div className="flex gap-2">
-        <div className="w-20 rounded-lg bg-white/5 border border-white/10 overflow-hidden">
-          <div className="h-16 bg-[#c8ff00]/5" />
-          <div className="p-1 space-y-0.5">
-            <div className="h-1.5 w-12 rounded bg-white/15" />
-            <div className="h-1.5 w-8 rounded bg-[#c8ff00]/20" />
-          </div>
+      {/* Venue rows with left bar */}
+      <div className="relative bg-[#0d0d0d] border-b border-b-[#161616] px-2 py-2 flex items-center gap-2">
+        <span className="absolute top-0 bottom-0 end-0 w-[3px] bg-[#d4ff00]" />
+        <div className="w-8 h-8 bg-[#161616] border border-[#222]" />
+        <div className="flex-1 space-y-0.5">
+          <div className="h-2 w-16 rounded bg-white/15" />
+          <div className="h-1.5 w-10 rounded bg-[#333]" />
         </div>
-        <div className="w-20 rounded-lg bg-white/5 border border-white/10 overflow-hidden">
-          <div className="h-16 bg-cyan-500/5" />
-          <div className="p-1 space-y-0.5">
-            <div className="h-1.5 w-12 rounded bg-white/15" />
-            <div className="h-1.5 w-8 rounded bg-[#c8ff00]/20" />
-          </div>
+        <div className="text-[7px] font-bold text-[#d4ff00]">200</div>
+      </div>
+      <div className="relative bg-[#0d0d0d] border-b border-b-[#161616] px-2 py-2 flex items-center gap-2">
+        <span className="absolute top-0 bottom-0 end-0 w-[3px] bg-[#d4ff00]" />
+        <div className="w-8 h-8 bg-[#161616] border border-[#222]" />
+        <div className="flex-1 space-y-0.5">
+          <div className="h-2 w-14 rounded bg-white/15" />
+          <div className="h-1.5 w-8 rounded bg-[#333]" />
         </div>
+        <div className="text-[7px] font-bold text-[#d4ff00]">180</div>
+      </div>
+      {/* Lobbies section header */}
+      <div className="bg-[#111] px-2 py-1.5 flex items-center justify-between border-b-2 border-b-[#ff4d4d] mt-1">
+        <div className="flex items-center gap-1">
+          <div className="text-[7px] font-bold uppercase text-white">LOBBIES</div>
+          <div className="text-[5px] font-bold bg-[#ff4d4d] text-white px-1 py-px uppercase">LIVE</div>
+        </div>
+        <div className="text-[5px] text-[#555] uppercase">SEE ALL</div>
+      </div>
+      {/* Lobby row */}
+      <div className="relative bg-[#0d0d0d] border-b border-b-[#161616] px-2 py-2 flex items-center justify-between">
+        <span className="absolute top-0 bottom-0 end-0 w-[3px] bg-[#ff4d4d]" />
+        <div className="space-y-0.5 ps-1">
+          <div className="h-2 w-12 rounded bg-white/15" />
+          <div className="h-1.5 w-16 rounded bg-[#333]" />
+        </div>
+        <div className="text-[10px] font-bold text-[#ff4d4d]">2/4</div>
       </div>
     </PhoneFrame>
   );
@@ -127,17 +120,17 @@ function CourtsMockup() {
     <PhoneFrame>
       <div className="h-3 w-20 rounded bg-white/20 mb-1" />
       {/* Search bar */}
-      <div className="h-8 rounded-full bg-white/5 border border-white/10 flex items-center ps-3 gap-2">
-        <div className="h-2.5 w-2.5 rounded-full bg-emerald-400/40" />
-        <div className="h-2 w-16 rounded bg-white/10" />
+      <div className="h-8 rounded-sm bg-[#1a1a1a] border border-[#333] flex items-center ps-3 gap-2">
+        <div className="h-2.5 w-2.5 rounded-sm bg-[#d4ff00]/40" />
+        <div className="h-2 w-16 rounded bg-[#222]" />
       </div>
       {/* Venue card */}
-      <div className="rounded-xl bg-white/5 border border-white/10 overflow-hidden">
-        <div className="h-20 bg-emerald-500/8" />
+      <div className="rounded-sm bg-[#1a1a1a] border border-[#333] overflow-hidden">
+        <div className="h-20 bg-[#d4ff00]/8" />
         <div className="p-2 space-y-1.5">
           <div className="h-2.5 w-24 rounded bg-white/15" />
-          <div className="h-2 w-16 rounded bg-white/8" />
-          <div className="h-2 w-12 rounded bg-emerald-400/30" />
+          <div className="h-2 w-16 rounded bg-[#1a1a1a]" />
+          <div className="h-2 w-12 rounded bg-[#d4ff00]/30" />
         </div>
       </div>
       {/* Time slot grid */}
@@ -147,10 +140,10 @@ function CourtsMockup() {
           {[true, true, false, true, false, true].map((avail, i) => (
             <div
               key={i}
-              className={`h-7 rounded-lg flex items-center justify-center text-[8px] font-bold ${
+              className={`h-7 rounded-sm flex items-center justify-center text-[8px] font-bold ${
                 avail
-                  ? "bg-emerald-500/15 border border-emerald-500/20 text-emerald-400/60"
-                  : "bg-white/3 border border-white/5 text-white/15"
+                  ? "bg-[#d4ff00]/15 border border-[#d4ff00]/20 text-[#d4ff00]/60"
+                  : "bg-white/3 border border-[#222] text-white/15"
               }`}
             >
               {`${i + 3}:00`}
@@ -159,7 +152,7 @@ function CourtsMockup() {
         </div>
       </div>
       {/* CTA */}
-      <div className="h-8 rounded-full bg-emerald-500/20 border border-emerald-500/30" />
+      <div className="h-8 rounded-sm bg-[#d4ff00]/20 border border-[#d4ff00]/20" />
     </PhoneFrame>
   );
 }
@@ -170,14 +163,14 @@ function PlayersMockup() {
       <div className="h-3 w-20 rounded bg-white/20 mb-1" />
       {/* Lobby cards */}
       {[0, 1, 2].map((i) => (
-        <div key={i} className="rounded-xl bg-white/5 border border-white/10 p-2.5 space-y-2">
+        <div key={i} className="bg-[#1a1a1a] border-s-[3px] border-s-[#ff4d4d] p-2.5 space-y-2 border-b border-b-[#222]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
-              <div className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
+              <div className="h-1.5 w-1.5 rounded-full bg-[#ff4d4d]" />
               <div className="h-2 w-20 rounded bg-white/15" />
             </div>
-            <div className="h-4 px-1.5 rounded-full bg-cyan-500/15 border border-cyan-500/20 flex items-center">
-              <div className="h-1.5 w-8 rounded bg-cyan-400/40" />
+            <div className="h-4 px-1.5 rounded-sm bg-[#ff4d4d]/15 flex items-center">
+              <span className="text-[7px] font-bold text-[#ff4d4d]">2/4</span>
             </div>
           </div>
           <div className="flex gap-1">
@@ -185,12 +178,12 @@ function PlayersMockup() {
               <div
                 key={j}
                 className={`h-5 w-5 rounded-full ${
-                  filled ? "bg-cyan-400/30" : "border border-dashed border-white/15"
+                  filled ? "bg-[#ff4d4d]/30" : "border border-dashed border-[#333]"
                 }`}
               />
             ))}
           </div>
-          <div className="h-2 w-24 rounded bg-white/8" />
+          <div className="h-2 w-24 rounded bg-[#222]" />
         </div>
       ))}
     </PhoneFrame>
@@ -203,22 +196,24 @@ function CoachesMockup() {
       <div className="h-3 w-20 rounded bg-white/20 mb-1" />
       {/* Coach cards */}
       {[0, 1, 2].map((i) => (
-        <div key={i} className="flex gap-2.5 rounded-xl bg-white/5 border border-white/10 p-2.5">
+        <div key={i} className="flex gap-2.5 bg-[#1a1a1a] border-t-[3px] border-t-[#00c2ff] p-2.5 mb-1">
           {/* Avatar */}
-          <div className="h-12 w-12 shrink-0 rounded-xl bg-purple-500/15 border border-purple-500/20" />
+          <div className="h-12 w-12 shrink-0 rounded-full bg-[#00c2ff]/10 border-2 border-[#00c2ff]/30" />
           <div className="flex-1 space-y-1.5">
             <div className="h-2.5 w-20 rounded bg-white/15" />
             <div className="flex gap-1">
-              <div className="h-4 px-1.5 rounded-full bg-purple-500/10 border border-purple-500/15 flex items-center">
-                <div className="h-1.5 w-8 rounded bg-purple-400/30" />
+              <div className="h-4 px-1.5 rounded-sm bg-[#00c2ff]/10 flex items-center">
+                <span className="text-[6px] font-bold text-[#00c2ff]">PRO</span>
               </div>
             </div>
-            <div className="h-2 w-16 rounded bg-purple-400/20" />
+            <div className="h-2 w-16 rounded bg-[#d4ff00]/20" />
           </div>
         </div>
       ))}
       {/* CTA */}
-      <div className="h-8 rounded-full bg-purple-500/15 border border-purple-500/20" />
+      <div className="h-8 rounded-sm bg-[#00c2ff] flex items-center justify-center">
+        <div className="h-2 w-16 rounded bg-[#0d0d0d]/30" />
+      </div>
     </PhoneFrame>
   );
 }
@@ -229,26 +224,26 @@ function MarketMockup() {
       <div className="h-3 w-20 rounded bg-white/20 mb-1" />
       {/* Category pills */}
       <div className="flex gap-1.5 overflow-hidden">
-        <div className="h-6 px-2 rounded-full bg-[#c8ff00]/10 border border-[#c8ff00]/20 shrink-0" />
-        <div className="h-6 px-2 rounded-full bg-white/5 border border-white/10 shrink-0 w-12" />
-        <div className="h-6 px-2 rounded-full bg-white/5 border border-white/10 shrink-0 w-10" />
+        <div className="h-6 px-2 rounded-sm bg-[#d4ff00]/10 border border-[#d4ff00]/20 shrink-0" />
+        <div className="h-6 px-2 rounded-sm bg-[#1a1a1a] border border-[#333] shrink-0 w-12" />
+        <div className="h-6 px-2 rounded-sm bg-[#1a1a1a] border border-[#333] shrink-0 w-10" />
       </div>
       {/* Listing grid */}
       <div className="grid grid-cols-2 gap-2">
         {[0, 1, 2, 3].map((i) => (
-          <div key={i} className="rounded-xl bg-white/5 border border-white/10 overflow-hidden">
-            <div className={`h-20 ${i === 0 ? "bg-[#c8ff00]/5" : i === 1 ? "bg-cyan-500/5" : i === 2 ? "bg-purple-500/5" : "bg-emerald-500/5"}`}>
+          <div key={i} className="rounded-sm bg-[#1a1a1a] border border-[#333] overflow-hidden">
+            <div className={`h-20 ${i === 0 ? "bg-[#d4ff00]/5" : i === 1 ? "bg-[#00c2ff]/5" : i === 2 ? "bg-purple-500/5" : "bg-[#d4ff00]/5"}`}>
               {i === 0 && (
                 <div className="m-1">
-                  <div className="h-3 w-6 rounded-sm bg-[#c8ff00]/20 flex items-center justify-center">
-                    <span className="text-[5px] font-bold text-[#c8ff00]/60">NEW</span>
+                  <div className="h-3 w-6 rounded-sm bg-[#d4ff00]/20 flex items-center justify-center">
+                    <span className="text-[5px] font-bold text-[#d4ff00]/60">NEW</span>
                   </div>
                 </div>
               )}
             </div>
             <div className="p-1.5 space-y-0.5">
               <div className="h-1.5 w-14 rounded bg-white/15" />
-              <div className="h-1.5 w-10 rounded bg-[#c8ff00]/20" />
+              <div className="h-1.5 w-10 rounded bg-[#d4ff00]/20" />
             </div>
           </div>
         ))}
@@ -260,17 +255,17 @@ function MarketMockup() {
 // ─── Screenshot Phone (real app screenshots) ───
 function ScreenshotPhone({ src, alt }: { src: string; alt: string }) {
   return (
-    <div className="relative w-[240px] h-[480px] rounded-[32px] border-[3px] border-white/10 bg-[#0a0f1a] overflow-hidden shadow-2xl shadow-black/50 animate-float-slow">
+    <div className="relative w-[240px] h-[480px] rounded-sm border-[3px] border-[#333] bg-[#0d0d0d] overflow-hidden shadow-2xl shadow-black/50 animate-float-slow">
       <img src={src} alt={alt} className="w-full h-full object-cover object-top" />
     </div>
   );
 }
 
 const FEATURE_MOCKUPS = [
-  () => <ScreenshotPhone src="/screenshots/booking.png" alt="Book a court" />,
+  CourtsMockup,
   PlayersMockup,
-  () => <ScreenshotPhone src="/screenshots/coaches.png" alt="Find coaches" />,
-  () => <ScreenshotPhone src="/screenshots/market.png" alt="Gear market" />,
+  CoachesMockup,
+  MarketMockup,
 ];
 
 // ─── Leaderboard Mockup (CSS-built) ───
@@ -282,14 +277,14 @@ function LeaderboardMockup() {
   ];
 
   return (
-    <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-[#0d1220] p-5 shadow-2xl shadow-black/40">
+    <div className="w-full max-w-sm rounded-sm border border-[#333] bg-[#111] p-5 shadow-2xl shadow-black/40">
       {/* Header */}
       <div className="text-center mb-5">
         <div className="flex items-center justify-center gap-2 mb-1">
           <Trophy size={16} className="text-amber-400" />
-          <span className="text-sm font-bold text-white/80">لاعبين بادلز</span>
+          <span className="text-sm font-bold text-[#999]">لاعبين بادلز</span>
         </div>
-        <p className="text-[10px] text-white/30">ليدربورد ورانكينج اللاعبين</p>
+        <p className="text-[10px] text-[#666]">ليدربورد ورانكينج اللاعبين</p>
       </div>
 
       {/* Podium */}
@@ -309,7 +304,7 @@ function LeaderboardMockup() {
               {p.name.split(" ").map(w => w[0]).join("")}
             </div>
             {/* Name */}
-            <span className="text-[10px] font-semibold text-white/70 truncate w-16 text-center">{p.name}</span>
+            <span className="text-[10px] font-semibold text-[#999] truncate w-16 text-center">{p.name}</span>
             {/* Podium bar */}
             <div
               className={`w-16 ${p.h} rounded-t-lg flex flex-col items-center justify-start pt-2`}
@@ -320,7 +315,7 @@ function LeaderboardMockup() {
             >
               <span className="text-lg font-black" style={{ color: p.color }}>#{p.rank}</span>
               <span
-                className="text-[8px] font-bold mt-0.5 px-1.5 py-0.5 rounded-full"
+                className="text-[8px] font-bold mt-0.5 px-1.5 py-0.5 rounded-sm"
                 style={{ background: `${p.color}20`, color: p.color }}
               >
                 {p.tier}
@@ -336,17 +331,17 @@ function LeaderboardMockup() {
           { rank: 4, name: "خالد محمود", tier: "EMERALD", color: "#50c878", games: 12 },
           { rank: 5, name: "يوسف محمد", tier: "GOLD", color: "#ffd700", games: 8 },
         ].map((p) => (
-          <div key={p.rank} className="flex items-center gap-3 rounded-xl bg-white/[0.03] border border-white/[0.06] px-3 py-2">
-            <span className="text-xs font-bold text-white/25 w-5">#{p.rank}</span>
+          <div key={p.rank} className="flex items-center gap-3 rounded-sm bg-[#0d0d0d] border-b-2 border-b-[#161616] px-3 py-2">
+            <span className="text-xs font-bold text-[#666] w-5">#{p.rank}</span>
             <div
               className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-bold shrink-0"
               style={{ border: `1.5px solid ${p.color}`, background: `${p.color}10`, color: p.color }}
             >
               {p.name.split(" ").map(w => w[0]).join("")}
             </div>
-            <span className="text-xs font-medium text-white/70 flex-1 truncate">{p.name}</span>
+            <span className="text-xs font-medium text-[#999] flex-1 truncate">{p.name}</span>
             <span
-              className="text-[8px] font-bold px-1.5 py-0.5 rounded-full"
+              className="text-[8px] font-bold px-1.5 py-0.5 rounded-sm"
               style={{ background: `${p.color}15`, color: p.color }}
             >
               {p.tier}
@@ -368,21 +363,21 @@ function MarketplaceMockup() {
   ];
 
   const listings = [
-    { title: "Metalbone مضرب", price: "4,500", condition: "NEW", color: "#c8ff00" },
+    { title: "Metalbone مضرب", price: "4,500", condition: "NEW", color: "#d4ff00" },
     { title: "جزم بادل Head", price: "1,200", condition: "USED", color: "#00d4ff" },
     { title: "شنطة Nox Pro", price: "800", condition: "NEW", color: "#c084fc" },
-    { title: "كور Head Pro S", price: "350", condition: "NEW", color: "#c8ff00" },
+    { title: "كور Head Pro S", price: "350", condition: "NEW", color: "#d4ff00" },
   ];
 
   return (
-    <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-[#0d1220] p-5 shadow-2xl shadow-black/40">
+    <div className="w-full max-w-sm rounded-sm border border-[#333] bg-[#111] p-5 shadow-2xl shadow-black/40">
       {/* Header */}
       <div className="text-center mb-4">
         <div className="flex items-center justify-center gap-2 mb-1">
-          <ShoppingBag size={16} className="text-[#c8ff00]" />
-          <span className="text-sm font-bold text-white/80">سوق بادلز</span>
+          <ShoppingBag size={16} className="text-[#d4ff00]" />
+          <span className="text-sm font-bold text-[#999]">سوق بادلز</span>
         </div>
-        <p className="text-[10px] text-white/30">اشتري وبيع معدات بادل</p>
+        <p className="text-[10px] text-[#666]">اشتري وبيع معدات بادل</p>
       </div>
 
       {/* Category pills */}
@@ -390,10 +385,10 @@ function MarketplaceMockup() {
         {categories.map((cat) => (
           <div
             key={cat.name}
-            className={`px-3 py-1 rounded-full text-[10px] font-semibold shrink-0 ${
+            className={`px-3 py-1 rounded-sm text-[10px] font-semibold shrink-0 ${
               cat.active
-                ? "bg-[#c8ff00]/15 border border-[#c8ff00]/30 text-[#c8ff00]"
-                : "bg-white/5 border border-white/10 text-white/40"
+                ? "bg-[#d4ff00]/15 border border-[#d4ff00]/30 text-[#d4ff00]"
+                : "bg-[#1a1a1a] border border-[#333] text-[#666]"
             }`}
           >
             {cat.name}
@@ -406,7 +401,7 @@ function MarketplaceMockup() {
         {listings.map((item, i) => (
           <div
             key={i}
-            className="rounded-xl bg-white/[0.03] border border-white/[0.06] overflow-hidden"
+            className="rounded-sm bg-[#1a1a1a] overflow-hidden"
           >
             {/* Image placeholder */}
             <div
@@ -419,7 +414,7 @@ function MarketplaceMockup() {
               {item.condition === "NEW" && (
                 <div className="absolute top-1.5 start-1.5">
                   <span
-                    className="text-[7px] font-bold px-1.5 py-0.5 rounded"
+                    className="text-[7px] font-bold px-1.5 py-0.5 rounded-sm"
                     style={{ background: `${item.color}20`, color: item.color }}
                   >
                     NEW
@@ -429,7 +424,7 @@ function MarketplaceMockup() {
             </div>
             {/* Info */}
             <div className="p-2 space-y-1">
-              <p className="text-[10px] font-semibold text-white/70 truncate">{item.title}</p>
+              <p className="text-[10px] font-semibold text-[#999] truncate">{item.title}</p>
               <p className="text-xs font-bold" style={{ color: item.color }}>{item.price} ج.م</p>
             </div>
           </div>
@@ -437,8 +432,8 @@ function MarketplaceMockup() {
       </div>
 
       {/* CTA */}
-      <div className="mt-4 h-9 rounded-xl bg-[#c8ff00]/10 border border-[#c8ff00]/20 flex items-center justify-center">
-        <span className="text-[11px] font-semibold text-[#c8ff00]/70">اعرض للبيع</span>
+      <div className="mt-4 h-9 rounded-sm bg-[#d4ff00] flex items-center justify-center">
+        <span className="text-[11px] font-semibold text-[#0d0d0d]">اعرض للبيع</span>
       </div>
     </div>
   );
@@ -447,9 +442,9 @@ function MarketplaceMockup() {
 // ─── Value Chip ───
 function ValueChip({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
   return (
-    <div className="inline-flex items-center gap-2 rounded-full glass-dark px-4 py-2 border border-white/10">
-      <Icon size={14} className="text-emerald-400 shrink-0" />
-      <span className="text-xs sm:text-sm font-medium text-white/70">{label}</span>
+    <div className="inline-flex items-center gap-2 bg-[#111] border-b-2 border-b-[#d4ff00] px-4 py-2 rounded-sm">
+      <Icon size={14} className="text-[#d4ff00] shrink-0" />
+      <span className="text-xs sm:text-sm font-medium text-[#999]">{label}</span>
     </div>
   );
 }
@@ -479,10 +474,10 @@ function AnimatedCounter({ target, label, suffix = "+" }: { target: number; labe
 
   return (
     <div ref={ref} className="text-center">
-      <p className="text-3xl sm:text-4xl font-black text-white/90">
+      <p className="text-3xl sm:text-4xl font-black text-white">
         {count}{suffix}
       </p>
-      <p className="text-sm text-white/40 mt-1">{label}</p>
+      <p className="text-sm text-[#666] mt-1">{label}</p>
     </div>
   );
 }
@@ -499,18 +494,15 @@ function TierCardStack() {
   return (
     <div className="relative h-64 w-48 mx-auto perspective-container">
       {tiers.map((tier, i) => (
-        <motion.div
+        <div
           key={tier.name}
-          initial={{ opacity: 0, y: 20, rotateX: 10 }}
-          whileInView={{
+          className={`absolute inset-0 rounded-sm border-2 p-4 bg-[#111] ${tier.glow}`}
+          style={{
+            borderColor: tier.color,
+            zIndex: tiers.length - i,
             opacity: 1 - i * 0.15,
-            y: i * -16,
-            rotateX: 5,
+            transform: `translateY(${i * -16}px) rotateX(5deg)`,
           }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: i * 0.12, ease: easePremium }}
-          className={`absolute inset-0 rounded-2xl border-2 p-4 bg-[#0d1220] ${tier.glow}`}
-          style={{ borderColor: tier.color, zIndex: tiers.length - i }}
         >
           <div
             className="text-xs font-bold uppercase tracking-widest"
@@ -518,9 +510,9 @@ function TierCardStack() {
           >
             {tier.name}
           </div>
-          <div className="mt-2 h-2 w-16 rounded bg-white/10" />
-          <div className="mt-1.5 h-2 w-10 rounded bg-white/5" />
-        </motion.div>
+          <div className="mt-2 h-2 w-16 rounded bg-[#222]" />
+          <div className="mt-1.5 h-2 w-10 rounded bg-[#1a1a1a]" />
+        </div>
       ))}
     </div>
   );
@@ -532,12 +524,6 @@ function TierCardStack() {
 function Hero() {
   const { t } = useTranslation();
 
-  const staggerParent = {
-    animate: {
-      transition: { staggerChildren: 0.12, delayChildren: 0.15 },
-    },
-  };
-
   return (
     <section className="relative min-h-screen flex flex-col overflow-hidden">
       <Header />
@@ -546,82 +532,66 @@ function Hero() {
         <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 py-16 sm:py-20 lg:py-0">
           <div className="flex flex-col lg:flex-row lg:items-center lg:gap-12 xl:gap-20">
             {/* Text side */}
-            <motion.div
-              className="flex-1 max-w-2xl"
-              variants={staggerParent}
-              initial="initial"
-              animate="animate"
-            >
+            <div className="flex-1 max-w-2xl">
               {/* Badge */}
-              <motion.div variants={heroTextReveal}>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-4 py-1.5 text-sm font-semibold text-emerald-400">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <div>
+                <span className="inline-flex items-center gap-1.5 bg-[#d4ff00] text-[#0d0d0d] font-[family-name:var(--font-display-en)] text-[10px] uppercase tracking-[0.1em] px-2 py-0.5">
                   {t("landing.platformBadge")}
                 </span>
-              </motion.div>
+              </div>
 
               {/* Heading — 3 lines */}
               <div className="mt-6 space-y-1">
                 {(["heroLine1", "heroLine2", "heroLine3"] as const).map(
                   (key, i) => (
-                    <motion.h1
+                    <h1
                       key={key}
-                      variants={heroTextReveal}
-                      className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white leading-[1.1] tracking-tight"
+                      className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white leading-[1.1] tracking-tight font-[family-name:var(--font-display-en)]"
                     >
                       {i === 2 ? (
-                        <span className="text-emerald-400 glow-lime-text">
+                        <span className="text-[#d4ff00]">
                           {t(`landing.${key}`)}
                         </span>
                       ) : (
                         t(`landing.${key}`)
                       )}
-                    </motion.h1>
+                    </h1>
                   )
                 )}
               </div>
 
               {/* Subtitle */}
-              <motion.p
-                variants={heroTextReveal}
-                className="mt-5 text-lg text-white/50 max-w-lg leading-relaxed"
+              <p
+                className="mt-5 text-lg text-[#999] max-w-lg leading-relaxed"
               >
                 {t("landing.heroSubtitleNew")}
-              </motion.p>
+              </p>
 
               {/* CTAs */}
-              <motion.div
-                variants={heroTextReveal}
+              <div
                 className="mt-8 flex flex-col sm:flex-row gap-3"
               >
                 <Link href="/browse">
-                  <motion.span
-                    whileHover={{
-                      scale: 1.03,
-                      boxShadow:
-                        "0 0 30px rgba(16,185,129,0.3), 0 0 60px rgba(16,185,129,0.1)",
-                    }}
-                    whileTap={{ scale: 0.97 }}
-                    className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-8 py-4 text-lg font-bold cursor-pointer transition-all min-w-[200px]"
+                  <span
+                    className="relative inline-flex items-center justify-center gap-2 bg-[#d4ff00] text-[#0d0d0d] font-[family-name:var(--font-display-en)] uppercase tracking-wide px-8 py-4 text-lg rounded-sm cursor-pointer transition-all min-w-[200px] active:scale-[0.97] duration-75 hover:brightness-110"
                   >
                     {t("landing.startBooking")}
                     <Search size={18} />
-                  </motion.span>
+                    <span className="absolute bottom-0 inset-x-0 h-1 bg-[#a0c200]" />
+                  </span>
                 </Link>
                 <Link href="/register">
-                  <motion.span
-                    whileHover={{ scale: 1.03, y: -2 }}
-                    whileTap={{ scale: 0.97 }}
-                    className="inline-flex items-center justify-center rounded-full border border-white/10 text-white/80 px-8 py-4 text-lg font-semibold cursor-pointer transition-all hover:border-white/20 hover:bg-white/5 min-w-[200px]"
+                  <span
+                    className="relative inline-flex items-center justify-center bg-[#161616] text-[#888] font-[family-name:var(--font-display-en)] uppercase tracking-wide px-8 py-4 text-lg rounded-sm border-none cursor-pointer transition-all hover:bg-[#1a1a1a] min-w-[200px] active:scale-[0.97] duration-75"
                   >
                     {t("landing.imVenueOwner")}
-                  </motion.span>
+                    <span className="absolute bottom-0 inset-x-0 h-[2px] bg-[#333]" />
+                  </span>
                 </Link>
-              </motion.div>
+              </div>
 
               {/* Value chips */}
-              <motion.div
-                variants={heroTextReveal}
+              <div
                 className="mt-10 flex flex-wrap items-center gap-3"
               >
                 <ValueChip icon={UserX} label={t("landing.valueNoAccount")} />
@@ -630,49 +600,28 @@ function Hero() {
                   icon={MessageCircle}
                   label={t("landing.valueWhatsApp")}
                 />
-              </motion.div>
-            </motion.div>
+              </div>
+            </div>
 
             {/* Phone mockup — hidden on mobile */}
-            <motion.div
+            <div
               className="hidden lg:flex flex-1 justify-center perspective-container"
-              initial={{ opacity: 0, y: 40, rotateY: -8 }}
-              animate={{ opacity: 1, y: 0, rotateY: 0 }}
-              transition={{ duration: 0.8, delay: 0.6, ease: easePremium }}
             >
-              {/* Decorative orbs */}
-              <div
-                className="absolute -top-16 -end-16 w-56 h-56 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none"
-                aria-hidden="true"
-              />
-              <div
-                className="absolute -bottom-12 -start-12 w-40 h-40 rounded-full bg-teal-500/8 blur-3xl pointer-events-none"
-                aria-hidden="true"
-              />
-              <ScreenshotPhone src="/screenshots/discover.png" alt="Badelz app" />
-            </motion.div>
+              <HeroPhoneMockup />
+            </div>
           </div>
         </div>
       </div>
 
       {/* Scroll indicator */}
-      <motion.div
-        className="absolute bottom-6 inset-x-0 flex justify-center z-10"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2 }}
-      >
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="flex flex-col items-center gap-1"
-        >
-          <span className="text-[10px] text-white/30 font-medium">
+      <div className="absolute bottom-6 inset-x-0 flex justify-center z-10">
+        <div className="flex flex-col items-center gap-1">
+          <span className="text-[10px] text-[#666] font-medium">
             {t("landing.scrollToExplore")}
           </span>
-          <ChevronDown size={16} className="text-white/30" />
-        </motion.div>
-      </motion.div>
+          <ChevronDown size={16} className="text-[#666]" />
+        </div>
+      </div>
     </section>
   );
 }
@@ -696,7 +645,7 @@ function FeatureShowcase() {
         t("landing.featureCourtBullet3"),
       ],
       cta: { label: t("landing.browseCourts"), href: "/browse" },
-      color: "#10b981",
+      color: "#d4ff00",
     },
     {
       key: "players",
@@ -709,7 +658,7 @@ function FeatureShowcase() {
         t("landing.featurePlayBullet3"),
       ],
       cta: { label: t("landing.findPlayers"), href: "/play" },
-      color: "#06b6d4",
+      color: "#ff4d4d",
     },
     {
       key: "coaches",
@@ -722,7 +671,7 @@ function FeatureShowcase() {
         t("landing.featureCoachBullet3"),
       ],
       cta: { label: t("landing.findCoach"), href: "/coaches" },
-      color: "#a78bfa",
+      color: "#00c2ff",
     },
     {
       key: "market",
@@ -735,7 +684,7 @@ function FeatureShowcase() {
         t("landing.featureMarketBullet3"),
       ],
       cta: { label: t("landing.browseMarket"), href: "/market" },
-      color: "#c8ff00",
+      color: "#d4ff00",
     },
   ];
 
@@ -746,16 +695,15 @@ function FeatureShowcase() {
     <section className="relative py-24 sm:py-32 px-5 sm:px-8 overflow-hidden">
       <div className="mx-auto max-w-6xl">
         {/* Section heading */}
-        <motion.div className="text-center mb-12" {...revealUp}>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white font-[family-name:var(--font-display-en)] uppercase tracking-wide">
             {t("landing.everythingYouNeed")}
           </h2>
-        </motion.div>
+        </div>
 
         {/* Tab pills */}
-        <motion.div
+        <div
           className="flex gap-2 mb-12 overflow-x-auto pb-2 hide-scrollbar justify-start sm:justify-center"
-          {...revealUp}
         >
           {FEATURES.map((feature, i) => {
             const isActive = i === activeTab;
@@ -764,10 +712,10 @@ function FeatureShowcase() {
               <button
                 key={feature.key}
                 onClick={() => setActiveTab(i)}
-                className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold border transition-all duration-300 whitespace-nowrap shrink-0 ${
+                className={`inline-flex items-center gap-2 rounded-sm px-5 py-2.5 text-sm font-semibold border transition-all duration-300 whitespace-nowrap shrink-0 ${
                   isActive
                     ? "text-white"
-                    : "bg-white/5 border-white/10 text-white/40 hover:text-white/60 hover:border-white/20"
+                    : "rounded-sm bg-[#161616] border-[#333] text-[#666] hover:text-[#999] hover:border-[#333]"
                 }`}
                 style={
                   isActive
@@ -783,7 +731,7 @@ function FeatureShowcase() {
               </button>
             );
           })}
-        </motion.div>
+        </div>
 
         {/* Content area */}
         <AnimatePresence mode="wait">
@@ -803,7 +751,7 @@ function FeatureShowcase() {
               >
                 {active.title}
               </h3>
-              <p className="text-white/50 text-lg mb-8 leading-relaxed">
+              <p className="text-[#999] text-lg mb-8 leading-relaxed">
                 {active.desc}
               </p>
 
@@ -822,12 +770,12 @@ function FeatureShowcase() {
                     className="flex items-center gap-3"
                   >
                     <div
-                      className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
+                      className="flex h-5 w-5 shrink-0 items-center justify-center rounded-sm"
                       style={{ backgroundColor: `${active.color}20` }}
                     >
                       <Check size={12} style={{ color: active.color }} />
                     </div>
-                    <span className="text-white/70 text-sm sm:text-base">
+                    <span className="text-[#999] text-sm sm:text-base">
                       {bullet}
                     </span>
                   </motion.li>
@@ -837,7 +785,7 @@ function FeatureShowcase() {
               {/* CTA link */}
               <Link
                 href={active.cta.href}
-                className="inline-flex items-center gap-2 text-sm font-semibold transition-colors hover:gap-3"
+                className="inline-flex items-center gap-2 text-sm font-semibold transition-colors hover:gap-3 font-[family-name:var(--font-display-en)] uppercase tracking-wide"
                 style={{ color: active.color }}
               >
                 {active.cta.label}
@@ -884,50 +832,42 @@ function HowItWorksSection() {
     <section className="relative py-24 sm:py-32 px-5 sm:px-8 overflow-hidden">
       <div className="mx-auto max-w-5xl">
         {/* Section heading */}
-        <motion.div className="text-center mb-16" {...revealUp}>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white font-[family-name:var(--font-display-en)] uppercase tracking-wide">
             {t("landing.howItWorksTitle")}
           </h2>
-        </motion.div>
+        </div>
 
         {/* Steps */}
         <div className="relative grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-6">
           {/* Connecting dashed line (desktop only) */}
           <div
-            className="hidden md:block absolute top-10 inset-x-[15%] h-px border-t border-dashed border-white/10"
+            className="hidden md:block absolute top-10 inset-x-[15%] h-px border-t border-dashed border-[#d4ff00]/30"
             aria-hidden="true"
           />
 
           {steps.map((step, i) => (
-            <motion.div
+            <div
               key={i}
               className="relative flex flex-col items-center text-center"
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{
-                duration: 0.6,
-                delay: i * 0.15,
-                ease: easePremium,
-              }}
             >
               {/* Icon circle */}
-              <div className="relative z-10 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-6">
-                <step.icon size={28} className="text-emerald-400" />
+              <div className="relative z-10 flex h-20 w-20 items-center justify-center rounded-sm bg-[#d4ff00]/10 border border-[#d4ff00]/20 mb-6">
+                <step.icon size={28} className="text-[#d4ff00]" />
               </div>
 
               {/* Step number badge */}
-              <div className="absolute top-0 end-1/2 z-20 flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-bold translate-x-1/2 -translate-y-1">
+              <div className="absolute top-0 end-1/2 z-20 flex h-6 w-6 items-center justify-center rounded-sm bg-[#d4ff00] text-[#0d0d0d] text-xs font-bold translate-x-1/2 -translate-y-1">
                 {i + 1}
               </div>
 
-              <h3 className="text-xl font-bold text-white mb-2">
+              <h3 className="text-xl font-bold text-white mb-2 font-[family-name:var(--font-display-en)] uppercase">
                 {step.title}
               </h3>
-              <p className="text-white/50 text-sm leading-relaxed max-w-[280px]">
+              <p className="text-[#999] text-sm leading-relaxed max-w-[280px]">
                 {step.desc}
               </p>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
@@ -946,38 +886,30 @@ function PlayerCardsSection() {
       <div className="mx-auto max-w-5xl">
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
           {/* Text side */}
-          <motion.div
+          <div
             className="flex-1 text-center lg:text-start"
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.7, ease: easePremium }}
           >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 font-[family-name:var(--font-display-en)] uppercase tracking-wide">
               {t("landing.everyGameLevels")}
             </h2>
-            <p className="text-white/50 text-lg max-w-md mx-auto lg:mx-0 mb-8 leading-relaxed">
+            <p className="text-[#999] text-lg max-w-md mx-auto lg:mx-0 mb-8 leading-relaxed">
               {t("landing.everyGameLevelsDesc")}
             </p>
             <Link
               href="/players"
-              className="inline-flex items-center gap-2 text-emerald-400 font-semibold hover:gap-3 transition-all"
+              className="inline-flex items-center gap-2 text-[#d4ff00] font-semibold hover:gap-3 transition-all font-[family-name:var(--font-display-en)] uppercase"
             >
               {t("landing.seeLeaderboard")}
               <ArrowUpRight size={18} />
             </Link>
-          </motion.div>
+          </div>
 
           {/* Leaderboard mockup */}
-          <motion.div
+          <div
             className="flex-1 flex justify-center"
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.7, ease: easePremium }}
           >
             <LeaderboardMockup />
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
@@ -995,38 +927,30 @@ function MarketplaceSection() {
       <div className="mx-auto max-w-5xl">
         <div className="flex flex-col-reverse lg:flex-row items-center gap-8 lg:gap-20">
           {/* Marketplace mockup */}
-          <motion.div
+          <div
             className="flex-1 flex justify-center"
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.7, ease: easePremium }}
           >
             <MarketplaceMockup />
-          </motion.div>
+          </div>
 
           {/* Text side */}
-          <motion.div
+          <div
             className="flex-1 text-center lg:text-start"
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.7, ease: easePremium }}
           >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 font-[family-name:var(--font-display-en)] uppercase tracking-wide">
               {t("landing.marketShowcaseTitle")}
             </h2>
-            <p className="text-white/50 text-lg max-w-md mx-auto lg:mx-0 mb-8 leading-relaxed">
+            <p className="text-[#999] text-lg max-w-md mx-auto lg:mx-0 mb-8 leading-relaxed">
               {t("landing.marketShowcaseDesc")}
             </p>
             <Link
               href="/market"
-              className="inline-flex items-center gap-2 text-[#c8ff00] font-semibold hover:gap-3 transition-all"
+              className="inline-flex items-center gap-2 text-[#d4ff00] font-semibold hover:gap-3 transition-all font-[family-name:var(--font-display-en)] uppercase"
             >
               {t("landing.browseMarket")}
               <ArrowUpRight size={18} />
             </Link>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
@@ -1072,45 +996,31 @@ function VenueOwnerSection() {
   return (
     <section className="relative py-20 sm:py-28 px-5 sm:px-8 overflow-hidden">
       <div className="mx-auto max-w-5xl">
-        <motion.div
-          className="relative glass-dark-strong rounded-3xl p-8 sm:p-12 gradient-border overflow-hidden"
-          initial={{ opacity: 0, scale: 0.9 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6, ease: easePremium }}
+        <div
+          className="relative bg-[#111] rounded-sm border-t-[3px] border-t-[#d4ff00] p-8 sm:p-12 overflow-hidden"
         >
-          {/* Background glow */}
-          <div
-            className="absolute inset-0 rounded-3xl bg-gradient-to-br from-emerald-500/5 via-transparent to-teal-500/3 pointer-events-none"
-            aria-hidden="true"
-          />
-
           <div className="relative z-10 flex flex-col items-center text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-10">
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-10 font-[family-name:var(--font-display-en)] uppercase tracking-wide">
               {t("landing.ownACourt")}
             </h2>
 
             {/* Two founding partner cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full mb-10">
               {/* Venue card — gold theme */}
-              <motion.div
-                className="rounded-2xl bg-white/[0.04] border border-[#ffd700]/20 p-5 flex flex-col"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.2 }}
+              <div
+                className="rounded-sm bg-[#1a1a1a] border-t-[3px] border-t-[#ffd700] border border-[#222] p-5 flex flex-col"
               >
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-[#ffd700] font-bold text-sm tracking-wide uppercase">
                     {t("landing.freeForever")}
                   </span>
-                  <span className="text-white/70 text-sm font-bold tabular-nums">
+                  <span className="text-[#999] text-sm font-bold tabular-nums">
                     {foundingCount}/{MAX_FOUNDING}
                   </span>
                 </div>
-                <div className="w-full h-2 rounded-full bg-white/10 mb-3 overflow-hidden">
+                <div className="w-full h-2 rounded-sm bg-[#222] mb-3 overflow-hidden">
                   <motion.div
-                    className="h-full rounded-full"
+                    className="h-full rounded-sm"
                     style={{
                       background: "linear-gradient(90deg, #ffd700, #ffaa00)",
                       boxShadow: "0 0 10px rgba(255,215,0,0.3)",
@@ -1118,58 +1028,49 @@ function VenueOwnerSection() {
                     initial={{ width: 0 }}
                     whileInView={{ width: `${venueProgress}%` }}
                     viewport={{ once: true }}
-                    transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+
                   />
                 </div>
-                <p className="text-white/50 text-xs text-center mb-4">
+                <p className="text-[#999] text-xs text-center mb-4">
                   {t("landing.foundingCounter", { count: foundingCount })}
                 </p>
 
                 <ul className="space-y-3 text-start mb-6 flex-1">
                   {venueBullets.map((bullet, i) => (
                     <li key={i} className="flex items-center gap-2.5">
-                      <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/15">
-                        <CheckCircle size={12} className="text-emerald-400" />
+                      <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-sm bg-[#d4ff00]/15">
+                        <CheckCircle size={12} className="text-[#d4ff00]" />
                       </div>
-                      <span className="text-white/70 text-sm">{bullet}</span>
+                      <span className="text-[#999] text-sm">{bullet}</span>
                     </li>
                   ))}
                 </ul>
 
                 <Link href="/register" className="mt-auto">
-                  <motion.span
-                    whileHover={{
-                      scale: 1.05,
-                      boxShadow: "0 0 30px rgba(16,185,129,0.3)",
-                    }}
-                    whileTap={{ scale: 0.97 }}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-6 py-3 text-sm font-bold cursor-pointer transition-all"
+                  <span
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-sm bg-[#d4ff00] text-[#0d0d0d] px-6 py-3 text-sm font-bold cursor-pointer transition-all active:scale-[0.97] duration-75 hover:brightness-110"
                   >
                     {t("landing.registerVenue")}
                     <ArrowUpRight size={16} />
-                  </motion.span>
+                  </span>
                 </Link>
-              </motion.div>
+              </div>
 
               {/* Coach card — purple theme */}
-              <motion.div
-                className="rounded-2xl bg-white/[0.04] border border-[#a78bfa]/20 p-5 flex flex-col"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.35 }}
+              <div
+                className="rounded-sm bg-[#1a1a1a] border-t-[3px] border-t-[#a78bfa] border border-[#222] p-5 flex flex-col"
               >
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-[#a78bfa] font-bold text-sm tracking-wide uppercase">
                     {t("landing.freeForever")}
                   </span>
-                  <span className="text-white/70 text-sm font-bold tabular-nums">
+                  <span className="text-[#999] text-sm font-bold tabular-nums">
                     {coachCount}/{MAX_FOUNDING}
                   </span>
                 </div>
-                <div className="w-full h-2 rounded-full bg-white/10 mb-3 overflow-hidden">
+                <div className="w-full h-2 rounded-sm bg-[#222] mb-3 overflow-hidden">
                   <motion.div
-                    className="h-full rounded-full"
+                    className="h-full rounded-sm"
                     style={{
                       background: "linear-gradient(90deg, #a78bfa, #7c3aed)",
                       boxShadow: "0 0 10px rgba(167,139,250,0.3)",
@@ -1177,41 +1078,36 @@ function VenueOwnerSection() {
                     initial={{ width: 0 }}
                     whileInView={{ width: `${coachProgress}%` }}
                     viewport={{ once: true }}
-                    transition={{ duration: 1, delay: 0.65, ease: "easeOut" }}
+
                   />
                 </div>
-                <p className="text-white/50 text-xs text-center mb-4">
+                <p className="text-[#999] text-xs text-center mb-4">
                   {t("landing.foundingCoachCounter", { count: coachCount })}
                 </p>
 
                 <ul className="space-y-3 text-start mb-6 flex-1">
                   {coachBullets.map((bullet, i) => (
                     <li key={i} className="flex items-center gap-2.5">
-                      <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-purple-500/15">
+                      <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-sm bg-purple-500/15">
                         <CheckCircle size={12} className="text-purple-400" />
                       </div>
-                      <span className="text-white/70 text-sm">{bullet}</span>
+                      <span className="text-[#999] text-sm">{bullet}</span>
                     </li>
                   ))}
                 </ul>
 
                 <Link href="/coaches/register" className="mt-auto">
-                  <motion.span
-                    whileHover={{
-                      scale: 1.05,
-                      boxShadow: "0 0 30px rgba(167,139,250,0.3)",
-                    }}
-                    whileTap={{ scale: 0.97 }}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-violet-600 text-white px-6 py-3 text-sm font-bold cursor-pointer transition-all"
+                  <span
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-sm bg-[#a78bfa] text-[#0d0d0d] px-6 py-3 text-sm font-bold cursor-pointer transition-all active:scale-[0.97] duration-75 hover:brightness-110"
                   >
                     {t("landing.registerCoachCta")}
                     <ArrowUpRight size={16} />
-                  </motion.span>
+                  </span>
                 </Link>
-              </motion.div>
+              </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
@@ -1228,41 +1124,25 @@ function FinalCta() {
   return (
     <section className="relative py-20 sm:py-28 px-5 sm:px-8 overflow-hidden">
       <div className="mx-auto max-w-4xl">
-        <motion.div
-          className="relative rounded-3xl bg-gradient-to-br from-emerald-600 to-teal-600 p-8 sm:p-14 text-center overflow-hidden"
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6, ease: easePremium }}
+        <div
+          className="relative rounded-sm bg-[#d4ff00] p-8 sm:p-14 text-center overflow-hidden"
+          style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 20px), 0 100%)" }}
         >
-          {/* Decorative grid */}
-          <div
-            className="absolute inset-0 opacity-10"
-            style={{
-              backgroundImage:
-                "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
-              backgroundSize: "32px 32px",
-            }}
-            aria-hidden="true"
-          />
-
           <div className="relative z-10">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
+            <h2 className="text-4xl sm:text-5xl font-bold text-[#0d0d0d] mb-6 font-[family-name:var(--font-display-en)] uppercase tracking-wide">
               {t("landing.startBookingNow")}
             </h2>
 
             <Link href="/browse">
-              <motion.span
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.97 }}
-                className="inline-flex items-center gap-2 rounded-full bg-white text-gray-900 px-10 py-4 text-lg font-bold cursor-pointer transition-all hover:bg-white/90"
+              <span
+                className="inline-flex items-center gap-2 rounded-sm bg-[#0d0d0d] text-[#d4ff00] font-[family-name:var(--font-display-en)] uppercase tracking-wide px-10 py-4 text-lg font-bold cursor-pointer transition-all hover:bg-[#1a1a1a] active:scale-[0.97] duration-75 border-2 border-[#0d0d0d]"
               >
                 {t("landing.browseCourts")}
                 <Search size={18} />
-              </motion.span>
+              </span>
             </Link>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
@@ -1273,7 +1153,7 @@ function Footer() {
 
   return (
     <footer className="py-8 text-center space-y-1">
-      <p className="text-white/25 text-sm">
+      <p className="text-[#666] text-sm">
         {t("landing.footerCopy")} &copy;
       </p>
       <p className="text-white/15 text-xs">{t("landing.madeInEgypt")}</p>
@@ -1284,7 +1164,7 @@ function Footer() {
 // ─── Main Export ───
 export function HeroSection() {
   return (
-    <div className="gradient-mesh noise-overlay">
+    <div className="bg-[#0d0d0d]">
       <Hero />
       <FeatureShowcase />
       <HowItWorksSection />

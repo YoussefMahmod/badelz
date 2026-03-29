@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coach Avatar Flame Styles</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0f1a; color: white; font-family: system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; gap: 60px; }
+  h1 { font-size: 24px; font-weight: 700; opacity: 0.9; }
+  h2 { font-size: 16px; font-weight: 600; opacity: 0.7; margin-bottom: 8px; }
+  p.desc { font-size: 12px; opacity: 0.4; max-width: 300px; text-align: center; margin-top: 8px; }
+  .row { display: flex; gap: 40px; flex-wrap: wrap; justify-content: center; }
+  .option { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); }
+  .option-label { font-size: 14px; font-weight: 700; padding: 4px 12px; border-radius: 99px; }
+  .avatars { display: flex; gap: 24px; align-items: center; }
+  .avatar-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .avatar-wrap span { font-size: 10px; opacity: 0.4; }
+
+  /* Shared avatar base */
+  .avatar {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: linear-gradient(135deg, rgba(200,255,0,0.1), rgba(200,255,0,0.03));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; color: #c8ff00;
+    position: relative; z-index: 2;
+  }
+
+  /* ====== OPTION 1: FLAME PARTICLES ====== */
+  .flame-ring { position: relative; width: 80px; height: 80px; }
+  .flame-ring .avatar { position: absolute; top: 8px; left: 8px; }
+
+  .flame-particle {
+    position: absolute;
+    width: 6px; height: 10px;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    filter: blur(2px);
+    opacity: 0;
+    animation: flame-rise 1.5s ease-out infinite;
+  }
+
+  @keyframes flame-rise {
+    0% { opacity: 0; transform: translateY(0) scale(1); }
+    20% { opacity: 0.9; }
+    100% { opacity: 0; transform: translateY(-18px) scale(0.3); }
+  }
+
+  /* PRO flames - lime */
+  .flame-ring.pro .flame-particle { background: #c8ff00; box-shadow: 0 0 6px #c8ff00; }
+  .flame-ring.pro::before { content: ''; position: absolute; inset: -4px; border-radius: 50%; background: conic-gradient(from 0deg, #c8ff00, #fbbf24, transparent, #c8ff00, transparent, #a3e635, #c8ff00); animation: spin 2s linear infinite; filter: blur(5px); opacity: 0.7; }
+  .flame-ring.pro::after { content: ''; position: absolute; inset: 4px; border-radius: 50%; background: #0a0f1a; z-index: 1; }
+
+  /* POPULAR flames - purple */
+  .flame-ring.popular .flame-particle { background: #c084fc; box-shadow: 0 0 6px #c084fc; }
+  .flame-ring.popular::before { content: ''; position: absolute; inset: -3px; border-radius: 50%; background: conic-gradient(from 0deg, #c084fc, #f472b6, transparent, #a855f7, transparent, #c084fc); animation: spin 3s linear infinite; filter: blur(4px); opacity: 0.6; }
+  .flame-ring.popular::after { content: ''; position: absolute; inset: 4px; border-radius: 50%; background: #0a0f1a; z-index: 1; }
+
+  /* RISING flames - blue */
+  .flame-ring.rising .flame-particle { background: #60a5fa; box-shadow: 0 0 6px #60a5fa; }
+  .flame-ring.rising::before { content: ''; position: absolute; inset: -2px; border-radius: 50%; background: conic-gradient(from 0deg, #60a5fa, #22d3ee, transparent, #3b82f6, transparent, #60a5fa); animation: spin 4s linear infinite; filter: blur(3px); opacity: 0.5; }
+  .flame-ring.rising::after { content: ''; position: absolute; inset: 5px; border-radius: 50%; background: #0a0f1a; z-index: 1; }
+
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  /* ====== OPTION 2: SVG TURBULENCE ====== */
+  .turb-ring { position: relative; width: 80px; height: 80px; }
+  .turb-ring .avatar { position: absolute; top: 8px; left: 8px; }
+  .turb-ring .ring-layer {
+    position: absolute; inset: -3px; border-radius: 50%;
+    animation: spin 2.5s linear infinite;
+    filter: url(#turbulence-filter) blur(3px);
+  }
+  .turb-ring .mask { position: absolute; inset: 5px; border-radius: 50%; background: #0a0f1a; z-index: 1; }
+
+  .turb-ring.pro .ring-layer { background: conic-gradient(from 0deg, #c8ff00, #fbbf24, #c8ff00, #a3e635, transparent, #c8ff00); opacity: 0.8; }
+  .turb-ring.pro { box-shadow: 0 0 20px rgba(200,255,0,0.4); }
+  .turb-ring.popular .ring-layer { background: conic-gradient(from 0deg, #c084fc, #f472b6, transparent, #a855f7, transparent, #c084fc); opacity: 0.7; animation-duration: 3s; }
+  .turb-ring.popular { box-shadow: 0 0 15px rgba(192,132,252,0.3); }
+  .turb-ring.rising .ring-layer { background: conic-gradient(from 0deg, #60a5fa, #22d3ee, transparent, #3b82f6, transparent, #60a5fa); opacity: 0.6; animation-duration: 4s; }
+  .turb-ring.rising { box-shadow: 0 0 12px rgba(96,165,250,0.25); }
+
+  /* ====== OPTION 3: RADIAL BLOBS ====== */
+  .blob-ring { position: relative; width: 80px; height: 80px; }
+  .blob-ring .avatar { position: absolute; top: 8px; left: 8px; z-index: 3; }
+  .blob-ring .blob {
+    position: absolute;
+    width: 20px; height: 28px;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    filter: blur(6px);
+    animation: blob-pulse 2s ease-in-out infinite;
+  }
+  .blob-ring .blob:nth-child(1) { top: -8px; left: 50%; transform: translateX(-50%); }
+  .blob-ring .blob:nth-child(2) { top: 50%; right: -8px; transform: translateY(-50%) rotate(90deg); animation-delay: 0.5s; }
+  .blob-ring .blob:nth-child(3) { bottom: -8px; left: 50%; transform: translateX(-50%) rotate(180deg); animation-delay: 1s; }
+  .blob-ring .blob:nth-child(4) { top: 50%; left: -8px; transform: translateY(-50%) rotate(270deg); animation-delay: 1.5s; }
+  .blob-ring .blob:nth-child(5) { top: 4px; right: 4px; transform: rotate(45deg); animation-delay: 0.3s; width: 16px; height: 22px; }
+  .blob-ring .blob:nth-child(6) { bottom: 4px; left: 4px; transform: rotate(225deg); animation-delay: 0.8s; width: 16px; height: 22px; }
+
+  .blob-ring .ring-base { position: absolute; inset: 2px; border-radius: 50%; border: 2px solid; z-index: 2; }
+
+  .blob-ring.pro .blob { background: #c8ff00; }
+  .blob-ring.pro .ring-base { border-color: rgba(200,255,0,0.5); box-shadow: 0 0 15px rgba(200,255,0,0.3); }
+  .blob-ring.popular .blob { background: #c084fc; }
+  .blob-ring.popular .ring-base { border-color: rgba(192,132,252,0.4); box-shadow: 0 0 12px rgba(192,132,252,0.25); }
+  .blob-ring.rising .blob { background: #60a5fa; }
+  .blob-ring.rising .ring-base { border-color: rgba(96,165,250,0.35); box-shadow: 0 0 10px rgba(96,165,250,0.2); }
+
+  @keyframes blob-pulse {
+    0%, 100% { opacity: 0.4; transform: translateX(-50%) scaleY(1); }
+    50% { opacity: 0.9; transform: translateX(-50%) scaleY(1.3); }
+  }
+  .blob-ring .blob:nth-child(2) { animation-name: blob-pulse-side; }
+  .blob-ring .blob:nth-child(4) { animation-name: blob-pulse-side; }
+  @keyframes blob-pulse-side {
+    0%, 100% { opacity: 0.3; transform: translateY(-50%) rotate(90deg) scaleY(1); }
+    50% { opacity: 0.8; transform: translateY(-50%) rotate(90deg) scaleY(1.2); }
+  }
+</style>
+</head>
+<body>
+
+<h1>Coach Avatar Flame Styles</h1>
+
+<!-- OPTION 1: Flame Particles -->
+<div class="option">
+  <div class="option-label" style="background: rgba(200,255,0,0.15); color: #c8ff00;">Option 1: Flame Particles</div>
+  <div class="avatars">
+    <div class="avatar-wrap">
+      <div class="flame-ring pro">
+        <div class="flame-particle" style="top: 2px; left: 20px; animation-delay: 0s;"></div>
+        <div class="flame-particle" style="top: 2px; left: 36px; animation-delay: 0.2s;"></div>
+        <div class="flame-particle" style="top: 2px; left: 52px; animation-delay: 0.4s;"></div>
+        <div class="flame-particle" style="top: 10px; left: 4px; animation-delay: 0.6s;"></div>
+        <div class="flame-particle" style="top: 10px; left: 66px; animation-delay: 0.1s;"></div>
+        <div class="flame-particle" style="top: 30px; left: -2px; animation-delay: 0.8s;"></div>
+        <div class="flame-particle" style="top: 30px; left: 72px; animation-delay: 0.3s;"></div>
+        <div class="flame-particle" style="top: 50px; left: 4px; animation-delay: 0.5s;"></div>
+        <div class="flame-particle" style="top: 50px; left: 66px; animation-delay: 0.7s;"></div>
+        <div class="flame-particle" style="top: 65px; left: 20px; animation-delay: 0.9s;"></div>
+        <div class="flame-particle" style="top: 65px; left: 50px; animation-delay: 0.15s;"></div>
+        <div class="avatar">CH</div>
+      </div>
+      <span>PRO (120)</span>
+    </div>
+    <div class="avatar-wrap">
+      <div class="flame-ring popular">
+        <div class="flame-particle" style="top: 2px; left: 24px; animation-delay: 0s;"></div>
+        <div class="flame-particle" style="top: 2px; left: 46px; animation-delay: 0.3s;"></div>
+        <div class="flame-particle" style="top: 12px; left: 6px; animation-delay: 0.6s;"></div>
+        <div class="flame-particle" style="top: 12px; left: 64px; animation-delay: 0.15s;"></div>
+        <div class="flame-particle" style="top: 35px; left: 0px; animation-delay: 0.45s;"></div>
+        <div class="flame-particle" style="top: 35px; left: 70px; animation-delay: 0.75s;"></div>
+        <div class="flame-particle" style="top: 58px; left: 10px; animation-delay: 0.9s;"></div>
+        <div class="flame-particle" style="top: 58px; left: 60px; animation-delay: 0.5s;"></div>
+        <div class="avatar">CS</div>
+      </div>
+      <span>POPULAR (30)</span>
+    </div>
+    <div class="avatar-wrap">
+      <div class="flame-ring rising">
+        <div class="flame-particle" style="top: 4px; left: 28px; animation-delay: 0s;"></div>
+        <div class="flame-particle" style="top: 4px; left: 44px; animation-delay: 0.4s;"></div>
+        <div class="flame-particle" style="top: 15px; left: 8px; animation-delay: 0.2s;"></div>
+        <div class="flame-particle" style="top: 15px; left: 62px; animation-delay: 0.6s;"></div>
+        <div class="flame-particle" style="top: 55px; left: 14px; animation-delay: 0.8s;"></div>
+        <div class="flame-particle" style="top: 55px; left: 56px; animation-delay: 0.35s;"></div>
+        <div class="avatar">CY</div>
+      </div>
+      <span>RISING (8)</span>
+    </div>
+  </div>
+  <p class="desc">Tiny flame wisps rise from the ring. Most fire-like. 8-12 particles per avatar.</p>
+</div>
+
+<!-- OPTION 2: SVG Turbulence -->
+<svg width="0" height="0">
+  <defs>
+    <filter id="turbulence-filter">
+      <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="3" result="noise">
+        <animate attributeName="baseFrequency" values="0.015;0.025;0.015" dur="3s" repeatCount="indefinite"/>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" />
+    </filter>
+  </defs>
+</svg>
+
+<div class="option">
+  <div class="option-label" style="background: rgba(96,165,250,0.15); color: #60a5fa;">Option 2: SVG Turbulence</div>
+  <div class="avatars">
+    <div class="avatar-wrap">
+      <div class="turb-ring pro">
+        <div class="ring-layer"></div>
+        <div class="mask"></div>
+        <div class="avatar">CH</div>
+      </div>
+      <span>PRO (120)</span>
+    </div>
+    <div class="avatar-wrap">
+      <div class="turb-ring popular">
+        <div class="ring-layer"></div>
+        <div class="mask"></div>
+        <div class="avatar">CS</div>
+      </div>
+      <span>POPULAR (30)</span>
+    </div>
+    <div class="avatar-wrap">
+      <div class="turb-ring rising">
+        <div class="ring-layer"></div>
+        <div class="mask"></div>
+        <div class="avatar">CY</div>
+      </div>
+      <span>RISING (8)</span>
+    </div>
+  </div>
+  <p class="desc">SVG turbulence distorts the ring into organic, flickering shapes. Lightest on DOM.</p>
+</div>
+
+<!-- OPTION 3: Radial Blobs -->
+<div class="option">
+  <div class="option-label" style="background: rgba(192,132,252,0.15); color: #c084fc;">Option 3: Radial Blobs</div>
+  <div class="avatars">
+    <div class="avatar-wrap">
+      <div class="blob-ring pro">
+        <div class="blob"></div><div class="blob"></div><div class="blob"></div>
+        <div class="blob"></div><div class="blob"></div><div class="blob"></div>
+        <div class="ring-base"></div>
+        <div class="avatar">CH</div>
+      </div>
+      <span>PRO (120)</span>
+    </div>
+    <div class="avatar-wrap">
+      <div class="blob-ring popular">
+        <div class="blob"></div><div class="blob"></div><div class="blob"></div>
+        <div class="blob"></div><div class="blob"></div><div class="blob"></div>
+        <div class="ring-base"></div>
+        <div class="avatar">CS</div>
+      </div>
+      <span>POPULAR (30)</span>
+    </div>
+    <div class="avatar-wrap">
+      <div class="blob-ring rising">
+        <div class="blob"></div><div class="blob"></div><div class="blob"></div>
+        <div class="blob"></div><div class="blob"></div><div class="blob"></div>
+        <div class="ring-base"></div>
+        <div class="avatar">CY</div>
+      </div>
+      <span>RISING (8)</span>
+    </div>
+  </div>
+  <p class="desc">Pulsing flame blobs around the ring at cardinal points. Campfire/aura feel.</p>
+</div>
+
+</body>
+</html>

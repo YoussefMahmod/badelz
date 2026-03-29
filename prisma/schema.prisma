@@ -272,6 +272,7 @@ enum LobbyLevel {
 
 enum PlayerTier {
   BRONZE
+  SILVER
   GOLD
   EMERALD
   DIAMOND

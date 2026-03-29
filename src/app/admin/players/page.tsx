@@ -13,7 +13,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { useTranslation } from "@/i18n";
-import { staggerContainer, staggerItem, checkmarkDraw } from "@/lib/animations";
+import { checkmarkDraw } from "@/lib/animations";
 
 // ─── Types ───
 
@@ -65,7 +65,7 @@ const TIER_OPTIONS: { value: PlayerTier; label: string }[] = [
 ];
 
 const INPUT_CLASS =
-  "bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white/90 placeholder:text-white/30 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20 outline-none w-full transition-colors";
+  "bg-[#1a1a1a] border border-[#333] rounded-xl px-4 py-3 text-white placeholder:text-[#666] focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20 outline-none w-full transition-colors";
 
 // ─── Collapsible Section ───
 
@@ -83,9 +83,8 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <motion.div
-      variants={staggerItem}
-      className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden"
+    <div
+      className="bg-[#1a1a1a] border border-[#333] rounded-sm overflow-hidden"
     >
       <button
         type="button"
@@ -96,13 +95,13 @@ function Section({
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-indigo-500/15">
             <Icon size={18} className="text-indigo-400" />
           </div>
-          <span className="text-base font-bold text-white/70">{title}</span>
+          <span className="text-base font-bold text-[#999]">{title}</span>
         </div>
         <motion.div
           animate={{ rotate: expanded ? 180 : 0 }}
           transition={{ duration: 0.2 }}
         >
-          <ChevronDown size={18} className="text-white/30" />
+          <ChevronDown size={18} className="text-[#666]" />
         </motion.div>
       </button>
 
@@ -119,7 +118,7 @@ function Section({
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </div>
   );
 }
 
@@ -136,9 +135,9 @@ function Field({
 }) {
   return (
     <div>
-      <label className="text-sm text-white/50 mb-1 block">{label}</label>
+      <label className="text-sm text-[#999] mb-1 block">{label}</label>
       {children}
-      {hint && <p className="text-xs text-white/30 mt-1">{hint}</p>}
+      {hint && <p className="text-xs text-[#666] mt-1">{hint}</p>}
     </div>
   );
 }
@@ -253,7 +252,7 @@ export default function CreatePlayerPage() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4 }}
-          className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center"
+          className="bg-[#1a1a1a] border border-[#333] rounded-sm p-6 text-center"
         >
           {/* Animated checkmark */}
           <div className="flex justify-center mb-5">
@@ -272,9 +271,10 @@ export default function CreatePlayerPage() {
                 fill="none"
               >
                 <motion.path
-                  variants={checkmarkDraw}
                   initial="initial"
                   animate="animate"
+                  variants={checkmarkDraw}
+
                   d="M10 20L17 27L30 13"
                   stroke="#818cf8"
                   strokeWidth="3"
@@ -286,25 +286,25 @@ export default function CreatePlayerPage() {
             </div>
           </div>
 
-          <h2 className="text-xl font-bold text-white/90 mb-2">
+          <h2 className="text-xl font-bold text-white mb-2">
             Player Created!
           </h2>
 
           {/* Player name */}
-          <div className="space-y-1 text-sm text-white/50 mb-6">
+          <div className="space-y-1 text-sm text-[#999] mb-6">
             <p>{result.player.name}</p>
-            <p dir="ltr" className="font-mono text-white/40">{result.player.phone}</p>
+            <p dir="ltr" className="font-mono text-[#666]">{result.player.phone}</p>
           </div>
 
           {/* Password box (only if account was created) */}
           {result.generatedPassword && (
             <div className="mb-6">
-              <p className="text-sm text-white/50 mb-2">
+              <p className="text-sm text-[#999] mb-2">
                 Generated Password
               </p>
               <button
                 onClick={copyPassword}
-                className="flex items-center justify-center gap-2 mx-auto bg-white/5 border border-white/10 rounded-xl px-5 py-3 font-mono text-lg text-white/90 hover:bg-white/10 transition-colors"
+                className="flex items-center justify-center gap-2 mx-auto bg-[#1a1a1a] border border-[#333] rounded-xl px-5 py-3 font-mono text-lg text-white hover:bg-[#222] transition-colors"
               >
                 <span>{result.generatedPassword}</span>
                 <AnimatePresence mode="wait">
@@ -315,7 +315,7 @@ export default function CreatePlayerPage() {
                       animate={{ scale: 1 }}
                       exit={{ scale: 0 }}
                     >
-                      <Check size={16} className="text-emerald-400" />
+                      <Check size={16} className="text-[#d4ff00]" />
                     </motion.span>
                   ) : (
                     <motion.span
@@ -324,12 +324,12 @@ export default function CreatePlayerPage() {
                       animate={{ scale: 1 }}
                       exit={{ scale: 0 }}
                     >
-                      <Copy size={16} className="text-white/40" />
+                      <Copy size={16} className="text-[#666]" />
                     </motion.span>
                   )}
                 </AnimatePresence>
               </button>
-              <p className="text-xs text-white/30 mt-1.5">
+              <p className="text-xs text-[#666] mt-1.5">
                 {copied ? "Copied!" : "Click to copy"}
               </p>
             </div>
@@ -342,7 +342,7 @@ export default function CreatePlayerPage() {
                 href={result.whatsappLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-xl py-3 hover:opacity-90 transition-opacity"
+                className="flex items-center justify-center gap-2 bg-[#d4ff00] text-[#0d0d0d] text-white font-semibold rounded-xl py-3 hover:opacity-90 transition-opacity"
               >
                 <MessageCircle size={18} />
                 Send WhatsApp
@@ -350,7 +350,7 @@ export default function CreatePlayerPage() {
             )}
             <button
               onClick={resetForm}
-              className="flex items-center justify-center gap-2 bg-white/5 border border-white/10 text-white/70 font-semibold rounded-xl py-3 hover:bg-white/10 transition-colors"
+              className="flex items-center justify-center gap-2 bg-[#1a1a1a] border border-[#333] text-[#999] font-semibold rounded-xl py-3 hover:bg-[#222] transition-colors"
             >
               <RotateCcw size={16} />
               Create Another
@@ -371,16 +371,14 @@ export default function CreatePlayerPage() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-6"
       >
-        <h1 className="text-xl font-bold text-white/90">
+        <h1 className="text-xl font-bold text-white">
           Create Player
         </h1>
       </motion.div>
 
       <form onSubmit={handleSubmit}>
-        <motion.div
-          variants={staggerContainer}
-          initial="initial"
-          animate="animate"
+        <div
+
           className="space-y-4"
         >
           {/* ── Section 1: Account Info ── */}
@@ -547,7 +545,7 @@ export default function CreatePlayerPage() {
                 type="button"
                 onClick={() => updateField("isEarlyAdopter", !form.isEarlyAdopter)}
                 className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${
-                  form.isEarlyAdopter ? "bg-indigo-500" : "bg-white/10"
+                  form.isEarlyAdopter ? "bg-indigo-500" : "bg-[#222]"
                 }`}
               >
                 <motion.div
@@ -556,12 +554,12 @@ export default function CreatePlayerPage() {
                   className="absolute top-1 h-4 w-4 rounded-full bg-white shadow"
                 />
               </button>
-              <span className="text-sm text-white/60">Early Adopter</span>
+              <span className="text-sm text-[#999]">Early Adopter</span>
             </div>
           </Section>
 
           {/* ── Submit ── */}
-          <motion.div variants={staggerItem}>
+          <div>
             <button
               type="submit"
               disabled={submitting}
@@ -576,8 +574,8 @@ export default function CreatePlayerPage() {
                 "Create Player"
               )}
             </button>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </form>
     </div>
   );

@@ -11,7 +11,6 @@ import {
   Zap,
 } from "lucide-react";
 import { useTranslation, useLocale } from "@/i18n";
-import { staggerContainer, staggerItem } from "@/lib/animations";
 import { LoadingSpinner } from "@/components/loading-spinner";
 
 // ─── Types ───
@@ -88,14 +87,14 @@ const DAY_LABELS = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
 
 function TimeGrid({ grid, selected }: { grid: boolean[][]; selected: boolean }) {
   return (
-    <div className="mt-3 p-3 rounded-xl bg-black/20 border border-white/5">
+    <div className="mt-3 p-3 rounded-xl bg-black/20 border border-[#222]">
       {/* Day headers */}
       <div className="grid grid-cols-[28px_repeat(7,1fr)] gap-0.5 mb-1">
         <div />
         {DAY_LABELS.map((d) => (
           <div
             key={d}
-            className="text-[9px] text-white/30 text-center font-medium"
+            className="text-[9px] text-[#666] text-center font-medium"
           >
             {d}
           </div>
@@ -110,7 +109,7 @@ function TimeGrid({ grid, selected }: { grid: boolean[][]; selected: boolean }) 
           const showLabel = hour % 2 === 0;
           return (
             <div key={hourIdx} className="contents">
-              <div className="text-[8px] text-white/20 text-end pe-1 self-center leading-none">
+              <div className="text-[8px] text-[#666] text-end pe-1 self-center leading-none">
                 {showLabel ? `${hour}` : ""}
               </div>
               {row.map((active, dayIdx) => (
@@ -121,7 +120,7 @@ function TimeGrid({ grid, selected }: { grid: boolean[][]; selected: boolean }) 
                       ? selected
                         ? "bg-indigo-500/70"
                         : "bg-white/20"
-                      : "bg-white/[0.03]"
+                      : "bg-[#1a1a1a]"
                   }`}
                 />
               ))}
@@ -154,14 +153,14 @@ function SuccessToast({
       exit={{ opacity: 0, y: -20, scale: 0.95 }}
       className="fixed top-5 inset-x-4 z-50 mx-auto max-w-md"
     >
-      <div className="bg-indigo-500/15 border border-indigo-500/30 backdrop-blur-xl rounded-xl px-4 py-3 flex items-center gap-3 shadow-lg shadow-indigo-500/10">
+      <div className="bg-indigo-500/15 border border-indigo-500/30 rounded-xl px-4 py-3 flex items-center gap-3 shadow-lg shadow-indigo-500/10">
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-500/20">
           <Zap size={16} className="text-indigo-400" />
         </div>
-        <p className="text-sm font-medium text-white/90 flex-1">{message}</p>
+        <p className="text-sm font-medium text-white flex-1">{message}</p>
         <button
           onClick={onDismiss}
-          className="text-white/30 hover:text-white/60 transition-colors"
+          className="text-[#666] hover:text-[#999] transition-colors"
         >
           <span className="sr-only">Dismiss</span>
           &times;
@@ -317,20 +316,15 @@ export default function TemplatesPage() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-6"
       >
-        <h1 className="text-xl font-bold text-white/90">
+        <h1 className="text-xl font-bold text-white">
           {t("admin.templates")}
         </h1>
-        <p className="text-sm text-white/40 mt-0.5">
+        <p className="text-sm text-[#666] mt-0.5">
           {t("admin.selectTemplate")}
         </p>
       </motion.div>
 
-      <motion.div
-        variants={staggerContainer}
-        initial="initial"
-        animate="animate"
-        className="space-y-4"
-      >
+      <div className="space-y-4">
         {/* ── Template Cards ── */}
         {TEMPLATES.map((tmpl) => {
           const selected = selectedTemplate === tmpl.id;
@@ -338,32 +332,31 @@ export default function TemplatesPage() {
             <motion.button
               key={tmpl.id}
               type="button"
-              variants={staggerItem}
               onClick={() => setSelectedTemplate(tmpl.id)}
               whileTap={{ scale: 0.98 }}
-              className={`w-full text-start rounded-2xl border p-5 transition-all ${
+              className={`w-full text-start rounded-sm border p-5 transition-all ${
                 selected
                   ? "border-indigo-500/60 bg-indigo-500/10 shadow-[0_0_30px_rgba(99,102,241,0.1)]"
-                  : "border-white/10 bg-white/5 hover:border-white/20"
+                  : "border-[#333] bg-[#1a1a1a] hover:border-[#333]"
               }`}
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <div
                     className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
-                      selected ? "bg-indigo-500/20" : "bg-white/5"
+                      selected ? "bg-indigo-500/20" : "bg-[#1a1a1a]"
                     }`}
                   >
                     <Clock
                       size={20}
-                      className={selected ? "text-indigo-400" : "text-white/40"}
+                      className={selected ? "text-indigo-400" : "text-[#666]"}
                     />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-white/90">
+                    <p className="text-sm font-semibold text-white">
                       {t(tmpl.labelKey as Parameters<typeof t>[0])}
                     </p>
-                    <p className="text-xs text-white/40 mt-0.5">
+                    <p className="text-xs text-[#666] mt-0.5">
                       {t(tmpl.descKey as Parameters<typeof t>[0])}
                     </p>
                   </div>
@@ -373,7 +366,7 @@ export default function TemplatesPage() {
                   className={`text-xs font-medium px-2.5 py-1 rounded-full shrink-0 ${
                     selected
                       ? "bg-indigo-500/20 text-indigo-300"
-                      : "bg-white/5 text-white/40"
+                      : "bg-[#1a1a1a] text-[#666]"
                   }`}
                 >
                   {tmpl.slots} slots
@@ -395,22 +388,21 @@ export default function TemplatesPage() {
         })}
 
         {/* ── Venue / Court Selector ── */}
-        <motion.div
-          variants={staggerItem}
-          className="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-4"
+        <div
+          className="bg-[#1a1a1a] border border-[#333] rounded-sm p-5 space-y-4"
         >
           {/* Venue dropdown */}
           <div>
-            <label className="text-sm text-white/50 mb-2 block">
+            <label className="text-sm text-[#999] mb-2 block">
               {t("admin.selectVenue")}
             </label>
             <div className="relative">
               <button
                 type="button"
                 onClick={() => setVenueDropdownOpen(!venueDropdownOpen)}
-                className="flex items-center justify-between w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-start text-white/90 hover:border-white/20 transition-colors"
+                className="flex items-center justify-between w-full bg-[#1a1a1a] border border-[#333] rounded-xl px-4 py-3 text-start text-white hover:border-[#333] transition-colors"
               >
-                <span className={selectedVenue ? "" : "text-white/30"}>
+                <span className={selectedVenue ? "" : "text-[#666]"}>
                   {selectedVenue
                     ? venueName(selectedVenue)
                     : t("admin.selectVenue")}
@@ -419,7 +411,7 @@ export default function TemplatesPage() {
                   animate={{ rotate: venueDropdownOpen ? 180 : 0 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <ChevronDown size={16} className="text-white/30" />
+                  <ChevronDown size={16} className="text-[#666]" />
                 </motion.div>
               </button>
 
@@ -429,11 +421,11 @@ export default function TemplatesPage() {
                     initial={{ opacity: 0, y: -4, scaleY: 0.95 }}
                     animate={{ opacity: 1, y: 0, scaleY: 1 }}
                     exit={{ opacity: 0, y: -4, scaleY: 0.95 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute z-20 inset-x-0 mt-2 bg-[#111827] border border-white/10 rounded-xl overflow-hidden shadow-xl origin-top max-h-60 overflow-y-auto"
+                   
+                    className="absolute z-20 inset-x-0 mt-2 bg-[#1a1a1a] border border-[#333] rounded-xl overflow-hidden shadow-xl origin-top max-h-60 overflow-y-auto"
                   >
                     {venues.length === 0 ? (
-                      <div className="px-4 py-6 text-center text-sm text-white/40">
+                      <div className="px-4 py-6 text-center text-sm text-[#666]">
                         No venues
                       </div>
                     ) : (
@@ -442,14 +434,14 @@ export default function TemplatesPage() {
                           key={venue.id}
                           type="button"
                           onClick={() => selectVenue(venue.id)}
-                          className={`w-full text-start px-4 py-3 text-sm hover:bg-white/5 transition-colors flex items-center justify-between ${
+                          className={`w-full text-start px-4 py-3 text-sm hover:bg-[#1a1a1a] transition-colors flex items-center justify-between ${
                             venue.id === selectedVenueId
                               ? "bg-indigo-500/10 text-indigo-300"
-                              : "text-white/80"
+                              : "text-[#999]"
                           }`}
                         >
                           <span>{venueName(venue)}</span>
-                          <span className="text-xs text-white/30">
+                          <span className="text-xs text-[#666]">
                             {venue.courts.length} courts
                           </span>
                         </button>
@@ -472,7 +464,7 @@ export default function TemplatesPage() {
                 className="overflow-hidden"
               >
                 <div className="flex items-center justify-between mb-3">
-                  <label className="text-sm text-white/50">
+                  <label className="text-sm text-[#999]">
                     {t("admin.selectCourts")}
                   </label>
                   <button
@@ -492,10 +484,10 @@ export default function TemplatesPage() {
                         key={court.id}
                         type="button"
                         onClick={() => toggleCourt(court.id)}
-                        className={`w-full flex items-center gap-3 rounded-xl border px-4 py-3 transition-all text-start ${
+                        className={`w-full flex items-center gap-3 rounded-sm border px-4 py-3 transition-all text-start ${
                           checked
                             ? "border-indigo-500/40 bg-indigo-500/10"
-                            : "border-white/10 bg-white/[0.03] hover:border-white/20"
+                            : "border-[#333] bg-[#1a1a1a] hover:border-[#333]"
                         }`}
                       >
                         {/* Checkbox indicator */}
@@ -503,7 +495,7 @@ export default function TemplatesPage() {
                           className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-all ${
                             checked
                               ? "bg-indigo-500 border-indigo-500"
-                              : "border-white/20 bg-transparent"
+                              : "border-[#333] bg-transparent"
                           }`}
                         >
                           <AnimatePresence>
@@ -512,7 +504,7 @@ export default function TemplatesPage() {
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
                                 exit={{ scale: 0 }}
-                                transition={{ duration: 0.15 }}
+                               
                               >
                                 <Check
                                   size={12}
@@ -528,14 +520,14 @@ export default function TemplatesPage() {
                           <RectangleHorizontal
                             size={14}
                             className={
-                              checked ? "text-indigo-400" : "text-white/30"
+                              checked ? "text-indigo-400" : "text-[#666]"
                             }
                           />
                           <span
                             className={`text-sm ${
                               checked
-                                ? "text-white/90 font-medium"
-                                : "text-white/60"
+                                ? "text-white font-medium"
+                                : "text-[#999]"
                             }`}
                           >
                             {courtName(court)}
@@ -548,10 +540,10 @@ export default function TemplatesPage() {
               </motion.div>
             )}
           </AnimatePresence>
-        </motion.div>
+        </div>
 
         {/* ── Apply Button ── */}
-        <motion.div variants={staggerItem}>
+        <div>
           <button
             type="button"
             onClick={handleApply}
@@ -575,14 +567,14 @@ export default function TemplatesPage() {
 
           {/* Helper text when no selection */}
           {(!selectedVenueId || selectedCourtIds.size === 0) && (
-            <p className="text-xs text-white/30 text-center mt-2">
+            <p className="text-xs text-[#666] text-center mt-2">
               {!selectedVenueId
                 ? t("admin.selectVenue")
                 : t("admin.selectCourts")}
             </p>
           )}
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
     </div>
   );
 }

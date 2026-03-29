@@ -68,9 +68,9 @@ const STEP_COUNTS: Record<UserRole, number> = {
 };
 
 const inputClasses =
-  "w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm text-white outline-none placeholder:text-white/30 focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all";
+  "w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-4 py-3 text-sm text-white outline-none placeholder:text-[#666] focus:border-[#d4ff00] focus:ring-2 focus:ring-0 transition-all";
 
-const labelClasses = "block text-sm font-medium text-white/70 mb-1.5";
+const labelClasses = "block text-sm font-medium text-[#999] mb-1.5";
 
 // ─── Page wrapper with Suspense ───
 
@@ -78,8 +78,8 @@ export default function OnboardingPage() {
   return (
     <Suspense
       fallback={
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0a0f1a]">
-          <Loader2 size={28} className="animate-spin text-emerald-400" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0d0d0d]">
+          <Loader2 size={28} className="animate-spin text-[#d4ff00]" />
         </div>
       }
     >
@@ -144,8 +144,8 @@ function OnboardingWizard() {
 
   if (isLoading) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0a0f1a]">
-        <Loader2 size={28} className="animate-spin text-emerald-400" />
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0d0d0d]">
+        <Loader2 size={28} className="animate-spin text-[#d4ff00]" />
       </div>
     );
   }
@@ -332,7 +332,7 @@ function OnboardingWizard() {
   const NextIcon = locale === "ar" ? ArrowLeft : ArrowRight;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0a0f1a]">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0d0d0d]">
       <div className="mx-auto flex min-h-screen max-w-md flex-col px-5 py-8">
         {/* Logo */}
         <div className="flex justify-center mb-6">
@@ -341,7 +341,7 @@ function OnboardingWizard() {
 
         {/* Progress indicator */}
         <div className="flex flex-col items-center mb-6">
-          <p className="text-xs text-white/40 mb-3">
+          <p className="text-xs text-[#666] mb-3">
             {t("onboarding.step", { current: step + 1, total: totalSteps })}
           </p>
           <div className="flex items-center gap-2" dir="ltr">
@@ -358,7 +358,7 @@ function OnboardingWizard() {
                         : "rgba(255, 255, 255, 0.15)", // upcoming
                 }}
                 transition={{ duration: 0.3 }}
-                className="h-2 w-2 rounded-full"
+                className="h-2 w-2 rounded-sm"
               />
             ))}
           </div>
@@ -371,7 +371,7 @@ function OnboardingWizard() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="mb-4 flex items-center gap-2 rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400"
+              className="mb-4 flex items-center gap-2 rounded-sm bg-[#ff4d4d]/100/10 border border-red-500/20 px-4 py-3 text-sm text-red-400"
             >
               <span className="flex-1">{error}</span>
               <button
@@ -434,7 +434,7 @@ function OnboardingWizard() {
               type="button"
               whileTap={{ scale: 0.95 }}
               onClick={goBack}
-              className="flex items-center gap-1.5 rounded-full px-5 py-3 text-sm text-white/50 transition-colors hover:text-white"
+              className="flex items-center gap-1.5 rounded-sm px-5 py-3 text-sm text-[#999] transition-colors hover:text-white"
             >
               <BackIcon size={16} />
               <span>{t("onboarding.back")}</span>
@@ -449,7 +449,7 @@ function OnboardingWizard() {
               whileTap={{ scale: 0.97 }}
               onClick={handleFinalAction}
               disabled={loading || !canProceed()}
-              className="flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 px-8 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 rounded-sm bg-[#d4ff00] text-[#d4ff00] px-8 py-3 text-sm font-bold text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <Loader2 size={16} className="animate-spin" />
@@ -470,7 +470,7 @@ function OnboardingWizard() {
               whileTap={{ scale: 0.97 }}
               onClick={goNext}
               disabled={!canProceed()}
-              className="flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 px-8 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 rounded-sm bg-[#d4ff00] text-[#d4ff00] px-8 py-3 text-sm font-bold text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span>{t("onboarding.next")}</span>
               <NextIcon size={16} />
@@ -486,7 +486,7 @@ function OnboardingWizard() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
             onClick={goNext}
-            className="mt-3 text-center text-xs text-white/30 transition-colors hover:text-white/50"
+            className="mt-3 text-center text-xs text-[#666] transition-colors hover:text-[#999]"
           >
             {t("onboarding.skip")}
           </motion.button>
@@ -516,11 +516,11 @@ function PlayerStep({
 
   if (step === 0) {
     return (
-      <div className="glass-dark rounded-2xl p-6">
+      <div className="glass-dark rounded-sm p-6">
         <h2 className="text-xl font-bold text-white mb-1">
           {t("onboarding.whereDoYouPlay")}
         </h2>
-        <p className="text-sm text-white/50 mb-5">
+        <p className="text-sm text-[#999] mb-5">
           {t("onboarding.selectYourArea")}
         </p>
         <DarkAreaSelector
@@ -547,9 +547,9 @@ function PlayerStep({
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: "spring", stiffness: 200, damping: 15 }}
-        className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-500/10 border-2 border-emerald-500"
+        className="mb-6 flex h-20 w-20 items-center justify-center rounded-sm bg-[#d4ff00]/10 border-2 border-emerald-500"
       >
-        <PartyPopper size={36} className="text-emerald-400" />
+        <PartyPopper size={36} className="text-[#d4ff00]" />
       </motion.div>
 
       <motion.h2
@@ -565,7 +565,7 @@ function PlayerStep({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="text-sm text-white/50 mb-8"
+        className="text-sm text-[#999] mb-8"
       >
         {t("onboarding.welcomePlayerDesc")}
       </motion.p>
@@ -575,22 +575,22 @@ function PlayerStep({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="glass-dark rounded-2xl p-5 w-full max-w-xs"
+        className="glass-dark rounded-sm p-5 w-full max-w-xs"
       >
         <div className="flex flex-col items-center gap-3">
           {/* Avatar placeholder */}
-          <div className="h-14 w-14 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white font-bold text-lg">
+          <div className="h-14 w-14 rounded-sm bg-[#d4ff00] text-[#d4ff00] flex items-center justify-center text-white font-bold text-lg">
             {userName.charAt(0).toUpperCase()}
           </div>
           <div>
             <p className="text-base font-bold text-white">{userName}</p>
             {areaLabel && (
-              <p className="text-xs text-white/40 mt-0.5">{areaLabel}</p>
+              <p className="text-xs text-[#666] mt-0.5">{areaLabel}</p>
             )}
           </div>
           {/* Bronze tier badge */}
-          <div className="flex items-center gap-1.5 rounded-full bg-[#cd7f32]/15 border border-[#cd7f32]/30 px-3 py-1">
-            <div className="h-2 w-2 rounded-full bg-[#cd7f32]" />
+          <div className="flex items-center gap-1.5 rounded-sm bg-[#cd7f32]/15 border border-[#cd7f32]/30 px-3 py-1">
+            <div className="h-2 w-2 rounded-sm bg-[#cd7f32]" />
             <span className="text-xs font-semibold text-[#cd7f32]">
               {t("player.bronze")}
             </span>
@@ -621,12 +621,12 @@ function CoachStep({
 
   if (step === 0) {
     return (
-      <div className="glass-dark rounded-2xl p-6 space-y-5">
+      <div className="glass-dark rounded-sm p-6 space-y-5">
         <div>
           <h2 className="text-xl font-bold text-white mb-1">
             {t("onboarding.whereDoYouCoach")}
           </h2>
-          <p className="text-sm text-white/50 mb-5">
+          <p className="text-sm text-[#999] mb-5">
             {t("onboarding.selectCoachAreas")}
           </p>
           <DarkAreaSelector
@@ -640,7 +640,7 @@ function CoachStep({
         <div>
           <label className={labelClasses}>
             <span className="flex items-center gap-2">
-              <MessageCircle size={14} className="text-white/40" />
+              <MessageCircle size={14} className="text-[#666]" />
               {t("onboarding.whatsappNumber")}
             </span>
           </label>
@@ -660,12 +660,12 @@ function CoachStep({
 
   if (step === 1) {
     return (
-      <div className="glass-dark rounded-2xl p-6 space-y-5">
+      <div className="glass-dark rounded-sm p-6 space-y-5">
         <div>
           <h2 className="text-xl font-bold text-white mb-1">
             {t("onboarding.yourDetails")}
           </h2>
-          <p className="text-sm text-white/40">
+          <p className="text-sm text-[#666]">
             {t("common.optional")}
           </p>
         </div>
@@ -684,7 +684,7 @@ function CoachStep({
               min={0}
               className={`${inputClasses} pe-16`}
             />
-            <span className="absolute end-4 top-1/2 -translate-y-1/2 text-sm text-white/40 pointer-events-none select-none">
+            <span className="absolute end-4 top-1/2 -translate-y-1/2 text-sm text-[#666] pointer-events-none select-none">
               EGP
             </span>
           </div>
@@ -737,10 +737,10 @@ function CoachStep({
       </div>
 
       {/* Preview card */}
-      <div className="glass-dark rounded-2xl p-5">
+      <div className="glass-dark rounded-sm p-5">
         <div className="flex items-start gap-4">
           {/* Avatar */}
-          <div className="h-14 w-14 shrink-0 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white font-bold text-lg">
+          <div className="h-14 w-14 shrink-0 rounded-sm bg-[#d4ff00] text-[#d4ff00] flex items-center justify-center text-white font-bold text-lg">
             {userName.charAt(0).toUpperCase()}
           </div>
           <div className="flex-1 min-w-0">
@@ -752,7 +752,7 @@ function CoachStep({
                 {selectedAreas.map((area) => (
                   <span
                     key={area.key}
-                    className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 text-xs text-emerald-400"
+                    className="inline-flex items-center gap-1 rounded-sm bg-[#d4ff00]/10 border border-[#d4ff00]/20 px-2.5 py-0.5 text-xs text-[#d4ff00]"
                   >
                     <MapPin size={10} />
                     {locale === "ar" ? area.labelAr : area.labelEn}
@@ -763,14 +763,14 @@ function CoachStep({
 
             {/* Price */}
             {form.pricePerHour && (
-              <p className="mt-2 text-sm text-white/60">
+              <p className="mt-2 text-sm text-[#999]">
                 {form.pricePerHour} {t("common.egp")} {t("common.perHour")}
               </p>
             )}
 
             {/* Bio snippet */}
             {form.bio.trim() && (
-              <p className="mt-2 text-xs text-white/40 line-clamp-2">
+              <p className="mt-2 text-xs text-[#666] line-clamp-2">
                 {form.bio.trim()}
               </p>
             )}
@@ -873,13 +873,13 @@ function OwnerStep({
 
   if (step === 0) {
     return (
-      <div className="glass-dark rounded-2xl p-6 space-y-5">
+      <div className="glass-dark rounded-sm p-6 space-y-5">
         {/* Header */}
         <div>
           <h2 className="text-xl font-bold text-white mb-1">
             {t("onboarding.venueInfo")}
           </h2>
-          <p className="text-sm text-white/40">
+          <p className="text-sm text-[#666]">
             {t("onboarding.venueInfoSubtitle")}
           </p>
         </div>
@@ -888,9 +888,9 @@ function OwnerStep({
         <div>
           <label className={labelClasses}>
             <span className="flex items-center gap-2">
-              <Building2 size={14} className="text-emerald-400/60" />
+              <Building2 size={14} className="text-[#d4ff00]/60" />
               {t("onboarding.venueName")}
-              <span className="text-emerald-400 text-[10px]">●</span>
+              <span className="text-[#d4ff00] text-[10px]">●</span>
             </span>
           </label>
           <input
@@ -908,9 +908,9 @@ function OwnerStep({
         <div>
           <label className={labelClasses}>
             <span className="flex items-center gap-2">
-              <MapPin size={14} className="text-emerald-400/60" />
+              <MapPin size={14} className="text-[#d4ff00]/60" />
               {t("onboarding.venueAddress")}
-              <span className="text-emerald-400 text-[10px]">●</span>
+              <span className="text-[#d4ff00] text-[10px]">●</span>
             </span>
           </label>
           <input
@@ -928,9 +928,9 @@ function OwnerStep({
         <div>
           <label className={labelClasses}>
             <span className="flex items-center gap-2">
-              <Globe size={14} className="text-emerald-400/60" />
+              <Globe size={14} className="text-[#d4ff00]/60" />
               {t("onboarding.venueCity")}
-              <span className="text-emerald-400 text-[10px]">●</span>
+              <span className="text-[#d4ff00] text-[10px]">●</span>
             </span>
           </label>
           <input
@@ -950,7 +950,7 @@ function OwnerStep({
             type="button"
             whileTap={{ scale: 0.97 }}
             onClick={() => setShowArabic((prev) => !prev)}
-            className="flex items-center gap-2 text-sm text-white/40 transition-colors hover:text-white/60"
+            className="flex items-center gap-2 text-sm text-[#666] transition-colors hover:text-[#999]"
           >
             {showArabic ? (
               <ChevronUp size={14} />
@@ -973,7 +973,7 @@ function OwnerStep({
                 transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                 className="overflow-hidden"
               >
-                <div className="mt-4 border-s-2 border-emerald-500/20 ps-4 space-y-4">
+                <div className="mt-4 border-s-2 border-[#d4ff00]/20 ps-4 space-y-4">
                   {/* Name Arabic */}
                   <div>
                     <label className={labelClasses}>
@@ -1045,27 +1045,27 @@ function OwnerStep({
           whileTap={{ scale: 0.97 }}
           onClick={handleDetectLocation}
           disabled={detectingLocation}
-          className="w-full flex items-center justify-center gap-3 rounded-xl border border-emerald-500/30 bg-emerald-500/5 px-4 py-4 text-sm transition-all hover:bg-emerald-500/10 hover:border-emerald-500/50 disabled:opacity-50"
+          className="w-full flex items-center justify-center gap-3 rounded-sm border border-[#d4ff00]/20 bg-[#d4ff00]/5 px-4 py-4 text-sm transition-all hover:bg-[#d4ff00]/10 hover:border-[#d4ff00] disabled:opacity-50"
         >
           {detectingLocation ? (
             <>
-              <Loader2 size={16} className="animate-spin text-emerald-400" />
-              <span className="text-white/60">
+              <Loader2 size={16} className="animate-spin text-[#d4ff00]" />
+              <span className="text-[#999]">
                 {t("onboarding.detectingLocation")}
               </span>
             </>
           ) : venueForm.latitude !== null ? (
             <>
-              <CheckCircle size={16} className="text-emerald-400" />
-              <span className="text-emerald-400">
+              <CheckCircle size={16} className="text-[#d4ff00]" />
+              <span className="text-[#d4ff00]">
                 {t("onboarding.locationDetected")}
                 {detectedAreaName && ` — ${detectedAreaName}`}
               </span>
             </>
           ) : (
             <>
-              <MapPin size={16} className="text-emerald-400" />
-              <span className="text-emerald-400">
+              <MapPin size={16} className="text-[#d4ff00]" />
+              <span className="text-[#d4ff00]">
                 {t("onboarding.detectLocation")}
               </span>
             </>
@@ -1077,7 +1077,7 @@ function OwnerStep({
 
   if (step === 1) {
     return (
-      <div className="glass-dark rounded-2xl p-6 space-y-5">
+      <div className="glass-dark rounded-sm p-6 space-y-5">
         <h2 className="text-xl font-bold text-white mb-1">
           {t("onboarding.contactInfo")}
         </h2>
@@ -1086,9 +1086,9 @@ function OwnerStep({
         <div>
           <label className={labelClasses}>
             <span className="flex items-center gap-2">
-              <Phone size={14} className="text-emerald-400/60" />
+              <Phone size={14} className="text-[#d4ff00]/60" />
               {t("onboarding.venuePhone")}
-              <span className="text-emerald-400 text-[10px]">●</span>
+              <span className="text-[#d4ff00] text-[10px]">●</span>
             </span>
           </label>
           <input
@@ -1108,7 +1108,7 @@ function OwnerStep({
         <div>
           <label className={labelClasses}>
             <span className="flex items-center gap-2">
-              <MessageCircle size={14} className="text-emerald-400/60" />
+              <MessageCircle size={14} className="text-[#d4ff00]/60" />
               {t("onboarding.venueWhatsApp")}
               <span className="text-white/20 text-xs font-normal ms-1">
                 ({t("common.optional")})
@@ -1133,12 +1133,12 @@ function OwnerStep({
 
   // Step 2: First court — single-column with collapsible Arabic
   return (
-    <div className="glass-dark rounded-2xl p-6 space-y-5">
+    <div className="glass-dark rounded-sm p-6 space-y-5">
       <div>
         <h2 className="text-xl font-bold text-white mb-1">
           {t("onboarding.firstCourt")}
         </h2>
-        <p className="text-sm text-white/40">
+        <p className="text-sm text-[#666]">
           {t("onboarding.firstCourtSubtitle")}
         </p>
       </div>
@@ -1148,7 +1148,7 @@ function OwnerStep({
         <label className={labelClasses}>
           <span className="flex items-center gap-2">
             {t("onboarding.courtName")}
-            <span className="text-emerald-400 text-[10px]">●</span>
+            <span className="text-[#d4ff00] text-[10px]">●</span>
           </span>
         </label>
         <input
@@ -1168,7 +1168,7 @@ function OwnerStep({
           type="button"
           whileTap={{ scale: 0.97 }}
           onClick={() => setShowCourtArabic((prev) => !prev)}
-          className="flex items-center gap-2 text-sm text-white/40 transition-colors hover:text-white/60"
+          className="flex items-center gap-2 text-sm text-[#666] transition-colors hover:text-[#999]"
         >
           {showCourtArabic ? (
             <ChevronUp size={14} />
@@ -1191,7 +1191,7 @@ function OwnerStep({
               transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
               className="overflow-hidden"
             >
-              <div className="mt-4 border-s-2 border-emerald-500/20 ps-4">
+              <div className="mt-4 border-s-2 border-[#d4ff00]/20 ps-4">
                 <label className={labelClasses}>
                   {t("onboarding.courtNameAr")}
                 </label>
@@ -1219,7 +1219,7 @@ function OwnerStep({
         <label className={labelClasses}>
           <span className="flex items-center gap-2">
             {t("onboarding.courtPricePerHour")}
-            <span className="text-emerald-400 text-[10px]">●</span>
+            <span className="text-[#d4ff00] text-[10px]">●</span>
           </span>
         </label>
         <div className="relative">
@@ -1238,7 +1238,7 @@ function OwnerStep({
             min={0}
             className={`${inputClasses} pe-16`}
           />
-          <span className="absolute end-4 top-1/2 -translate-y-1/2 text-sm text-white/40 pointer-events-none select-none">
+          <span className="absolute end-4 top-1/2 -translate-y-1/2 text-sm text-[#666] pointer-events-none select-none">
             EGP
           </span>
         </div>
@@ -1312,7 +1312,7 @@ function DarkAreaSelector({
           whileTap={{ scale: 0.95 }}
           onClick={handleDetect}
           disabled={detecting}
-          className="flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-white/15 bg-white/5 px-3 py-2.5 text-xs text-white/50 transition-all hover:border-white/25 hover:text-white/70 disabled:opacity-50"
+          className="flex items-center justify-center gap-1.5 rounded-sm border border-dashed border-[#333] bg-[#1a1a1a] px-3 py-2.5 text-xs text-[#999] transition-all hover:border-white/25 hover:text-[#999] disabled:opacity-50"
         >
           {detecting ? (
             <>
@@ -1336,10 +1336,10 @@ function DarkAreaSelector({
               type="button"
               whileTap={{ scale: 0.95 }}
               onClick={() => handleSelect(area.key)}
-              className={`rounded-xl px-3 py-2.5 text-xs transition-all ${
+              className={`rounded-sm px-3 py-2.5 text-xs transition-all ${
                 active
-                  ? "border-2 border-emerald-500 bg-emerald-500/10 text-emerald-400 font-medium"
-                  : "border border-white/10 bg-white/5 text-white/50 hover:border-white/20 hover:text-white/70"
+                  ? "border-2 border-emerald-500 bg-[#d4ff00]/10 text-[#d4ff00] font-medium"
+                  : "border border-[#333] bg-[#1a1a1a] text-[#999] hover:border-[#333] hover:text-[#999]"
               }`}
             >
               {locale === "ar" ? area.labelAr : area.labelEn}

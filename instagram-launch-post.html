@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Badelz Launch Post — Instagram</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Cairo:wght@600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #111;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: center;
+    min-height: 100vh;
+    gap: 40px;
+    padding: 40px;
+  }
+
+  .label {
+    color: #fff;
+    font-size: 12px;
+    opacity: 0.4;
+    margin-bottom: 8px;
+    text-align: center;
+    font-family: monospace;
+    direction: ltr;
+    width: 100%;
+  }
+
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ============================================
+     SLIDE 1: Hero announcement
+     ============================================ */
+  .slide {
+    width: 1080px;
+    height: 1080px;
+    position: relative;
+    overflow: hidden;
+    background: #0a0f1a;
+    font-family: 'Cairo', 'Inter', sans-serif;
+  }
+
+  /* Subtle grid pattern */
+  .slide::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(200,255,0,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200,255,0,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* Top glow */
+  .slide::after {
+    content: '';
+    position: absolute;
+    top: -200px;
+    right: -100px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(200,255,0,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .slide-content {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 70px 65px;
+  }
+
+  /* Logo area */
+  .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 50px;
+    direction: ltr;
+  }
+
+  .logo-row svg {
+    width: 52px;
+    height: 52px;
+  }
+
+  .logo-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .logo-en {
+    font-family: 'Inter', sans-serif;
+    font-weight: 900;
+    font-size: 24px;
+    letter-spacing: 0.15em;
+    color: #fff;
+    line-height: 1;
+  }
+
+  .logo-ar {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: #c8ff00;
+    line-height: 1;
+    direction: rtl;
+  }
+
+  /* Live badge */
+  .live-badge {
+    margin-right: auto;
+    margin-left: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(200,255,0,0.1);
+    border: 1px solid rgba(200,255,0,0.25);
+    border-radius: 100px;
+    padding: 6px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #c8ff00;
+    letter-spacing: 0.1em;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #c8ff00;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+  }
+
+  /* Main headline */
+  .headline {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 900;
+    font-size: 72px;
+    color: #ffffff;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    direction: rtl;
+  }
+
+  .headline .lime {
+    color: #c8ff00;
+  }
+
+  .subtitle {
+    font-family: 'Cairo', sans-serif;
+    font-size: 28px;
+    color: rgba(255,255,255,0.45);
+    font-weight: 600;
+    margin-bottom: 50px;
+    direction: rtl;
+    line-height: 1.4;
+  }
+
+  /* Feature pills */
+  .features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: auto;
+    direction: rtl;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 100px;
+    padding: 14px 28px;
+    font-size: 22px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.8);
+    font-family: 'Cairo', sans-serif;
+    direction: rtl;
+  }
+
+  .pill-icon {
+    font-size: 24px;
+    line-height: 1;
+  }
+
+  .pill.highlight {
+    background: rgba(200,255,0,0.08);
+    border-color: rgba(200,255,0,0.2);
+    color: #c8ff00;
+  }
+
+  /* Bottom bar */
+  .bottom-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    direction: ltr;
+  }
+
+  .url {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 32px;
+    color: #c8ff00;
+    letter-spacing: 0.02em;
+  }
+
+  .bottom-tags {
+    display: flex;
+    gap: 16px;
+    direction: rtl;
+  }
+
+  .tag {
+    font-family: 'Cairo', sans-serif;
+    font-size: 18px;
+    color: rgba(255,255,255,0.3);
+    font-weight: 600;
+  }
+
+  /* ============================================
+     SLIDE 2: Features breakdown (carousel)
+     ============================================ */
+  .slide2 {
+    background: #0a0f1a;
+  }
+
+  .slide2::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 70%, rgba(16,185,129,0.06) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(200,255,0,0.04) 0%, transparent 50%);
+  }
+
+  .feature-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    direction: rtl;
+  }
+
+  .feature-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 24px;
+    padding: 36px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: all 0.3s;
+  }
+
+  .feature-card:nth-child(1) { border-color: rgba(200,255,0,0.15); }
+  .feature-card:nth-child(2) { border-color: rgba(0,212,255,0.15); }
+  .feature-card:nth-child(3) { border-color: rgba(192,132,252,0.15); }
+  .feature-card:nth-child(4) { border-color: rgba(255,170,0,0.15); }
+
+  .feature-emoji {
+    font-size: 44px;
+    line-height: 1;
+  }
+
+  .feature-title {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 800;
+    font-size: 28px;
+    color: #fff;
+    line-height: 1.2;
+  }
+
+  .feature-card:nth-child(1) .feature-title { color: #c8ff00; }
+  .feature-card:nth-child(2) .feature-title { color: #00d4ff; }
+  .feature-card:nth-child(3) .feature-title { color: #c084fc; }
+  .feature-card:nth-child(4) .feature-title { color: #ffaa00; }
+
+  .feature-desc {
+    font-family: 'Cairo', sans-serif;
+    font-size: 20px;
+    color: rgba(255,255,255,0.45);
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  .slide2-title {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 900;
+    font-size: 48px;
+    color: #fff;
+    margin-bottom: 30px;
+    direction: rtl;
+  }
+
+  /* ============================================
+     SLIDE 3: For Venues & Coaches
+     ============================================ */
+  .slide3 {
+    background: #0a0f1a;
+  }
+
+  .slide3::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(255,215,0,0.05) 0%, transparent 60%);
+  }
+
+  .cta-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    direction: rtl;
+  }
+
+  .cta-block {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 24px;
+    padding: 40px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .cta-block.venue {
+    border-color: rgba(255,215,0,0.2);
+    background: rgba(255,215,0,0.03);
+  }
+
+  .cta-block.coach {
+    border-color: rgba(192,132,252,0.2);
+    background: rgba(192,132,252,0.03);
+  }
+
+  .cta-emoji {
+    font-size: 40px;
+  }
+
+  .cta-title {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 900;
+    font-size: 34px;
+    line-height: 1.2;
+  }
+
+  .cta-block.venue .cta-title { color: #ffd700; }
+  .cta-block.coach .cta-title { color: #c084fc; }
+
+  .cta-desc {
+    font-family: 'Cairo', sans-serif;
+    font-size: 22px;
+    color: rgba(255,255,255,0.5);
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  .cta-highlight {
+    display: inline-block;
+    background: rgba(255,215,0,0.1);
+    border: 1px solid rgba(255,215,0,0.2);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: #ffd700;
+    direction: rtl;
+  }
+
+  .cta-highlight.purple {
+    background: rgba(192,132,252,0.1);
+    border-color: rgba(192,132,252,0.2);
+    color: #c084fc;
+  }
+
+  .no-friction {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    margin-top: 10px;
+  }
+
+  .no-friction span {
+    font-family: 'Cairo', sans-serif;
+    font-size: 20px;
+    color: rgba(255,255,255,0.25);
+    font-weight: 600;
+  }
+
+  /* Scale for display */
+  .scale-wrapper {
+    transform: scale(0.5);
+    transform-origin: top center;
+  }
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: Launch Hero -->
+<div class="wrapper">
+  <div class="label">Slide 1: Launch Announcement (1080x1080)</div>
+  <div class="scale-wrapper">
+    <div class="slide">
+      <div class="slide-content">
+        <!-- Logo -->
+        <div class="logo-row">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+            <defs><linearGradient id="g1" x1="0" y1="100" x2="100" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#c8ff00"/><stop offset="50%" stop-color="#10b981"/><stop offset="100%" stop-color="#14b8a6"/></linearGradient></defs>
+            <path d="M 15 105 Q 25 15, 85 25 Q 105 27, 100 12" stroke="url(#g1)" stroke-width="6" fill="none" stroke-linecap="round"/>
+            <path d="M 22 102 Q 32 35, 78 42" stroke="url(#g1)" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.35"/>
+            <circle cx="100" cy="12" r="11" fill="#c8ff00"/><circle cx="100" cy="12" r="16" fill="none" stroke="#c8ff00" stroke-width="1" opacity="0.3"/>
+          </svg>
+          <div class="logo-text">
+            <span class="logo-en">BADELZ</span>
+            <span class="logo-ar">بادلز</span>
+          </div>
+          <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+        </div>
+
+        <!-- Headline -->
+        <div class="headline">
+          احجز كورت.<br>
+          اكتشف لاعبين.<br>
+          <span class="lime">ارفع مستواك.</span>
+        </div>
+
+        <div class="subtitle">
+          أول منصة بادل عربية في مصر — مجاني ١٠٠٪
+        </div>
+
+        <!-- Feature pills -->
+        <div class="features">
+          <div class="pill highlight"><span class="pill-icon">⚡</span> احجز في 30 ثانية</div>
+          <div class="pill"><span class="pill-icon">🏏</span> لوبي لاعبين</div>
+          <div class="pill"><span class="pill-icon">🎾</span> دليل كوتشات</div>
+          <div class="pill"><span class="pill-icon">🛒</span> ماركت معدات</div>
+          <div class="pill"><span class="pill-icon">🃏</span> كارت لاعب + رانك</div>
+        </div>
+
+        <!-- Bottom -->
+        <div class="bottom-bar">
+          <span class="url">badelz.app</span>
+          <div class="bottom-tags">
+            <span class="tag">من غير حساب</span>
+            <span class="tag">•</span>
+            <span class="tag">من غير تحميل</span>
+            <span class="tag">•</span>
+            <span class="tag">ادفع في الملعب</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 2: Features Grid -->
+<div class="wrapper">
+  <div class="label">Slide 2: Features (carousel swipe)</div>
+  <div class="scale-wrapper">
+    <div class="slide slide2">
+      <div class="slide-content">
+        <div class="logo-row">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="42" height="42">
+            <defs><linearGradient id="g2" x1="0" y1="100" x2="100" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#c8ff00"/><stop offset="50%" stop-color="#10b981"/><stop offset="100%" stop-color="#14b8a6"/></linearGradient></defs>
+            <path d="M 15 105 Q 25 15, 85 25 Q 105 27, 100 12" stroke="url(#g2)" stroke-width="6" fill="none" stroke-linecap="round"/>
+            <path d="M 22 102 Q 32 35, 78 42" stroke="url(#g2)" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.35"/>
+            <circle cx="100" cy="12" r="11" fill="#c8ff00"/><circle cx="100" cy="12" r="16" fill="none" stroke="#c8ff00" stroke-width="1" opacity="0.3"/>
+          </svg>
+        </div>
+
+        <div class="slide2-title">كل اللي محتاجه في مكان واحد</div>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-emoji">🏟</div>
+            <div class="feature-title">احجز كورت</div>
+            <div class="feature-desc">تصفح كورتات حسب المنطقة.<br>اختار الوقت واحجز في ثواني.<br>ادفع في الملعب.</div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-emoji">🏏</div>
+            <div class="feature-title">لاقي لاعبين</div>
+            <div class="feature-desc">افتح لوبي لماتش مفتوح.<br>ابعت اللينك لصحابك.<br>اللي عايز ييجي يدوس Join.</div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-emoji">🎾</div>
+            <div class="feature-title">اكتشف كوتشات</div>
+            <div class="feature-desc">دليل مدربين حسب المنطقة.<br>شوف الأسعار والخبرة.<br>كلم الكوتش واتساب.</div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-emoji">🛒</div>
+            <div class="feature-title">ماركت معدات</div>
+            <div class="feature-desc">اشتري وبيع مضارب وجزم.<br>ارفع صور وحدد سعرك.<br>كلم البائع واتساب.</div>
+          </div>
+        </div>
+
+        <div class="bottom-bar">
+          <span class="url">badelz.app</span>
+          <div class="no-friction">
+            <span>من غير حساب</span>
+            <span>•</span>
+            <span>من غير تحميل</span>
+            <span>•</span>
+            <span>مجاني</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3: For Venues & Coaches -->
+<div class="wrapper">
+  <div class="label">Slide 3: Venues & Coaches CTA (carousel swipe)</div>
+  <div class="scale-wrapper">
+    <div class="slide slide3">
+      <div class="slide-content">
+        <div class="logo-row">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="42" height="42">
+            <defs><linearGradient id="g3" x1="0" y1="100" x2="100" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#c8ff00"/><stop offset="50%" stop-color="#10b981"/><stop offset="100%" stop-color="#14b8a6"/></linearGradient></defs>
+            <path d="M 15 105 Q 25 15, 85 25 Q 105 27, 100 12" stroke="url(#g3)" stroke-width="6" fill="none" stroke-linecap="round"/>
+            <path d="M 22 102 Q 32 35, 78 42" stroke="url(#g3)" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.35"/>
+            <circle cx="100" cy="12" r="11" fill="#c8ff00"/><circle cx="100" cy="12" r="16" fill="none" stroke="#c8ff00" stroke-width="1" opacity="0.3"/>
+          </svg>
+        </div>
+
+        <div class="slide2-title">انضم لبادلز</div>
+
+        <div class="cta-section">
+          <!-- Venue block -->
+          <div class="cta-block venue">
+            <div class="cta-emoji">🏟</div>
+            <div class="cta-title">عندك ملعب بادل؟</div>
+            <div class="cta-desc">
+              داشبورد مجانية. إشعارات واتساب.<br>
+              لاعبين جداد يلاقوك ويحجزوا.
+            </div>
+            <div class="cta-highlight">
+              أول 20 ملعب — مجاني للأبد 🔥<br>
+              <span style="font-size: 18px; opacity: 0.7;">بعد كده 999 جنيه/شهر</span>
+            </div>
+          </div>
+
+          <!-- Coach block -->
+          <div class="cta-block coach">
+            <div class="cta-emoji">🎾</div>
+            <div class="cta-title">انت كوتش بادل؟</div>
+            <div class="cta-desc">
+              بروفايلك يبان لكل لاعب في منطقتك.<br>
+              إحصائيات + واتساب مباشرة.
+            </div>
+            <div class="cta-highlight purple">
+              سجل دلوقتي — مجاناً للأبد ⚡
+            </div>
+          </div>
+        </div>
+
+        <div class="bottom-bar">
+          <span class="url">badelz.app</span>
+          <div class="no-friction">
+            <span>صفر عمولة</span>
+            <span>•</span>
+            <span>صفر رسوم</span>
+            <span>•</span>
+            <span>مجاني</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

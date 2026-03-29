@@ -104,7 +104,7 @@ const CONDS = [
 ] as const;
 
 const INPUT =
-  "w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3.5 text-sm text-white outline-none placeholder:text-white/25 focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all";
+  "w-full rounded-xl bg-[#1a1a1a] border border-[#333] px-4 py-3.5 text-sm text-white outline-none placeholder:text-[#666] focus:border-[#d4ff00] focus:ring-2 focus:ring-0 transition-all";
 const ERR = "text-xs text-red-400 mt-1";
 
 const TOTAL_STEPS = 4;
@@ -296,7 +296,7 @@ export default function SellPage() {
     return (
       <MainLayout showNav={false}>
         <div className="flex items-center justify-center min-h-[60vh]">
-          <Loader2 size={32} className="animate-spin text-emerald-500" />
+          <Loader2 size={32} className="animate-spin text-[#d4ff00]" />
         </div>
       </MainLayout>
     );
@@ -311,7 +311,7 @@ export default function SellPage() {
             initial={{ opacity: 0, x: locale === "ar" ? 10 : -10 }}
             animate={{ opacity: 1, x: 0 }}
             onClick={() => router.back()}
-            className="flex items-center gap-1.5 text-white/60 hover:text-white mb-6 transition-colors"
+            className="flex items-center gap-1.5 text-[#999] hover:text-white mb-6 transition-colors"
           >
             <BackIcon size={18} />
             <span className="text-sm">{t("common.back")}</span>
@@ -321,23 +321,23 @@ export default function SellPage() {
             initial={{ opacity: 0, y: 20, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-8 text-center"
+            className="bg-[#1a1a1a] border border-[#333] rounded-sm p-8 text-center"
           >
-            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-500/10 border border-emerald-500/20">
-              <ShoppingBag size={36} className="text-emerald-400" />
+            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[#d4ff00]/10 border border-[#d4ff00]/20">
+              <ShoppingBag size={36} className="text-[#d4ff00]" />
             </div>
 
             <h2 className="text-2xl font-bold text-white mb-3 font-[family-name:var(--font-display)] uppercase tracking-tight">
               {t("auth.signUpToSell")}
             </h2>
-            <p className="text-sm text-white/50 leading-relaxed mb-8 max-w-xs mx-auto">
+            <p className="text-sm text-[#999] leading-relaxed mb-8 max-w-xs mx-auto">
               {t("auth.signUpToSellDesc")}
             </p>
 
             <div className="flex flex-col gap-3">
               <Link
                 href="/register?returnTo=/market/sell"
-                className="flex items-center justify-center gap-2 w-full rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 py-4 text-base font-bold text-white shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/30 active:scale-[0.98]"
+                className="flex items-center justify-center gap-2 w-full rounded-xl bg-[#d4ff00] text-[#0d0d0d] py-4 text-base font-bold text-white transition-all active:scale-[0.98]"
               >
                 {t("market.createFreeAccount")}
                 <ArrowUpRight size={18} />
@@ -345,17 +345,17 @@ export default function SellPage() {
 
               <Link
                 href="/login?returnTo=/market/sell"
-                className="py-3 text-sm text-white/50 hover:text-white transition-colors"
+                className="py-3 text-sm text-[#999] hover:text-white transition-colors"
               >
                 {t("auth.alreadyHaveAccount")}{" "}
-                <span className="text-emerald-400 font-semibold">
+                <span className="text-[#d4ff00] font-semibold">
                   {t("auth.signIn")}
                 </span>
               </Link>
 
               <Link
                 href="/market"
-                className="py-2 text-sm text-white/30 hover:text-white/50 transition-colors flex items-center justify-center gap-1"
+                className="py-2 text-sm text-[#666] hover:text-[#999] transition-colors flex items-center justify-center gap-1"
               >
                 {t("auth.browseMarket")}
                 <ArrowUpRight size={14} />
@@ -396,7 +396,7 @@ export default function SellPage() {
               router.back();
             }
           }}
-          className="flex items-center gap-1.5 text-white/60 hover:text-white mb-4 transition-colors"
+          className="flex items-center gap-1.5 text-[#999] hover:text-white mb-4 transition-colors"
         >
           <BackIcon size={18} />
           <span className="text-sm">{t("common.back")}</span>
@@ -426,9 +426,9 @@ export default function SellPage() {
                     damping: 15,
                     delay: 0.1,
                   }}
-                  className="flex h-20 w-20 items-center justify-center rounded-full bg-emerald-500/10 border-2 border-emerald-500"
+                  className="flex h-20 w-20 items-center justify-center rounded-full bg-[#d4ff00]/10 border-2 border-emerald-500"
                 >
-                  <CheckCircle size={36} className="text-emerald-500" />
+                  <CheckCircle size={36} className="text-[#d4ff00]" />
                 </motion.div>
               </div>
 
@@ -444,7 +444,7 @@ export default function SellPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
-                className="text-sm text-white/50 mb-6"
+                className="text-sm text-[#999] mb-6"
               >
                 {t("market.createListing")}
               </motion.p>
@@ -454,7 +454,7 @@ export default function SellPage() {
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.35 }}
-                className="w-full rounded-2xl bg-white/5 border border-white/10 overflow-hidden mb-6"
+                className="w-full rounded-sm bg-[#1a1a1a] border border-[#333] overflow-hidden mb-6"
               >
                 {form.photos.length > 0 && (
                   <div className="aspect-[16/9] overflow-hidden">
@@ -466,7 +466,7 @@ export default function SellPage() {
                   </div>
                 )}
                 <div className="p-4">
-                  <p className="text-sm font-bold text-white/90">
+                  <p className="text-sm font-bold text-white">
                     {form.title}
                   </p>
                   <p
@@ -474,7 +474,7 @@ export default function SellPage() {
                     style={{ color: accentColor }}
                   >
                     {Number(form.price).toLocaleString()}{" "}
-                    <span className="text-xs text-white/30">
+                    <span className="text-xs text-[#666]">
                       {t("common.egp")}
                     </span>
                   </p>
@@ -489,7 +489,7 @@ export default function SellPage() {
               >
                 <Link
                   href={`/market/${success.id}`}
-                  className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/20"
+                  className="flex items-center justify-center gap-2 rounded-full bg-[#d4ff00] text-[#0d0d0d] py-3.5 text-sm font-bold text-white"
                 >
                   <Link2 size={16} />
                   {t("market.viewListing")}
@@ -499,7 +499,7 @@ export default function SellPage() {
                     const l = buildListingShareLink(success);
                     window.open(l, "_blank");
                   }}
-                  className="flex items-center justify-center gap-2 rounded-full border border-white/10 py-3 text-sm font-medium text-white/60 hover:bg-white/5"
+                  className="flex items-center justify-center gap-2 rounded-full border border-[#333] py-3 text-sm font-medium text-[#999] hover:bg-[#1a1a1a]"
                 >
                   <Share2 size={16} />
                   {t("market.shareOnWhatsApp")}
@@ -511,7 +511,7 @@ export default function SellPage() {
                     setStep(0);
                     setErrors({});
                   }}
-                  className="py-3 text-sm text-white/40 hover:text-white/60 transition-colors"
+                  className="py-3 text-sm text-[#666] hover:text-[#999] transition-colors"
                 >
                   {t("market.listAnother")}
                 </button>
@@ -529,7 +529,7 @@ export default function SellPage() {
                   <div
                     key={i}
                     className={`h-1 flex-1 rounded-full transition-colors duration-300 ${
-                      i <= step ? "bg-emerald-500" : "bg-white/10"
+                      i <= step ? "bg-[#d4ff00]" : "bg-[#222]"
                     }`}
                   />
                 ))}
@@ -558,7 +558,7 @@ export default function SellPage() {
                     <h1 className="text-2xl font-bold text-white mb-1 font-[family-name:var(--font-display)] uppercase tracking-tight">
                       {t("market.whatAreYouSelling")}
                     </h1>
-                    <p className="text-sm text-white/40 mb-6">
+                    <p className="text-sm text-[#666] mb-6">
                       {t("market.tagline")}
                     </p>
 
@@ -583,10 +583,10 @@ export default function SellPage() {
                                 setStep(1);
                               }, 200);
                             }}
-                            className={`w-full aspect-square rounded-2xl flex flex-col items-center justify-center gap-2.5 transition-all ${
+                            className={`w-full aspect-square rounded-sm flex flex-col items-center justify-center gap-2.5 transition-all ${
                               on
                                 ? "border-2"
-                                : "bg-white/5 border border-white/10 hover:bg-white/8"
+                                : "bg-[#1a1a1a] border border-[#333] hover:bg-[#1a1a1a]"
                             }`}
                             style={
                               on
@@ -635,14 +635,14 @@ export default function SellPage() {
                       <h1 className="text-2xl font-bold text-white mb-1 font-[family-name:var(--font-display)] uppercase tracking-tight">
                         {t("market.addDetails")}
                       </h1>
-                      <p className="text-sm text-white/40 mb-6">
+                      <p className="text-sm text-[#666] mb-6">
                         {t("market.details")}
                       </p>
                     </div>
 
                     {/* Photos */}
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-widest text-white/30 font-[family-name:var(--font-display)] mb-2">
+                      <label className="block text-xs font-bold uppercase tracking-widest text-[#666] font-[family-name:var(--font-display)] mb-2">
                         {t("market.showcaseGear")}
                       </label>
                       <PhotoUpload
@@ -654,7 +654,7 @@ export default function SellPage() {
 
                     {/* Title */}
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-widest text-white/30 font-[family-name:var(--font-display)] mb-1.5">
+                      <label className="block text-xs font-bold uppercase tracking-widest text-[#666] font-[family-name:var(--font-display)] mb-1.5">
                         {locale === "ar" ? "العنوان" : "Title"}{" "}
                         <span className="text-red-400">*</span>
                       </label>
@@ -677,7 +677,7 @@ export default function SellPage() {
 
                     {/* Description */}
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-widest text-white/30 font-[family-name:var(--font-display)] mb-1.5">
+                      <label className="block text-xs font-bold uppercase tracking-widest text-[#666] font-[family-name:var(--font-display)] mb-1.5">
                         {t("market.description")}{" "}
                         <span className="text-white/15">
                           ({t("common.optional")})
@@ -710,7 +710,7 @@ export default function SellPage() {
 
                     {/* Area */}
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-widest text-white/30 font-[family-name:var(--font-display)] mb-2">
+                      <label className="block text-xs font-bold uppercase tracking-widest text-[#666] font-[family-name:var(--font-display)] mb-2">
                         {t("market.location")}{" "}
                         <span className="text-red-400">*</span>
                       </label>
@@ -725,8 +725,8 @@ export default function SellPage() {
                             }}
                             className={`flex items-center gap-1.5 rounded-full px-4 py-2.5 text-xs font-semibold transition-all ${
                               form.area === a.key
-                                ? "bg-emerald-500 text-white"
-                                : "border border-white/10 text-white/50 hover:bg-white/10"
+                                ? "bg-[#d4ff00] text-white"
+                                : "border border-[#333] text-[#999] hover:bg-[#222]"
                             }`}
                           >
                             <MapPin size={11} />
@@ -742,7 +742,7 @@ export default function SellPage() {
                       type="button"
                       whileTap={{ scale: 0.97 }}
                       onClick={handleNext}
-                      className="w-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 py-4 text-base font-bold text-white shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/30 active:scale-[0.98]"
+                      className="w-full rounded-full bg-[#d4ff00] text-[#0d0d0d] py-4 text-base font-bold text-white transition-all active:scale-[0.98]"
                     >
                       {t("common.next")}
                     </motion.button>
@@ -770,7 +770,7 @@ export default function SellPage() {
                     {/* Price input - prominent center */}
                     <div className="text-center py-4">
                       {form.price && Number(form.price) > 0 ? (
-                        <p className="text-4xl font-extrabold font-[family-name:var(--font-display)] text-emerald-500 mb-1">
+                        <p className="text-4xl font-extrabold font-[family-name:var(--font-display)] text-[#d4ff00] mb-1">
                           {Number(form.price).toLocaleString()}
                         </p>
                       ) : (
@@ -778,7 +778,7 @@ export default function SellPage() {
                           0
                         </p>
                       )}
-                      <p className="text-sm text-white/30">{t("common.egp")}</p>
+                      <p className="text-sm text-[#666]">{t("common.egp")}</p>
                       <div className="relative max-w-[200px] mx-auto mt-4">
                         <input
                           type="number"
@@ -799,7 +799,7 @@ export default function SellPage() {
 
                     {/* Condition cards */}
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-widest text-white/30 font-[family-name:var(--font-display)] mb-3">
+                      <label className="block text-xs font-bold uppercase tracking-widest text-[#666] font-[family-name:var(--font-display)] mb-3">
                         {t("market.condition")}{" "}
                         <span className="text-red-400">*</span>
                       </label>
@@ -817,14 +817,14 @@ export default function SellPage() {
                               }}
                               className={`rounded-xl p-4 text-start transition-all ${
                                 isActive
-                                  ? "border-2 border-emerald-500 bg-emerald-500/10"
-                                  : "bg-white/5 border border-white/10 hover:bg-white/8"
+                                  ? "border-2 border-emerald-500 bg-[#d4ff00]/10"
+                                  : "bg-[#1a1a1a] border border-[#333] hover:bg-[#1a1a1a]"
                               }`}
                             >
                               <div className="flex items-center justify-between mb-1.5">
                                 <span
                                   className={`text-sm font-bold ${
-                                    isActive ? "text-emerald-400" : "text-white/70"
+                                    isActive ? "text-[#d4ff00]" : "text-[#999]"
                                   }`}
                                 >
                                   {t(c.lk)}
@@ -833,7 +833,7 @@ export default function SellPage() {
                                   <motion.div
                                     initial={{ scale: 0 }}
                                     animate={{ scale: 1 }}
-                                    className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center"
+                                    className="w-5 h-5 rounded-full bg-[#d4ff00] flex items-center justify-center"
                                   >
                                     <Check size={12} className="text-white" />
                                   </motion.div>
@@ -841,7 +841,7 @@ export default function SellPage() {
                               </div>
                               <p
                                 className={`text-[11px] leading-snug ${
-                                  isActive ? "text-white/50" : "text-white/25"
+                                  isActive ? "text-[#999]" : "text-[#666]"
                                 }`}
                               >
                                 {t(c.descKey)}
@@ -860,7 +860,7 @@ export default function SellPage() {
                       type="button"
                       whileTap={{ scale: 0.97 }}
                       onClick={handleNext}
-                      className="w-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 py-4 text-base font-bold text-white shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/30 active:scale-[0.98]"
+                      className="w-full rounded-full bg-[#d4ff00] text-[#0d0d0d] py-4 text-base font-bold text-white transition-all active:scale-[0.98]"
                     >
                       {t("common.next")}
                     </motion.button>
@@ -886,7 +886,7 @@ export default function SellPage() {
                     </div>
 
                     {/* Preview card */}
-                    <div className="rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
+                    <div className="rounded-sm bg-[#1a1a1a] border border-[#333] overflow-hidden">
                       {/* Photo */}
                       {form.photos.length > 0 ? (
                         <div className="aspect-[4/3] overflow-hidden relative">
@@ -897,7 +897,7 @@ export default function SellPage() {
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                           {form.photos.length > 1 && (
-                            <span className="absolute bottom-2 end-2 bg-black/50 backdrop-blur-sm rounded-full px-2 py-0.5 text-[10px] text-white/80">
+                            <span className="absolute bottom-2 end-2 bg-black/50 rounded-full px-2 py-0.5 text-[10px] text-[#999]">
                               +{form.photos.length - 1}
                             </span>
                           )}
@@ -919,7 +919,7 @@ export default function SellPage() {
                         {/* Pills */}
                         <div className="flex items-center gap-2 flex-wrap">
                           {form.condition && (
-                            <span className="bg-white/10 text-white/70 text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full font-medium">
+                            <span className="bg-[#222] text-[#999] text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full font-medium">
                               {t(
                                 (CONDS.find((c) => c.key === form.condition)?.lk ??
                                   "market.used") as Parameters<typeof t>[0]
@@ -943,7 +943,7 @@ export default function SellPage() {
                         </div>
 
                         {/* Title */}
-                        <p className="text-lg font-bold text-white/90">
+                        <p className="text-lg font-bold text-white">
                           {form.title || "..."}
                         </p>
 
@@ -955,13 +955,13 @@ export default function SellPage() {
                           {form.price
                             ? Number(form.price).toLocaleString()
                             : "0"}{" "}
-                          <span className="text-xs text-white/30">
+                          <span className="text-xs text-[#666]">
                             {t("common.egp")}
                           </span>
                         </p>
 
                         {/* Meta */}
-                        <div className="flex items-center gap-3 text-xs text-white/40">
+                        <div className="flex items-center gap-3 text-xs text-[#666]">
                           {form.area && (
                             <span className="flex items-center gap-1">
                               <MapPin size={11} />
@@ -976,7 +976,7 @@ export default function SellPage() {
 
                         {/* Description preview */}
                         {form.description && (
-                          <p className="text-xs text-white/40 line-clamp-2">
+                          <p className="text-xs text-[#666] line-clamp-2">
                             {form.description}
                           </p>
                         )}
@@ -984,11 +984,11 @@ export default function SellPage() {
                     </div>
 
                     {/* Logged-in badge */}
-                    <div className="flex items-center gap-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/20">
-                        <User size={16} className="text-emerald-400" />
+                    <div className="flex items-center gap-3 rounded-xl bg-[#d4ff00]/10 border border-[#d4ff00]/20 px-4 py-3">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#d4ff00]/20">
+                        <User size={16} className="text-[#d4ff00]" />
                       </div>
-                      <span className="text-sm text-emerald-400 font-medium">
+                      <span className="text-sm text-[#d4ff00] font-medium">
                         {t("market.loggedInAs", { name: user?.name ?? "" })}
                       </span>
                     </div>
@@ -999,7 +999,7 @@ export default function SellPage() {
                       whileTap={{ scale: 0.97 }}
                       disabled={submitting}
                       onClick={handleSubmit}
-                      className="w-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 py-4 text-base font-bold text-white shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/30 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      className="w-full rounded-full bg-[#d4ff00] text-[#0d0d0d] py-4 text-base font-bold text-white transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                       {submitting ? (
                         <Loader2 size={20} className="animate-spin" />
@@ -1015,7 +1015,7 @@ export default function SellPage() {
                     <button
                       type="button"
                       onClick={goBack}
-                      className="w-full py-2 text-sm text-white/40 hover:text-white/60 transition-colors text-center"
+                      className="w-full py-2 text-sm text-[#666] hover:text-[#999] transition-colors text-center"
                     >
                       {t("common.back")}
                     </button>

@@ -26,11 +26,11 @@ const TIER_CARD_CLASSES: Record<Tier, string> = {
   emerald:
     "border-[3px] border-[#50c878] bg-gradient-to-br from-[#0a1a15] to-[#0f2b1a]",
   diamond:
-    "border-4 border-[#b9f2ff] bg-gradient-to-br from-[#0a0f1a] to-[#0f1b2d]",
+    "border-4 border-[#b9f2ff] bg-gradient-to-br from-[#0d0d0d] to-[#0f1b2d]",
   master:
     "border-4 border-[#ff4655] bg-gradient-to-br from-[#1a0a0e] to-[#2a1015]",
   grandmaster:
-    "border-[5px] border-transparent bg-gradient-to-br from-[#0a0f1a] to-[#120a20]",
+    "border-[5px] border-transparent bg-gradient-to-br from-[#0d0d0d] to-[#120a20]",
 };
 
 const TIER_STYLES: Partial<Record<Tier, React.CSSProperties>> = {
@@ -250,7 +250,7 @@ function GrandmasterEffects() {
         className="absolute rounded-2xl pointer-events-none z-[-1]"
         style={{
           inset: 1,
-          background: "linear-gradient(to bottom right, #0a0f1a, #120a20)",
+          background: "linear-gradient(to bottom right, #0d0d0d, #120a20)",
           borderRadius: "inherit",
         }}
       />

@@ -1,9 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Check, Copy, CreditCard, Search } from "lucide-react";
-import { checkmarkDraw, slideUp } from "@/lib/animations";
 import { useTranslation } from "@/i18n";
 import { formatPrice, formatDate, formatTime } from "@/lib/format";
 import { WhatsAppShareButton } from "./whatsapp-share-button";
@@ -69,89 +67,54 @@ export function BookingConfirmationCard({
       });
 
   return (
-    <motion.div {...slideUp} className="mx-auto max-w-md px-4">
+    <div className="mx-auto max-w-md px-4">
       {/* Success animation */}
       <div className="flex flex-col items-center mb-8">
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.1 }}
-          className="relative mb-5"
-        >
+        <div className="relative mb-5">
           <div
-            className="rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-500/30"
+            className="rounded-sm bg-[#d4ff00] flex items-center justify-center"
             style={{ width: 88, height: 88 }}
           >
             <svg viewBox="0 0 24 24" className="h-11 w-11" fill="none">
-              <motion.path
+              <path
                 d="M5 13l4 4L19 7"
-                stroke="white"
+                stroke="#0d0d0d"
                 strokeWidth="2.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                {...checkmarkDraw}
               />
             </svg>
           </div>
-          {/* Decorative rings */}
-          <motion.div
-            className="absolute inset-0 rounded-full border-2 border-emerald-500/30"
-            style={{ width: 88, height: 88 }}
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1.6, opacity: 0 }}
-            transition={{ duration: 1.2, delay: 0.5, repeat: 2 }}
-          />
-        </motion.div>
+        </div>
 
-        <motion.h2
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="text-2xl font-bold text-white/90"
-        >
+        <h2 className="text-2xl font-bold text-white">
           {t("confirmation.title")}
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="text-sm text-white/40 mt-1"
-        >
+        </h2>
+        <p className="text-sm text-[#666] mt-1">
           {t("confirmation.subtitle")}
-        </motion.p>
+        </p>
       </div>
 
       {/* Confirmation code */}
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-        className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 mb-4 text-center"
-      >
-        <p className="text-xs text-white/40 mb-3">{t("confirmation.code")}</p>
+      <div className="bg-[#1a1a1a] border-s-[3px] border-s-[#d4ff00] rounded-sm p-6 mb-4 text-center">
+        <p className="text-xs text-[#666] mb-3">{t("confirmation.code")}</p>
         <div className="flex items-center justify-center gap-3">
-          <span className="text-3xl font-mono font-extrabold tracking-[0.2em] text-white/90">
+          <span className="text-3xl font-mono font-extrabold tracking-[0.2em] text-white">
             {booking.confirmationCode}
           </span>
-          <motion.button
-            whileTap={{ scale: 0.9 }}
+          <button
             onClick={handleCopy}
-            className="rounded-lg bg-white/10 p-2.5 text-white/40 transition-colors hover:bg-white/15 hover:text-white/60"
+            className="rounded-sm bg-[#222] p-2.5 text-[#999] transition-colors hover:bg-[#333] hover:text-white active:scale-[0.97] transition-transform duration-75"
             aria-label="Copy code"
           >
-            {copied ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
-          </motion.button>
+            {copied ? <Check size={16} className="text-[#d4ff00]" /> : <Copy size={16} />}
+          </button>
         </div>
-      </motion.div>
+      </div>
 
       {/* Booking details */}
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7 }}
-        className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-5 mb-4 space-y-3"
-      >
-        <h3 className="text-sm font-bold text-white/70 mb-3">{t("confirmation.details")}</h3>
+      <div className="bg-[#1a1a1a] border border-[#333] rounded-sm p-5 mb-4 space-y-3">
+        <h3 className="text-sm font-bold text-[#999] mb-3">{t("confirmation.details")}</h3>
         <DetailRow label={t("booking.court")} value={`${booking.venueName} - ${booking.courtName}`} />
         <DetailRow label={t("booking.date")} value={formatDate(booking.date)} />
         <DetailRow
@@ -164,21 +127,16 @@ export function BookingConfirmationCard({
         )}
 
         {/* Pay at venue badge */}
-        <div className="flex items-center justify-center gap-2 rounded-full bg-amber-500/10 px-4 py-2.5 mt-4 border border-amber-500/20">
-          <CreditCard size={15} className="text-amber-400" />
-          <span className="text-xs font-semibold text-amber-400">
+        <div className="flex items-center justify-center gap-2 rounded-sm bg-[#d4ff00]/10 px-4 py-2.5 mt-4 border border-[#d4ff00]/20">
+          <CreditCard size={15} className="text-[#d4ff00]" />
+          <span className="text-xs font-semibold text-[#d4ff00]">
             {t("confirmation.payAtVenue")}
           </span>
         </div>
-      </motion.div>
+      </div>
 
       {/* Actions */}
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.8 }}
-        className="space-y-3"
-      >
+      <div className="space-y-3">
         <WhatsAppShareButton
           shareUrl={shareUrl}
           label={gameCode ? t("game.shareGame") : t("confirmation.shareWhatsApp")}
@@ -187,13 +145,13 @@ export function BookingConfirmationCard({
 
         <Link
           href="/browse"
-          className="flex items-center justify-center gap-2 w-full rounded-full border border-white/10 py-3.5 text-sm font-semibold text-white/60 transition-colors hover:bg-white/5 hover:text-white/90"
+          className="flex items-center justify-center gap-2 w-full rounded-sm border border-[#333] py-3.5 text-sm font-semibold text-[#999] transition-colors hover:bg-[#1a1a1a] hover:text-white"
         >
           <Search size={16} />
           {t("confirmation.backToBrowse")}
         </Link>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 }
 
@@ -208,8 +166,8 @@ function DetailRow({
 }) {
   return (
     <div className="flex items-center justify-between text-sm">
-      <span className="text-white/40">{label}</span>
-      <span className={highlight ? "font-bold text-emerald-400" : "text-white/70 font-medium"}>
+      <span className="text-[#666]">{label}</span>
+      <span className={highlight ? "font-bold text-[#d4ff00] font-[family-name:var(--font-display-en)]" : "text-[#999] font-medium"}>
         {value}
       </span>
     </div>

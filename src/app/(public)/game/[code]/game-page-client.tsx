@@ -21,7 +21,7 @@ import { LOBBY_LEVELS } from "@/lib/constants";
 import { useAuth } from "@/lib/auth-context";
 import { formatPrice, formatDate, formatTime } from "@/lib/format";
 import { buildGameShareLink } from "@/lib/whatsapp";
-import { checkmarkDraw, pulseGlow } from "@/lib/animations";
+import { checkmarkDraw } from "@/lib/animations";
 import { PlayerSlotCard } from "@/components/player-slot-card";
 import { JoinGameForm } from "@/components/join-game-form";
 import Link from "next/link";
@@ -162,7 +162,7 @@ export default function GamePageClient({ code }: { code: string }) {
           </p>
           <Link
             href="/browse"
-            className="rounded-full bg-[#111827] px-6 py-3 text-sm font-bold text-white shadow-sm"
+            className="rounded-sm bg-[#1a1a1a] px-6 py-3 text-sm font-bold text-white shadow-sm"
           >
             {t("confirmation.backToBrowse")}
           </Link>
@@ -228,7 +228,7 @@ export default function GamePageClient({ code }: { code: string }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className={`bg-white border border-gray-200 rounded-2xl p-6 mx-4 relative z-10 shadow-card ${
+        className={`bg-white border border-gray-200 rounded-sm p-6 mx-4 relative z-10 shadow-card ${
           venue?.coverPhoto ? "-mt-8" : "mt-4"
         }`}
       >
@@ -282,7 +282,7 @@ export default function GamePageClient({ code }: { code: string }) {
               <motion.div
                 animate={{ scale: [1, 1.3, 1] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
-                className="h-2 w-2 rounded-full bg-[#c8ff00]"
+                className="h-2 w-2 rounded-sm bg-[#d4ff00]"
               />
             )}
             <span
@@ -339,7 +339,7 @@ export default function GamePageClient({ code }: { code: string }) {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="flex flex-col items-center rounded-2xl bg-white border border-gray-200 p-8 shadow-card"
+              className="flex flex-col items-center rounded-sm bg-white border border-gray-200 p-8 shadow-card"
             >
               <motion.div
                 initial={{ scale: 0 }}
@@ -352,10 +352,10 @@ export default function GamePageClient({ code }: { code: string }) {
                 className="relative mb-4"
               >
                 <div
-                  className="h-16 w-16 rounded-full bg-[#c8ff00] flex items-center justify-center"
+                  className="h-16 w-16 rounded-sm bg-[#d4ff00] flex items-center justify-center"
                 >
                   <svg viewBox="0 0 24 24" className="h-8 w-8" fill="none">
-                    <motion.path
+                    <path
                       d="M5 13l4 4L19 7"
                       stroke="#111827"
                       strokeWidth="2.5"
@@ -366,11 +366,11 @@ export default function GamePageClient({ code }: { code: string }) {
                   </svg>
                 </div>
                 <motion.div
-                  className="absolute inset-0 rounded-full border-2 border-[#c8ff00]/30"
+                  className="absolute inset-0 rounded-full border-2 border-[#d4ff00]/30"
                   style={{ width: 64, height: 64 }}
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 2, opacity: 0 }}
-                  transition={{ duration: 1.2, delay: 0.3, repeat: 2 }}
+                 
                 />
               </motion.div>
 
@@ -382,7 +382,7 @@ export default function GamePageClient({ code }: { code: string }) {
               </p>
               <Link
                 href="/my-card"
-                className="flex items-center gap-2 text-sm font-semibold text-[#111827] hover:text-gray-600 transition-colors"
+                className="flex items-center gap-2 text-sm font-semibold text-[#0d0d0d] hover:text-gray-600 transition-colors"
               >
                 <CreditCard size={16} />
                 <span>{t("player.checkYourCard")}</span>
@@ -396,14 +396,13 @@ export default function GamePageClient({ code }: { code: string }) {
               key="full"
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex flex-col items-center rounded-2xl bg-[#c8ff00]/10 border border-[#c8ff00]/30 p-6"
+              className="flex flex-col items-center rounded-sm bg-[#d4ff00]/10 border border-[#d4ff00]/30 p-6"
             >
-              <motion.div
-                {...pulseGlow}
-                className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-[#c8ff00]"
+              <div
+                className="mb-3 flex h-14 w-14 items-center justify-center rounded-sm bg-[#d4ff00]"
               >
-                <Sparkles size={24} className="text-[#111827]" />
-              </motion.div>
+                <Sparkles size={24} className="text-[#0d0d0d]" />
+              </div>
               <h3 className="text-lg font-bold text-gray-900 mb-1">
                 {t("game.allSet")}
               </h3>
@@ -432,9 +431,8 @@ export default function GamePageClient({ code }: { code: string }) {
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  whileTap={{ scale: 0.97 }}
                   onClick={() => setShowJoinForm(true)}
-                  className="w-full rounded-full bg-[#111827] py-5 text-lg font-bold text-white shadow-sm transition-all hover:bg-gray-800 flex items-center justify-center gap-2"
+                  className="w-full rounded-sm bg-[#1a1a1a] py-5 text-lg font-bold text-white shadow-sm transition-all hover:bg-gray-800 flex items-center justify-center gap-2"
                 >
                   {t("game.confirmSpot")}
                   <ChevronDown size={20} />
@@ -445,7 +443,7 @@ export default function GamePageClient({ code }: { code: string }) {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="bg-white border border-gray-200 rounded-2xl p-6 shadow-card"
+                  className="bg-white border border-gray-200 rounded-sm p-6 shadow-card"
                 >
                   <h3 className="text-base font-bold text-gray-900 mb-4">
                     {t("game.confirmSpot")}
@@ -469,7 +467,7 @@ export default function GamePageClient({ code }: { code: string }) {
               key="cancelled"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="flex flex-col items-center rounded-2xl bg-red-50 border border-red-200 p-6"
+              className="flex flex-col items-center rounded-sm bg-red-50 border border-red-200 p-6"
             >
               <p className="text-base font-bold text-red-600">
                 {t("game.gameCancelled")}
@@ -489,7 +487,7 @@ export default function GamePageClient({ code }: { code: string }) {
           href={shareUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex w-full items-center justify-center gap-2 rounded-full bg-green-500 py-3.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-green-600"
+          className="flex w-full items-center justify-center gap-2 rounded-sm bg-green-500 py-3.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-green-600"
         >
           <MessageCircle size={18} />
           {t("game.shareGame")}
@@ -499,9 +497,8 @@ export default function GamePageClient({ code }: { code: string }) {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          whileTap={{ scale: 0.96 }}
           onClick={handleCopyLink}
-          className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-200 py-3.5 text-sm font-semibold text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-900"
+          className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-200 py-3.5 text-sm font-semibold text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-900 active:scale-[0.97] transition-transform duration-75"
         >
           {copied ? (
             <>
@@ -527,7 +524,7 @@ function SkeletonPage() {
     <div className="animate-pulse">
       <div className="h-48 w-full bg-gray-100" />
 
-      <div className="bg-white border border-gray-200 rounded-2xl p-6 mx-4 -mt-8 relative z-10 shadow-card">
+      <div className="bg-white border border-gray-200 rounded-sm p-6 mx-4 -mt-8 relative z-10 shadow-card">
         <div className="h-6 w-3/4 bg-gray-100 rounded-lg mb-2" />
         <div className="h-4 w-1/2 bg-gray-50 rounded-lg mb-4" />
         <div className="flex items-center justify-between">
@@ -540,7 +537,7 @@ function SkeletonPage() {
         {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}
-            className="bg-white border border-gray-200 rounded-2xl p-4 flex items-center gap-3"
+            className="bg-white border border-gray-200 rounded-sm p-4 flex items-center gap-3"
           >
             <div className="h-11 w-11 rounded-full bg-gray-100" />
             <div className="flex-1 space-y-2">

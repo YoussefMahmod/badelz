@@ -1,10 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { User, Phone, AlertCircle, CheckCircle } from "lucide-react";
 import { useTranslation } from "@/i18n";
-import { slideUp } from "@/lib/animations";
 
 interface JoinGameFormProps {
   onSubmit: (data: { playerName: string; playerPhone: string }) => void;
@@ -50,36 +48,29 @@ export function JoinGameForm({
   };
 
   return (
-    <motion.form {...slideUp} onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4">
       {/* Logged in badge */}
       {authenticatedName && (
-        <div className="flex items-center gap-2 rounded-lg bg-emerald-50 border border-emerald-200 px-3 py-2">
-          <CheckCircle size={14} className="text-emerald-500 shrink-0" />
-          <span className="text-xs text-emerald-700 font-medium">
+        <div className="flex items-center gap-2 rounded-sm bg-[#d4ff00]/10 border border-[#d4ff00]/20 px-3 py-2">
+          <CheckCircle size={14} className="text-[#d4ff00] shrink-0" />
+          <span className="text-xs text-[#d4ff00] font-medium">
             {t("nudge.loggedInAs", { name: authenticatedName })}
           </span>
         </div>
       )}
 
       {/* Server error */}
-      <AnimatePresence>
-        {error && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="flex items-center gap-2 rounded-xl bg-red-50 border border-red-200 px-4 py-3"
-          >
-            <AlertCircle size={16} className="shrink-0 text-red-500" />
-            <p className="text-sm text-red-600">{error}</p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {error && (
+        <div className="flex items-center gap-2 rounded-sm bg-[#ff4d4d]/10 border border-[#ff4d4d]/20 px-4 py-3">
+          <AlertCircle size={16} className="shrink-0 text-[#ff4d4d]" />
+          <p className="text-sm text-[#ff4d4d]">{error}</p>
+        </div>
+      )}
 
       {/* Name input */}
       <div>
-        <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-gray-700">
-          <User size={15} className="text-gray-400" />
+        <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-[#666]">
+          <User size={15} className="text-[#666]" />
           {t("game.yourName")}
         </label>
         <input
@@ -88,15 +79,15 @@ export function JoinGameForm({
           onChange={(e) => setName(e.target.value)}
           onBlur={() => setTouched((p) => ({ ...p, name: true }))}
           placeholder={t("booking.namePlaceholder")}
-          className={`w-full rounded-xl bg-gray-50 px-4 py-4 text-base text-gray-900 outline-none transition-all placeholder:text-gray-400 ${
+          className={`w-full rounded-sm bg-[#1a1a1a] px-4 py-4 text-base text-white outline-none transition-colors placeholder:text-[#666] ${
             nameError
-              ? "ring-2 ring-red-300 bg-red-50"
-              : "border border-gray-200 focus:border-[#c8ff00] focus:ring-2 focus:ring-[#c8ff00]/30"
+              ? "ring-2 ring-[#ff4d4d]/30 bg-[#ff4d4d]/10"
+              : "border-2 border-[#333] focus:border-[#d4ff00]"
           }`}
           disabled={loading}
         />
         {nameError && (
-          <p className="mt-1.5 text-xs text-red-500">
+          <p className="mt-1.5 text-xs text-[#ff4d4d]">
             {t("common.required")}
           </p>
         )}
@@ -104,8 +95,8 @@ export function JoinGameForm({
 
       {/* Phone input */}
       <div>
-        <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-gray-700">
-          <Phone size={15} className="text-gray-400" />
+        <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-[#666]">
+          <Phone size={15} className="text-[#666]" />
           {t("game.yourPhone")}
         </label>
         <input
@@ -115,29 +106,28 @@ export function JoinGameForm({
           onBlur={() => setTouched((p) => ({ ...p, phone: true }))}
           placeholder={t("booking.phonePlaceholder")}
           dir="ltr"
-          className={`w-full rounded-xl bg-gray-50 px-4 py-4 text-base text-gray-900 outline-none transition-all placeholder:text-gray-400 text-start ${
+          className={`w-full rounded-sm bg-[#1a1a1a] px-4 py-4 text-base text-white outline-none transition-colors placeholder:text-[#666] text-start ${
             phoneError
-              ? "ring-2 ring-red-300 bg-red-50"
-              : "border border-gray-200 focus:border-[#c8ff00] focus:ring-2 focus:ring-[#c8ff00]/30"
+              ? "ring-2 ring-[#ff4d4d]/30 bg-[#ff4d4d]/10"
+              : "border-2 border-[#333] focus:border-[#d4ff00]"
           }`}
           disabled={loading}
         />
         {phoneError && (
-          <p className="mt-1.5 text-xs text-red-500">
+          <p className="mt-1.5 text-xs text-[#ff4d4d]">
             {t("booking.phonePlaceholder")}
           </p>
         )}
       </div>
 
       {/* Submit */}
-      <motion.button
+      <button
         type="submit"
-        whileTap={{ scale: 0.97 }}
         disabled={loading}
-        className="w-full rounded-full bg-[#111827] py-4 text-base font-bold text-white shadow-sm transition-all hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full rounded-sm bg-[#d4ff00] py-4 text-base font-bold text-[#0d0d0d] disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.97] transition-transform duration-75"
       >
         {loading ? t("game.joining") : t("game.confirmSpot")}
-      </motion.button>
-    </motion.form>
+      </button>
+    </form>
   );
 }

@@ -11,7 +11,6 @@ import { EmptyState } from "@/components/empty-state";
 import { useTranslation, useLocale } from "@/i18n";
 import { AREAS, LOBBY_LEVELS } from "@/lib/constants";
 import { getNext7Days, toDateString } from "@/lib/format";
-import { revealUp } from "@/lib/animations";
 import { MapPin } from "lucide-react";
 
 interface LobbyPlayer {
@@ -84,7 +83,7 @@ export default function PlayPage() {
       Array.from({ length: 6 }).map((_, i) => (
         <div
           key={i}
-          className="rounded-2xl overflow-hidden animate-pulse bg-white/5 border border-white/10 p-4"
+          className="rounded-sm overflow-hidden animate-pulse bg-[#1a1a1a] border border-[#333] p-4"
         >
           <div className="flex items-start justify-between mb-3">
             <div className="h-5 w-2/3 rounded-lg dark-skeleton" />
@@ -127,10 +126,10 @@ export default function PlayPage() {
           {/* "All" chip */}
           <button
             onClick={() => setSelectedDate(null)}
-            className={`shrink-0 relative flex flex-col items-center rounded-2xl px-4 py-2.5 text-xs font-semibold transition-all cursor-pointer ${
+            className={`shrink-0 relative flex flex-col items-center rounded-sm px-4 py-2.5 text-xs font-semibold transition-all cursor-pointer ${
               selectedDate === null
-                ? "bg-[#c8ff00] text-[#111827] shadow-sm"
-                : "border border-white/10 text-white/60 hover:text-white/90 hover:bg-white/10"
+                ? "bg-[#d4ff00] text-[#0d0d0d] shadow-sm"
+                : "border border-[#333] text-[#999] hover:text-white hover:bg-[#222]"
             }`}
           >
             <span className="text-[10px]">&nbsp;</span>
@@ -146,10 +145,10 @@ export default function PlayPage() {
               <button
                 key={dateStr}
                 onClick={() => setSelectedDate(isSelected ? null : dateStr)}
-                className={`shrink-0 relative flex flex-col items-center rounded-2xl px-4 py-2.5 transition-all cursor-pointer ${
+                className={`shrink-0 relative flex flex-col items-center rounded-sm px-4 py-2.5 transition-all cursor-pointer ${
                   isSelected
-                    ? "bg-[#c8ff00] text-[#111827] shadow-sm"
-                    : "border border-white/10 text-white/60 hover:text-white/90 hover:bg-white/10"
+                    ? "bg-[#d4ff00] text-[#0d0d0d] shadow-sm"
+                    : "border border-[#333] text-[#999] hover:text-white hover:bg-[#222]"
                 }`}
               >
                 <span className="text-[10px] font-medium">{dayName}</span>
@@ -175,14 +174,14 @@ export default function PlayPage() {
                 onClick={() => setSelectedArea(area.key)}
                 className={`shrink-0 relative flex items-center gap-1.5 rounded-full px-4 py-2.5 text-xs font-semibold transition-all cursor-pointer ${
                   isSelected
-                    ? "text-[#111827] shadow-sm"
-                    : "border border-white/10 text-white/60 hover:text-white/90 hover:bg-white/10"
+                    ? "text-[#0d0d0d] shadow-sm"
+                    : "border border-[#333] text-[#999] hover:text-white hover:bg-[#222]"
                 }`}
               >
                 {isSelected && (
                   <motion.div
                     layoutId="lobby-area-chip"
-                    className="absolute inset-0 rounded-full bg-[#c8ff00]"
+                    className="absolute inset-0 rounded-sm bg-[#d4ff00]"
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   />
                 )}
@@ -206,14 +205,14 @@ export default function PlayPage() {
             onClick={() => setSelectedLevel(null)}
             className={`shrink-0 relative flex items-center gap-1.5 rounded-full px-4 py-2.5 text-xs font-semibold transition-all cursor-pointer ${
               selectedLevel === null
-                ? "text-[#111827] shadow-sm"
-                : "border border-white/10 text-white/60 hover:text-white/90 hover:bg-white/10"
+                ? "text-[#0d0d0d] shadow-sm"
+                : "border border-[#333] text-[#999] hover:text-white hover:bg-[#222]"
             }`}
           >
             {selectedLevel === null && (
               <motion.div
                 layoutId="lobby-level-chip"
-                className="absolute inset-0 rounded-full bg-[#c8ff00]"
+                className="absolute inset-0 rounded-sm bg-[#d4ff00]"
                 transition={{ type: "spring", stiffness: 400, damping: 30 }}
               />
             )}
@@ -232,14 +231,14 @@ export default function PlayPage() {
                 onClick={() => setSelectedLevel(isSelected ? null : lvl.key)}
                 className={`shrink-0 relative flex items-center gap-1.5 rounded-full px-4 py-2.5 text-xs font-semibold transition-all cursor-pointer ${
                   isSelected
-                    ? "text-[#111827] shadow-sm"
-                    : "border border-white/10 text-white/60 hover:text-white/90 hover:bg-white/10"
+                    ? "text-[#0d0d0d] shadow-sm"
+                    : "border border-[#333] text-[#999] hover:text-white hover:bg-[#222]"
                 }`}
               >
                 {isSelected && (
                   <motion.div
                     layoutId="lobby-level-chip"
-                    className="absolute inset-0 rounded-full bg-[#c8ff00]"
+                    className="absolute inset-0 rounded-sm bg-[#d4ff00]"
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   />
                 )}
@@ -258,20 +257,20 @@ export default function PlayPage() {
         >
           <Link
             href="/players"
-            className="flex items-center gap-3 rounded-2xl bg-white/5 border border-white/10 px-4 py-3 transition-all hover:bg-white/8 hover:border-[#c8ff00]/20 group cursor-pointer"
+            className="flex items-center gap-3 rounded-sm bg-[#1a1a1a] border border-[#333] px-4 py-3 transition-all hover:bg-[#1a1a1a] hover:border-[#d4ff00]/20 group cursor-pointer"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#c8ff00]/10">
-              <Crown size={18} className="text-[#c8ff00]" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#d4ff00]/10">
+              <Crown size={18} className="text-[#d4ff00]" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-white/90">
+              <p className="text-sm font-semibold text-white">
                 {t("player.viewRanks")}
               </p>
-              <p className="text-xs text-white/40">
+              <p className="text-xs text-[#666]">
                 {t("player.seeRanks")}
               </p>
             </div>
-            <div className="text-white/30 group-hover:text-[#c8ff00] transition-colors">
+            <div className="text-[#666] group-hover:text-[#d4ff00] transition-colors">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
@@ -295,8 +294,7 @@ export default function PlayPage() {
             }}
           />
         ) : (
-          <motion.div
-            {...revealUp}
+          <div
             className="grid grid-cols-1 gap-3 sm:grid-cols-2"
           >
             <AnimatePresence mode="popLayout">
@@ -304,14 +302,14 @@ export default function PlayPage() {
                 <LobbyCard key={lobby.lobbyCode} lobby={lobby} />
               ))}
             </AnimatePresence>
-          </motion.div>
+          </div>
         )}
       </div>
 
       {/* Floating create CTA */}
       <Link
         href="/play/create"
-        className="fixed bottom-24 end-4 z-40 flex items-center gap-2 rounded-full bg-[#c8ff00] px-5 py-3.5 text-sm font-bold text-[#111827] shadow-lg shadow-[#c8ff00]/20 transition-all hover:shadow-[0_0_30px_rgba(200,255,0,0.3)] active:scale-95"
+        className="fixed bottom-24 end-4 z-40 flex items-center gap-2 rounded-sm bg-[#d4ff00] px-5 py-3.5 text-sm font-bold text-[#0d0d0d] transition-all active:scale-95"
       >
         <Plus size={18} strokeWidth={2.5} />
         {t("lobby.createLobby")}

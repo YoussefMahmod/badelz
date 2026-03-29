@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useInView, motion, useMotionValue, useTransform, animate } from "framer-motion";
-import { counterConfig } from "@/lib/animations";
+
+const COUNTER_DURATION = 2;
+const COUNTER_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 interface AnimatedCounterProps {
   target: number;
@@ -17,7 +19,7 @@ export function AnimatedCounter({
   suffix = "",
   prefix = "",
   className = "",
-  duration = counterConfig.duration,
+  duration = COUNTER_DURATION,
 }: AnimatedCounterProps) {
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
@@ -29,7 +31,7 @@ export function AnimatedCounter({
     if (isInView) {
       const controls = animate(count, target, {
         duration,
-        ease: counterConfig.ease,
+        ease: COUNTER_EASE,
       });
       return controls.stop;
     }

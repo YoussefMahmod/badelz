@@ -1,9 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { User, Phone, FileText, CheckCircle } from "lucide-react";
-import { slideUp } from "@/lib/animations";
 import { useTranslation } from "@/i18n";
 
 interface BookingFormProps {
@@ -47,12 +45,12 @@ export function BookingForm({
   };
 
   return (
-    <motion.form {...slideUp} onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} className="space-y-5">
       {/* Logged in badge */}
       {authenticatedName && (
-        <div className="flex items-center gap-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-3 py-2">
-          <CheckCircle size={14} className="text-emerald-400 shrink-0" />
-          <span className="text-xs text-emerald-400 font-medium">
+        <div className="flex items-center gap-2 rounded-sm bg-[#d4ff00]/10 border border-[#d4ff00]/20 px-3 py-2">
+          <CheckCircle size={14} className="text-[#d4ff00] shrink-0" />
+          <span className="text-xs text-[#d4ff00] font-medium">
             {t("nudge.loggedInAs", { name: authenticatedName })}
           </span>
         </div>
@@ -60,8 +58,8 @@ export function BookingForm({
 
       {/* Name */}
       <div>
-        <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-white/70">
-          <User size={15} className="text-white/40" />
+        <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-[#666]">
+          <User size={15} className="text-[#666]" />
           {t("booking.name")}
         </label>
         <input
@@ -70,21 +68,21 @@ export function BookingForm({
           onChange={(e) => setName(e.target.value)}
           onBlur={() => setTouched((p) => ({ ...p, name: true }))}
           placeholder={t("booking.namePlaceholder")}
-          className={`w-full rounded-xl bg-white/5 px-4 py-4 text-base text-white/90 outline-none transition-all placeholder:text-white/30 ${
+          className={`w-full rounded-sm bg-[#1a1a1a] px-4 py-4 text-base text-white outline-none transition-colors placeholder:text-[#666] ${
             nameError
-              ? "ring-2 ring-red-500/30 bg-red-500/10"
-              : "border border-white/10 focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20"
+              ? "ring-2 ring-[#ff4d4d]/30 bg-[#ff4d4d]/10"
+              : "border-2 border-[#333] focus:border-[#d4ff00]"
           }`}
         />
         {nameError && (
-          <p className="mt-1.5 text-xs text-red-400">{t("common.required")}</p>
+          <p className="mt-1.5 text-xs text-[#ff4d4d]">{t("common.required")}</p>
         )}
       </div>
 
       {/* Phone */}
       <div>
-        <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-white/70">
-          <Phone size={15} className="text-white/40" />
+        <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-[#666]">
+          <Phone size={15} className="text-[#666]" />
           {t("booking.phone")}
         </label>
         <input
@@ -94,32 +92,28 @@ export function BookingForm({
           onBlur={() => setTouched((p) => ({ ...p, phone: true }))}
           placeholder={t("booking.phonePlaceholder")}
           dir="ltr"
-          className={`w-full rounded-xl bg-white/5 px-4 py-4 text-base text-white/90 outline-none transition-all placeholder:text-white/30 text-start ${
+          className={`w-full rounded-sm bg-[#1a1a1a] px-4 py-4 text-base text-white outline-none transition-colors placeholder:text-[#666] text-start ${
             phoneError
-              ? "ring-2 ring-red-500/30 bg-red-500/10"
-              : "border border-white/10 focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20"
+              ? "ring-2 ring-[#ff4d4d]/30 bg-[#ff4d4d]/10"
+              : "border-2 border-[#333] focus:border-[#d4ff00]"
           }`}
         />
         {phoneError && (
-          <p className="mt-1.5 text-xs text-red-400">
+          <p className="mt-1.5 text-xs text-[#ff4d4d]">
             {t("booking.phonePlaceholder")}
           </p>
         )}
         {touched.phone && phone && isValidEgyptPhone(phone) && (
-          <motion.p
-            initial={{ opacity: 0, y: -5 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-1.5 text-xs text-emerald-400"
-          >
+          <p className="mt-1.5 text-xs text-[#d4ff00]">
             &#10003;
-          </motion.p>
+          </p>
         )}
       </div>
 
       {/* Notes */}
       <div>
-        <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-white/70">
-          <FileText size={15} className="text-white/40" />
+        <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-[#666]">
+          <FileText size={15} className="text-[#666]" />
           {t("booking.notes")}
         </label>
         <textarea
@@ -127,19 +121,18 @@ export function BookingForm({
           onChange={(e) => setNotes(e.target.value)}
           placeholder={t("booking.notesPlaceholder")}
           rows={3}
-          className="w-full rounded-xl bg-white/5 px-4 py-4 text-base text-white/90 outline-none transition-all placeholder:text-white/30 border border-white/10 focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 resize-none"
+          className="w-full rounded-sm bg-[#1a1a1a] px-4 py-4 text-base text-white outline-none transition-colors placeholder:text-[#666] border-2 border-[#333] focus:border-[#d4ff00] resize-none"
         />
       </div>
 
       {/* Submit */}
-      <motion.button
+      <button
         type="submit"
-        whileTap={{ scale: 0.97 }}
         disabled={loading}
-        className="w-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 py-4 text-base font-bold text-white shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full rounded-sm bg-[#d4ff00] py-4 text-base font-bold text-[#0d0d0d] disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.97] transition-transform duration-75"
       >
         {loading ? t("common.loading") : t("common.next")}
-      </motion.button>
-    </motion.form>
+      </button>
+    </form>
   );
 }

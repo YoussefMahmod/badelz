@@ -21,9 +21,8 @@ import { PlayerCard } from "@/components/cards/player-card";
 import { AuthNudge } from "@/components/auth-nudge";
 import { useTranslation, useLocale } from "@/i18n";
 import { buildPlayerShareLink } from "@/lib/whatsapp";
-import { scaleInGlow, slideUp } from "@/lib/animations";
 
-type PlayerTier = "BRONZE" | "GOLD" | "EMERALD" | "DIAMOND" | "MASTER" | "GRANDMASTER";
+type PlayerTier = "BRONZE" | "SILVER" | "GOLD" | "EMERALD" | "DIAMOND" | "MASTER" | "GRANDMASTER";
 
 interface PlayerData {
   id: string;
@@ -42,19 +41,20 @@ interface PlayerData {
 
 const TIER_COLORS: Record<PlayerTier, string> = {
   BRONZE: "#cd7f32",
+  SILVER: "#c0c0c0",
   GOLD: "#ffd700",
   EMERALD: "#50c878",
   DIAMOND: "#b9f2ff",
   MASTER: "#ff4655",
-  GRANDMASTER: "#c8ff00",
+  GRANDMASTER: "#d4ff00",
 };
 
 export default function MyCardPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#0a0f1a] flex items-center justify-center">
-          <div className="w-72 card-ratio rounded-2xl animate-pulse bg-white/5 border border-white/10" />
+        <div className="min-h-screen bg-[#0d0d0d] flex items-center justify-center">
+          <div className="w-72 card-ratio rounded-sm animate-pulse bg-[#1a1a1a] border border-[#333]" />
         </div>
       }
     >
@@ -157,7 +157,7 @@ function MyCardContent() {
       }).format(new Date(player.createdAt))
     : "";
 
-  const tierColor = player ? TIER_COLORS[player.tier] : "#c8ff00";
+  const tierColor = player ? TIER_COLORS[player.tier] : "#d4ff00";
 
   const handleShare = () => {
     if (!player) return;
@@ -173,8 +173,8 @@ function MyCardContent() {
   // Initializing state (checking localStorage/query)
   if (initializing) {
     return (
-      <div className="min-h-screen bg-[#0a0f1a] flex items-center justify-center">
-        <div className="w-72 card-ratio rounded-2xl animate-pulse bg-white/5 border border-white/10" />
+      <div className="min-h-screen bg-[#0d0d0d] flex items-center justify-center">
+        <div className="w-72 card-ratio rounded-sm animate-pulse bg-[#1a1a1a] border border-[#333]" />
       </div>
     );
   }
@@ -191,7 +191,7 @@ function MyCardContent() {
       <div className="relative z-10 px-4 pt-4 flex justify-end">
         <button
           onClick={() => router.back()}
-          className="flex items-center gap-1.5 rounded-full bg-white/5 border border-white/10 px-4 py-2 text-sm text-white/70 hover:text-white hover:bg-white/10 transition-all"
+          className="flex items-center gap-1.5 rounded-sm bg-[#1a1a1a] border border-[#333] px-4 py-2 text-sm text-[#999] hover:text-white hover:bg-[#222] transition-all"
           aria-label={t("common.back")}
         >
           {t("common.back")}
@@ -207,10 +207,10 @@ function MyCardContent() {
             animate={{ opacity: 1, scale: 1 }}
             className="flex flex-col items-center"
           >
-            <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-white/5 border border-white/10">
-              <Loader2 size={28} className="text-[#c8ff00] animate-spin" />
+            <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-sm bg-[#1a1a1a] border border-[#333]">
+              <Loader2 size={28} className="text-[#d4ff00] animate-spin" />
             </div>
-            <p className="text-white/50 text-sm">{t("player.searching")}</p>
+            <p className="text-[#999] text-sm">{t("player.searching")}</p>
           </motion.div>
         </div>
       )}
@@ -223,14 +223,14 @@ function MyCardContent() {
           transition={{ duration: 0.5 }}
           className="flex flex-col items-center justify-center px-6 pt-16 pb-8"
         >
-          <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-white/5 border border-white/10">
-            <CreditCard size={36} className="text-[#c8ff00]" />
+          <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-sm bg-[#1a1a1a] border border-[#333]">
+            <CreditCard size={36} className="text-[#d4ff00]" />
           </div>
 
           <h1 className="text-2xl font-bold text-white mb-2">
             {t("player.myCard")}
           </h1>
-          <p className="text-white/50 text-sm text-center mb-8 max-w-xs">
+          <p className="text-[#999] text-sm text-center mb-8 max-w-xs">
             {t("player.findYourCard")}
           </p>
 
@@ -245,7 +245,7 @@ function MyCardContent() {
                 setError("");
               }}
               placeholder="01XXXXXXXXX"
-              className="w-full rounded-2xl bg-white/5 border border-white/10 px-5 py-4 text-center text-lg text-white placeholder-white/30 outline-none focus:border-[#c8ff00]/40 focus:ring-2 focus:ring-[#c8ff00]/20 transition-all font-[family-name:var(--font-display)]"
+              className="w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-5 py-4 text-center text-lg text-white placeholder-white/30 outline-none focus:border-[#d4ff00]/40  transition-all font-[family-name:var(--font-display)]"
               maxLength={11}
               aria-label={t("player.enterPhone")}
             />
@@ -260,14 +260,14 @@ function MyCardContent() {
               </motion.p>
             )}
 
-            <motion.button
+            <button
               type="submit"
-              whileTap={{ scale: 0.97 }}
-              className="w-full rounded-full bg-[#c8ff00] py-4 text-base font-bold text-[#111827] shadow-lg shadow-[#c8ff00]/20 transition-all hover:shadow-[0_0_30px_rgba(200,255,0,0.3)] flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none cursor-pointer"
+              
+              className="w-full rounded-sm bg-[#d4ff00] py-4 text-base font-bold text-[#0d0d0d] transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none cursor-pointer active:scale-[0.97] transition-transform duration-75"
             >
               <Search size={18} />
               {t("player.searchCard")}
-            </motion.button>
+            </button>
           </form>
         </motion.div>
       )}
@@ -280,20 +280,20 @@ function MyCardContent() {
           transition={{ duration: 0.5 }}
           className="flex flex-col items-center justify-center px-6 pt-16 pb-8"
         >
-          <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-white/5 border border-white/10">
-            <Gamepad2 size={36} className="text-white/30" />
+          <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-sm bg-[#1a1a1a] border border-[#333]">
+            <Gamepad2 size={36} className="text-[#666]" />
           </div>
 
           <h2 className="text-xl font-bold text-white mb-2">
             {t("player.noCardYet")}
           </h2>
-          <p className="text-white/50 text-sm text-center mb-8 max-w-xs">
+          <p className="text-[#999] text-sm text-center mb-8 max-w-xs">
             {t("player.noCardYetDesc")}
           </p>
 
           <Link
             href="/play"
-            className="rounded-full bg-[#c8ff00] px-8 py-3.5 text-sm font-bold text-[#111827] shadow-lg shadow-[#c8ff00]/20 transition-all hover:shadow-[0_0_30px_rgba(200,255,0,0.3)] active:scale-[0.98] mb-6"
+            className="rounded-sm bg-[#d4ff00] px-8 py-3.5 text-sm font-bold text-[#0d0d0d] transition-all active:scale-[0.98] mb-6"
           >
             {t("player.noCardYetDesc")}
           </Link>
@@ -305,7 +305,7 @@ function MyCardContent() {
               setPlayer(null);
               setPhone("");
             }}
-            className="text-sm text-white/50 hover:text-white/80 transition-colors underline underline-offset-4 decoration-white/30 hover:decoration-white/60 cursor-pointer font-medium"
+            className="text-sm text-[#999] hover:text-[#999] transition-colors underline underline-offset-4 decoration-white/30 hover:decoration-white/60 cursor-pointer font-medium"
           >
             {t("player.findCard")}
           </button>
@@ -316,8 +316,7 @@ function MyCardContent() {
       {!loading && player && (
         <>
           {/* Hero card with float animation */}
-          <motion.div
-            {...scaleInGlow}
+          <div
             className="flex justify-center px-4 pt-4 pb-8"
           >
             <div className="animate-float-slow">
@@ -337,14 +336,13 @@ function MyCardContent() {
                 interactive
               />
             </div>
-          </motion.div>
+          </div>
 
           {/* Stats section */}
-          <motion.div
-            {...slideUp}
+          <div
             className="relative z-10 mx-auto max-w-md px-4 pb-6"
           >
-            <div className="bg-[#0a0f1a]/80 backdrop-blur-xl border border-white/10 rounded-2xl p-5">
+            <div className="bg-[#0d0d0d]/80 border border-[#333] rounded-sm p-5">
               <div className="grid grid-cols-1 gap-4 mb-4">
                 <StatItem
                   icon={<Gamepad2 size={16} />}
@@ -369,14 +367,14 @@ function MyCardContent() {
               </div>
 
               {/* Area + member since */}
-              <div className="border-t border-white/5 pt-4 space-y-2.5">
+              <div className="border-t border-[#222] pt-4 space-y-2.5">
                 {area && (
-                  <div className="flex items-center gap-2 text-white/50 text-sm">
+                  <div className="flex items-center gap-2 text-[#999] text-sm">
                     <MapPin size={14} className="shrink-0" />
                     <span>{area}</span>
                   </div>
                 )}
-                <div className="flex items-center gap-2 text-white/50 text-sm">
+                <div className="flex items-center gap-2 text-[#999] text-sm">
                   <CalendarDays size={14} className="shrink-0" />
                   <span>
                     {t("player.memberSince")} {memberSince}
@@ -384,7 +382,7 @@ function MyCardContent() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Share button */}
           <motion.div
@@ -395,7 +393,7 @@ function MyCardContent() {
           >
             <button
               onClick={handleShare}
-              className="w-full flex items-center justify-center gap-2 rounded-full bg-[#c8ff00] py-3.5 text-sm font-bold text-[#111827] shadow-lg shadow-[#c8ff00]/20 transition-all hover:shadow-[0_0_30px_rgba(200,255,0,0.3)] active:scale-[0.98]"
+              className="w-full flex items-center justify-center gap-2 rounded-sm bg-[#d4ff00] py-3.5 text-sm font-bold text-[#0d0d0d] transition-all active:scale-[0.98]"
             >
               <Share2 size={18} />
               {t("player.shareCard")}
@@ -428,7 +426,7 @@ function MyCardContent() {
           >
             <Link
               href="/players"
-              className="flex w-full items-center justify-center gap-2 rounded-full border border-white/15 py-3 text-sm font-semibold text-white/60 hover:text-white hover:bg-white/5 hover:border-white/25 transition-all cursor-pointer"
+              className="flex w-full items-center justify-center gap-2 rounded-sm border border-[#333] py-3 text-sm font-semibold text-[#999] hover:text-white hover:bg-[#1a1a1a] hover:border-white/25 transition-all cursor-pointer"
             >
               {t("player.viewRanks")}
             </Link>
@@ -451,7 +449,7 @@ function StatItem({
   color: string;
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-xl bg-white/[0.03] p-3">
+    <div className="flex items-center gap-3 rounded-sm bg-[#1a1a1a] p-3">
       <div
         className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
         style={{ backgroundColor: `${color}15`, color }}
@@ -459,7 +457,7 @@ function StatItem({
         {icon}
       </div>
       <div className="min-w-0">
-        <p className="text-white/40 text-[10px] uppercase tracking-wide truncate">
+        <p className="text-[#666] text-[10px] uppercase tracking-wide truncate">
           {label}
         </p>
         <p className="text-white font-bold text-base font-[family-name:var(--font-display)]">

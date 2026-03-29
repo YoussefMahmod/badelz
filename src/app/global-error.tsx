@@ -51,7 +51,7 @@ export default function GlobalError({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "#0a0f1a",
+          backgroundColor: "#0d0d0d",
           fontFamily: "Cairo, sans-serif",
         }}
       >
@@ -107,7 +107,7 @@ export default function GlobalError({
             <button
               onClick={() => reset()}
               style={{
-                backgroundColor: "#c8ff00",
+                backgroundColor: "#d4ff00",
                 color: "#111827",
                 border: "none",
                 borderRadius: 999,

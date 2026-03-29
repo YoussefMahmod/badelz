@@ -1,20 +1,12 @@
 "use client";
 
-import { useState, useEffect, type ReactNode } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  Sparkles,
   Search,
-  Users,
-  GraduationCap,
-  ShoppingBag,
-  Flame,
   MapPin,
-  Calendar,
-  Trophy,
   ArrowUpRight,
-  MessageCircle,
 } from "lucide-react";
 import { MainLayout } from "@/components/main-layout";
 import { useAuth } from "@/lib/auth-context";
@@ -63,73 +55,23 @@ interface Player {
   gamesPlayed: number;
 }
 
-/* ─── Layout class mapping ─── */
-const layoutClasses: Record<string, string> = {
-  carousel: "flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-hide",
-  stack: "flex flex-col gap-2.5",
-  grid: "grid grid-cols-2 gap-3",
-};
-
-/* ─── Reusable Section Wrapper ─── */
-function FeedSection({
-  title,
-  icon,
-  href,
-  liveIndicator,
-  layout = "carousel",
-  children,
-}: {
-  title: string;
-  icon: ReactNode;
-  href: string;
-  liveIndicator?: boolean;
-  layout?: "carousel" | "stack" | "grid";
-  children: ReactNode;
-}) {
-  const { t } = useTranslation();
-  return (
-    <div className="mb-8">
-      <div className="flex items-center justify-between mb-3 px-1">
-        <div className="flex items-center gap-2">
-          {icon}
-          <h2 className="text-base font-bold text-white/80 font-heading uppercase tracking-wide">{title}</h2>
-          {liveIndicator && (
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-          )}
-        </div>
-        <Link
-          href={href}
-          className="text-xs text-white/50 hover:text-white/70 flex items-center gap-1 transition-colors"
-        >
-          {t("discover.seeAll")}
-          <ArrowUpRight size={12} />
-        </Link>
-      </div>
-      <div className={layoutClasses[layout]}>
-        {children}
-      </div>
-    </div>
-  );
-}
-
 /* ─── Section Skeleton ─── */
-function SectionSkeleton({ width = "w-56", height = "h-36" }: { width?: string; height?: string }) {
+function SectionSkeleton() {
   return (
-    <div className="mb-8">
-      <div className="h-5 w-32 rounded bg-white/5 mb-3 animate-pulse" />
-      <div className="flex gap-3">
-        {[0, 1, 2].map((i) => (
-          <div
-            key={i}
-            className={`shrink-0 ${width} ${height} rounded-2xl bg-white/5 animate-pulse`}
-          />
+    <div>
+      <div className="bg-[#111] px-5 py-3.5 border-b-[3px] border-b-[#222]">
+        <div className="h-4 w-28 bg-[#1a1a1a]" />
+      </div>
+      <div className="space-y-0">
+        {[0, 1].map((i) => (
+          <div key={i} className="h-16 bg-[#0d0d0d] border-b-2 border-b-[#161616] animate-pulse" />
         ))}
       </div>
     </div>
   );
 }
 
-/* ─── Discover Page ─── */
+/* ─── Discover Page — BRUTALIST STADIUM ─── */
 export default function DiscoverPage() {
   const { t } = useTranslation();
   const { locale } = useLocale();
@@ -160,172 +102,196 @@ export default function DiscoverPage() {
     });
   }, []);
 
+  const featuredVenue = venues[0];
+  const remainingVenues = venues.slice(1);
+
+  // Podium order for leaderboard: 2nd | 1st | 3rd
+  const podiumPlayers = players.slice(0, 3);
+  const podiumOrder = podiumPlayers.length === 3
+    ? [podiumPlayers[1], podiumPlayers[0], podiumPlayers[2]]
+    : podiumPlayers;
+  const restPlayers = players.slice(3);
+
   return (
     <MainLayout navType="public">
       <FeatureTour />
-      <div className="max-w-lg mx-auto px-4 pt-4 pb-28 relative">
-        <div className="absolute inset-0 noise-overlay pointer-events-none" aria-hidden="true" />
-        <div className="relative z-[2]">
-          {/* ─── Header ─── */}
-          <div className="mb-6">
-            <div className="flex items-center gap-2 mb-1">
-              <Sparkles size={20} className="text-[#c8ff00]" />
-              <h1 className="text-2xl font-bold text-white/90 font-heading">
-                {user
-                  ? t("discover.greeting", { name: user.name?.split(" ")[0] || "" })
-                  : t("nav.discover")}
-              </h1>
+      <div className="w-full max-w-2xl mx-auto pb-28">
+
+        {/* ─── Featured Venue (angled clip-path) ─── */}
+        {!loading && featuredVenue && (
+          <Link
+            href={`/venues/${featuredVenue.id}`}
+            className="block bg-[#d4ff00] text-[#0d0d0d] p-6 active:scale-[0.98] transition-transform duration-75"
+            style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 16px), 0 100%)" }}
+          >
+            <p className="text-[10px] font-extrabold uppercase tracking-[0.15em] opacity-50 mb-1">
+              {t("discover.courtsNearYou")}
+            </p>
+            <h2 className="font-[family-name:var(--font-display-en)] text-[42px] leading-[0.9] uppercase mb-2">
+              {locale === "ar" && featuredVenue.nameAr ? featuredVenue.nameAr : featuredVenue.name}
+            </h2>
+            <div className="flex gap-4 text-[12px] uppercase opacity-50 mb-2">
+              <span>{locale === "ar" && featuredVenue.cityAr ? featuredVenue.cityAr : featuredVenue.city}</span>
+              {featuredVenue.courts && <span>{featuredVenue.courts.length} {t("venue.courts")}</span>}
             </div>
-            {!user && (
-              <p className="text-sm text-white/40">{t("discover.subtitle")}</p>
+            {featuredVenue.courts?.[0] && (
+              <p className="font-[family-name:var(--font-display-en)] text-[28px]">
+                {featuredVenue.courts[0].pricePerHour} EGP/HR
+              </p>
             )}
-          </div>
+          </Link>
+        )}
 
-          {/* ─── Quick Actions ─── */}
-          <div className="flex gap-2.5 mb-8 overflow-x-auto scrollbar-hide">
-            <Link
-              href="/browse"
-              className="shrink-0 flex items-center gap-2 rounded-xl bg-[#c8ff00]/10 border border-[#c8ff00]/20 px-4 py-2.5 text-sm font-medium font-heading text-[#c8ff00] hover:bg-[#c8ff00]/15 transition-colors"
-            >
-              <Search size={16} />
-              {t("discover.bookCourt")}
-            </Link>
-            <Link
-              href="/play"
-              className="shrink-0 flex items-center gap-2 rounded-full bg-white/5 border border-white/10 px-4 py-2.5 text-sm font-medium text-white/70 hover:bg-white/10 transition-colors"
-            >
-              <Users size={16} />
-              {t("discover.findPlayers")}
-            </Link>
-            <Link
-              href="/market/sell"
-              className="shrink-0 flex items-center gap-2 rounded-full bg-white/5 border border-white/10 px-4 py-2.5 text-sm font-medium text-white/70 hover:bg-white/10 transition-colors"
-            >
-              <ShoppingBag size={16} />
-              {t("discover.sellGear")}
-            </Link>
-          </div>
+        {/* ─── Quick Actions (stadium buttons) ─── */}
+        <div className="grid grid-cols-3 gap-0">
+          <Link
+            href="/browse"
+            className="relative bg-[#d4ff00] text-[#0d0d0d] text-center py-4 font-[family-name:var(--font-display-en)] text-sm uppercase tracking-wide border-e-2 border-e-[#0d0d0d] active:scale-[0.97] transition-transform duration-75"
+          >
+            {t("discover.bookCourt")}
+            <span className="absolute bottom-0 inset-x-0 h-1 bg-[#a0c200]" />
+          </Link>
+          <Link
+            href="/play"
+            className="relative bg-[#161616] text-[#888] text-center py-4 font-[family-name:var(--font-display-en)] text-sm uppercase tracking-wide border-e-2 border-e-[#0d0d0d] active:scale-[0.97] transition-transform duration-75"
+          >
+            {t("discover.findPlayers")}
+            <span className="absolute bottom-0 inset-x-0 h-[2px] bg-[#333]" />
+          </Link>
+          <Link
+            href="/market/sell"
+            className="relative bg-[#161616] text-[#888] text-center py-4 font-[family-name:var(--font-display-en)] text-sm uppercase tracking-wide active:scale-[0.97] transition-transform duration-75"
+          >
+            {t("discover.sellGear")}
+            <span className="absolute bottom-0 inset-x-0 h-[2px] bg-[#333]" />
+          </Link>
+        </div>
 
-          {/* ─── Loading Skeletons ─── */}
-          {loading && (
-            <div>
-              <SectionSkeleton />
-              <SectionSkeleton width="w-48" height="h-28" />
-              <SectionSkeleton />
-              <SectionSkeleton width="w-44" height="h-40" />
-              <SectionSkeleton width="w-40" height="h-36" />
+        {/* ─── Loading Skeletons ─── */}
+        {loading && (
+          <div>
+            <SectionSkeleton />
+            <SectionSkeleton />
+            <SectionSkeleton />
+          </div>
+        )}
+
+        {/* ─── Section: Nearby Courts ─── */}
+        {!loading && remainingVenues.length > 0 && (
+          <section>
+            {/* Block header */}
+            <div className="bg-[#111] px-5 py-3.5 flex items-center justify-between border-b-[3px] border-b-[#d4ff00]">
+              <h2 className="font-[family-name:var(--font-display-en)] text-lg uppercase tracking-wide">
+                {t("discover.courtsNearYou")}
+              </h2>
+              <Link href="/browse" className="text-[11px] text-[#555] uppercase">
+                {t("discover.seeAll")}
+              </Link>
             </div>
-          )}
-
-          {/* ─── Section: Featured Courts ─── */}
-          {!loading && venues.length > 0 && (
-            <FeedSection
-              title={t("discover.courtsNearYou")}
-              icon={<Search size={16} className="text-[#c8ff00]" />}
-              href="/browse"
-            >
-              {venues.map((venue) => (
-                <Link
-                  key={venue.id}
-                  href={`/venues/${venue.id}`}
-                  className="shrink-0 snap-start w-56 rounded-2xl bg-[#111827] border-b-2 border-b-[#c8ff00]/15 overflow-hidden hover:brightness-110 transition-all"
-                >
-                  <div className="h-28 bg-white/5 relative">
-                    {venue.coverPhoto ? (
-                      <img
-                        src={venue.coverPhoto}
-                        alt={locale === "ar" && venue.nameAr ? venue.nameAr : venue.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-white/10">
-                        <Search size={24} />
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-3">
-                    <p className="text-sm font-bold text-white/90 truncate font-heading">
-                      {locale === "ar" && venue.nameAr ? venue.nameAr : venue.name}
-                    </p>
-                    <div className="flex items-center gap-1.5 mt-1">
-                      <MapPin size={10} className="text-white/30" />
-                      <span className="text-[10px] text-white/40">
-                        {locale === "ar" && venue.cityAr ? venue.cityAr : venue.city}
-                      </span>
-                    </div>
-                    {venue.courts?.[0] && (
-                      <p className="text-xs font-bold text-[#c8ff00] mt-1.5 font-heading">
-                        {t("browse.priceFrom", { price: venue.courts[0].pricePerHour })}
-                      </p>
-                    )}
-                  </div>
-                </Link>
-              ))}
-            </FeedSection>
-          )}
-
-          {/* ─── Section: Active Lobbies ─── */}
-          {!loading && lobbies.length > 0 && (
-            <FeedSection
-              title={t("discover.openGames")}
-              icon={<Users size={16} className="text-[#c8ff00]" />}
-              href="/play"
-              liveIndicator
-              layout="stack"
-            >
-              {lobbies.map((lobby) => (
-                <Link
-                  key={lobby.id}
-                  href={`/lobby/${lobby.lobbyCode}`}
-                  className="flex items-center justify-between rounded-lg bg-transparent border border-white/[0.08] px-4 py-3 hover:bg-white/[0.03] transition-colors"
-                >
-                  <div className="flex items-center gap-2">
-                    <MapPin size={12} className="text-white/40" />
-                    <span className="text-sm font-medium text-white/70">
-                      {locale === "ar" && lobby.areaAr ? lobby.areaAr : lobby.area}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs text-white/40">
-                      {new Date(lobby.date).toLocaleDateString(
-                        locale === "ar" ? "ar-EG" : "en-US",
-                        { weekday: "short", month: "short", day: "numeric" }
-                      )}
-                    </span>
-                    <span className="text-[10px] font-bold text-[#c8ff00] uppercase tracking-wider font-heading">
-                      {t("lobby.spotsLeft", {
-                        count: 4 - (lobby.players?.length || 1),
-                      })}
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </FeedSection>
-          )}
-
-          {/* ─── Section: Trending Gear ─── */}
-          {!loading && trending.length > 0 && (
-            <FeedSection
-              title={t("discover.hotInMarket")}
-              icon={<Flame size={16} className="text-orange-400" />}
-              href="/market"
-              layout="grid"
-            >
-              {trending.map((item) => (
-                <div key={item.id} className="cursor-pointer" onClick={() => router.push(`/market/${item.id}`)}>
-                  <ListingCard listing={item} variant="compact" />
+            {/* Rows */}
+            {remainingVenues.map((venue) => (
+              <Link
+                key={venue.id}
+                href={`/venues/${venue.id}`}
+                className="relative flex items-center bg-[#0d0d0d] border-b-2 border-b-[#161616] px-5 py-3.5 active:scale-[0.98] transition-transform duration-75"
+              >
+                {/* Right-side color bar */}
+                <span className="absolute top-0 bottom-0 end-0 w-[5px] bg-[#d4ff00]" />
+                {/* Thumbnail */}
+                <div className="w-14 h-14 bg-[#161616] me-3.5 flex-shrink-0 flex items-center justify-center overflow-hidden border-2 border-[#222]">
+                  {venue.coverPhoto ? (
+                    <img
+                      src={venue.coverPhoto}
+                      alt={locale === "ar" && venue.nameAr ? venue.nameAr : venue.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <Search size={16} className="text-[#555]" />
+                  )}
                 </div>
-              ))}
-            </FeedSection>
-          )}
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-extrabold text-white uppercase tracking-wide truncate">
+                    {locale === "ar" && venue.nameAr ? venue.nameAr : venue.name}
+                  </p>
+                  <p className="text-[11px] text-[#555] mt-0.5 uppercase">
+                    {locale === "ar" && venue.cityAr ? venue.cityAr : venue.city}
+                    {venue.courts && ` - ${venue.courts.length} ${t("venue.courts")}`}
+                  </p>
+                </div>
+                {/* Price */}
+                {venue.courts?.[0] && (
+                  <span className="font-[family-name:var(--font-display-en)] text-xl text-[#d4ff00] flex-shrink-0 me-2">
+                    {venue.courts[0].pricePerHour} EGP
+                  </span>
+                )}
+              </Link>
+            ))}
+          </section>
+        )}
 
-          {/* ─── Section: New Coaches ─── */}
-          {!loading && coaches.length > 0 && (
-            <FeedSection
-              title={t("discover.newCoaches")}
-              icon={<GraduationCap size={16} className="text-purple-400" />}
-              href="/coaches"
-            >
+        {/* ─── Section: Open Lobbies ─── */}
+        {!loading && lobbies.length > 0 && (
+          <section>
+            {/* Block header */}
+            <div className="bg-[#111] px-5 py-3.5 flex items-center justify-between border-b-[3px] border-b-[#ff4d4d]">
+              <div className="flex items-center gap-2">
+                <h2 className="font-[family-name:var(--font-display-en)] text-lg uppercase tracking-wide">
+                  {t("discover.openGames")}
+                </h2>
+                <span className="font-[family-name:var(--font-display-en)] text-[10px] bg-[#ff4d4d] text-white px-2 py-0.5 uppercase tracking-widest">
+                  LIVE
+                </span>
+              </div>
+              <Link href="/play" className="text-[11px] text-[#555] uppercase">
+                {t("discover.seeAll")}
+              </Link>
+            </div>
+            {/* Rows */}
+            {lobbies.map((lobby) => (
+              <Link
+                key={lobby.id}
+                href={`/lobby/${lobby.lobbyCode}`}
+                className="relative flex items-center justify-between bg-[#0d0d0d] border-b-2 border-b-[#161616] px-5 py-3.5 active:scale-[0.98] transition-transform duration-75"
+              >
+                {/* Right-side red bar */}
+                <span className="absolute top-0 bottom-0 end-0 w-[5px] bg-[#ff4d4d]" />
+                <div>
+                  <p className="text-[15px] font-extrabold text-white uppercase tracking-wide">
+                    {locale === "ar" && lobby.areaAr ? lobby.areaAr : lobby.area}
+                  </p>
+                  <p className="text-xs text-[#555] mt-0.5">
+                    {new Date(lobby.date).toLocaleDateString(
+                      locale === "ar" ? "ar-EG" : "en-US",
+                      { weekday: "short", month: "short", day: "numeric" }
+                    )}
+                  </p>
+                </div>
+                <div className="text-center me-2">
+                  <span className="font-[family-name:var(--font-display-en)] text-[32px] text-[#ff4d4d]">
+                    {lobby.players?.length || 1}/4
+                  </span>
+                  <p className="text-[8px] text-[#444] uppercase tracking-[0.1em]">
+                    {t("lobby.spotsLeft", { count: 4 - (lobby.players?.length || 1) })}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </section>
+        )}
+
+        {/* ─── Section: Top Coaches ─── */}
+        {!loading && coaches.length > 0 && (
+          <section>
+            <div className="bg-[#111] px-5 py-3.5 flex items-center justify-between border-b-[3px] border-b-[#00c2ff]">
+              <h2 className="font-[family-name:var(--font-display-en)] text-lg uppercase tracking-wide">
+                {t("discover.newCoaches")}
+              </h2>
+              <Link href="/coaches" className="text-[11px] text-[#555] uppercase">
+                {t("discover.seeAll")}
+              </Link>
+            </div>
+            <div className="flex gap-0 overflow-x-auto scrollbar-hide bg-[#0d0d0d]">
               {coaches.map((coach) => (
                 <div key={coach.id} className="shrink-0 snap-start">
                   <CoachCard
@@ -344,107 +310,140 @@ export default function DiscoverPage() {
                   />
                 </div>
               ))}
-            </FeedSection>
-          )}
+            </div>
+          </section>
+        )}
 
-          {/* ─── Section: Top Players ─── */}
-          {!loading && players.length > 0 && (
-            <FeedSection
-              title={t("discover.topPlayers")}
-              icon={<Trophy size={16} className="text-amber-400" />}
-              href="/players"
-            >
-              {players.map((player, i) => {
-                const tierColor = PLAYER_TIER_COLORS[player.tier as keyof typeof PLAYER_TIER_COLORS] ?? "#9ca3af";
-                return (
-                  <Link
-                    key={player.id || player.phone}
-                    href={`/players/${player.id}`}
-                    className="relative shrink-0 snap-start w-28 h-[156px] rounded-2xl bg-white/[0.04] border border-white/[0.08] overflow-hidden hover:-translate-y-1 transition-all"
-                    style={{ boxShadow: `0 0 15px ${tierColor}15` }}
-                  >
-                    {/* Tier top stripe */}
-                    <div
-                      className="absolute top-0 inset-x-0 h-[3px]"
-                      style={{ background: `linear-gradient(90deg, ${tierColor}, ${tierColor}40)` }}
-                    />
+        {/* ─── Section: Trending Gear ─── */}
+        {!loading && trending.length > 0 && (
+          <section>
+            <div className="bg-[#111] px-5 py-3.5 flex items-center justify-between border-b-[3px] border-b-[#d4ff00]">
+              <h2 className="font-[family-name:var(--font-display-en)] text-lg uppercase tracking-wide">
+                {t("discover.hotInMarket")}
+              </h2>
+              <Link href="/market" className="text-[11px] text-[#555] uppercase">
+                {t("discover.seeAll")}
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 gap-[2px] bg-[#0d0d0d]">
+              {trending.map((item) => (
+                <div key={item.id} className="cursor-pointer" onClick={() => router.push(`/market/${item.id}`)}>
+                  <ListingCard listing={item} variant="compact" />
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
-                    {/* Rank pill */}
-                    <div
-                      className="absolute top-2 end-2 text-[9px] font-black px-1.5 py-0.5 rounded-md z-10"
-                      style={{ background: `${tierColor}25`, color: tierColor }}
+        {/* ─── Section: Leaderboard (Podium) ─── */}
+        {!loading && players.length > 0 && (
+          <section>
+            <div className="bg-[#111] px-5 py-3.5 flex items-center justify-between border-b-[3px] border-b-[#d4ff00]">
+              <h2 className="font-[family-name:var(--font-display-en)] text-lg uppercase tracking-wide">
+                {t("discover.topPlayers")}
+              </h2>
+              <Link href="/players" className="text-[11px] text-[#555] uppercase">
+                {t("discover.seeAll")}
+              </Link>
+            </div>
+
+            {/* Podium: 2nd | 1st | 3rd */}
+            {podiumOrder.length > 0 && (
+              <div className="grid grid-cols-3 gap-0 bg-[#111]">
+                {podiumOrder.map((player, displayIdx) => {
+                  const realIdx = displayIdx === 0 ? 1 : displayIdx === 1 ? 0 : 2;
+                  const tierColor = PLAYER_TIER_COLORS[player.tier as keyof typeof PLAYER_TIER_COLORS] ?? "#9ca3af";
+                  return (
+                    <Link
+                      key={player.id || player.phone}
+                      href={`/players/${player.id}`}
+                      className={`relative text-center py-5 px-2 ${displayIdx < 2 ? "border-e-2 border-e-[#0d0d0d]" : ""}`}
                     >
-                      #{i + 1}
-                    </div>
-
-                    <div className="flex flex-col items-center justify-center h-full p-2 gap-1.5">
-                      {/* Avatar circle */}
+                      {/* Top tier bar */}
+                      <span
+                        className="absolute top-0 inset-x-0 h-1"
+                        style={{ background: tierColor }}
+                      />
+                      {/* Rank */}
+                      <p
+                        className="font-[family-name:var(--font-display-en)] text-[36px] leading-none"
+                        style={{ color: tierColor }}
+                      >
+                        {realIdx + 1}
+                      </p>
+                      {/* Avatar */}
                       <div
-                        className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs"
+                        className="w-11 h-11 rounded-full mx-auto mt-2 flex items-center justify-center text-[13px] font-bold"
                         style={{
-                          border: `2px solid ${tierColor}`,
-                          background: `${tierColor}12`,
+                          border: `3px solid ${tierColor}`,
+                          background: `${tierColor}10`,
                           color: tierColor,
                         }}
                       >
                         {player.name.split(" ").slice(0, 2).map(w => w[0]).join("").toUpperCase()}
                       </div>
-                      <p className="text-xs font-bold text-white/90 truncate max-w-full text-center">
-                        {player.name}
+                      {/* Name */}
+                      <p className="text-[11px] font-bold text-[#ddd] mt-1.5 truncate">
+                        {player.name.split(" ").map(w => w[0].toUpperCase() + ".").join("")}
                       </p>
+                      <p className="text-[9px] text-[#555] mt-0.5">
+                        {t("player.gamesCount", { count: player.gamesPlayed })}
+                      </p>
+                      {/* Tier badge */}
                       <span
-                        className="text-[8px] font-bold px-2 py-0.5 rounded-full"
-                        style={{ background: `${tierColor}20`, color: tierColor }}
+                        className="inline-block text-[8px] font-extrabold uppercase tracking-wide px-1.5 py-0.5 mt-1.5"
+                        style={{ background: `${tierColor}15`, color: tierColor }}
                       >
                         {player.tier}
                       </span>
-                      <p className="text-[10px] text-white/40">
-                        {player.gamesPlayed} {t("player.gamesPlayed")}
-                      </p>
-                    </div>
-                  </Link>
-                );
-              })}
-            </FeedSection>
-          )}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
 
-          {/* ─── WhatsApp Support ─── */}
-          {!loading && (
-            <div className="mb-6">
-              <a
-                href="https://wa.me/201100775031"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 rounded-2xl bg-[#25D366]/10 border border-[#25D366]/20 px-4 py-3.5 transition-all hover:bg-[#25D366]/15 group"
-              >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#25D366]">
-                  <MessageCircle size={20} className="text-white" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-white/90">
-                    {t("common.support")}
-                  </p>
-                  <p className="text-xs text-white/40">
-                    {t("discover.supportDesc")}
-                  </p>
-                </div>
-                <ArrowUpRight size={16} className="text-[#25D366] shrink-0 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </a>
-            </div>
-          )}
+            {/* Rest: compact rows */}
+            {restPlayers.length > 0 && (
+              <div className="bg-[#0d0d0d]">
+                {restPlayers.map((player, i) => {
+                  const tierColor = PLAYER_TIER_COLORS[player.tier as keyof typeof PLAYER_TIER_COLORS] ?? "#9ca3af";
+                  return (
+                    <Link
+                      key={player.id || player.phone}
+                      href={`/players/${player.id}`}
+                      className="flex items-center gap-2.5 px-5 py-3 border-b border-b-[#161616]"
+                    >
+                      <span className="font-[family-name:var(--font-display-en)] text-lg text-[#333] w-7 text-center">
+                        {i + 4}
+                      </span>
+                      <div
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-[#333] bg-[#161616] text-[#555]"
+                      >
+                        {player.name.split(" ").slice(0, 2).map(w => w[0]).join("").toUpperCase()}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-xs font-semibold text-[#888]">{player.name}</p>
+                        <p className="text-[9px] text-[#444]">{player.gamesPlayed} {t("player.gamesPlayed")}</p>
+                      </div>
+                      <span className="text-[8px] px-1.5 py-0.5 bg-[#161616] text-[#555] uppercase">
+                        {player.tier}
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </section>
+        )}
 
-          {/* ─── Footer Link to Landing ─── */}
-          {!loading && (
-            <div className="text-center py-6 mb-16">
-              <Link
-                href="/welcome"
-                className="text-xs text-white/30 hover:text-white/50 transition-colors"
-              >
-                {t("discover.newHere")} &rarr;
-              </Link>
-            </div>
-          )}
-        </div>
+        {/* ─── Footer ─── */}
+        {!loading && (
+          <div className="text-center py-6 mb-16">
+            <Link href="/welcome" className="text-xs text-[#666] hover:text-[#999] transition-colors">
+              {t("discover.newHere")} &rarr;
+            </Link>
+          </div>
+        )}
       </div>
     </MainLayout>
   );

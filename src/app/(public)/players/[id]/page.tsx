@@ -7,9 +7,8 @@ import { useRouter, useParams } from "next/navigation";
 import { PlayerCard } from "@/components/cards/player-card";
 import { useTranslation, useLocale } from "@/i18n";
 import { buildPlayerShareLink } from "@/lib/whatsapp";
-import { scaleInGlow, slideUp } from "@/lib/animations";
 
-type PlayerTier = "BRONZE" | "GOLD" | "EMERALD" | "DIAMOND" | "MASTER" | "GRANDMASTER";
+type PlayerTier = "BRONZE" | "SILVER" | "GOLD" | "EMERALD" | "DIAMOND" | "MASTER" | "GRANDMASTER";
 
 interface PlayerData {
   id: string;
@@ -28,11 +27,12 @@ interface PlayerData {
 
 const TIER_COLORS: Record<PlayerTier, string> = {
   BRONZE: "#cd7f32",
+  SILVER: "#c0c0c0",
   GOLD: "#ffd700",
   EMERALD: "#50c878",
   DIAMOND: "#b9f2ff",
   MASTER: "#ff4655",
-  GRANDMASTER: "#c8ff00",
+  GRANDMASTER: "#d4ff00",
 };
 
 export default function PlayerProfilePage() {
@@ -133,8 +133,8 @@ export default function PlayerProfilePage() {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0a0f1a] flex items-center justify-center">
-        <div className="w-72 card-ratio rounded-2xl animate-pulse bg-white/5 border border-white/10" />
+      <div className="min-h-screen bg-[#0d0d0d] flex items-center justify-center">
+        <div className="w-72 card-ratio rounded-sm animate-pulse bg-[#1a1a1a] border border-[#333]" />
       </div>
     );
   }
@@ -142,17 +142,17 @@ export default function PlayerProfilePage() {
   // Error / not found state
   if (error || !player) {
     return (
-      <div className="min-h-screen bg-[#0a0f1a] flex flex-col items-center justify-center px-6 text-center">
-        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-white/40">
+      <div className="min-h-screen bg-[#0d0d0d] flex flex-col items-center justify-center px-6 text-center">
+        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-sm bg-[#1a1a1a] border border-[#333] text-[#666]">
           <Gamepad2 size={28} />
         </div>
         <h2 className="text-lg font-semibold text-white mb-1">
           {t("common.noResults")}
         </h2>
-        <p className="text-white/50 text-sm mb-6">{t("player.noCard")}</p>
+        <p className="text-[#999] text-sm mb-6">{t("player.noCard")}</p>
         <button
           onClick={() => router.push("/players")}
-          className="rounded-full bg-[#c8ff00] px-6 py-2.5 text-sm font-bold text-[#111827] transition-all hover:shadow-[0_0_20px_rgba(200,255,0,0.2)]"
+          className="rounded-sm bg-[#d4ff00] px-6 py-2.5 text-sm font-bold text-[#0d0d0d] transition-all"
         >
           {t("player.leaderboard")}
         </button>
@@ -174,7 +174,7 @@ export default function PlayerProfilePage() {
       <div className="relative z-10 px-4 pt-4 flex justify-end">
         <button
           onClick={() => router.back()}
-          className="flex items-center gap-1.5 rounded-full bg-white/5 border border-white/10 px-4 py-2 text-sm text-white/70 hover:text-white hover:bg-white/10 transition-all"
+          className="flex items-center gap-1.5 rounded-sm bg-[#1a1a1a] border border-[#333] px-4 py-2 text-sm text-[#999] hover:text-white hover:bg-[#222] transition-all"
         >
           {t("common.back")}
           <ArrowRight size={16} />
@@ -182,8 +182,7 @@ export default function PlayerProfilePage() {
       </div>
 
       {/* Hero card */}
-      <motion.div
-        {...scaleInGlow}
+      <div
         className="flex justify-center px-4 pt-4 pb-8"
       >
         <div className="animate-float-slow">
@@ -203,14 +202,13 @@ export default function PlayerProfilePage() {
             interactive
           />
         </div>
-      </motion.div>
+      </div>
 
       {/* Stats section */}
-      <motion.div
-        {...slideUp}
+      <div
         className="relative z-10 mx-auto max-w-md px-4 pb-6"
       >
-        <div className="glass-dark rounded-2xl p-5">
+        <div className="bg-[#1a1a1a] border border-[#333] rounded-sm p-5">
           {/* Stats */}
           <div className="grid grid-cols-1 gap-4 mb-4">
             <StatItem
@@ -236,14 +234,14 @@ export default function PlayerProfilePage() {
           </div>
 
           {/* Area + member since */}
-          <div className="border-t border-white/5 pt-4 space-y-2.5">
+          <div className="border-t border-[#222] pt-4 space-y-2.5">
             {area && (
-              <div className="flex items-center gap-2 text-white/50 text-sm">
+              <div className="flex items-center gap-2 text-[#999] text-sm">
                 <MapPin size={14} className="shrink-0" />
                 <span>{area}</span>
               </div>
             )}
-            <div className="flex items-center gap-2 text-white/50 text-sm">
+            <div className="flex items-center gap-2 text-[#999] text-sm">
               <CalendarDays size={14} className="shrink-0" />
               <span>
                 {t("player.memberSince")} {memberSince}
@@ -251,7 +249,7 @@ export default function PlayerProfilePage() {
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Share button */}
       <motion.div
@@ -262,7 +260,7 @@ export default function PlayerProfilePage() {
       >
         <button
           onClick={handleShare}
-          className="w-full flex items-center justify-center gap-2 rounded-full bg-[#c8ff00] py-3.5 text-sm font-bold text-[#111827] shadow-lg shadow-[#c8ff00]/20 transition-all hover:shadow-[0_0_30px_rgba(200,255,0,0.3)] active:scale-[0.98]"
+          className="w-full flex items-center justify-center gap-2 rounded-sm bg-[#d4ff00] py-3.5 text-sm font-bold text-[#0d0d0d] transition-all active:scale-[0.98]"
         >
           <Share2 size={18} />
           {t("player.shareCard")}
@@ -276,11 +274,11 @@ export default function PlayerProfilePage() {
         transition={{ delay: 0.6 }}
         className="relative z-10 mx-auto max-w-md px-4 pb-16"
       >
-        <div className="glass-dark rounded-2xl p-5">
-          <p className="text-white/60 text-sm text-center mb-1">
+        <div className="bg-[#1a1a1a] border border-[#333] rounded-sm p-5">
+          <p className="text-[#999] text-sm text-center mb-1">
             {t("player.findCard")}
           </p>
-          <p className="text-white/30 text-xs text-center mb-4">
+          <p className="text-[#666] text-xs text-center mb-4">
             {t("player.enterPhone")}
           </p>
 
@@ -298,14 +296,14 @@ export default function PlayerProfilePage() {
                 if (e.key === "Enter") handlePhoneSearch();
               }}
               placeholder="01XXXXXXXXX"
-              className="flex-1 rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none focus:border-[#c8ff00]/40 focus:ring-1 focus:ring-[#c8ff00]/20 transition-all"
+              className="flex-1 rounded-sm bg-[#1a1a1a] border border-[#333] px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none focus:border-[#d4ff00]/40 focus:ring-1 focus:ring-[#d4ff00]/20 transition-all"
               maxLength={11}
               aria-label={t("player.enterPhone")}
             />
             <button
               onClick={handlePhoneSearch}
               disabled={phoneSearching}
-              className="shrink-0 flex items-center gap-1.5 rounded-xl bg-white/10 border border-white/10 px-4 py-2.5 text-sm font-semibold text-white/80 hover:bg-white/15 hover:text-white transition-all disabled:opacity-50"
+              className="shrink-0 flex items-center gap-1.5 rounded-sm bg-[#222] border border-[#333] px-4 py-2.5 text-sm font-semibold text-[#999] hover:bg-[#222] hover:text-white transition-all disabled:opacity-50"
             >
               {phoneSearching ? (
                 <Loader2 size={16} className="animate-spin" />
@@ -346,7 +344,7 @@ function StatItem({
   color: string;
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-xl bg-white/[0.03] p-3">
+    <div className="flex items-center gap-3 rounded-sm bg-[#1a1a1a] p-3">
       <div
         className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
         style={{ backgroundColor: `${color}15`, color }}
@@ -354,7 +352,7 @@ function StatItem({
         {icon}
       </div>
       <div className="min-w-0">
-        <p className="text-white/40 text-[10px] uppercase tracking-wide truncate">
+        <p className="text-[#666] text-[10px] uppercase tracking-wide truncate">
           {label}
         </p>
         <p className="text-white font-bold text-base font-[family-name:var(--font-display)]">

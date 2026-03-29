@@ -1,7 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { scaleIn } from "@/lib/animations";
 import type { ReactNode } from "react";
 
 interface EmptyStateProps {
@@ -16,26 +14,22 @@ interface EmptyStateProps {
 
 export function EmptyState({ icon, title, description, action }: EmptyStateProps) {
   return (
-    <motion.div
-      {...scaleIn}
-      className="flex flex-col items-center justify-center px-6 py-16 text-center"
-    >
-      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-white/40">
+    <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
+      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-sm bg-[#1a1a1a] border border-[#333] text-[#666]">
         {icon}
       </div>
-      <h3 className="mb-1 text-lg font-semibold text-white">{title}</h3>
+      <h3 className="mb-1 text-lg font-semibold text-[#999]">{title}</h3>
       {description && (
-        <p className="mb-6 max-w-xs text-sm text-white/50">{description}</p>
+        <p className="mb-6 max-w-xs text-sm text-[#666]">{description}</p>
       )}
       {action && (
-        <motion.button
-          whileTap={{ scale: 0.95 }}
+        <button
           onClick={action.onClick}
-          className="rounded-full bg-[#c8ff00] px-6 py-2.5 text-sm font-bold text-[#111827] shadow-sm transition-all hover:shadow-[0_0_20px_rgba(200,255,0,0.2)] cursor-pointer active:scale-95"
+          className="rounded-sm bg-[#d4ff00] px-6 py-2.5 text-sm font-bold text-[#0d0d0d] cursor-pointer active:scale-[0.97] transition-transform duration-75"
         >
           {action.label}
-        </motion.button>
+        </button>
       )}
-    </motion.div>
+    </div>
   );
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useLocale } from "@/i18n";
 
 export function LocaleToggle() {
@@ -11,19 +10,18 @@ export function LocaleToggle() {
   };
 
   return (
-    <motion.button
-      whileTap={{ scale: 0.92 }}
+    <button
       onClick={toggleLocale}
-      className="relative flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold backdrop-blur-sm transition-colors hover:bg-white/10"
+      className="relative flex items-center gap-1 rounded-sm border border-[#333] bg-[#1a1a1a] px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-[#222] active:scale-[0.97] transition-transform duration-75"
       aria-label={locale === "ar" ? "Switch to English" : "التبديل للعربية"}
     >
-      <span className={locale === "en" ? "text-white" : "text-white/40"}>
+      <span className={locale === "en" ? "text-white" : "text-[#666]"}>
         EN
       </span>
-      <span className="text-white/20">|</span>
-      <span className={locale === "ar" ? "text-white" : "text-white/40"}>
+      <span className="text-[#333]">|</span>
+      <span className={locale === "ar" ? "text-white" : "text-[#666]"}>
         عر
       </span>
-    </motion.button>
+    </button>
   );
 }

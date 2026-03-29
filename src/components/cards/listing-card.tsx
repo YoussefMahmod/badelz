@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Eye, Package } from "lucide-react";
 import { useTranslation, useLocale } from "@/i18n";
 import { LISTING_CATEGORY_COLORS } from "@/lib/constants";
@@ -56,7 +55,6 @@ export function ListingCard({
   const { t } = useTranslation();
   const { locale } = useLocale();
 
-  const accentColor = LISTING_CATEGORY_COLORS[listing.category] ?? "#9ca3af";
   const displayTitle =
     locale === "ar" && listing.titleAr ? listing.titleAr : listing.title;
   const displayArea =
@@ -68,10 +66,9 @@ export function ListingCard({
   /* ─── Compact Variant (for trending carousel) ─── */
   if (variant === "compact") {
     return (
-      <motion.div
-        whileTap={{ scale: 0.97 }}
+      <div
         onClick={onClick}
-        className="h-24 rounded-xl overflow-hidden flex bg-[#0d1220] cursor-pointer group"
+        className="h-24 rounded-sm overflow-hidden flex bg-[#1a1a1a] cursor-pointer group active:scale-[0.97] transition-transform duration-75"
       >
         {/* Photo */}
         <div className="w-24 h-24 shrink-0 overflow-hidden">
@@ -82,42 +79,37 @@ export function ListingCard({
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
           ) : (
-            <div
-              className="w-full h-full flex items-center justify-center"
-              style={{ backgroundColor: `${accentColor}14` }}
-            >
-              <Package size={24} style={{ color: accentColor }} className="opacity-30" />
+            <div className="w-full h-full flex items-center justify-center bg-[#222]">
+              <Package size={24} className="text-[#666]" />
             </div>
           )}
         </div>
 
         {/* Info */}
         <div className="p-3 flex flex-col justify-center min-w-0">
-          <p className="text-xs font-bold text-white/90 line-clamp-1">
+          <p className="text-xs font-bold text-white line-clamp-1">
             {displayTitle}
           </p>
-          <p className="text-sm font-bold mt-0.5" style={{ color: accentColor }}>
+          <p className="text-sm font-bold mt-0.5 text-[#d4ff00] font-[family-name:var(--font-display-en)]">
             {listing.price}{" "}
-            <span className="text-[10px] text-white/30 font-normal">
+            <span className="text-[10px] text-[#666] font-normal">
               {t("common.egp")}
             </span>
           </p>
-          <div className="flex items-center gap-1 mt-1 text-[10px] text-white/30">
+          <div className="flex items-center gap-1 mt-1 text-[10px] text-[#666]">
             <Eye size={10} />
             <span>{listing.views}</span>
           </div>
         </div>
-      </motion.div>
+      </div>
     );
   }
 
   /* ─── Default Variant (main grid card) ─── */
   return (
-    <motion.div
-      whileTap={{ scale: 0.97 }}
+    <div
       onClick={onClick}
-      className="rounded-2xl overflow-hidden bg-[#0d1220] group cursor-pointer hover:-translate-y-1 hover:shadow-lg hover:shadow-black/30 transition-all duration-300"
-      style={{ borderTop: `4px solid ${accentColor}` }}
+      className="rounded-sm overflow-hidden bg-[#1a1a1a] group cursor-pointer hover:-translate-y-1 transition-transform duration-200 active:scale-[0.97]"
     >
       {/* Photo area */}
       <div className="aspect-[4/3] relative overflow-hidden">
@@ -128,25 +120,22 @@ export function ListingCard({
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
-          <div
-            className="w-full h-full flex items-center justify-center"
-            style={{ backgroundColor: `${accentColor}14` }}
-          >
-            <Package size={36} style={{ color: accentColor }} className="opacity-25" />
+          <div className="w-full h-full flex items-center justify-center bg-[#222]">
+            <Package size={36} className="text-[#666]" />
           </div>
         )}
 
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0d1220] via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] via-transparent to-transparent" />
 
         {/* Condition pill - top right */}
-        <span className="absolute top-2.5 end-2.5 bg-black/50 backdrop-blur-sm text-[10px] text-white/80 uppercase tracking-wider px-2.5 py-1 rounded-full">
+        <span className="absolute top-2.5 end-2.5 bg-[#d4ff00] text-[#0d0d0d] rounded-sm text-[9px] font-bold uppercase px-1.5 py-0.5">
           {t(conditionKey as Parameters<typeof t>[0])}
         </span>
 
         {/* NEW badge - top left */}
         {showNewBadge && (
-          <span className="absolute top-2.5 start-2.5 bg-emerald-500 text-white text-[8px] font-bold px-2.5 py-0.5 rounded-full animate-pulse whitespace-nowrap">
+          <span className="absolute top-2.5 start-2.5 bg-[#ff4d4d] text-white text-[8px] font-bold px-2.5 py-0.5 rounded-sm whitespace-nowrap">
             {t("market.newBadge" as Parameters<typeof t>[0])}
           </span>
         )}
@@ -155,20 +144,20 @@ export function ListingCard({
       {/* Info area */}
       <div className="p-3.5">
         {/* Title */}
-        <p className="text-sm font-bold text-white/90 line-clamp-1">
+        <p className="text-sm font-bold text-white line-clamp-1">
           {displayTitle}
         </p>
 
         {/* Price */}
-        <p className="text-lg font-bold mt-1" style={{ color: accentColor }}>
+        <p className="text-lg font-bold mt-1 text-[#d4ff00] font-[family-name:var(--font-display-en)]">
           {listing.price}{" "}
-          <span className="text-xs text-white/30 font-normal">
+          <span className="text-xs text-[#666] font-normal">
             {t("common.egp")}
           </span>
         </p>
 
         {/* Meta row */}
-        <div className="flex items-center gap-2 text-[10px] text-white/30 mt-1.5">
+        <div className="flex items-center gap-2 text-[10px] text-[#666] mt-1.5">
           <span className="flex items-center gap-0.5">
             <Eye size={10} />
             {listing.views}
@@ -179,6 +168,6 @@ export function ListingCard({
           <span className="truncate">{displayArea}</span>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

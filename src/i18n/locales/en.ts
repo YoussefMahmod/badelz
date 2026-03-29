@@ -485,6 +485,7 @@ const en = {
     rating: "Rating",
     tier: "Tier",
     bronze: "Bronze",
+    silver: "Silver",
     gold: "Gold",
     emerald: "Emerald",
     diamond: "Diamond",

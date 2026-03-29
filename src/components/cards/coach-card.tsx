@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { Heart, MapPin, Sparkles } from "lucide-react";
 import { useTranslation, useLocale } from "@/i18n";
-import { CardShell } from "./card-shell";
 import { getCoachTier, COACH_TIER_CONFIG } from "@/lib/coach-tiers";
 
 interface CoachData {
@@ -42,7 +41,7 @@ function TierBadge({ heartCount }: { heartCount: number }) {
 
   return (
     <span
-      className={`${config.bg} ${config.color} border ${config.border} text-[10px] font-semibold px-2 py-0.5 rounded-full`}
+      className="bg-[#222] text-[#999] border border-[#333] text-[10px] font-semibold px-2 py-0.5 rounded-sm"
     >
       {t(config.labelKey as Parameters<typeof t>[0])}
     </span>
@@ -53,28 +52,19 @@ function PioneerCoachBadge() {
   const { t } = useTranslation();
   return (
     <span
-      className="text-[10px] font-semibold px-2 py-0.5 rounded-full inline-flex items-center gap-1"
-      style={{
-        backgroundColor: "rgba(255,215,0,0.12)",
-        color: "#ffd700",
-        border: "1px solid rgba(255,215,0,0.25)",
-      }}
+      className="text-[10px] font-semibold px-2 py-0.5 rounded-sm inline-flex items-center gap-1 bg-[#ffd700]/12 text-[#ffd700] border border-[#ffd700]/25"
     >
-      <Sparkles size={9} style={{ color: "#ffd700" }} />
+      <Sparkles size={9} className="text-[#ffd700]" />
       {t("coach.pioneerCoach")}
     </span>
   );
 }
-
-// 4-point star clip path
-const STAR_CLIP = "polygon(50% 0%, 61% 35%, 100% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 0% 35%, 39% 35%)";
 
 function Avatar({
   photo,
   name,
   displayName,
   size,
-  heartCount = 0,
 }: {
   photo?: string | null;
   name: string;
@@ -82,115 +72,26 @@ function Avatar({
   size: "sm" | "md" | "lg";
   heartCount?: number;
 }) {
-  const outerSizes = { sm: 48, md: 56, lg: 92 };
-  const innerSizes = { sm: 40, md: 48, lg: 80 };
+  const sizes = { sm: 40, md: 48, lg: 80 };
   const fontSize = { sm: "text-xs", md: "text-sm", lg: "text-lg" };
-  const starSizes = { sm: 6, md: 7, lg: 10 };
 
-  const tier = getCoachTier(heartCount);
-  const tierConfig = COACH_TIER_CONFIG[tier];
-  const sparkle = tierConfig.sparkle;
-
-  const outer = outerSizes[size];
-  const inner = innerSizes[size];
-  const starSize = starSizes[size];
-
-  // No sparkles for NEW tier
-  if (!sparkle) {
-    return (
-      <div
-        className={`relative shrink-0 rounded-full flex items-center justify-center font-bold overflow-hidden border-2 border-white/20 ${fontSize[size]}`}
-        style={{
-          width: inner,
-          height: inner,
-          background: "linear-gradient(135deg, rgba(200,255,0,0.12), rgba(200,255,0,0.03))",
-          color: "#c8ff00",
-        }}
-      >
-        {photo ? (
-          <Image src={photo} alt={displayName} fill sizes="64px" className="rounded-full object-cover" />
-        ) : (
-          getInitials(name)
-        )}
-      </div>
-    );
-  }
-
-  // Dynamic speed: more hearts = faster twinkle
-  const dynamicDuration = (() => {
-    const ranges: Record<string, [number, number]> = { RISING: [5, 14], POPULAR: [15, 49], PRO: [50, 150] };
-    const range = ranges[tier];
-    if (!range) return sparkle.duration;
-    const [min, max] = range;
-    const intensity = Math.min(1, (heartCount - min) / (max - min));
-    return sparkle.duration - intensity * sparkle.duration * 0.3;
-  })();
-
-  // Generate sparkles evenly around the circumference
-  const sparkles = Array.from({ length: sparkle.sparkleCount }, (_, i) => {
-    const angle = (i / sparkle.sparkleCount) * Math.PI * 2 - Math.PI / 2;
-    const radius = outer / 2;
-    const x = Math.cos(angle) * radius + outer / 2;
-    const y = Math.sin(angle) * radius + outer / 2;
-    const delay = (i / sparkle.sparkleCount) * dynamicDuration;
-    const useAlt = i % 2 === 0;
-    return { x, y, delay, useAlt };
-  });
+  const dim = sizes[size];
 
   return (
     <div
-      className="shrink-0 relative flex items-center justify-center"
-      style={{ width: outer, height: outer }}
+      className={`relative shrink-0 rounded-full flex items-center justify-center font-bold overflow-hidden border-2 border-[#333] ${fontSize[size]}`}
+      style={{
+        width: dim,
+        height: dim,
+        background: "#222",
+        color: "#d4ff00",
+      }}
     >
-      {/* Ambient glow */}
-      <div
-        className="absolute inset-0 rounded-full"
-        style={{ boxShadow: sparkle.glow }}
-      />
-
-      {/* Tier-colored ring border */}
-      <div
-        className="absolute rounded-full"
-        style={{
-          inset: (outer - inner) / 2 - 2,
-          border: `2px solid ${sparkle.borderColor}`,
-        }}
-      />
-
-      {/* Twinkling star sparkles */}
-      {sparkles.map((s, i) => (
-        <div
-          key={i}
-          className="absolute pointer-events-none"
-          style={{
-            left: s.x - starSize / 2,
-            top: s.y - starSize / 2,
-            width: starSize,
-            height: starSize,
-            background: sparkle.colorHex,
-            clipPath: STAR_CLIP,
-            animation: `${s.useAlt ? "sparkle-twinkle-alt" : "sparkle-twinkle"} ${dynamicDuration.toFixed(1)}s ease-in-out infinite`,
-            animationDelay: `${s.delay.toFixed(2)}s`,
-          }}
-        />
-      ))}
-
-      {/* Avatar content */}
-      <div
-        className={`relative rounded-full flex items-center justify-center font-bold overflow-hidden z-10 ${fontSize[size]}`}
-        style={{
-          width: inner,
-          height: inner,
-          background: "linear-gradient(135deg, rgba(200,255,0,0.08), rgba(200,255,0,0.02))",
-          color: "#c8ff00",
-        }}
-      >
-        {photo ? (
-          <Image src={photo} alt={displayName} fill sizes="64px" className="rounded-full object-cover" />
-        ) : (
-          getInitials(name)
-        )}
-      </div>
+      {photo ? (
+        <Image src={photo} alt={displayName} fill sizes="64px" className="rounded-full object-cover" />
+      ) : (
+        getInitials(name)
+      )}
     </div>
   );
 }
@@ -213,32 +114,22 @@ export function CoachCard({
   const hearts = coach.heartCount ?? 0;
   const price = coach.pricePerHour != null ? Number(coach.pricePerHour) : null;
 
-  // ── SM: Compact (discover feed) — Glass + tier stripe ──
+  // ── SM: Compact (discover feed) ──
   if (size === "sm") {
-    const tier = getCoachTier(hearts);
-    const tierColor = COACH_TIER_CONFIG[tier].colorHex;
-
     return (
       <div
         onClick={onClick}
-        className="relative w-28 h-[156px] shrink-0 rounded-2xl bg-white/[0.04] border border-white/[0.08] overflow-hidden cursor-pointer transition-all hover:-translate-y-1 hover:border-white/[0.15]"
-        style={{ boxShadow: `0 0 15px ${tierColor}15` }}
+        className="relative w-28 h-[156px] shrink-0 rounded-sm bg-[#1a1a1a] border-t-[3px] border-t-[#00c2ff] overflow-hidden cursor-pointer transition-colors duration-200 hover:bg-[#222] active:scale-[0.97] transition-transform duration-75"
       >
-        {/* Tier top stripe */}
-        <div
-          className="absolute top-0 inset-x-0 h-[3px]"
-          style={{ background: `linear-gradient(90deg, ${tierColor}, ${tierColor}40)` }}
-        />
-
         <div className="flex flex-col items-center justify-center h-full p-2 gap-1.5">
-          <Avatar photo={coach.photo} name={coach.name} displayName={displayName} size="sm" heartCount={hearts} />
-          <p className="text-white font-heading font-bold text-xs text-center leading-tight line-clamp-1">
+          <Avatar photo={coach.photo} name={coach.name} displayName={displayName} size="sm" />
+          <p className="text-white font-bold text-xs text-center leading-tight line-clamp-1">
             {displayName}
           </p>
           <TierBadge heartCount={hearts} />
           {coach.isPioneerCoach && <PioneerCoachBadge />}
           {price && (
-            <p className="text-[10px] font-heading font-bold" style={{ color: tierColor }}>{price} {t("common.egp")}</p>
+            <p className="text-[10px] font-bold text-[#d4ff00] font-[family-name:var(--font-display-en)]">{price} {t("common.egp")}</p>
           )}
         </div>
       </div>
@@ -254,23 +145,22 @@ export function CoachCard({
     return (
       <div
         onClick={onClick}
-        data-card-shell=""
-        className={`relative rounded-2xl bg-white/[0.04] border border-white/[0.08] p-4 transition-all duration-200 ${
-          interactive ? "cursor-pointer hover:bg-white/[0.07] hover:border-white/[0.15] active:scale-[0.99]" : ""
+        className={`relative rounded-sm bg-[#1a1a1a] border-t-[3px] border-t-[#00c2ff] p-4 transition-colors duration-200 ${
+          interactive ? "cursor-pointer hover:bg-[#222] active:scale-[0.97] transition-transform duration-75" : ""
         }`}
       >
         <div className="flex items-start gap-4">
           {/* Avatar */}
-          <Avatar photo={coach.photo} name={coach.name} displayName={displayName} size="md" heartCount={hearts} />
+          <Avatar photo={coach.photo} name={coach.name} displayName={displayName} size="md" />
 
           {/* Info */}
           <div className="flex-1 min-w-0">
             {/* Name row + heart */}
             <div className="flex items-center justify-between gap-2 mb-0.5">
-              <h3 className="text-sm font-bold text-white/90 truncate">{displayName}</h3>
+              <h3 className="text-sm font-bold text-white truncate">{displayName}</h3>
               {hearts > 0 && (
-                <span className="flex items-center gap-1 shrink-0 text-rose-400/80">
-                  <Heart size={12} className="fill-rose-400/80" />
+                <span className="flex items-center gap-1 shrink-0 text-rose-400">
+                  <Heart size={12} className="fill-rose-400" />
                   <span className="text-xs font-medium">{hearts}</span>
                 </span>
               )}
@@ -278,7 +168,7 @@ export function CoachCard({
 
             {/* Secondary name */}
             {secondaryName && (
-              <p className="text-white/35 text-xs mb-2 truncate">{secondaryName}</p>
+              <p className="text-[#666] text-xs mb-2 truncate">{secondaryName}</p>
             )}
 
             {/* Tier badge */}
@@ -289,14 +179,14 @@ export function CoachCard({
 
             {/* Stats line: experience · price */}
             {infoParts.length > 0 && (
-              <p className="text-white/50 text-xs mb-1.5" dir="auto">
+              <p className="text-[#999] text-xs mb-1.5" dir="auto">
                 {infoParts.join(" · ")}
               </p>
             )}
 
             {/* Areas */}
             {displayAreas.length > 0 && (
-              <div className="flex items-center gap-1 text-white/30">
+              <div className="flex items-center gap-1 text-[#666]">
                 <MapPin size={10} className="shrink-0" />
                 <p className="text-[11px] truncate">{displayAreas.join(" · ")}</p>
               </div>
@@ -309,16 +199,21 @@ export function CoachCard({
 
   // ── LG: Vertical card (profile & dashboard) ──
   return (
-    <CardShell accentColor="#c8ff00" size="lg" interactive={interactive} onClick={onClick}>
+    <div
+      onClick={interactive ? onClick : undefined}
+      className={`relative rounded-sm bg-[#1a1a1a] border-t-[3px] border-t-[#00c2ff] ${
+        interactive ? "cursor-pointer hover:bg-[#222] active:scale-[0.97] transition-transform duration-75" : ""
+      }`}
+    >
       <div className="flex flex-col h-full p-4">
         {/* Avatar + Name */}
         <div className="flex-1 flex flex-col items-center justify-center gap-3 py-2">
-          <Avatar photo={coach.photo} name={coach.name} displayName={displayName} size="lg" heartCount={hearts} />
+          <Avatar photo={coach.photo} name={coach.name} displayName={displayName} size="lg" />
 
           <div className="text-center">
             <p className="text-base font-bold text-white leading-tight">{displayName}</p>
             {secondaryName && (
-              <p className="text-white/40 text-xs mt-0.5">{secondaryName}</p>
+              <p className="text-[#666] text-xs mt-0.5">{secondaryName}</p>
             )}
           </div>
 
@@ -327,8 +222,8 @@ export function CoachCard({
             <TierBadge heartCount={hearts} />
             {coach.isPioneerCoach && <PioneerCoachBadge />}
             {hearts > 0 && (
-              <span className="flex items-center gap-1 text-rose-400/70">
-                <Heart size={11} className="fill-rose-400/70" />
+              <span className="flex items-center gap-1 text-rose-400">
+                <Heart size={11} className="fill-rose-400" />
                 <span className="text-xs font-medium">{hearts}</span>
               </span>
             )}
@@ -336,20 +231,20 @@ export function CoachCard({
 
           {/* Price */}
           {price && (
-            <p className="text-[#c8ff00] font-bold text-lg">
-              {price} <span className="text-sm font-normal text-white/40">{t("common.egp")}{t("common.perHour")}</span>
+            <p className="text-[#d4ff00] font-bold text-lg font-[family-name:var(--font-display-en)]">
+              {price} <span className="text-sm font-normal text-[#666]">{t("common.egp")}{t("common.perHour")}</span>
             </p>
           )}
         </div>
 
         {/* Areas */}
         {displayAreas.length > 0 && (
-          <div className="flex items-center justify-center gap-1 text-white/40 pt-2 border-t border-white/5">
+          <div className="flex items-center justify-center gap-1 text-[#666] pt-2 border-t border-[#222]">
             <MapPin size={11} />
             <p className="text-xs truncate">{displayAreas.join(" · ")}</p>
           </div>
         )}
       </div>
-    </CardShell>
+    </div>
   );
 }

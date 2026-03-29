@@ -30,7 +30,6 @@ import { EmptyState } from "@/components/empty-state";
 import { useTranslation, useLocale } from "@/i18n";
 import { useAuth } from "@/lib/auth-context";
 import { AREAS, LISTING_CATEGORY_COLORS } from "@/lib/constants";
-import { heroTextReveal, staggerItem } from "@/lib/animations";
 
 // ─── Types ───
 
@@ -251,7 +250,7 @@ export default function MarketClient() {
             Section 1: Hero Header
             ════════════════════════════════════════════════════════ */}
         <div className="flex items-start justify-between mb-1">
-          <motion.div {...heroTextReveal}>
+          <div>
             <h1 className="text-5xl sm:text-7xl font-extrabold uppercase tracking-tight font-[family-name:var(--font-display)] text-white glow-lime-text leading-none">
               {t("market.title")}
             </h1>
@@ -259,12 +258,12 @@ export default function MarketClient() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
-              className="text-white/40 text-sm mt-2"
+              className="text-[#666] text-sm mt-2"
             >
-              <span className="text-white/60 font-semibold">{t("market.listingsCount", { count: total })}</span> &middot;{" "}
+              <span className="text-[#999] font-semibold">{t("market.listingsCount", { count: total })}</span> &middot;{" "}
               {t("market.newItemsDaily")}
             </motion.p>
-          </motion.div>
+          </div>
 
           {/* Search + Filter icon buttons */}
           <motion.div
@@ -275,19 +274,19 @@ export default function MarketClient() {
           >
             <button
               onClick={() => setSearchOpen(!searchOpen)}
-              className="w-11 h-11 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all"
+              className="w-11 h-11 rounded-sm bg-[#1a1a1a] border border-[#333] flex items-center justify-center text-[#999] hover:text-white hover:bg-[#222] transition-all"
               aria-label={t("common.search")}
             >
               {searchOpen ? <X size={18} /> : <Search size={18} />}
             </button>
             <button
               onClick={openFilter}
-              className="relative w-11 h-11 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all"
+              className="relative w-11 h-11 rounded-sm bg-[#1a1a1a] border border-[#333] flex items-center justify-center text-[#999] hover:text-white hover:bg-[#222] transition-all"
               aria-label={t("market.filterTitle")}
             >
               <SlidersHorizontal size={18} />
               {hasActiveFilters && (
-                <span className="absolute top-1.5 end-1.5 w-2.5 h-2.5 rounded-full bg-[#c8ff00] shadow-[0_0_6px_rgba(200,255,0,0.5)]" />
+                <span className="absolute top-1.5 end-1.5 w-2.5 h-2.5 rounded-sm bg-[#d4ff00]" />
               )}
             </button>
           </motion.div>
@@ -303,7 +302,7 @@ export default function MarketClient() {
           >
             <Link
               href="/market/mine"
-              className="text-xs font-semibold text-[#c8ff00]/70 hover:text-[#c8ff00] transition-colors"
+              className="text-xs font-semibold text-[#d4ff00]/70 hover:text-[#d4ff00] transition-colors"
             >
               {t("market.myListings")}
             </Link>
@@ -323,7 +322,7 @@ export default function MarketClient() {
               <div className="relative">
                 <Search
                   size={20}
-                  className="absolute start-4 top-1/2 -translate-y-1/2 text-[#c8ff00]/50"
+                  className="absolute start-4 top-1/2 -translate-y-1/2 text-[#d4ff00]/50"
                 />
                 <input
                   type="text"
@@ -331,7 +330,7 @@ export default function MarketClient() {
                   value={searchQuery}
                   onChange={(e) => handleSearchChange(e.target.value)}
                   placeholder={t("common.search")}
-                  className="w-full rounded-xl bg-white/5 border border-[#c8ff00]/20 ps-12 pe-4 py-3.5 text-base text-white outline-none placeholder:text-white/25 focus:border-[#c8ff00]/50 focus:ring-2 focus:ring-[#c8ff00]/20 transition-all"
+                  className="w-full rounded-sm bg-[#1a1a1a] border-2 border-[#333] focus:border-[#d4ff00] ps-12 pe-4 py-3.5 text-base text-white outline-none placeholder:text-[#666] focus:border-[#d4ff00]  transition-all"
                 />
               </div>
             </motion.div>
@@ -349,8 +348,8 @@ export default function MarketClient() {
             className="relative overflow-hidden mb-5"
           >
             {/* Shared fade edges */}
-            <div className="absolute inset-y-0 start-0 w-16 bg-gradient-to-e from-[#0a0f1a] to-transparent z-10 pointer-events-none" />
-            <div className="absolute inset-y-0 end-0 w-16 bg-gradient-to-s from-[#0a0f1a] to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-y-0 start-0 w-16 bg-gradient-to-e from-[#0d0d0d] to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-y-0 end-0 w-16 bg-gradient-to-s from-[#0d0d0d] to-transparent z-10 pointer-events-none" />
 
             {/* Row 1: Recently Added → scrolls left-to-right */}
             {recentItems.length > 0 && (
@@ -360,25 +359,25 @@ export default function MarketClient() {
                     <Link
                       key={`recent-${item.id}-${i}`}
                       href={`/market/${item.id}`}
-                      className="flex items-center gap-2.5 shrink-0 rounded-lg bg-white/5 border border-white/10 px-3 py-2 hover:bg-white/10 transition-colors"
+                      className="flex items-center gap-2.5 shrink-0 rounded-sm bg-[#1a1a1a] border border-[#333] px-3 py-2 hover:bg-[#222] transition-colors"
                     >
-                      <span className="text-[8px] font-bold bg-emerald-500 text-white px-1.5 py-0.5 rounded-full shrink-0 whitespace-nowrap">
+                      <span className="text-[8px] font-bold bg-[#d4ff00] text-white px-1.5 py-0.5 rounded-full shrink-0 whitespace-nowrap">
                         {t("market.newBadge")}
                       </span>
-                      <div className="relative w-7 h-7 rounded-md overflow-hidden shrink-0 bg-white/5 flex items-center justify-center">
+                      <div className="relative w-7 h-7 rounded-md overflow-hidden shrink-0 bg-[#1a1a1a] flex items-center justify-center">
                         {item.photos?.[0] ? (
                           <Image src={item.photos[0]} alt="" fill sizes="28px" className="object-cover" />
                         ) : (
-                          <Package size={12} className="text-white/20" />
+                          <Package size={12} className="text-[#666]" />
                         )}
                       </div>
-                      <span className="text-xs font-medium text-white/70 truncate max-w-[120px]">
+                      <span className="text-xs font-medium text-[#999] truncate max-w-[120px]">
                         {locale === "ar" && item.titleAr ? item.titleAr : item.title}
                       </span>
-                      <span className="text-xs font-bold text-emerald-400 shrink-0">
+                      <span className="text-xs font-bold text-[#d4ff00] shrink-0">
                         {item.price} {t("common.egp")}
                       </span>
-                      <span className="text-[10px] text-white/25 shrink-0">
+                      <span className="text-[10px] text-[#666] shrink-0">
                         {getTimeAgo(item.createdAt)}
                       </span>
                     </Link>
@@ -395,26 +394,26 @@ export default function MarketClient() {
                     <Link
                       key={`trend-${item.id}-${i}`}
                       href={`/market/${item.id}`}
-                      className="flex items-center gap-2.5 shrink-0 rounded-lg bg-white/5 border border-white/10 px-3 py-2 hover:bg-white/10 transition-colors"
+                      className="flex items-center gap-2.5 shrink-0 rounded-sm bg-[#1a1a1a] border border-[#333] px-3 py-2 hover:bg-[#222] transition-colors"
                     >
                       <span className="text-[8px] font-bold bg-orange-500 text-white px-1.5 py-0.5 rounded-full shrink-0 flex items-center gap-0.5">
                         <Flame size={8} />
                         {t("market.hot" as Parameters<typeof t>[0])}
                       </span>
-                      <div className="relative w-7 h-7 rounded-md overflow-hidden shrink-0 bg-white/5 flex items-center justify-center">
+                      <div className="relative w-7 h-7 rounded-md overflow-hidden shrink-0 bg-[#1a1a1a] flex items-center justify-center">
                         {item.photos?.[0] ? (
                           <Image src={item.photos[0]} alt="" fill sizes="28px" className="object-cover" />
                         ) : (
-                          <Package size={12} className="text-white/20" />
+                          <Package size={12} className="text-[#666]" />
                         )}
                       </div>
-                      <span className="text-xs font-medium text-white/70 truncate max-w-[120px]">
+                      <span className="text-xs font-medium text-[#999] truncate max-w-[120px]">
                         {locale === "ar" && (item as ListingWithSeller).titleAr ? (item as ListingWithSeller).titleAr : item.title}
                       </span>
                       <span className="text-xs font-bold text-orange-400 shrink-0">
                         {item.price} {t("common.egp")}
                       </span>
-                      <span className="text-[10px] text-white/25 shrink-0 flex items-center gap-0.5">
+                      <span className="text-[10px] text-[#666] shrink-0 flex items-center gap-0.5">
                         <Eye size={8} />
                         {(item as ListingWithSeller).views ?? 0}
                       </span>
@@ -453,8 +452,8 @@ export default function MarketClient() {
                 }
                 className={`shrink-0 snap-start flex flex-col items-center gap-1.5 rounded-xl px-4 py-3 w-[5.5rem] transition-all border ${
                   isActive
-                    ? "bg-white/10 border-white/20"
-                    : "border-white/10 bg-white/5 hover:bg-white/8"
+                    ? "bg-[#222] border-[#333]"
+                    : "border-[#333] bg-[#1a1a1a] hover:bg-[#1a1a1a]"
                 }`}
                 style={
                   isActive
@@ -473,12 +472,12 @@ export default function MarketClient() {
                 />
                 <span
                   className={`text-[10px] font-bold uppercase tracking-wider whitespace-nowrap ${
-                    isActive ? "text-white/90" : "text-white/40"
+                    isActive ? "text-white" : "text-[#666]"
                   }`}
                 >
                   {t(labelKey as Parameters<typeof t>[0])}
                 </span>
-                <span className="text-[10px] text-white/25">{count}</span>
+                <span className="text-[10px] text-[#666]">{count}</span>
               </button>
             );
           })}
@@ -501,13 +500,13 @@ export default function MarketClient() {
               {selectedArea !== "all" && (
                 <button
                   onClick={() => setSelectedArea("all")}
-                  className="flex items-center gap-1 rounded-full bg-white/5 border border-white/10 px-2.5 py-1 text-[10px] text-white/50 hover:bg-white/10 transition-colors"
+                  className="flex items-center gap-1 rounded-sm bg-[#1a1a1a] border border-[#333] px-2.5 py-1 text-[10px] text-[#999] hover:bg-[#222] transition-colors"
                 >
                   <MapPin size={10} />
                   {locale === "ar"
                     ? AREAS.find((a) => a.key === selectedArea)?.labelAr
                     : AREAS.find((a) => a.key === selectedArea)?.labelEn}
-                  <X size={10} className="ms-1 text-white/30" />
+                  <X size={10} className="ms-1 text-[#666]" />
                 </button>
               )}
 
@@ -518,11 +517,11 @@ export default function MarketClient() {
                     setSearchQuery("");
                     setDebouncedSearch("");
                   }}
-                  className="flex items-center gap-1 rounded-full bg-white/5 border border-white/10 px-2.5 py-1 text-[10px] text-white/50 hover:bg-white/10 transition-colors"
+                  className="flex items-center gap-1 rounded-sm bg-[#1a1a1a] border border-[#333] px-2.5 py-1 text-[10px] text-[#999] hover:bg-[#222] transition-colors"
                 >
                   <Search size={10} />
                   &ldquo;{debouncedSearch}&rdquo;
-                  <X size={10} className="ms-1 text-white/30" />
+                  <X size={10} className="ms-1 text-[#666]" />
                 </button>
               )}
             </div>
@@ -531,7 +530,7 @@ export default function MarketClient() {
             <div className="relative">
               <button
                 onClick={() => setSortOpen(!sortOpen)}
-                className="flex items-center gap-1.5 rounded-lg bg-white/5 border border-white/10 px-3 py-2 text-[11px] text-white/50 hover:text-white/70 hover:bg-white/10 transition-all"
+                className="flex items-center gap-1.5 rounded-sm bg-[#1a1a1a] border border-[#333] px-3 py-2 text-[11px] text-[#999] hover:text-[#999] hover:bg-[#222] transition-all"
               >
                 {t(
                   SORT_OPTIONS.find((o) => o.key === sortBy)
@@ -549,7 +548,7 @@ export default function MarketClient() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute top-full mt-1 end-0 z-30 min-w-[160px] rounded-xl bg-[#111827] border border-white/10 py-1 shadow-xl"
+                    className="absolute top-full mt-1 end-0 z-30 min-w-[160px] rounded-sm bg-[#1a1a1a] border border-[#333] py-1 shadow-xl"
                   >
                     {SORT_OPTIONS.map((opt) => (
                       <button
@@ -560,8 +559,8 @@ export default function MarketClient() {
                         }}
                         className={`w-full text-start px-4 py-2.5 text-xs transition-colors ${
                           sortBy === opt.key
-                            ? "text-[#c8ff00] bg-[#c8ff00]/5"
-                            : "text-white/50 hover:text-white/70 hover:bg-white/5"
+                            ? "text-[#d4ff00] bg-[#d4ff00]/5"
+                            : "text-[#999] hover:text-[#999] hover:bg-[#1a1a1a]"
                         }`}
                       >
                         {t(opt.labelKey as Parameters<typeof t>[0])}
@@ -578,7 +577,7 @@ export default function MarketClient() {
             /* Skeleton grid */
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="rounded-2xl overflow-hidden">
+                <div key={i} className="rounded-sm overflow-hidden">
                   <div className="aspect-[4/3] dark-skeleton" />
                   <div className="bg-[#0d1220] p-3.5 space-y-2">
                     <div className="h-4 w-3/4 rounded dark-skeleton" />
@@ -603,17 +602,16 @@ export default function MarketClient() {
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 <AnimatePresence mode="popLayout">
                   {listings.map((listing, i) => (
-                    <motion.div
+                    <div
                       key={listing.id}
-                      {...staggerItem}
-                      transition={{ delay: i * 0.04 }}
+
                     >
                       <ListingCard
                         listing={listing}
                         variant="default"
                         onClick={() => router.push(`/market/${listing.id}`)}
                       />
-                    </motion.div>
+                    </div>
                   ))}
                 </AnimatePresence>
               </div>
@@ -624,11 +622,11 @@ export default function MarketClient() {
                   <button
                     onClick={loadMore}
                     disabled={loadingMore}
-                    className="rounded-full bg-white/5 border border-white/10 px-8 py-3 text-sm font-semibold text-white/60 hover:text-white hover:bg-white/10 transition-all disabled:opacity-40"
+                    className="rounded-sm bg-[#1a1a1a] border border-[#333] px-8 py-3 text-sm font-semibold text-[#999] hover:text-white hover:bg-[#222] transition-all disabled:opacity-40"
                   >
                     {loadingMore ? (
                       <span className="flex items-center gap-2">
-                        <span className="w-4 h-4 border-2 border-white/20 border-t-white/60 rounded-full animate-spin" />
+                        <span className="w-4 h-4 border-2 border-[#333] border-t-white/60 rounded-full animate-spin" />
                         {t("common.loading")}
                       </span>
                     ) : (
@@ -658,19 +656,19 @@ export default function MarketClient() {
             >
               <Link
                 href={`/market/${currentActivityItem.id}`}
-                className="flex items-center gap-3 rounded-xl bg-white/5 backdrop-blur-lg border border-white/10 px-4 py-2.5 shadow-lg"
+                className="flex items-center gap-3 rounded-sm bg-[#1a1a1a] border border-[#333] px-4 py-2.5 shadow-lg"
               >
-                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-                <span className="text-xs text-white/60 truncate">
+                <div className="w-2 h-2 rounded-sm bg-[#d4ff00] animate-pulse shrink-0" />
+                <span className="text-xs text-[#999] truncate">
                   {currentActivityItem.sellerName}{" "}
                   {t("market.justListed")}{" "}
-                  <strong className="text-white/90">
+                  <strong className="text-white">
                     {locale === "ar" && currentActivityItem.titleAr
                       ? currentActivityItem.titleAr
                       : currentActivityItem.title}
                   </strong>
                 </span>
-                <span className="text-[10px] text-white/25 shrink-0">
+                <span className="text-[10px] text-[#666] shrink-0">
                   {getTimeAgo(currentActivityItem.createdAt)}
                 </span>
               </Link>
@@ -685,7 +683,7 @@ export default function MarketClient() {
       <div className="fixed bottom-28 start-4 end-4 z-30">
         <Link
           href="/market/sell"
-          className="flex items-center justify-center gap-2 w-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all active:scale-[0.98]"
+          className="flex items-center justify-center gap-2 w-full rounded-sm bg-[#d4ff00] text-[#0d0d0d] py-3.5 text-sm font-bold text-white transition-all active:scale-[0.98]"
         >
           <ShoppingBag size={18} />
           {t("market.listForSale")}
@@ -712,16 +710,16 @@ export default function MarketClient() {
               animate={{ x: 0 }}
               exit={{ x: locale === "ar" ? "-100%" : "100%" }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="fixed top-0 end-0 bottom-0 w-80 max-w-[85vw] z-50 bg-[#0a0f1a] border-s border-white/10 flex flex-col"
+              className="fixed top-0 end-0 bottom-0 w-80 max-w-[85vw] z-50 bg-[#0d0d0d] border-s border-[#333] flex flex-col"
             >
               {/* Header */}
-              <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-[#222]">
                 <h2 className="text-lg font-bold text-white font-[family-name:var(--font-display)] uppercase tracking-wide">
                   {t("market.filterTitle")}
                 </h2>
                 <button
                   onClick={() => setFilterOpen(false)}
-                  className="min-w-[44px] min-h-[44px] rounded-full bg-white/5 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-colors"
+                  className="min-w-[44px] min-h-[44px] rounded-sm bg-[#1a1a1a] flex items-center justify-center text-[#999] hover:text-white hover:bg-[#222] transition-colors"
                   aria-label={t("common.close")}
                 >
                   <X size={16} />
@@ -732,7 +730,7 @@ export default function MarketClient() {
               <div className="flex-1 overflow-y-auto px-5 py-4 space-y-6">
                 {/* Area */}
                 <div>
-                  <h3 className="text-xs font-bold uppercase tracking-widest text-white/30 font-[family-name:var(--font-display)] mb-3">
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-[#666] font-[family-name:var(--font-display)] mb-3">
                     {t("market.location")}
                   </h3>
                   <div className="space-y-1">
@@ -744,10 +742,10 @@ export default function MarketClient() {
                         <button
                           key={area.key}
                           onClick={() => setPendingArea(area.key)}
-                          className={`w-full flex items-center justify-between rounded-lg px-3 py-3 text-sm transition-all ${
+                          className={`w-full flex items-center justify-between rounded-sm px-3 py-3 text-sm transition-all ${
                             isSelected
-                              ? "bg-[#c8ff00]/10 text-[#c8ff00]"
-                              : "text-white/50 hover:bg-white/5 hover:text-white/70"
+                              ? "bg-[#d4ff00]/10 text-[#d4ff00]"
+                              : "text-[#999] hover:bg-[#1a1a1a] hover:text-[#999]"
                           }`}
                         >
                           <span className="flex items-center gap-2">
@@ -755,7 +753,7 @@ export default function MarketClient() {
                             {label}
                           </span>
                           {isSelected && (
-                            <span className="w-2 h-2 rounded-full bg-[#c8ff00]" />
+                            <span className="w-2 h-2 rounded-sm bg-[#d4ff00]" />
                           )}
                         </button>
                       );
@@ -765,10 +763,10 @@ export default function MarketClient() {
               </div>
 
               {/* Apply button */}
-              <div className="px-5 py-4 border-t border-white/5">
+              <div className="px-5 py-4 border-t border-[#222]">
                 <button
                   onClick={applyFilters}
-                  className="w-full rounded-xl bg-[#c8ff00] py-3.5 text-sm font-bold text-[#111827] font-[family-name:var(--font-display)] uppercase tracking-wide"
+                  className="w-full rounded-xl bg-[#d4ff00] py-3.5 text-sm font-bold text-[#0d0d0d] font-[family-name:var(--font-display)] uppercase tracking-wide"
                 >
                   {t("market.apply")}
                 </button>

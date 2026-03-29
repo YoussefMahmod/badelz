@@ -19,7 +19,7 @@ export function MainLayout({
   navType = "public",
 }: MainLayoutProps) {
   return (
-    <div className="min-h-screen flex flex-col bg-[#0a0f1a]">
+    <div className="min-h-screen flex flex-col bg-[#0d0d0d]">
       {showHeader && <Header />}
       <main className={`flex-1 ${showNav ? "pb-24" : ""}`}>{children}</main>
       {showNav && <BottomNav variant={navType} />}

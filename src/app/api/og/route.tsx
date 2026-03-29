@@ -6,11 +6,11 @@ export async function GET(request: NextRequest) {
   const subtitle = searchParams.get("subtitle") || "احجز كورت بادل في مصر في ثواني";
 
   const svg = `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
-  <rect width="1200" height="630" fill="#0a0f1a"/>
+  <rect width="1200" height="630" fill="#0d0d0d"/>
   <defs>
     <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#c8ff00" stop-opacity="0.06"/>
-      <stop offset="100%" stop-color="#0a0f1a" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#0d0d0d" stop-opacity="0"/>
     </linearGradient>
   </defs>
   <rect width="1200" height="630" fill="url(#g)"/>

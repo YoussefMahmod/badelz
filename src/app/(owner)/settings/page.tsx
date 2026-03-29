@@ -16,7 +16,6 @@ import {
   EyeOff,
 } from "lucide-react";
 import { useTranslation } from "@/i18n";
-import { slideUp } from "@/lib/animations";
 import { LoadingSpinner } from "@/components/loading-spinner";
 import { AREAS } from "@/lib/constants";
 import { PhotoUpload } from "@/components/photo-upload";
@@ -189,7 +188,7 @@ export default function SettingsPage() {
       <motion.h1
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-xl font-bold text-white/90 mb-2"
+        className="text-xl font-bold text-white mb-2"
       >
         {t("owner.settings")}
       </motion.h1>
@@ -202,10 +201,10 @@ export default function SettingsPage() {
         {t("owner.venueInfo")}
       </motion.p>
 
-      <motion.form {...slideUp} onSubmit={handleSave} className="space-y-4">
+      <form onSubmit={handleSave} className="space-y-4">
         {/* Cover Photo */}
         <div>
-          <label className="mb-1.5 flex items-center gap-2 text-xs font-medium text-white/50">
+          <label className="mb-1.5 flex items-center gap-2 text-xs font-medium text-[#999]">
             {t("owner.venuePhoto")}
           </label>
           <PhotoUpload
@@ -244,8 +243,8 @@ export default function SettingsPage() {
 
         {/* Location Detection */}
         <div>
-          <label className="mb-1.5 flex items-center gap-2 text-xs font-medium text-white/50">
-            <span className="text-white/40"><Crosshair size={14} /></span>
+          <label className="mb-1.5 flex items-center gap-2 text-xs font-medium text-[#999]">
+            <span className="text-[#666]"><Crosshair size={14} /></span>
             {t("onboarding.detectLocation")}
           </label>
           <div className="flex items-center gap-3">
@@ -253,7 +252,7 @@ export default function SettingsPage() {
               type="button"
               onClick={handleDetectLocation}
               disabled={detectingLocation}
-              className="flex items-center gap-2 rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 text-sm text-white/70 transition-all hover:border-[#c8ff00] hover:bg-[#c8ff00]/5 disabled:opacity-50"
+              className="flex items-center gap-2 rounded-sm bg-[#1a1a1a] border border-[#333] px-4 py-2.5 text-sm text-[#999] transition-all hover:border-[#d4ff00] hover:bg-[#d4ff00]/5 disabled:opacity-50"
             >
               {detectingLocation ? (
                 <>
@@ -268,12 +267,12 @@ export default function SettingsPage() {
               )}
             </button>
             {form.latitude && form.longitude && (
-              <span className="text-xs text-white/40">
+              <span className="text-xs text-[#666]">
                 {form.latitude.toFixed(4)}, {form.longitude.toFixed(4)}
               </span>
             )}
             {detectedAreaName && (
-              <span className="text-xs font-medium text-emerald-500">
+              <span className="text-xs font-medium text-[#d4ff00]">
                 {detectedAreaName}
               </span>
             )}
@@ -316,11 +315,11 @@ export default function SettingsPage() {
           type="tel"
         />
 
-        <motion.button
+        <button
           type="submit"
-          whileTap={{ scale: 0.97 }}
+          
           disabled={saving}
-          className="flex w-full items-center justify-center gap-2 rounded-full bg-[#c8ff00] py-3.5 text-sm font-bold text-[#111827] shadow-sm transition-all hover:bg-[#b8e600] disabled:opacity-50"
+          className="flex w-full items-center justify-center gap-2 rounded-sm bg-[#d4ff00] py-3.5 text-sm font-bold text-[#0d0d0d] shadow-sm transition-all hover:bg-[#b8e600] disabled:opacity-50 active:scale-[0.97] transition-transform duration-75"
         >
           {saved ? (
             <>
@@ -333,9 +332,9 @@ export default function SettingsPage() {
               {saving ? t("common.loading") : t("owner.saveChanges")}
             </>
           )}
-        </motion.button>
+        </button>
 
-      </motion.form>
+      </form>
 
       {/* Change Password Section */}
       <ChangePasswordSection />
@@ -417,9 +416,9 @@ function ChangePasswordSection() {
       onSubmit={handleChangePassword}
       className="mt-6 space-y-4"
     >
-      <div className="border-t border-white/10 pt-6">
-        <h2 className="flex items-center gap-2 text-sm font-bold text-white/80 mb-4">
-          <Lock size={14} className="text-white/40" />
+      <div className="border-t border-[#333] pt-6">
+        <h2 className="flex items-center gap-2 text-sm font-bold text-[#999] mb-4">
+          <Lock size={14} className="text-[#666]" />
           {t("auth.changePassword")}
         </h2>
 
@@ -429,7 +428,7 @@ function ChangePasswordSection() {
             animate={{ opacity: 1, y: 0 }}
             className={`mb-4 rounded-xl px-4 py-3 text-sm ${
               message.type === "success"
-                ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400"
+                ? "bg-[#d4ff00]/10 border border-emerald-500/20 text-[#d4ff00]"
                 : "bg-red-500/10 border border-red-500/20 text-red-400"
             }`}
           >
@@ -440,7 +439,7 @@ function ChangePasswordSection() {
         <div className="space-y-3">
           {/* Current Password */}
           <div>
-            <label className="mb-1.5 flex items-center gap-2 text-xs font-medium text-white/50">
+            <label className="mb-1.5 flex items-center gap-2 text-xs font-medium text-[#999]">
               {t("auth.currentPassword")}
             </label>
             <div className="relative">
@@ -451,12 +450,12 @@ function ChangePasswordSection() {
                 required
                 dir="ltr"
                 placeholder={t("auth.currentPasswordPlaceholder")}
-                className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 pe-12 text-sm text-white outline-none placeholder:text-white/25 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
+                className="w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-4 py-2.5 pe-12 text-sm text-white outline-none placeholder:text-[#666]  focus:border-[#d4ff00] transition-all"
               />
               <button
                 type="button"
                 onClick={() => setShowCurrent(!showCurrent)}
-                className="absolute end-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
+                className="absolute end-3 top-1/2 -translate-y-1/2 text-[#666] hover:text-[#999] transition-colors"
               >
                 {showCurrent ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
@@ -465,7 +464,7 @@ function ChangePasswordSection() {
 
           {/* New Password */}
           <div>
-            <label className="mb-1.5 flex items-center gap-2 text-xs font-medium text-white/50">
+            <label className="mb-1.5 flex items-center gap-2 text-xs font-medium text-[#999]">
               {t("auth.newPassword")}
             </label>
             <div className="relative">
@@ -476,12 +475,12 @@ function ChangePasswordSection() {
                 required
                 dir="ltr"
                 placeholder={t("auth.newPasswordPlaceholder")}
-                className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 pe-12 text-sm text-white outline-none placeholder:text-white/25 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
+                className="w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-4 py-2.5 pe-12 text-sm text-white outline-none placeholder:text-[#666]  focus:border-[#d4ff00] transition-all"
               />
               <button
                 type="button"
                 onClick={() => setShowNew(!showNew)}
-                className="absolute end-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
+                className="absolute end-3 top-1/2 -translate-y-1/2 text-[#666] hover:text-[#999] transition-colors"
               >
                 {showNew ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
@@ -490,7 +489,7 @@ function ChangePasswordSection() {
 
           {/* Confirm Password */}
           <div>
-            <label className="mb-1.5 flex items-center gap-2 text-xs font-medium text-white/50">
+            <label className="mb-1.5 flex items-center gap-2 text-xs font-medium text-[#999]">
               {t("auth.confirmPassword")}
             </label>
             <input
@@ -500,16 +499,16 @@ function ChangePasswordSection() {
               required
               dir="ltr"
               placeholder={t("auth.confirmPasswordPlaceholder")}
-              className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 text-sm text-white outline-none placeholder:text-white/25 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
+              className="w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-4 py-2.5 text-sm text-white outline-none placeholder:text-[#666]  focus:border-[#d4ff00] transition-all"
             />
           </div>
         </div>
 
-        <motion.button
+        <button
           type="submit"
-          whileTap={{ scale: 0.97 }}
+          
           disabled={saving}
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-white/10 border border-white/10 py-3 text-sm font-bold text-white/80 shadow-sm transition-all hover:bg-white/15 disabled:opacity-50"
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-sm bg-[#222] border border-[#333] py-3 text-sm font-bold text-[#999] shadow-sm transition-all hover:bg-[#222] disabled:opacity-50 active:scale-[0.97] transition-transform duration-75"
         >
           {saving ? (
             <Loader2 size={16} className="animate-spin" />
@@ -519,7 +518,7 @@ function ChangePasswordSection() {
               {t("auth.changePassword")}
             </>
           )}
-        </motion.button>
+        </button>
       </div>
     </motion.form>
   );
@@ -544,8 +543,8 @@ function SettingsField({
 }) {
   return (
     <div>
-      <label className="mb-1.5 flex items-center gap-2 text-xs font-medium text-white/50">
-        <span className="text-white/40">{icon}</span>
+      <label className="mb-1.5 flex items-center gap-2 text-xs font-medium text-[#999]">
+        <span className="text-[#666]">{icon}</span>
         {label}
       </label>
       <input
@@ -554,7 +553,7 @@ function SettingsField({
         onChange={(e) => onChange(e.target.value)}
         required={required}
         dir={dir}
-        className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 text-sm text-white outline-none placeholder:text-white/25 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
+        className="w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-4 py-2.5 text-sm text-white outline-none placeholder:text-[#666]  focus:border-[#d4ff00] transition-all"
       />
     </div>
   );

@@ -11,7 +11,7 @@ interface RoleProtectedRouteProps {
 
 function DarkFullPageSpinner() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#0a0f1a]">
+    <div className="flex min-h-screen items-center justify-center bg-[#0d0d0d]">
       <div className="flex flex-col items-center gap-4">
         <div className="h-10 w-10 rounded-full border-2 border-white/10 border-t-[#c8ff00] animate-spin" />
         <div className="h-1 w-12 rounded-full bg-white/5 overflow-hidden">

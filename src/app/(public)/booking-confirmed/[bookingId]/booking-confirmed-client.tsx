@@ -143,7 +143,7 @@ export default function BookingConfirmedClient({
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0a0f1a] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0d0d0d] flex items-center justify-center">
         <LoadingSpinner />
       </div>
     );
@@ -151,14 +151,14 @@ export default function BookingConfirmedClient({
 
   if (!booking) {
     return (
-      <div className="min-h-screen bg-[#0a0f1a] flex items-center justify-center px-4">
-        <p className="text-white/40">{t("common.error")}</p>
+      <div className="min-h-screen bg-[#0d0d0d] flex items-center justify-center px-4">
+        <p className="text-[#666]">{t("common.error")}</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0f1a] flex flex-col items-center justify-center py-10 relative overflow-hidden">
+    <div className="min-h-screen bg-[#0d0d0d] flex flex-col items-center justify-center py-10 relative overflow-hidden">
       {/* Celebration particles -- only show when confirmed */}
       {isConfirmed && (
         <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
@@ -195,7 +195,7 @@ export default function BookingConfirmedClient({
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-sm mx-auto mb-6 px-4"
         >
-          <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl px-5 py-4 text-center">
+          <div className="bg-amber-500/10 border border-amber-500/20 rounded-sm px-5 py-4 text-center">
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
@@ -263,14 +263,14 @@ export default function BookingConfirmedClient({
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-sm mx-auto mt-4 px-4"
         >
-          <div className="bg-red-500/10 border border-red-500/20 rounded-2xl px-5 py-4 text-center">
+          <div className="bg-red-500/10 border border-red-500/20 rounded-sm px-5 py-4 text-center">
             <XCircle size={24} className="text-red-400 mx-auto mb-2" />
             <p className="text-sm font-medium text-red-400 mb-2">
               {t("confirmation.cancelled")}
             </p>
             <Link
               href="/venues"
-              className="inline-block text-xs font-medium text-emerald-400 hover:text-emerald-300 transition-colors"
+              className="inline-block text-xs font-medium text-[#d4ff00] hover:text-[#d4ff00]/80 transition-colors"
             >
               {locale === "ar" ? "جرب ميعاد تاني" : "Try another time"}
             </Link>
@@ -289,7 +289,7 @@ export default function BookingConfirmedClient({
           <button
             onClick={handleCancel}
             disabled={cancelling}
-            className="w-full rounded-xl border border-red-500/20 bg-red-500/5 py-3 text-sm font-medium text-red-400 hover:bg-red-500/10 transition-colors disabled:opacity-50"
+            className="w-full rounded-sm border border-red-500/20 bg-red-500/5 py-3 text-sm font-medium text-red-400 hover:bg-red-500/10 transition-colors disabled:opacity-50"
           >
             {cancelling ? t("common.loading") : t("confirmation.cancelBooking")}
           </button>
@@ -334,15 +334,15 @@ function CardCTA() {
       className="w-full max-w-sm mx-auto mt-6 px-4"
     >
       <Link href="/my-card" className="block">
-        <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-5 flex items-center gap-4 transition-all hover:border-emerald-500/30 hover:shadow-[0_0_20px_rgba(16,185,129,0.08)]">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10">
-            <CreditCard size={22} className="text-emerald-400" />
+        <div className="bg-[#1a1a1a] border border-[#333] rounded-sm border-s-[3px] border-s-[#d4ff00] p-5 flex items-center gap-4 transition-all hover:border-[#d4ff00]/20">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#d4ff00]/10">
+            <CreditCard size={22} className="text-[#d4ff00]" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-bold text-white/90">
+            <p className="text-sm font-bold text-white">
               {t("player.viewYourCard")}
             </p>
-            <p className="text-xs text-white/40 mt-0.5">
+            <p className="text-xs text-[#666] mt-0.5">
               {t("player.viewYourCardDesc")}
             </p>
           </div>
@@ -355,7 +355,7 @@ function CardCTA() {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="text-emerald-400 shrink-0 rtl:rotate-180"
+            className="text-[#d4ff00] shrink-0 rtl:rotate-180"
           >
             <path d="M5 12h14M12 5l7 7-7 7" />
           </svg>

@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/i18n";
-import { staggerContainer, staggerItem } from "@/lib/animations";
 import { formatPrice, formatTime } from "@/lib/format";
 import { LoadingSpinner } from "@/components/loading-spinner";
 import { EmptyState } from "@/components/empty-state";
@@ -218,33 +217,33 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center"
     >
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
 
       <motion.div
         initial={{ y: "100%" }}
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ type: "spring", damping: 28, stiffness: 300 }}
-        className="relative z-10 w-full sm:max-w-lg bg-[#111827] rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col overflow-hidden"
+        className="relative z-10 w-full sm:max-w-lg bg-[#1a1a1a] rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col overflow-hidden"
       >
         <div className="flex justify-center pt-3 pb-1 sm:hidden">
-          <div className="h-1 w-10 rounded-full bg-white/20" />
+          <div className="h-1 w-10 rounded-full bg-[#222]" />
         </div>
 
         {/* Header */}
-        <div className="flex items-center justify-between px-5 pt-3 pb-2 border-b border-white/10">
+        <div className="flex items-center justify-between px-5 pt-3 pb-2 border-b border-[#333]">
           <div>
-            <h2 className="text-lg font-bold text-white/90">
+            <h2 className="text-lg font-bold text-white">
               {t("owner.manageSlots")}
             </h2>
-            <p className="text-sm text-white/50">
+            <p className="text-sm text-[#999]">
               {court.nameAr || court.name}
             </p>
           </div>
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={onClose}
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white/50 hover:bg-white/20 transition-colors"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-[#222] text-[#999] hover:bg-[#222] transition-colors"
             aria-label={t("common.close")}
           >
             <X size={18} />
@@ -259,16 +258,16 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
             <>
               {/* Slot duration toggle */}
               <div>
-                <label className="text-xs font-semibold text-white/50 mb-2 block">
+                <label className="text-xs font-semibold text-[#999] mb-2 block">
                   {t("owner.slotDuration") || "مدة الفترة"}
                 </label>
-                <div className="flex rounded-xl border border-white/10 overflow-hidden">
+                <div className="flex rounded-sm border border-[#333] overflow-hidden">
                   <button
                     onClick={() => setSlotDuration(60)}
                     className={`flex-1 py-3 text-sm font-bold transition-all ${
                       slotDuration === 60
-                        ? "bg-[#c8ff00] text-[#111827]"
-                        : "bg-white/5 text-white/50 hover:bg-white/10"
+                        ? "bg-[#d4ff00] text-[#0d0d0d]"
+                        : "bg-[#1a1a1a] text-[#999] hover:bg-[#222]"
                     }`}
                   >
                     1 {t("common.hour") || "ساعة"}
@@ -277,8 +276,8 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
                     onClick={() => setSlotDuration(30)}
                     className={`flex-1 py-3 text-sm font-bold transition-all ${
                       slotDuration === 30
-                        ? "bg-[#c8ff00] text-[#111827]"
-                        : "bg-white/5 text-white/50 hover:bg-white/10"
+                        ? "bg-[#d4ff00] text-[#0d0d0d]"
+                        : "bg-[#1a1a1a] text-[#999] hover:bg-[#222]"
                     }`}
                   >
                     30 {t("common.minutes") || "دقيقة"}
@@ -288,7 +287,7 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
 
               {/* Same for all days toggle */}
               <div className="flex items-center justify-between">
-                <span className="text-sm text-white/70">
+                <span className="text-sm text-[#999]">
                   {t("owner.sameAllDays") || "نفس المواعيد كل الأيام"}
                 </span>
                 <motion.button
@@ -296,27 +295,27 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
                   onClick={() => setSameForAllDays(!sameForAllDays)}
                 >
                   {sameForAllDays ? (
-                    <ToggleRight size={32} className="text-[#c8ff00]" />
+                    <ToggleRight size={32} className="text-[#d4ff00]" />
                   ) : (
-                    <ToggleLeft size={32} className="text-white/30" />
+                    <ToggleLeft size={32} className="text-[#666]" />
                   )}
                 </motion.button>
               </div>
 
               {sameForAllDays ? (
                 /* All days config */
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
-                  <p className="text-xs font-semibold text-white/50">
+                <div className="rounded-sm border border-[#333] bg-[#1a1a1a] p-4 space-y-3">
+                  <p className="text-xs font-semibold text-[#999]">
                     {t("owner.operatingHours") || "ساعات العمل"}
                   </p>
                   <div className="flex items-end gap-3">
                     <div className="flex-1">
-                      <label className="text-xs text-white/40 mb-1 block">{t("owner.startTime")}</label>
+                      <label className="text-xs text-[#666] mb-1 block">{t("owner.startTime")}</label>
                       <select
                         value={allStart}
                         onChange={(e) => setAllStart(e.target.value)}
                         dir="ltr"
-                        className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] appearance-none"
+                        className="w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-3 py-2.5 text-sm text-white outline-none  focus:border-[#d4ff00] appearance-none"
                       >
                         {START_TIMES.map((time) => (
                           <option key={`all-s-${time}`} value={time}>{formatTime(time)}</option>
@@ -324,12 +323,12 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
                       </select>
                     </div>
                     <div className="flex-1">
-                      <label className="text-xs text-white/40 mb-1 block">{t("owner.endTime")}</label>
+                      <label className="text-xs text-[#666] mb-1 block">{t("owner.endTime")}</label>
                       <select
                         value={allEnd}
                         onChange={(e) => setAllEnd(e.target.value)}
                         dir="ltr"
-                        className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] appearance-none"
+                        className="w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-3 py-2.5 text-sm text-white outline-none  focus:border-[#d4ff00] appearance-none"
                       >
                         {END_TIMES.map((time) => (
                           <option key={`all-e-${time}`} value={time}>{formatTime(time)}</option>
@@ -338,7 +337,7 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
                     </div>
                   </div>
                   {previewCount !== null && (
-                    <p className="text-xs text-white/30 text-center mt-2">
+                    <p className="text-xs text-[#666] text-center mt-2">
                       {previewCount} {slotDuration === 60 ? (t("owner.slotsPerDay") || "فترة/يوم") : (t("owner.slotsPerDay") || "فترة/يوم")}
                     </p>
                   )}
@@ -347,18 +346,18 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
                 /* Weekdays / Weekends split */
                 <div className="space-y-3">
                   {/* Weekdays */}
-                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
-                    <p className="text-xs font-semibold text-white/50">
+                  <div className="rounded-sm border border-[#333] bg-[#1a1a1a] p-4 space-y-3">
+                    <p className="text-xs font-semibold text-[#999]">
                       {t("owner.weekdays") || "أيام الأسبوع"} (أحد - خميس)
                     </p>
                     <div className="flex items-end gap-3">
                       <div className="flex-1">
-                        <label className="text-xs text-white/40 mb-1 block">{t("owner.startTime")}</label>
+                        <label className="text-xs text-[#666] mb-1 block">{t("owner.startTime")}</label>
                         <select
                           value={weekdaysStart}
                           onChange={(e) => setWeekdaysStart(e.target.value)}
                           dir="ltr"
-                          className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] appearance-none"
+                          className="w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-3 py-2.5 text-sm text-white outline-none  focus:border-[#d4ff00] appearance-none"
                         >
                           {START_TIMES.map((time) => (
                             <option key={`wd-s-${time}`} value={time}>{formatTime(time)}</option>
@@ -366,12 +365,12 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
                         </select>
                       </div>
                       <div className="flex-1">
-                        <label className="text-xs text-white/40 mb-1 block">{t("owner.endTime")}</label>
+                        <label className="text-xs text-[#666] mb-1 block">{t("owner.endTime")}</label>
                         <select
                           value={weekdaysEnd}
                           onChange={(e) => setWeekdaysEnd(e.target.value)}
                           dir="ltr"
-                          className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] appearance-none"
+                          className="w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-3 py-2.5 text-sm text-white outline-none  focus:border-[#d4ff00] appearance-none"
                         >
                           {END_TIMES.map((time) => (
                             <option key={`wd-e-${time}`} value={time}>{formatTime(time)}</option>
@@ -379,24 +378,24 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
                         </select>
                       </div>
                     </div>
-                    <p className="text-xs text-white/30 text-center">
+                    <p className="text-xs text-[#666] text-center">
                       {computeSlotCount(weekdaysStart, weekdaysEnd)} {t("owner.slotsPerDay") || "فترة/يوم"}
                     </p>
                   </div>
 
                   {/* Weekends */}
-                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
-                    <p className="text-xs font-semibold text-white/50">
+                  <div className="rounded-sm border border-[#333] bg-[#1a1a1a] p-4 space-y-3">
+                    <p className="text-xs font-semibold text-[#999]">
                       {t("owner.weekends") || "الويكند"} (جمعة - سبت)
                     </p>
                     <div className="flex items-end gap-3">
                       <div className="flex-1">
-                        <label className="text-xs text-white/40 mb-1 block">{t("owner.startTime")}</label>
+                        <label className="text-xs text-[#666] mb-1 block">{t("owner.startTime")}</label>
                         <select
                           value={weekendsStart}
                           onChange={(e) => setWeekendsStart(e.target.value)}
                           dir="ltr"
-                          className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] appearance-none"
+                          className="w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-3 py-2.5 text-sm text-white outline-none  focus:border-[#d4ff00] appearance-none"
                         >
                           {START_TIMES.map((time) => (
                             <option key={`we-s-${time}`} value={time}>{formatTime(time)}</option>
@@ -404,12 +403,12 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
                         </select>
                       </div>
                       <div className="flex-1">
-                        <label className="text-xs text-white/40 mb-1 block">{t("owner.endTime")}</label>
+                        <label className="text-xs text-[#666] mb-1 block">{t("owner.endTime")}</label>
                         <select
                           value={weekendsEnd}
                           onChange={(e) => setWeekendsEnd(e.target.value)}
                           dir="ltr"
-                          className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] appearance-none"
+                          className="w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-3 py-2.5 text-sm text-white outline-none  focus:border-[#d4ff00] appearance-none"
                         >
                           {END_TIMES.map((time) => (
                             <option key={`we-e-${time}`} value={time}>{formatTime(time)}</option>
@@ -417,7 +416,7 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
                         </select>
                       </div>
                     </div>
-                    <p className="text-xs text-white/30 text-center">
+                    <p className="text-xs text-[#666] text-center">
                       {computeSlotCount(weekendsStart, weekendsEnd)} {t("owner.slotsPerDay") || "فترة/يوم"}
                     </p>
                   </div>
@@ -431,12 +430,12 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
                 whileTap={{ scale: 0.97 }}
                 onClick={handleSave}
                 disabled={saving}
-                className="w-full flex items-center justify-center gap-2 rounded-full bg-[#c8ff00] py-3 text-sm font-bold text-[#111827] transition-all hover:bg-[#c8ff00]/80 disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-2 rounded-sm bg-[#d4ff00] py-3 text-sm font-bold text-[#0d0d0d] transition-all hover:bg-[#d4ff00]/80 disabled:opacity-50"
               >
                 {saving ? (
                   <>
                     <motion.div
-                      className="h-4 w-4 rounded-full border-2 border-[#111827]/30 border-t-[#111827]"
+                      className="h-4 w-4 rounded-full border-2 border-[#0d0d0d]/30 border-t-[#0d0d0d]"
                       animate={{ rotate: 360 }}
                       transition={{ duration: 0.6, repeat: Infinity, ease: "linear" }}
                     />
@@ -541,10 +540,8 @@ function CourtCard({
   };
 
   return (
-    <motion.div
-      variants={staggerItem}
-      layout
-      className={`bg-white/5 border border-white/10 rounded-2xl overflow-hidden transition-opacity ${
+    <div
+      className={`bg-[#1a1a1a] border border-[#333] rounded-sm overflow-hidden transition-opacity ${
         !court.isActive ? "opacity-50" : ""
       }`}
     >
@@ -552,25 +549,25 @@ function CourtCard({
       <div className="p-4">
         <div className="flex items-start gap-3">
           {/* Court icon */}
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#c8ff00]/15">
-            <RectangleHorizontal size={22} className="text-[#c8ff00]" />
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#d4ff00]/15">
+            <RectangleHorizontal size={22} className="text-[#d4ff00]" />
           </div>
 
           {/* Court info */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-0.5">
-              <h3 className="text-base font-bold text-white/90 truncate">
+              <h3 className="text-base font-bold text-white truncate">
                 {court.nameAr || court.name}
               </h3>
               {court.nameAr && (
-                <span className="text-xs text-white/40 truncate" dir="ltr">
+                <span className="text-xs text-[#666] truncate" dir="ltr">
                   {court.name}
                 </span>
               )}
             </div>
-            <p className="text-sm font-semibold text-white/70">
+            <p className="text-sm font-semibold text-[#999]">
               {formatPrice(parseFloat(court.pricePerHour))}{" "}
-              <span className="text-white/40 font-normal">
+              <span className="text-[#666] font-normal">
                 {t("common.perHour")}
               </span>
             </p>
@@ -581,7 +578,7 @@ function CourtCard({
             <motion.button
               whileTap={{ scale: 0.85 }}
               onClick={handleStartEdit}
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-white/40 hover:bg-white/10 hover:text-white/70 transition-colors"
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-[#666] hover:bg-[#222] hover:text-[#999] transition-colors"
               aria-label={t("owner.editCourt")}
             >
               <Pencil size={16} />
@@ -589,7 +586,7 @@ function CourtCard({
             <motion.button
               whileTap={{ scale: 0.85 }}
               onClick={() => onToggleActive(court)}
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-white/40 hover:bg-white/10 transition-colors"
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-[#666] hover:bg-[#222] transition-colors"
               aria-label={
                 court.isActive ? t("owner.active") : t("owner.inactive")
               }
@@ -597,7 +594,7 @@ function CourtCard({
               {court.isActive ? (
                 <ToggleRight size={26} className="text-green-500" />
               ) : (
-                <ToggleLeft size={26} className="text-white/20" />
+                <ToggleLeft size={26} className="text-[#666]" />
               )}
             </motion.button>
           </div>
@@ -609,7 +606,7 @@ function CourtCard({
             className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${
               court.isActive
                 ? "bg-green-500/10 text-green-400"
-                : "bg-white/5 text-white/40"
+                : "bg-[#1a1a1a] text-[#666]"
             }`}
           >
             <span
@@ -621,7 +618,7 @@ function CourtCard({
           </span>
 
           <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${
-            slotCount > 0 ? "bg-[#c8ff00]/10 text-[#c8ff00]" : "bg-white/5 text-white/40"
+            slotCount > 0 ? "bg-[#d4ff00]/10 text-[#d4ff00]" : "bg-[#1a1a1a] text-[#666]"
           }`}>
             <Clock size={11} />
             {slotCount > 0
@@ -641,17 +638,17 @@ function CourtCard({
             transition={{ duration: 0.25 }}
             className="overflow-hidden"
           >
-            <div className="border-t border-white/5 bg-white/5 px-4 py-4 space-y-3">
+            <div className="border-t border-[#222] bg-[#1a1a1a] px-4 py-4 space-y-3">
               <div className="flex items-center gap-2 mb-1">
-                <Pencil size={13} className="text-white/40" />
-                <span className="text-xs font-semibold text-white/50">
+                <Pencil size={13} className="text-[#666]" />
+                <span className="text-xs font-semibold text-[#999]">
                   {t("owner.editCourt")}
                 </span>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs text-white/40 mb-1 block">
+                  <label className="text-xs text-[#666] mb-1 block">
                     {t("owner.courtName")}
                   </label>
                   <input
@@ -659,24 +656,24 @@ function CourtCard({
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
                     dir="ltr"
-                    className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-shadow"
+                    className="w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-3 py-2.5 text-sm text-white outline-none  focus:border-[#d4ff00] transition-shadow"
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-white/40 mb-1 block">
+                  <label className="text-xs text-[#666] mb-1 block">
                     {t("owner.courtNameAr")}
                   </label>
                   <input
                     type="text"
                     value={editNameAr}
                     onChange={(e) => setEditNameAr(e.target.value)}
-                    className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-shadow"
+                    className="w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-3 py-2.5 text-sm text-white outline-none  focus:border-[#d4ff00] transition-shadow"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-xs text-white/40 mb-1 block">
+                <label className="text-xs text-[#666] mb-1 block">
                   {t("owner.pricePerHour")} (EGP)
                 </label>
                 <input
@@ -685,7 +682,7 @@ function CourtCard({
                   onChange={(e) => setEditPrice(e.target.value)}
                   min="1"
                   dir="ltr"
-                  className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-shadow"
+                  className="w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-3 py-2.5 text-sm text-white outline-none  focus:border-[#d4ff00] transition-shadow"
                 />
               </div>
 
@@ -696,12 +693,12 @@ function CourtCard({
                   whileTap={{ scale: 0.97 }}
                   onClick={handleSaveEdit}
                   disabled={saving || !editName.trim() || !editPrice}
-                  className="flex-1 flex items-center justify-center gap-2 rounded-full bg-[#c8ff00] py-2.5 text-sm font-bold text-[#111827] transition-all hover:bg-[#c8ff00]/80 disabled:opacity-50"
+                  className="flex-1 flex items-center justify-center gap-2 rounded-sm bg-[#d4ff00] py-2.5 text-sm font-bold text-[#0d0d0d] transition-all hover:bg-[#d4ff00]/80 disabled:opacity-50"
                 >
                   {saving ? (
                     <>
                       <motion.div
-                        className="h-4 w-4 rounded-full border-2 border-[#111827]/30 border-t-[#111827]"
+                        className="h-4 w-4 rounded-full border-2 border-[#0d0d0d]/30 border-t-[#0d0d0d]"
                         animate={{ rotate: 360 }}
                         transition={{
                           duration: 0.6,
@@ -721,7 +718,7 @@ function CourtCard({
                 <motion.button
                   whileTap={{ scale: 0.97 }}
                   onClick={handleCancelEdit}
-                  className="rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white/60 hover:bg-white/10 transition-colors"
+                  className="rounded-sm border border-[#333] bg-[#1a1a1a] px-5 py-2.5 text-sm font-semibold text-[#999] hover:bg-[#222] transition-colors"
                 >
                   {t("common.cancel")}
                 </motion.button>
@@ -732,17 +729,17 @@ function CourtCard({
       </AnimatePresence>
 
       {/* Manage slots button */}
-      <div className="border-t border-white/5">
+      <div className="border-t border-[#222]">
         <motion.button
           whileTap={{ scale: 0.98 }}
           onClick={() => onOpenSlots(court)}
-          className="flex w-full items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-[#c8ff00] hover:bg-white/5 transition-colors"
+          className="flex w-full items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-[#d4ff00] hover:bg-[#1a1a1a] transition-colors"
         >
           <Clock size={15} />
           {t("owner.manageSlots")}
         </motion.button>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -905,11 +902,11 @@ export default function CourtsPage() {
         className="flex items-center justify-between mb-6"
       >
         <div>
-          <h1 className="text-xl font-bold text-white/90">
+          <h1 className="text-xl font-bold text-white">
             {t("owner.manageCourts")}
           </h1>
           {courts.length > 0 && (
-            <p className="text-sm text-white/40 mt-0.5">
+            <p className="text-sm text-[#666] mt-0.5">
               {courts.length}{" "}
               {courts.length === 1 ? "court" : "courts"}
             </p>
@@ -918,7 +915,7 @@ export default function CourtsPage() {
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={() => setShowAddForm(!showAddForm)}
-          className="flex items-center gap-1.5 rounded-full bg-[#c8ff00] px-4 py-2.5 text-sm font-semibold text-[#111827] shadow-sm hover:bg-[#c8ff00]/80 transition-colors"
+          className="flex items-center gap-1.5 rounded-sm bg-[#d4ff00] px-4 py-2.5 text-sm font-semibold text-[#0d0d0d] shadow-sm hover:bg-[#d4ff00]/80 transition-colors"
         >
           <Plus size={16} />
           {t("owner.addCourt")}
@@ -937,17 +934,17 @@ export default function CourtsPage() {
           >
             <form
               onSubmit={handleAddCourt}
-              className="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-3"
+              className="bg-[#1a1a1a] border border-[#333] rounded-sm p-5 space-y-3"
             >
               <div className="flex items-center justify-between mb-1">
-                <h3 className="text-sm font-bold text-white/90">
+                <h3 className="text-sm font-bold text-white">
                   {t("owner.addCourt")}
                 </h3>
                 <motion.button
                   type="button"
                   whileTap={{ scale: 0.85 }}
                   onClick={() => setShowAddForm(false)}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg text-white/40 hover:bg-white/10 hover:text-white/70 transition-colors"
+                  className="flex h-8 w-8 items-center justify-center rounded-lg text-[#666] hover:bg-[#222] hover:text-[#999] transition-colors"
                 >
                   <X size={16} />
                 </motion.button>
@@ -955,7 +952,7 @@ export default function CourtsPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs text-white/40 mb-1 block">
+                  <label className="text-xs text-[#666] mb-1 block">
                     {t("owner.courtName")}
                   </label>
                   <input
@@ -964,26 +961,26 @@ export default function CourtsPage() {
                     onChange={(e) => setFormName(e.target.value)}
                     required
                     dir="ltr"
-                    className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-shadow"
+                    className="w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-3 py-2.5 text-sm text-white outline-none  focus:border-[#d4ff00] transition-shadow"
                     placeholder="Court 1"
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-white/40 mb-1 block">
+                  <label className="text-xs text-[#666] mb-1 block">
                     {t("owner.courtNameAr")}
                   </label>
                   <input
                     type="text"
                     value={formNameAr}
                     onChange={(e) => setFormNameAr(e.target.value)}
-                    className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-shadow"
+                    className="w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-3 py-2.5 text-sm text-white outline-none  focus:border-[#d4ff00] transition-shadow"
                     placeholder="كورت ١"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-xs text-white/40 mb-1 block">
+                <label className="text-xs text-[#666] mb-1 block">
                   {t("owner.pricePerHour")} (EGP)
                 </label>
                 <input
@@ -993,7 +990,7 @@ export default function CourtsPage() {
                   required
                   min="1"
                   dir="ltr"
-                  className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-shadow"
+                  className="w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-3 py-2.5 text-sm text-white outline-none  focus:border-[#d4ff00] transition-shadow"
                   placeholder="300"
                 />
               </div>
@@ -1004,12 +1001,12 @@ export default function CourtsPage() {
                 type="submit"
                 whileTap={{ scale: 0.97 }}
                 disabled={submitting}
-                className="w-full flex items-center justify-center gap-2 rounded-full bg-[#c8ff00] py-2.5 text-sm font-bold text-[#111827] transition-all hover:bg-[#c8ff00]/80 disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-2 rounded-sm bg-[#d4ff00] py-2.5 text-sm font-bold text-[#0d0d0d] transition-all hover:bg-[#d4ff00]/80 disabled:opacity-50"
               >
                 {submitting ? (
                   <>
                     <motion.div
-                      className="h-4 w-4 rounded-full border-2 border-[#111827]/30 border-t-[#111827]"
+                      className="h-4 w-4 rounded-full border-2 border-[#0d0d0d]/30 border-t-[#0d0d0d]"
                       animate={{ rotate: 360 }}
                       transition={{
                         duration: 0.6,
@@ -1042,12 +1039,7 @@ export default function CourtsPage() {
           }}
         />
       ) : (
-        <motion.div
-          variants={staggerContainer}
-          initial="initial"
-          animate="animate"
-          className="space-y-4"
-        >
+        <div className="space-y-4">
           {courts.map((court) => (
             <CourtCard
               key={court.id}
@@ -1059,7 +1051,7 @@ export default function CourtsPage() {
               onCourtUpdated={fetchCourts}
             />
           ))}
-        </motion.div>
+        </div>
       )}
 
       {/* Slot management modal */}

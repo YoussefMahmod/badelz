@@ -37,12 +37,12 @@ export default function RegisterPage() {
   return (
     <Suspense
       fallback={
-        <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-elevated animate-pulse">
-          <div className="h-8 w-32 bg-gray-100 rounded mb-6" />
+        <div className="bg-[#1a1a1a] border border-[#333] rounded-sm p-6 sm:p-8  animate-pulse">
+          <div className="h-8 w-32 bg-[#222] rounded mb-6" />
           <div className="space-y-4">
-            <div className="h-10 bg-gray-100 rounded-xl" />
-            <div className="h-10 bg-gray-100 rounded-xl" />
-            <div className="h-10 bg-gray-100 rounded-xl" />
+            <div className="h-10 bg-[#222] rounded-sm" />
+            <div className="h-10 bg-[#222] rounded-sm" />
+            <div className="h-10 bg-[#222] rounded-sm" />
           </div>
         </div>
       }
@@ -138,19 +138,19 @@ function RegisterForm() {
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-elevated">
+    <div className="bg-[#1a1a1a] border border-[#333] rounded-sm p-6 sm:p-8 ">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <Link href="/" className="transition-opacity hover:opacity-80">
-            <Logo size={32} variant="full" colorMode="light" />
+            <Logo size={32} variant="full" colorMode="dark" />
           </Link>
         </div>
         <LocaleToggle />
       </div>
 
       {/* Role Selector */}
-      <p className="text-xs font-medium text-gray-400 mb-2">{t("auth.selectRole")}</p>
+      <p className="text-xs font-medium text-[#666] mb-2">{t("auth.selectRole")}</p>
       <div className="grid grid-cols-3 gap-2 mb-5">
         {(Object.keys(ROLE_CONFIG) as RoleType[]).map((roleKey) => {
           const config = ROLE_CONFIG[roleKey];
@@ -163,19 +163,19 @@ function RegisterForm() {
               type="button"
               whileTap={{ scale: 0.95 }}
               onClick={() => updateField("role", roleKey)}
-              className={`relative flex flex-col items-center gap-1.5 rounded-xl p-3 cursor-pointer transition-all ${
+              className={`relative flex flex-col items-center gap-1.5 rounded-sm p-3 cursor-pointer transition-all ${
                 active
-                  ? "border-2 border-[#111827] bg-[#111827]/5"
-                  : "border border-gray-200 bg-gray-50"
+                  ? "border-2 border-[#111827] bg-[#1a1a1a]/5"
+                  : "border border-[#333] bg-[#0d0d0d]"
               }`}
             >
               <Icon
                 size={20}
-                className={active ? "text-[#111827]" : "text-gray-400"}
+                className={active ? "text-[#d4ff00]" : "text-[#666]"}
               />
               <span
                 className={`text-xs font-medium ${
-                  active ? "text-[#111827]" : "text-gray-500"
+                  active ? "text-[#d4ff00]" : "text-[#999]"
                 }`}
               >
                 {t(config.labelKey)}
@@ -194,10 +194,10 @@ function RegisterForm() {
           exit={{ opacity: 0, y: 5 }}
           transition={{ duration: 0.2 }}
         >
-          <h1 className="text-xl font-bold text-gray-900 mb-1">
+          <h1 className="text-xl font-bold text-white mb-1">
             {t(roleConfig.signUpKey)}
           </h1>
-          <p className="text-sm text-gray-400 mb-6">
+          <p className="text-sm text-[#666] mb-6">
             {t(roleConfig.descKey)}
           </p>
         </motion.div>
@@ -207,7 +207,7 @@ function RegisterForm() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600"
+          className="mb-4 rounded-sm bg-[#ff4d4d]/10 border border-[#ff4d4d]/30 px-4 py-3 text-sm text-[#ff4d4d]"
         >
           {error}
         </motion.div>
@@ -216,8 +216,8 @@ function RegisterForm() {
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Name */}
         <div>
-          <label className="mb-1.5 flex items-center gap-2 text-sm font-medium text-gray-700">
-            <User size={14} className="text-gray-400" />
+          <label className="mb-1.5 flex items-center gap-2 text-sm font-medium text-[#999]">
+            <User size={14} className="text-[#666]" />
             {t("auth.name")}
           </label>
           <input
@@ -225,14 +225,14 @@ function RegisterForm() {
             value={form.name}
             onChange={(e) => updateField("name", e.target.value)}
             required
-            className="w-full rounded-xl bg-gray-50 border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
+            className="w-full rounded-sm bg-[#0d0d0d] border border-[#333] px-4 py-3 text-sm text-white outline-none placeholder:text-[#666]  focus:border-[#d4ff00] transition-all"
           />
         </div>
 
         {/* Email */}
         <div>
-          <label className="mb-1.5 flex items-center gap-2 text-sm font-medium text-gray-700">
-            <Mail size={14} className="text-gray-400" />
+          <label className="mb-1.5 flex items-center gap-2 text-sm font-medium text-[#999]">
+            <Mail size={14} className="text-[#666]" />
             {t("auth.email")}
           </label>
           <input
@@ -241,14 +241,14 @@ function RegisterForm() {
             onChange={(e) => updateField("email", e.target.value)}
             required
             dir="ltr"
-            className="w-full rounded-xl bg-gray-50 border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
+            className="w-full rounded-sm bg-[#0d0d0d] border border-[#333] px-4 py-3 text-sm text-white outline-none placeholder:text-[#666]  focus:border-[#d4ff00] transition-all"
           />
         </div>
 
         {/* Password */}
         <div>
-          <label className="mb-1.5 flex items-center gap-2 text-sm font-medium text-gray-700">
-            <Lock size={14} className="text-gray-400" />
+          <label className="mb-1.5 flex items-center gap-2 text-sm font-medium text-[#999]">
+            <Lock size={14} className="text-[#666]" />
             {t("auth.password")}
           </label>
           <div className="relative">
@@ -258,12 +258,12 @@ function RegisterForm() {
               onChange={(e) => updateField("password", e.target.value)}
               required
               dir="ltr"
-              className="w-full rounded-xl bg-gray-50 border border-gray-200 px-4 py-3 pe-12 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
+              className="w-full rounded-sm bg-[#0d0d0d] border border-[#333] px-4 py-3 pe-12 text-sm text-white outline-none placeholder:text-[#666]  focus:border-[#d4ff00] transition-all"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute end-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+              className="absolute end-3 top-1/2 -translate-y-1/2 text-[#666] hover:text-[#999] transition-colors cursor-pointer"
             >
               {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
@@ -272,8 +272,8 @@ function RegisterForm() {
 
         {/* Phone */}
         <div>
-          <label className="mb-1.5 flex items-center gap-2 text-sm font-medium text-gray-700">
-            <Phone size={14} className="text-gray-400" />
+          <label className="mb-1.5 flex items-center gap-2 text-sm font-medium text-[#999]">
+            <Phone size={14} className="text-[#666]" />
             {t("auth.phone")}
           </label>
           <input
@@ -283,7 +283,7 @@ function RegisterForm() {
             required
             dir="ltr"
             placeholder="01XXXXXXXXX"
-            className="w-full rounded-xl bg-gray-50 border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] transition-all"
+            className="w-full rounded-sm bg-[#0d0d0d] border border-[#333] px-4 py-3 text-sm text-white outline-none placeholder:text-[#666]  focus:border-[#d4ff00] transition-all"
           />
         </div>
 
@@ -292,7 +292,7 @@ function RegisterForm() {
           type="submit"
           whileTap={{ scale: 0.97 }}
           disabled={loading}
-          className="flex w-full items-center justify-center gap-2 rounded-full bg-[#111827] py-3.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-gray-800 disabled:opacity-50"
+          className="flex w-full items-center justify-center gap-2 rounded-sm bg-[#1a1a1a] py-3.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-[#222] disabled:opacity-50"
         >
           {loading ? (
             <>
@@ -308,18 +308,18 @@ function RegisterForm() {
         </motion.button>
       </form>
 
-      <p className="mt-4 text-center text-[11px] text-gray-400">
+      <p className="mt-4 text-center text-[11px] text-[#666]">
         {t("legal.agreeToTerms")}{" "}
-        <Link href="/terms" className="text-[#111827] hover:underline">{t("legal.terms")}</Link>
+        <Link href="/terms" className="text-[#d4ff00] hover:underline">{t("legal.terms")}</Link>
         {" "}{t("legal.and")}{" "}
-        <Link href="/privacy" className="text-[#111827] hover:underline">{t("legal.privacy")}</Link>
+        <Link href="/privacy" className="text-[#d4ff00] hover:underline">{t("legal.privacy")}</Link>
       </p>
 
-      <p className="mt-3 text-center text-sm text-gray-400">
+      <p className="mt-3 text-center text-sm text-[#666]">
         {t("auth.hasAccount")}{" "}
         <Link
           href={`/login${returnTo ? `?returnTo=${encodeURIComponent(returnTo)}` : ""}`}
-          className="font-semibold text-[#111827] hover:underline transition-colors"
+          className="font-semibold text-[#d4ff00] hover:underline transition-colors"
         >
           {t("auth.signIn")}
         </Link>

@@ -16,7 +16,6 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { useTranslation, useLocale } from "@/i18n";
-import { staggerContainer, staggerItem } from "@/lib/animations";
 import { formatTime, formatDateShort } from "@/lib/format";
 import { LoadingSpinner } from "@/components/loading-spinner";
 import { EmptyState } from "@/components/empty-state";
@@ -52,10 +51,10 @@ const STATUS_CONFIG: Record<
   { color: string; bg: string; borderColor: string }
 > = {
   PENDING: { color: "text-amber-400", bg: "bg-amber-500/10", borderColor: "border-amber-500/20" },
-  CONFIRMED: { color: "text-emerald-400", bg: "bg-emerald-500/10", borderColor: "border-emerald-500/20" },
+  CONFIRMED: { color: "text-[#d4ff00]", bg: "bg-[#d4ff00]/10", borderColor: "border-emerald-500/20" },
   CANCELLED: { color: "text-red-400", bg: "bg-red-500/10", borderColor: "border-red-500/20" },
   COMPLETED: { color: "text-blue-400", bg: "bg-blue-500/10", borderColor: "border-blue-500/20" },
-  NO_SHOW: { color: "text-white/40", bg: "bg-white/5", borderColor: "border-white/10" },
+  NO_SHOW: { color: "text-[#666]", bg: "bg-[#1a1a1a]", borderColor: "border-[#333]" },
 };
 
 const STATUS_KEYS: BookingStatus[] = ["PENDING", "CONFIRMED", "CANCELLED", "COMPLETED", "NO_SHOW"];
@@ -197,7 +196,7 @@ export default function OwnerBookingsPage() {
       <motion.h1
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-xl font-bold text-white/90 mb-4"
+        className="text-xl font-bold text-white mb-4"
       >
         {t("owner.bookingsList")}
       </motion.h1>
@@ -208,8 +207,8 @@ export default function OwnerBookingsPage() {
           onClick={() => setViewMode("list")}
           className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all cursor-pointer ${
             viewMode === "list"
-              ? "bg-white/15 text-white"
-              : "text-white/40 hover:text-white/70"
+              ? "bg-[#222] text-white"
+              : "text-[#666] hover:text-[#999]"
           }`}
         >
           <List size={14} />
@@ -219,8 +218,8 @@ export default function OwnerBookingsPage() {
           onClick={() => setViewMode("schedule")}
           className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all cursor-pointer ${
             viewMode === "schedule"
-              ? "bg-white/15 text-white"
-              : "text-white/40 hover:text-white/70"
+              ? "bg-[#222] text-white"
+              : "text-[#666] hover:text-[#999]"
           }`}
         >
           <CalendarDays size={14} />
@@ -240,7 +239,7 @@ export default function OwnerBookingsPage() {
                 setDateFilter(e.target.value);
                 setLoading(true);
               }}
-              className="rounded-lg bg-white/5 border border-white/10 px-3 py-1.5 text-xs text-white/90 focus:outline-none focus:border-white/30 [color-scheme:dark]"
+              className="rounded-sm bg-[#1a1a1a] border border-[#333] px-3 py-1.5 text-xs text-white focus:outline-none focus:border-[#666] [color-scheme:dark]"
             />
             {[
               { label: t("owner.today"), value: new Date().toISOString().split("T")[0] },
@@ -252,10 +251,10 @@ export default function OwnerBookingsPage() {
                   setDateFilter(dateFilter === chip.value ? "" : chip.value);
                   setLoading(true);
                 }}
-                className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-all cursor-pointer ${
+                className={`shrink-0 rounded-sm px-3 py-1.5 text-xs font-medium transition-all cursor-pointer ${
                   dateFilter === chip.value
-                    ? "bg-[#c8ff00]/20 text-[#c8ff00] border border-[#c8ff00]/30"
-                    : "border border-white/10 text-white/50 hover:text-white/80"
+                    ? "bg-[#d4ff00]/20 text-[#d4ff00] border border-[#d4ff00]/30"
+                    : "border border-[#333] text-[#999] hover:text-[#999]"
                 }`}
               >
                 {chip.label}
@@ -267,7 +266,7 @@ export default function OwnerBookingsPage() {
                   setDateFilter("");
                   setLoading(true);
                 }}
-                className="text-xs text-white/40 hover:text-white/70 cursor-pointer"
+                className="text-xs text-[#666] hover:text-[#999] cursor-pointer"
               >
                 {t("owner.allDates")}
               </button>
@@ -288,10 +287,10 @@ export default function OwnerBookingsPage() {
                   setActiveFilter(filter.key);
                   setLoading(true);
                 }}
-                className={`shrink-0 rounded-full px-4 py-2 text-xs font-medium transition-all cursor-pointer ${
+                className={`shrink-0 rounded-sm px-4 py-2 text-xs font-medium transition-all cursor-pointer ${
                   activeFilter === filter.key
-                    ? "bg-white/15 text-white"
-                    : "border border-white/10 text-white/50 hover:text-white/80 hover:border-white/20"
+                    ? "bg-[#222] text-white"
+                    : "border border-[#333] text-[#999] hover:text-[#999] hover:border-[#333]"
                 }`}
               >
                 {filter.label}
@@ -308,36 +307,33 @@ export default function OwnerBookingsPage() {
               title={t("owner.noBookings")}
             />
           ) : (
-            <motion.div
-              variants={staggerContainer}
-              initial="initial"
-              animate="animate"
+            <div
+
               className="space-y-3"
             >
               {filtered.map((booking) => {
                 const config = STATUS_CONFIG[booking.status];
                 return (
-                  <motion.div
+                  <div
                     key={booking.id}
-                    variants={staggerItem}
-                    className="bg-white/5 border border-white/10 rounded-2xl p-4"
+                    className="bg-[#1a1a1a] border border-[#333] rounded-sm p-4"
                   >
                     <div className="flex items-start gap-3">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#c8ff00]/20">
-                        <User size={18} className="text-[#111827]" />
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#d4ff00]/20">
+                        <User size={18} className="text-[#0d0d0d]" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="text-sm font-semibold text-white/90 truncate">
+                          <h3 className="text-sm font-semibold text-white truncate">
                             {booking.playerName}
                           </h3>
                           <span
-                            className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium ${config.bg} ${config.color} border ${config.borderColor}`}
+                            className={`shrink-0 rounded-sm px-2 py-0.5 text-[10px] font-medium ${config.bg} ${config.color} border ${config.borderColor}`}
                           >
                             {getStatusLabel(booking.status)}
                           </span>
                         </div>
-                        <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-white/40">
+                        <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-[#666]">
                           <span className="flex items-center gap-1">
                             <Phone size={10} />
                             <span dir="ltr">{booking.playerPhone}</span>
@@ -367,7 +363,7 @@ export default function OwnerBookingsPage() {
                             {formatTime(booking.startTime)} - {formatTime(booking.endTime)}
                           </span>
                         </div>
-                        <p className="text-xs text-white/30 mt-1">
+                        <p className="text-xs text-[#666] mt-1">
                           {booking.court.name} | {booking.confirmationCode}
                         </p>
                         {booking.notes && (
@@ -381,41 +377,41 @@ export default function OwnerBookingsPage() {
 
                     {/* Actions */}
                     {booking.status === "PENDING" && (
-                      <div className="flex gap-2 mt-3 pt-3 border-t border-white/5">
-                        <motion.button
-                          whileTap={{ scale: 0.95 }}
+                      <div className="flex gap-2 mt-3 pt-3 border-t border-[#222]">
+                        <button
+                          
                           onClick={() => handleAction(booking.id, "confirm")}
-                          className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 py-2 text-xs font-medium text-emerald-400 hover:bg-emerald-500/20 transition-all cursor-pointer"
+                          className="flex flex-1 items-center justify-center gap-1.5 rounded-sm bg-[#d4ff00]/10 border border-emerald-500/20 py-2 text-xs font-medium text-[#d4ff00] hover:bg-[#d4ff00]/20 transition-all cursor-pointer"
                         >
                           <Check size={14} />
                           {t("owner.confirmBooking")}
-                        </motion.button>
-                        <motion.button
-                          whileTap={{ scale: 0.95 }}
+                        </button>
+                        <button
+                          
                           onClick={() => handleAction(booking.id, "cancel")}
                           className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-red-500/10 border border-red-500/20 py-2 text-xs font-medium text-red-400 hover:bg-red-500/20 transition-all cursor-pointer"
                         >
                           <X size={14} />
                           {t("owner.cancelBooking")}
-                        </motion.button>
+                        </button>
                       </div>
                     )}
                     {booking.status === "CONFIRMED" && (
-                      <div className="mt-3 pt-3 border-t border-white/5">
-                        <motion.button
-                          whileTap={{ scale: 0.95 }}
+                      <div className="mt-3 pt-3 border-t border-[#222]">
+                        <button
+                          
                           onClick={() => handleAction(booking.id, "complete")}
                           className="flex w-full items-center justify-center gap-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 py-2 text-xs font-medium text-blue-400 hover:bg-blue-500/20 transition-all cursor-pointer"
                         >
                           <CheckCircle size={14} />
                           {t("owner.completeBooking")}
-                        </motion.button>
+                        </button>
                       </div>
                     )}
-                  </motion.div>
+                  </div>
                 );
               })}
-            </motion.div>
+            </div>
           )}
         </>
       )}
@@ -426,17 +422,17 @@ export default function OwnerBookingsPage() {
       )}
 
       {/* FAB — Add Booking */}
-      <motion.button
-        whileTap={{ scale: 0.9 }}
+      <button
+        
         onClick={() => {
           setPrefill(undefined);
           setShowModal(true);
         }}
-        className="fixed bottom-28 end-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#111827] text-white shadow-xl hover:shadow-2xl transition-shadow cursor-pointer"
+        className="fixed bottom-28 end-4 z-40 flex h-14 w-14 items-center justify-center rounded-sm bg-[#1a1a1a] text-white shadow-xl hover:shadow-2xl transition-shadow cursor-pointer"
         aria-label={t("owner.addBooking")}
       >
         <Plus size={24} />
-      </motion.button>
+      </button>
 
       {/* Manual Booking Modal */}
       <AnimatePresence>

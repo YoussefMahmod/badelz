@@ -25,13 +25,6 @@ import { useTranslation, useLocale } from "@/i18n";
 import { PlayerCard } from "@/components/cards/player-card";
 import { EmptyState } from "@/components/empty-state";
 import { AREAS, PLAYER_TIER_COLORS, type PlayerTier } from "@/lib/constants";
-import {
-  slideUp,
-  fadeIn,
-  scaleInGlow,
-  staggerDarkBento,
-  darkBentoItem,
-} from "@/lib/animations";
 import { OnboardingBanner } from "@/components/onboarding-banner";
 import { PhotoUpload } from "@/components/photo-upload";
 
@@ -68,11 +61,11 @@ interface BookingData {
 const TIER_COLORS = PLAYER_TIER_COLORS;
 
 const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
-  CONFIRMED: { bg: "bg-emerald-500/15", text: "text-emerald-400" },
+  CONFIRMED: { bg: "bg-[#d4ff00]/15", text: "text-[#d4ff00]" },
   PENDING: { bg: "bg-amber-500/15", text: "text-amber-400" },
   COMPLETED: { bg: "bg-blue-500/15", text: "text-blue-400" },
   CANCELLED: { bg: "bg-red-500/15", text: "text-red-400" },
-  NO_SHOW: { bg: "bg-white/5", text: "text-white/40" },
+  NO_SHOW: { bg: "bg-[#1a1a1a]", text: "text-[#666]" },
 };
 
 export default function PlayerProfilePage() {
@@ -179,7 +172,7 @@ export default function PlayerProfilePage() {
     return locale === "ar" && profile.nameAr ? profile.nameAr : profile.name;
   }, [profile, locale]);
 
-  const tierColor = profile ? TIER_COLORS[profile.tier] : "#c8ff00";
+  const tierColor = profile ? TIER_COLORS[profile.tier] : "#d4ff00";
   const tierLabel = profile
     ? t(`player.${profile.tier.toLowerCase()}` as "player.bronze")
     : "";
@@ -232,14 +225,14 @@ export default function PlayerProfilePage() {
       <div className="mx-auto max-w-lg px-4 py-6 pb-28">
         {/* Header skeleton */}
         <div className="flex flex-col items-center gap-4 mb-8">
-          <div className="w-64 card-ratio rounded-2xl animate-pulse bg-white/5 border border-white/10" />
+          <div className="w-64 card-ratio rounded-sm animate-pulse bg-[#1a1a1a] border border-[#333]" />
         </div>
         {/* Stats skeleton */}
         <div className="grid grid-cols-2 gap-3 mb-6">
           {Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}
-              className="h-24 rounded-2xl bg-white/5 border border-white/10 animate-pulse"
+              className="h-24 rounded-sm bg-[#1a1a1a] border border-[#333] animate-pulse"
               style={{ animationDelay: `${i * 100}ms` }}
             />
           ))}
@@ -250,7 +243,7 @@ export default function PlayerProfilePage() {
           {Array.from({ length: 3 }).map((_, i) => (
             <div
               key={i}
-              className="h-20 rounded-2xl bg-white/5 border border-white/10 animate-pulse"
+              className="h-20 rounded-sm bg-[#1a1a1a] border border-[#333] animate-pulse"
               style={{ animationDelay: `${i * 80}ms` }}
             />
           ))}
@@ -281,7 +274,7 @@ export default function PlayerProfilePage() {
       <OnboardingBanner />
 
       {/* ── Player Card ── */}
-      <motion.div {...scaleInGlow} className="flex justify-center mb-8 relative">
+      <div className="flex justify-center mb-8 relative">
         {/* Ambient glow */}
         <div
           className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full blur-[100px] opacity-15 pointer-events-none"
@@ -302,77 +295,69 @@ export default function PlayerProfilePage() {
           size="lg"
           interactive
         />
-      </motion.div>
+      </div>
 
       {/* ── Stats Grid ── */}
-      <motion.div
-        variants={staggerDarkBento}
-        initial="initial"
-        animate="animate"
-        className="grid grid-cols-2 gap-3 mb-8"
-      >
-        <motion.div variants={darkBentoItem}>
+      <div className="grid grid-cols-2 gap-3 mb-8">
+        <div>
           <StatCard
             icon={<Gamepad2 size={18} />}
             label={t("playerProfile.gamesPlayed")}
             value={String(profile.gamesPlayed)}
             color={tierColor}
           />
-        </motion.div>
-        <motion.div variants={darkBentoItem}>
+        </div>
+        <div>
           <StatCard
             icon={<Trophy size={18} />}
             label={t("playerProfile.gamesWon")}
             value={String(profile.gamesWon)}
             color="#ffd700"
           />
-        </motion.div>
-        <motion.div variants={darkBentoItem}>
+        </div>
+        <div>
           <StatCard
             icon={<TrendingUp size={18} />}
             label={t("playerProfile.winRate")}
             value={`${winRate}%`}
             color="#50c878"
           />
-        </motion.div>
-        <motion.div variants={darkBentoItem}>
+        </div>
+        <div>
           <StatCard
             icon={<Star size={18} />}
             label={t("playerProfile.rating")}
             value={String(profile.rating)}
-            color="#c8ff00"
+            color="#d4ff00"
           />
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
 
       {/* ── Member info ── */}
-      <motion.div
-        {...fadeIn}
-        transition={{ delay: 0.3 }}
-        className="flex items-center justify-center gap-4 mb-8"
+      <div className="flex items-center justify-center gap-4 mb-8"
       >
         {profile.area && (
-          <span className="flex items-center gap-1.5 text-white/40 text-xs">
+          <span className="flex items-center gap-1.5 text-[#666] text-xs">
             <MapPin size={12} />
             {locale === "ar" && profile.areaAr ? profile.areaAr : profile.area}
           </span>
         )}
-        <span className="flex items-center gap-1.5 text-white/40 text-xs">
+        <span className="flex items-center gap-1.5 text-[#666] text-xs">
           <CalendarDays size={12} />
           {t("player.memberSince")} {memberSince}
         </span>
-      </motion.div>
+      </div>
 
       {/* ── My Bookings ── */}
-      <motion.div {...slideUp} transition={{ delay: 0.35 }} className="mb-8">
+      <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-white/90">
+          <h2 className="text-lg font-bold text-white">
             {t("playerProfile.myBookings")}
           </h2>
           {bookings.length > 5 && (
             <Link
               href="/my-bookings"
-              className="text-xs font-medium text-[#c8ff00] hover:text-[#c8ff00]/80 transition-colors"
+              className="text-xs font-medium text-[#d4ff00] hover:text-[#d4ff00]/80 transition-colors"
             >
               {t("playerProfile.viewAllBookings")}
             </Link>
@@ -384,22 +369,22 @@ export default function PlayerProfilePage() {
             {Array.from({ length: 3 }).map((_, i) => (
               <div
                 key={i}
-                className="h-20 rounded-2xl bg-white/5 border border-white/10 animate-pulse"
+                className="h-20 rounded-sm bg-[#1a1a1a] border border-[#333] animate-pulse"
                 style={{ animationDelay: `${i * 80}ms` }}
               />
             ))}
           </div>
         ) : recentBookings.length === 0 ? (
-          <div className="rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 p-8 text-center">
-            <div className="flex h-12 w-12 mx-auto items-center justify-center rounded-xl bg-white/5 border border-white/10 text-white/30 mb-3">
+          <div className="rounded-sm bg-[#1a1a1a] border border-[#333] p-8 text-center">
+            <div className="flex h-12 w-12 mx-auto items-center justify-center rounded-sm bg-[#1a1a1a] border border-[#333] text-[#666] mb-3">
               <Search size={20} />
             </div>
-            <p className="text-white/50 text-sm mb-4">
+            <p className="text-[#999] text-sm mb-4">
               {t("playerProfile.noBookings")}
             </p>
             <Link
               href="/browse"
-              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/30 active:scale-[0.98]"
+              className="inline-flex items-center gap-2 rounded-sm bg-[#d4ff00] text-[#0d0d0d] px-5 py-2.5 text-sm font-bold text-white transition-all active:scale-[0.98]"
             >
               {t("playerProfile.bookNow")}
             </Link>
@@ -425,17 +410,17 @@ export default function PlayerProfilePage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    className="rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 p-4 hover:bg-white/[0.07] transition-all"
+                    className="rounded-sm bg-[#1a1a1a] border border-[#333] p-4 hover:bg-white/[0.07] transition-all"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0 flex-1">
-                        <p className="text-white/90 font-semibold text-sm truncate">
+                        <p className="text-white font-semibold text-sm truncate">
                           {venueName}
                         </p>
-                        <p className="text-white/40 text-xs mt-0.5 truncate">
+                        <p className="text-[#666] text-xs mt-0.5 truncate">
                           {courtName}
                         </p>
-                        <div className="flex items-center gap-3 mt-2 text-white/50 text-xs">
+                        <div className="flex items-center gap-3 mt-2 text-[#999] text-xs">
                           <span className="flex items-center gap-1">
                             <CalendarDays size={11} />
                             {formatBookingDate(booking.date)}
@@ -447,7 +432,7 @@ export default function PlayerProfilePage() {
                         </div>
                       </div>
                       <span
-                        className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-bold ${statusStyle.bg} ${statusStyle.text}`}
+                        className={`shrink-0 rounded-sm px-2.5 py-1 text-[10px] font-bold ${statusStyle.bg} ${statusStyle.text}`}
                       >
                         {getStatusLabel(booking.status)}
                       </span>
@@ -458,7 +443,7 @@ export default function PlayerProfilePage() {
             </AnimatePresence>
           </div>
         )}
-      </motion.div>
+      </div>
 
       {/* ── Edit Profile Button ── */}
       <motion.div
@@ -482,8 +467,8 @@ export default function PlayerProfilePage() {
           }}
           className={`w-full flex items-center justify-center gap-2 rounded-full border py-3.5 text-sm font-semibold transition-all active:scale-[0.98] ${
             editing
-              ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
-              : "border-white/10 text-white/60 hover:bg-white/5 hover:text-white/90"
+              ? "border-[#d4ff00]/20 bg-[#d4ff00]/10 text-[#d4ff00]"
+              : "border-[#333] text-[#999] hover:bg-[#1a1a1a] hover:text-white"
           }`}
         >
           {editing ? <X size={16} /> : <Edit3 size={16} />}
@@ -501,10 +486,10 @@ export default function PlayerProfilePage() {
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             className="overflow-hidden mb-3"
           >
-            <div className="rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 p-5 space-y-5">
+            <div className="rounded-sm bg-[#1a1a1a] border border-[#333] p-5 space-y-5">
               {/* Profile Photo */}
               <div>
-                <label className="block text-sm font-medium text-white/70 mb-1.5">
+                <label className="block text-sm font-medium text-[#999] mb-1.5">
                   {t("playerProfile.profilePhoto")}
                 </label>
                 <PhotoUpload
@@ -518,7 +503,7 @@ export default function PlayerProfilePage() {
 
               {/* Name field */}
               <div>
-                <label className="block text-sm font-medium text-white/70 mb-1.5">
+                <label className="block text-sm font-medium text-[#999] mb-1.5">
                   {t("playerProfile.name")}
                 </label>
                 <input
@@ -527,14 +512,14 @@ export default function PlayerProfilePage() {
                   onChange={(e) =>
                     setEditForm((prev) => ({ ...prev, name: e.target.value }))
                   }
-                  className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm text-white outline-none placeholder:text-white/30 focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                  className="w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-4 py-3 text-sm text-white outline-none placeholder:text-[#666] focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all"
                   dir="auto"
                 />
               </div>
 
               {/* Area selection */}
               <div>
-                <label className="block text-sm font-medium text-white/70 mb-2">
+                <label className="block text-sm font-medium text-[#999] mb-2">
                   {t("playerProfile.selectArea")}
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -547,8 +532,8 @@ export default function PlayerProfilePage() {
                       }
                       className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
                         editForm.area === area.key
-                          ? "bg-emerald-500/15 border border-emerald-500/30 text-emerald-400"
-                          : "bg-white/5 border border-white/10 text-white/50 hover:text-white/70"
+                          ? "bg-[#d4ff00]/15 border border-[#d4ff00]/20 text-[#d4ff00]"
+                          : "bg-[#1a1a1a] border border-[#333] text-[#999] hover:text-[#999]"
                       }`}
                     >
                       {locale === "ar" ? area.labelAr : area.labelEn}
@@ -562,7 +547,7 @@ export default function PlayerProfilePage() {
                 <button
                   onClick={handleSaveProfile}
                   disabled={saving || !editForm.name.trim()}
-                  className="flex-1 flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/30 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 flex items-center justify-center gap-2 rounded-sm bg-[#d4ff00] text-[#0d0d0d] py-3 text-sm font-bold text-white transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {saving ? (
                     <>
@@ -578,7 +563,7 @@ export default function PlayerProfilePage() {
                 </button>
                 <button
                   onClick={() => setEditing(false)}
-                  className="rounded-full border border-white/10 px-6 py-3 text-sm font-medium text-white/50 transition-all hover:bg-white/5 hover:text-white/70"
+                  className="rounded-sm border border-[#333] px-6 py-3 text-sm font-medium text-[#999] transition-all hover:bg-[#1a1a1a] hover:text-[#999]"
                 >
                   {t("common.cancel")}
                 </button>
@@ -595,7 +580,7 @@ export default function PlayerProfilePage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="mb-3 flex items-center justify-center gap-2 rounded-full bg-emerald-500/15 border border-emerald-500/25 py-2.5 px-4 text-sm font-medium text-emerald-400"
+            className="mb-3 flex items-center justify-center gap-2 rounded-sm bg-[#d4ff00]/15 border border-emerald-500/25 py-2.5 px-4 text-sm font-medium text-[#d4ff00]"
           >
             <Check size={14} />
             {t("playerProfile.profileUpdated")}
@@ -632,17 +617,17 @@ function StatCard({
   color: string;
 }) {
   return (
-    <div className="rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 p-4">
+    <div className="rounded-sm bg-[#1a1a1a] border border-[#333] p-4">
       <div
         className="flex h-10 w-10 items-center justify-center rounded-xl mb-3"
         style={{ backgroundColor: `${color}15`, color }}
       >
         {icon}
       </div>
-      <p className="text-2xl font-black text-white/90 font-[family-name:var(--font-display)] tabular-nums">
+      <p className="text-2xl font-black text-white font-[family-name:var(--font-display)] tabular-nums">
         {value}
       </p>
-      <p className="text-white/40 text-[11px] font-medium uppercase tracking-wider mt-0.5">
+      <p className="text-[#666] text-[11px] font-medium uppercase tracking-wider mt-0.5">
         {label}
       </p>
     </div>

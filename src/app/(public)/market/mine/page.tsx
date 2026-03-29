@@ -22,7 +22,6 @@ import { useTranslation, useLocale } from "@/i18n";
 import { useAuth } from "@/lib/auth-context";
 import { LISTING_CATEGORY_COLORS } from "@/lib/constants";
 import { formatPrice } from "@/lib/format";
-import { staggerItem } from "@/lib/animations";
 
 interface MyListing {
   id: string;
@@ -68,13 +67,13 @@ function formatTimeAgo(dateStr: string, locale: string): string {
 
 function StatusBadge({ status, t }: { status: string; t: (key: string) => string }) {
   const config: Record<string, { bg: string; text: string; key: string }> = {
-    ACTIVE: { bg: "bg-emerald-500/15 border-emerald-500/30", text: "text-emerald-400", key: "market.active" },
+    ACTIVE: { bg: "bg-[#d4ff00]/15 border-[#d4ff00]/20", text: "text-[#d4ff00]", key: "market.active" },
     SOLD: { bg: "bg-amber-500/15 border-amber-500/30", text: "text-amber-400", key: "market.sold" },
-    REMOVED: { bg: "bg-white/5 border-white/10", text: "text-white/40", key: "market.removed" },
+    REMOVED: { bg: "bg-[#1a1a1a] border-[#333]", text: "text-[#666]", key: "market.removed" },
   };
   const c = config[status] ?? config.REMOVED;
   return (
-    <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${c.bg} ${c.text}`}>
+    <span className={`inline-flex items-center rounded-sm border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${c.bg} ${c.text}`}>
       {t(c.key)}
     </span>
   );
@@ -143,7 +142,7 @@ export default function MyListingsPage() {
     return (
       <MainLayout showNav={false}>
         <div className="flex items-center justify-center min-h-[60vh]">
-          <Loader2 size={32} className="animate-spin text-[#c8ff00]" />
+          <Loader2 size={32} className="animate-spin text-[#d4ff00]" />
         </div>
       </MainLayout>
     );
@@ -157,7 +156,7 @@ export default function MyListingsPage() {
           initial={{ opacity: 0, x: locale === "ar" ? 10 : -10 }}
           animate={{ opacity: 1, x: 0 }}
           onClick={() => router.back()}
-          className="flex items-center gap-1.5 text-white/60 hover:text-white mb-6 transition-colors"
+          className="flex items-center gap-1.5 text-[#999] hover:text-white mb-6 transition-colors"
         >
           <BackIcon size={18} />
           <span className="text-sm">{t("common.back")}</span>
@@ -174,14 +173,14 @@ export default function MyListingsPage() {
               {t("market.myListings")}
             </h1>
             {!loading && listings.length > 0 && (
-              <p className="text-sm text-white/40 mt-1">
+              <p className="text-sm text-[#666] mt-1">
                 {t("market.listingsCount", { count: listings.length })}
               </p>
             )}
           </div>
           <Link
             href="/market/sell"
-            className="flex items-center gap-1.5 rounded-full bg-[#c8ff00] px-4 py-2.5 text-xs font-bold text-[#111827] transition-all hover:shadow-[0_0_20px_rgba(200,255,0,0.2)] active:scale-95"
+            className="flex items-center gap-1.5 rounded-sm bg-[#d4ff00] px-4 py-2.5 text-xs font-bold text-[#0d0d0d] transition-all active:scale-95"
           >
             <ArrowUpRight size={14} />
             {t("market.sell")}
@@ -192,7 +191,7 @@ export default function MyListingsPage() {
         {loading && (
           <div className="space-y-4">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="rounded-2xl bg-white/5 border border-white/10 overflow-hidden animate-pulse">
+              <div key={i} className="rounded-sm bg-[#1a1a1a] border border-[#333] overflow-hidden animate-pulse">
                 <div className="flex gap-4 p-4">
                   <div className="w-20 h-20 rounded-xl dark-skeleton shrink-0" />
                   <div className="flex-1 space-y-2">
@@ -213,18 +212,18 @@ export default function MyListingsPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="flex flex-col items-center justify-center px-6 py-16 text-center"
           >
-            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-white/40">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-sm bg-[#1a1a1a] border border-[#333] text-[#666]">
               <Package size={28} />
             </div>
             <h3 className="mb-1 text-lg font-semibold text-white">{t("common.error")}</h3>
-            <p className="mb-6 max-w-xs text-sm text-white/50">{t("errors.unexpectedError")}</p>
-            <motion.button
-              whileTap={{ scale: 0.95 }}
+            <p className="mb-6 max-w-xs text-sm text-[#999]">{t("errors.unexpectedError")}</p>
+            <button
+              
               onClick={fetchListings}
-              className="rounded-full bg-[#c8ff00] px-6 py-2.5 text-sm font-bold text-[#111827]"
+              className="rounded-sm bg-[#d4ff00] px-6 py-2.5 text-sm font-bold text-[#0d0d0d] active:scale-[0.97] transition-transform duration-75"
             >
               {t("errors.tryAgain")}
-            </motion.button>
+            </button>
           </motion.div>
         )}
 
@@ -235,22 +234,22 @@ export default function MyListingsPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="flex flex-col items-center justify-center px-6 py-16 text-center"
           >
-            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-white/40">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-sm bg-[#1a1a1a] border border-[#333] text-[#666]">
               <ShoppingBag size={28} />
             </div>
             <h3 className="mb-1 text-lg font-semibold text-white">
               {t("market.noListingsYet")}
             </h3>
-            <p className="mb-6 max-w-xs text-sm text-white/50">
+            <p className="mb-6 max-w-xs text-sm text-[#999]">
               {t("market.tagline")}
             </p>
-            <motion.button
-              whileTap={{ scale: 0.95 }}
+            <button
+              
               onClick={() => router.push("/market/sell")}
-              className="rounded-full bg-[#c8ff00] px-6 py-2.5 text-sm font-bold text-[#111827] shadow-sm transition-all hover:shadow-[0_0_20px_rgba(200,255,0,0.2)]"
+              className="rounded-sm bg-[#d4ff00] px-6 py-2.5 text-sm font-bold text-[#0d0d0d] shadow-sm transition-all"
             >
               {t("market.listYourGear")}
-            </motion.button>
+            </button>
           </motion.div>
         )}
 
@@ -270,14 +269,13 @@ export default function MyListingsPage() {
                   <motion.div
                     key={listing.id}
                     layout
-                    {...staggerItem}
                     transition={{ delay: i * 0.05 }}
-                    className="rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 overflow-hidden"
+                    className="rounded-sm bg-[#1a1a1a] border border-[#333] overflow-hidden"
                   >
                     {/* Card content (clickable to detail) */}
                     <Link href={`/market/${listing.id}`} className="flex gap-4 p-4">
                       {/* Thumbnail */}
-                      <div className="relative w-20 h-20 rounded-xl overflow-hidden shrink-0 bg-white/5">
+                      <div className="relative w-20 h-20 rounded-xl overflow-hidden shrink-0 bg-[#1a1a1a]">
                         {hasPhoto ? (
                           <img
                             src={listing.photos[0]}
@@ -313,10 +311,10 @@ export default function MyListingsPage() {
                         <p className="text-sm font-bold text-white line-clamp-1 leading-tight">
                           {displayTitle}
                         </p>
-                        <p className="text-lg font-extrabold font-[family-name:var(--font-display)] text-[#c8ff00] mt-0.5">
+                        <p className="text-lg font-extrabold font-[family-name:var(--font-display)] text-[#d4ff00] mt-0.5">
                           {formatPrice(listing.price)}{" "}
                         </p>
-                        <div className="flex items-center gap-3 mt-1 text-[10px] text-white/30">
+                        <div className="flex items-center gap-3 mt-1 text-[10px] text-[#666]">
                           <span className="flex items-center gap-1">
                             <Eye size={10} />
                             {listing.views}
@@ -331,7 +329,7 @@ export default function MyListingsPage() {
                     </Link>
 
                     {/* Action buttons */}
-                    <div className="flex border-t border-white/5">
+                    <div className="flex border-t border-[#222]">
                       {listing.status === "ACTIVE" && (
                         <>
                           <button
@@ -346,11 +344,11 @@ export default function MyListingsPage() {
                             )}
                             {t("market.markSold")}
                           </button>
-                          <div className="w-px bg-white/5" />
+                          <div className="w-px bg-[#1a1a1a]" />
                           <button
                             onClick={() => updateStatus(listing.id, "REMOVED")}
                             disabled={isActioning}
-                            className="flex-1 flex items-center justify-center gap-1.5 py-3 text-xs font-semibold text-white/40 hover:bg-white/5 transition-colors disabled:opacity-50"
+                            className="flex-1 flex items-center justify-center gap-1.5 py-3 text-xs font-semibold text-[#666] hover:bg-[#1a1a1a] transition-colors disabled:opacity-50"
                           >
                             {isActioning ? (
                               <Loader2 size={14} className="animate-spin" />
@@ -365,7 +363,7 @@ export default function MyListingsPage() {
                         <button
                           onClick={() => updateStatus(listing.id, "ACTIVE")}
                           disabled={isActioning}
-                          className="flex-1 flex items-center justify-center gap-1.5 py-3 text-xs font-semibold text-emerald-400 hover:bg-emerald-500/10 transition-colors disabled:opacity-50"
+                          className="flex-1 flex items-center justify-center gap-1.5 py-3 text-xs font-semibold text-[#d4ff00] hover:bg-[#d4ff00]/10 transition-colors disabled:opacity-50"
                         >
                           {isActioning ? (
                             <Loader2 size={14} className="animate-spin" />

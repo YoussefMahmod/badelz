@@ -25,7 +25,6 @@ import { useTranslation, useLocale } from "@/i18n";
 import { useAuth } from "@/lib/auth-context";
 import { LISTING_CATEGORY_COLORS } from "@/lib/constants";
 import { buildSellerContactLink, buildListingShareLink } from "@/lib/whatsapp";
-import { slideUp } from "@/lib/animations";
 
 interface ListingDetail {
   id: string;
@@ -246,7 +245,7 @@ export default function ListingDetailPage() {
           <div className="space-y-0">
             <div className="aspect-[4/3] dark-skeleton animate-pulse" />
             <div className="px-4 -mt-5 relative z-10 space-y-4">
-              <div className="rounded-2xl bg-white/5 border border-white/10 p-5 space-y-3">
+              <div className="rounded-sm bg-[#1a1a1a] border border-[#333] p-5 space-y-3">
                 <div className="flex gap-2">
                   <div className="h-5 w-16 rounded-full dark-skeleton" />
                   <div className="h-5 w-16 rounded-full dark-skeleton" />
@@ -255,7 +254,7 @@ export default function ListingDetailPage() {
                 <div className="h-9 w-1/3 rounded-lg dark-skeleton" />
                 <div className="h-4 w-2/3 rounded dark-skeleton" />
               </div>
-              <div className="rounded-2xl bg-white/5 border border-white/10 p-5 space-y-3">
+              <div className="rounded-sm bg-[#1a1a1a] border border-[#333] p-5 space-y-3">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-full dark-skeleton" />
                   <div className="space-y-2 flex-1">
@@ -271,18 +270,18 @@ export default function ListingDetailPage() {
         {/* Error */}
         {error && !loading && (
           <div className="text-center py-16 px-4">
-            <div className="mb-4 flex h-16 w-16 mx-auto items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-white/40">
+            <div className="mb-4 flex h-16 w-16 mx-auto items-center justify-center rounded-sm bg-[#1a1a1a] border border-[#333] text-[#666]">
               <Package size={28} />
             </div>
             <h3 className="text-lg font-semibold text-white mb-1">
               {t("common.error")}
             </h3>
-            <p className="text-sm text-white/50 mb-6">
+            <p className="text-sm text-[#999] mb-6">
               {t("common.noResults")}
             </p>
             <button
               onClick={() => router.push("/market")}
-              className="rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 px-6 py-2.5 text-sm font-bold text-white"
+              className="rounded-sm bg-[#d4ff00] text-[#0d0d0d] px-6 py-2.5 text-sm font-bold text-white"
             >
               {t("market.title")}
             </button>
@@ -291,9 +290,9 @@ export default function ListingDetailPage() {
 
         {/* Listing detail */}
         {listing && !loading && (
-          <motion.div {...slideUp}>
+          <div>
             {/* ─── Photo Gallery ─── */}
-            <div className="relative aspect-[4/3] sm:max-h-[400px] overflow-hidden bg-white/5">
+            <div className="relative aspect-[4/3] sm:max-h-[400px] overflow-hidden bg-[#1a1a1a]">
               {listing.photos.length > 0 ? (
                 <>
                   <div
@@ -307,11 +306,7 @@ export default function ListingDetailPage() {
                       dragElastic={0.2}
                       onDragEnd={handleDragEnd}
                       animate={{ x: `-${currentPhoto * 100}%` }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 30,
-                      }}
+                     
                       style={{
                         width: `${listing.photos.length * 100}%`,
                       }}
@@ -335,11 +330,11 @@ export default function ListingDetailPage() {
                   </div>
 
                   {/* Bottom gradient */}
-                  <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-[#0a0f1a] to-transparent pointer-events-none" />
+                  <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-[#0d0d0d] to-transparent pointer-events-none" />
 
                   {/* Photo counter pill */}
                   {listing.photos.length > 1 && (
-                    <span className="absolute bottom-3 end-4 z-10 bg-black/50 backdrop-blur-sm rounded-full px-2.5 py-1 text-xs text-white/80 font-medium">
+                    <span className="absolute bottom-3 end-4 z-10 bg-black/50 rounded-full px-2.5 py-1 text-xs text-[#999] font-medium">
                       {currentPhoto + 1}/{listing.photos.length}
                     </span>
                   )}
@@ -352,7 +347,7 @@ export default function ListingDetailPage() {
                           onClick={() =>
                             setCurrentPhoto((p) => Math.max(0, p - 1))
                           }
-                          className="absolute start-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center text-white/70 hover:text-white transition-colors hidden sm:flex"
+                          className="absolute start-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/30 flex items-center justify-center text-[#999] hover:text-white transition-colors hidden sm:flex"
                         >
                           <PrevArrow size={16} />
                         </button>
@@ -364,7 +359,7 @@ export default function ListingDetailPage() {
                               Math.min(listing.photos.length - 1, p + 1)
                             )
                           }
-                          className="absolute end-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center text-white/70 hover:text-white transition-colors hidden sm:flex"
+                          className="absolute end-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/30 flex items-center justify-center text-[#999] hover:text-white transition-colors hidden sm:flex"
                         >
                           <NextArrow size={16} />
                         </button>
@@ -388,7 +383,7 @@ export default function ListingDetailPage() {
               {/* Back button */}
               <button
                 onClick={() => router.back()}
-                className="absolute top-4 start-4 z-10 w-10 h-10 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center text-white"
+                className="absolute top-4 start-4 z-10 w-10 h-10 rounded-full bg-black/30 flex items-center justify-center text-white"
               >
                 <BackIcon size={18} />
               </button>
@@ -396,7 +391,7 @@ export default function ListingDetailPage() {
               {/* Share button */}
               <button
                 onClick={handleShare}
-                className="absolute top-4 end-4 z-10 w-10 h-10 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center text-white/70"
+                className="absolute top-4 end-4 z-10 w-10 h-10 rounded-full bg-black/30 flex items-center justify-center text-[#999]"
               >
                 <Share2 size={16} />
               </button>
@@ -404,7 +399,7 @@ export default function ListingDetailPage() {
               {/* SOLD overlay */}
               {isSold && (
                 <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-20">
-                  <span className="text-3xl font-black text-white/80 uppercase tracking-widest -rotate-12">
+                  <span className="text-3xl font-black text-[#999] uppercase tracking-widest -rotate-12">
                     {t("market.sold")}
                   </span>
                 </div>
@@ -412,10 +407,10 @@ export default function ListingDetailPage() {
             </div>
 
             {/* ─── Listing Info Card (overlaps photo) ─── */}
-            <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-5 -mt-5 relative z-10 mx-4">
+            <div className="bg-[#1a1a1a] border border-[#333] rounded-sm p-5 -mt-5 relative z-10 mx-4">
               {/* Condition + Category pills */}
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="bg-white/10 text-white/70 text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full font-medium">
+                <span className="bg-[#222] text-[#999] text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full font-medium">
                   {t(
                     (CONDITION_KEYS[listing.condition] ??
                       "market.used") as Parameters<typeof t>[0]
@@ -436,18 +431,18 @@ export default function ListingDetailPage() {
               </div>
 
               {/* Title */}
-              <h1 className="text-xl font-bold text-white/90 mt-3 leading-tight">
+              <h1 className="text-xl font-bold text-white mt-3 leading-tight">
                 {displayTitle}
               </h1>
 
               {/* Price */}
               <p className="text-2xl font-bold mt-2" style={{ color: accentColor }}>
                 {listing.price.toLocaleString()}{" "}
-                <span className="text-sm text-white/30">{t("common.egp")}</span>
+                <span className="text-sm text-[#666]">{t("common.egp")}</span>
               </p>
 
               {/* Meta row */}
-              <div className="flex items-center gap-3 mt-3 text-xs text-white/40">
+              <div className="flex items-center gap-3 mt-3 text-xs text-[#666]">
                 <span className="flex items-center gap-1">
                   <MapPin size={11} />
                   {displayArea}
@@ -461,11 +456,11 @@ export default function ListingDetailPage() {
 
               {/* Owner controls inline */}
               {isOwner && (
-                <div className="mt-4 pt-4 border-t border-white/10">
+                <div className="mt-4 pt-4 border-t border-[#333]">
                   {listing.status === "ACTIVE" && !isSold && (
                     <div className="flex gap-2">
-                      <motion.button
-                        whileTap={{ scale: 0.97 }}
+                      <button
+                        
                         onClick={() => updateStatus("SOLD")}
                         disabled={actionLoading}
                         className="flex-1 flex items-center justify-center gap-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 py-2.5 text-xs font-semibold text-amber-400 transition-all hover:bg-amber-500/20 disabled:opacity-50"
@@ -476,12 +471,12 @@ export default function ListingDetailPage() {
                           <CheckCircle size={14} />
                         )}
                         {t("market.markSold")}
-                      </motion.button>
-                      <motion.button
-                        whileTap={{ scale: 0.97 }}
+                      </button>
+                      <button
+                        
                         onClick={() => updateStatus("REMOVED")}
                         disabled={actionLoading}
-                        className="flex items-center justify-center gap-1.5 rounded-full bg-white/5 border border-white/10 px-4 py-2.5 text-xs font-semibold text-white/40 transition-all hover:bg-white/10 disabled:opacity-50"
+                        className="flex items-center justify-center gap-1.5 rounded-sm bg-[#1a1a1a] border border-[#333] px-4 py-2.5 text-xs font-semibold text-[#666] transition-all hover:bg-[#222] disabled:opacity-50"
                       >
                         {actionLoading ? (
                           <Loader2 size={14} className="animate-spin" />
@@ -489,16 +484,16 @@ export default function ListingDetailPage() {
                           <Trash2 size={14} />
                         )}
                         {t("market.remove")}
-                      </motion.button>
+                      </button>
                     </div>
                   )}
 
                   {(isSold || isRemoved) && (
-                    <motion.button
-                      whileTap={{ scale: 0.97 }}
+                    <button
+                      
                       onClick={() => updateStatus("ACTIVE")}
                       disabled={actionLoading}
-                      className="flex items-center justify-center gap-1.5 w-full rounded-full bg-emerald-500/10 border border-emerald-500/30 py-2.5 text-xs font-semibold text-emerald-400 transition-all hover:bg-emerald-500/20 disabled:opacity-50"
+                      className="flex items-center justify-center gap-1.5 w-full rounded-sm bg-[#d4ff00]/10 border border-[#d4ff00]/20 py-2.5 text-xs font-semibold text-[#d4ff00] transition-all hover:bg-[#d4ff00]/20 disabled:opacity-50"
                     >
                       {actionLoading ? (
                         <Loader2 size={14} className="animate-spin" />
@@ -506,12 +501,12 @@ export default function ListingDetailPage() {
                         <RotateCcw size={14} />
                       )}
                       {t("market.relist")}
-                    </motion.button>
+                    </button>
                   )}
 
                   <Link
                     href="/market/mine"
-                    className="flex items-center justify-center gap-1.5 mt-2 py-1.5 text-xs text-white/30 hover:text-white/50 transition-colors"
+                    className="flex items-center justify-center gap-1.5 mt-2 py-1.5 text-xs text-[#666] hover:text-[#999] transition-colors"
                   >
                     <ShoppingBag size={12} />
                     {t("market.viewMyListings")}
@@ -522,34 +517,34 @@ export default function ListingDetailPage() {
 
             {/* ─── Description ─── */}
             {displayDesc && (
-              <div className="mx-4 mt-4 bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-5">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-white/30 mb-2.5">
+              <div className="mx-4 mt-4 bg-[#1a1a1a] border border-[#333] rounded-sm p-5">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[#666] mb-2.5">
                   {t("market.description")}
                 </h3>
-                <p className="text-sm text-white/60 leading-relaxed whitespace-pre-wrap">
+                <p className="text-sm text-[#999] leading-relaxed whitespace-pre-wrap">
                   {displayDesc}
                 </p>
               </div>
             )}
 
             {/* ─── Seller Card ─── */}
-            <div className="mx-4 mt-4 bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-5">
+            <div className="mx-4 mt-4 bg-[#1a1a1a] border border-[#333] rounded-sm p-5">
               <div className="flex items-center gap-3">
                 {/* Avatar with gradient */}
                 <div
                   className="w-12 h-12 rounded-full flex items-center justify-center text-base font-bold shrink-0"
                   style={{
                     background: `linear-gradient(135deg, ${accentColor}, ${accentColor}80)`,
-                    color: "#0a0f1a",
+                    color: "#0d0d0d",
                   }}
                 >
                   {listing.sellerName.charAt(0).toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-white/80">
+                  <p className="text-sm font-bold text-[#999]">
                     {listing.sellerName}
                   </p>
-                  <p className="text-xs text-white/40 flex items-center gap-1 mt-0.5">
+                  <p className="text-xs text-[#666] flex items-center gap-1 mt-0.5">
                     <MapPin size={10} />
                     {displayArea}
                   </p>
@@ -566,7 +561,7 @@ export default function ListingDetailPage() {
                     })}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/30 active:scale-[0.98]"
+                    className="flex items-center justify-center gap-2 w-full rounded-sm bg-[#d4ff00] text-[#0d0d0d] py-3 text-sm font-bold text-white transition-all active:scale-[0.98]"
                   >
                     <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current">
                       <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
@@ -576,7 +571,7 @@ export default function ListingDetailPage() {
                   </a>
                   <button
                     onClick={handleShare}
-                    className="flex items-center justify-center gap-2 w-full rounded-full border border-white/10 py-3 text-sm font-medium text-white/60 transition-all hover:bg-white/5 active:scale-[0.98]"
+                    className="flex items-center justify-center gap-2 w-full rounded-sm border border-[#333] py-3 text-sm font-medium text-[#999] transition-all hover:bg-[#1a1a1a] active:scale-[0.98]"
                   >
                     <Share2 size={14} />
                     {t("market.shareListing")}
@@ -588,7 +583,7 @@ export default function ListingDetailPage() {
             {/* ─── Related Items ─── */}
             {relatedItems.length > 0 && (
               <div className="mt-6 pb-4">
-                <h3 className="text-sm font-bold text-white/70 px-4 mb-3">
+                <h3 className="text-sm font-bold text-[#999] px-4 mb-3">
                   {t("market.moreInCategory", {
                     category: t(
                       (CATEGORY_KEYS[listing.category] ??
@@ -612,7 +607,7 @@ export default function ListingDetailPage() {
 
             {/* Bottom spacer */}
             <div className="h-8" />
-          </motion.div>
+          </div>
         )}
       </div>
     </MainLayout>

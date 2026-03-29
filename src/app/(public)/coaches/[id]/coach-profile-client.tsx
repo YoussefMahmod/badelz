@@ -10,7 +10,6 @@ import { CoachCard } from "@/components/cards/coach-card";
 import { useTranslation, useLocale } from "@/i18n";
 import { AREAS } from "@/lib/constants";
 import { buildCoachContactLink } from "@/lib/whatsapp";
-import { slideUp } from "@/lib/animations";
 import { useCoachHeart } from "@/hooks/use-coach-heart";
 
 interface CoachDetail {
@@ -89,7 +88,7 @@ export default function CoachProfileClient({ id }: { id: string }) {
           initial={{ opacity: 0, x: locale === "ar" ? 10 : -10 }}
           animate={{ opacity: 1, x: 0 }}
           onClick={() => router.back()}
-          className="flex items-center gap-1.5 text-white/60 hover:text-white mb-6 transition-colors"
+          className="flex items-center gap-1.5 text-[#999] hover:text-white mb-6 transition-colors"
         >
           <BackIcon size={18} />
           <span className="text-sm">{t("common.back")}</span>
@@ -98,10 +97,10 @@ export default function CoachProfileClient({ id }: { id: string }) {
         {/* Loading */}
         {loading && (
           <div className="flex flex-col items-center gap-6">
-            <div className="w-72 card-ratio rounded-2xl animate-pulse bg-white/5 border border-white/10" />
+            <div className="w-72 card-ratio rounded-sm animate-pulse bg-[#1a1a1a] border border-[#333]" />
             <div className="w-full space-y-4">
-              <div className="h-20 rounded-2xl dark-skeleton" />
-              <div className="h-12 rounded-2xl dark-skeleton" />
+              <div className="h-20 rounded-sm dark-skeleton" />
+              <div className="h-12 rounded-sm dark-skeleton" />
             </div>
           </div>
         )}
@@ -109,14 +108,14 @@ export default function CoachProfileClient({ id }: { id: string }) {
         {/* Error */}
         {error && !loading && (
           <div className="text-center py-16">
-            <div className="mb-4 flex h-16 w-16 mx-auto items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-white/40">
+            <div className="mb-4 flex h-16 w-16 mx-auto items-center justify-center rounded-sm bg-[#1a1a1a] border border-[#333] text-[#666]">
               <MapPin size={28} />
             </div>
             <h3 className="text-lg font-semibold text-white mb-1">{t("common.error")}</h3>
-            <p className="text-sm text-white/50 mb-6">{t("common.noResults")}</p>
+            <p className="text-sm text-[#999] mb-6">{t("common.noResults")}</p>
             <button
               onClick={() => router.push("/coaches")}
-              className="rounded-full bg-[#c8ff00] px-6 py-2.5 text-sm font-bold text-[#111827]"
+              className="rounded-sm bg-[#d4ff00] px-6 py-2.5 text-sm font-bold text-[#0d0d0d]"
             >
               {t("coach.directory")}
             </button>
@@ -152,9 +151,9 @@ function CoachProfileContent({
   return (
           <div className="flex flex-col items-center gap-6">
             {/* Large coach card */}
-            <motion.div {...slideUp}>
+            <div>
               <CoachCard coach={{ ...coach, heartCount }} size="lg" interactive />
-            </motion.div>
+            </div>
 
             {/* Bio section */}
             {coach.bio && (
@@ -162,12 +161,12 @@ function CoachProfileContent({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.15 }}
-                className="w-full glass-dark rounded-2xl p-5"
+                className="w-full bg-[#1a1a1a] border border-[#333] rounded-sm p-5"
               >
-                <h3 className="text-sm font-semibold text-white/40 uppercase tracking-wider mb-2">
+                <h3 className="text-sm font-semibold text-[#666] uppercase tracking-wider mb-2">
                   {t("coach.bio")}
                 </h3>
-                <p className="text-white/80 text-sm leading-relaxed whitespace-pre-wrap">
+                <p className="text-[#999] text-sm leading-relaxed whitespace-pre-wrap">
                   {coach.bio}
                 </p>
               </motion.div>
@@ -179,16 +178,16 @@ function CoachProfileContent({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="w-full glass-dark rounded-2xl p-5"
+                className="w-full bg-[#1a1a1a] border border-[#333] rounded-sm p-5"
               >
-                <h3 className="text-sm font-semibold text-white/40 uppercase tracking-wider mb-3">
+                <h3 className="text-sm font-semibold text-[#666] uppercase tracking-wider mb-3">
                   {t("coach.areas")}
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {coach.areas.map((area) => (
                     <span
                       key={area}
-                      className="inline-flex items-center gap-1 rounded-full bg-[#c8ff00]/10 border border-[#c8ff00]/20 px-3 py-1.5 text-xs font-medium text-[#c8ff00]"
+                      className="inline-flex items-center gap-1 rounded-sm bg-[#d4ff00]/10 border border-[#d4ff00]/20 px-3 py-1.5 text-xs font-medium text-[#d4ff00]"
                     >
                       <MapPin size={10} />
                       {getAreaLabel(area)}
@@ -204,12 +203,12 @@ function CoachProfileContent({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.25 }}
-                className="w-full glass-dark rounded-2xl p-5"
+                className="w-full bg-[#1a1a1a] border border-[#333] rounded-sm p-5"
               >
-                <h3 className="text-sm font-semibold text-white/40 uppercase tracking-wider mb-2">
+                <h3 className="text-sm font-semibold text-[#666] uppercase tracking-wider mb-2">
                   {t("coach.experience")}
                 </h3>
-                <p className="text-white/80 text-sm" dir="auto">{coach.experience}</p>
+                <p className="text-[#999] text-sm" dir="auto">{coach.experience}</p>
               </motion.div>
             )}
 
@@ -233,7 +232,7 @@ function CoachProfileContent({
                   fetch(`/api/coaches/${coachId}/whatsapp-click`, { method: "POST" }).catch(() => {});
                 }}
                 data-testid="coach-whatsapp-cta"
-                className="flex items-center justify-center gap-2 w-full rounded-full bg-green-500 py-4 text-base font-bold text-white shadow-lg shadow-green-500/20 transition-all hover:bg-green-600 active:scale-[0.98]"
+                className="flex items-center justify-center gap-2 w-full rounded-sm bg-green-500 py-4 text-base font-bold text-white  transition-all hover:bg-green-600 active:scale-[0.98]"
               >
                 <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current">
                   <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
@@ -250,7 +249,7 @@ function CoachProfileContent({
                 className={`flex items-center justify-center gap-2 w-full rounded-full py-3.5 text-sm font-semibold transition-all active:scale-[0.98] ${
                   isHearted
                     ? "bg-rose-500/15 border border-rose-500/30 text-rose-400"
-                    : "border border-white/10 text-white/70 hover:bg-white/5 hover:text-white"
+                    : "border border-[#333] text-[#999] hover:bg-[#1a1a1a] hover:text-white"
                 }`}
               >
                 <Heart size={16} className={isHearted ? "fill-rose-400" : ""} />
@@ -263,7 +262,7 @@ function CoachProfileContent({
               {/* Share button */}
               <button
                 onClick={handleShare}
-                className="flex items-center justify-center gap-2 w-full rounded-full border border-white/10 py-3.5 text-sm font-semibold text-white/70 transition-all hover:bg-white/5 hover:text-white active:scale-[0.98]"
+                className="flex items-center justify-center gap-2 w-full rounded-sm border border-[#333] py-3.5 text-sm font-semibold text-[#999] transition-all hover:bg-[#1a1a1a] hover:text-white active:scale-[0.98]"
               >
                 <Share2 size={16} />
                 {t("landing.share")}

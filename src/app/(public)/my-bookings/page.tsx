@@ -18,7 +18,6 @@ import { EmptyState } from "@/components/empty-state";
 import { AuthNudge } from "@/components/auth-nudge";
 import { useTranslation, useLocale } from "@/i18n";
 import { formatDate, formatTime, formatPrice } from "@/lib/format";
-import { staggerContainer, staggerItem } from "@/lib/animations";
 
 interface Booking {
   id: string;
@@ -33,11 +32,11 @@ interface Booking {
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  CONFIRMED: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+  CONFIRMED: "bg-[#d4ff00]/10 text-[#d4ff00] border-emerald-500/20",
   PENDING: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
   CANCELLED: "bg-red-500/10 text-red-400 border-red-500/20",
   COMPLETED: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-  NO_SHOW: "bg-white/5 text-white/30 border-white/10",
+  NO_SHOW: "bg-[#1a1a1a] text-[#666] border-[#333]",
 };
 
 export default function MyBookingsPage() {
@@ -118,14 +117,14 @@ export default function MyBookingsPage() {
         >
           <button
             onClick={() => router.back()}
-            className="flex h-10 w-10 items-center justify-center rounded-full glass-dark text-white/70 hover:text-white transition-colors cursor-pointer"
+            className="flex h-10 w-10 items-center justify-center rounded-full glass-dark text-[#999] hover:text-white transition-colors cursor-pointer"
             aria-label={t("common.back")}
           >
             <ArrowRight size={18} className={dir === "ltr" ? "rotate-180" : ""} />
           </button>
           <div>
-            <h1 className="text-xl font-bold text-white/90">{t("myBookings.title")}</h1>
-            <p className="text-xs text-white/40">{t("myBookings.enterPhone")}</p>
+            <h1 className="text-xl font-bold text-white">{t("myBookings.title")}</h1>
+            <p className="text-xs text-[#666]">{t("myBookings.enterPhone")}</p>
           </div>
         </motion.div>
 
@@ -142,13 +141,13 @@ export default function MyBookingsPage() {
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder={t("myBookings.phonePlaceholder")}
-            className="flex-1 rounded-xl glass-dark px-4 py-3 text-sm text-white/90 placeholder-white/30 border border-white/10 focus:border-[#c8ff00]/50 focus:outline-none transition-colors"
+            className="flex-1 rounded-xl glass-dark px-4 py-3 text-sm text-white placeholder-white/30 border border-[#333] focus:border-[#d4ff00] focus:outline-none transition-colors"
             dir="ltr"
           />
           <button
             type="submit"
             disabled={!/^01[0125]\d{8}$/.test(phone) || loading}
-            className="flex items-center justify-center rounded-xl bg-[#c8ff00] px-5 py-3 text-sm font-bold text-[#0a0f1a] disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
+            className="flex items-center justify-center rounded-xl bg-[#d4ff00] px-5 py-3 text-sm font-bold text-[#0d0d0d] disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
           >
             {loading ? (
               <Loader2 size={18} className="animate-spin" />
@@ -178,7 +177,7 @@ export default function MyBookingsPage() {
               exit={{ opacity: 0 }}
               className="flex items-center justify-center py-12"
             >
-              <Loader2 size={24} className="animate-spin text-[#c8ff00]" />
+              <Loader2 size={24} className="animate-spin text-[#d4ff00]" />
             </motion.div>
           )}
 
@@ -202,18 +201,16 @@ export default function MyBookingsPage() {
           )}
 
           {!loading && bookings.length > 0 && (
-            <motion.div
+            <div
               key="results"
-              variants={staggerContainer}
-              initial="initial"
-              animate="animate"
+
               className="space-y-3"
             >
               {bookings.map((booking) => (
-                <motion.div key={booking.id} variants={staggerItem}>
+                <div key={booking.id}>
                   <Link
                     href={`/booking-confirmed/${booking.id}`}
-                    className="block glass-dark rounded-2xl p-4 border border-white/5 hover:border-white/10 transition-colors"
+                    className="block bg-[#1a1a1a] border border-[#333] rounded-sm p-4 border border-[#222] hover:border-[#333] transition-colors"
                   >
                     {/* Status + code */}
                     <div className="flex items-center justify-between mb-3">
@@ -224,7 +221,7 @@ export default function MyBookingsPage() {
                       >
                         {getStatusLabel(booking.status)}
                       </span>
-                      <span className="flex items-center gap-1 text-xs text-white/40 font-mono">
+                      <span className="flex items-center gap-1 text-xs text-[#666] font-mono">
                         <TicketCheck size={12} />
                         {booking.confirmationCode}
                       </span>
@@ -232,14 +229,14 @@ export default function MyBookingsPage() {
 
                     {/* Venue + court */}
                     <div className="flex items-start gap-2 mb-2">
-                      <MapPin size={14} className="text-[#c8ff00] mt-0.5 shrink-0" />
-                      <p className="text-sm font-semibold text-white/90">
+                      <MapPin size={14} className="text-[#d4ff00] mt-0.5 shrink-0" />
+                      <p className="text-sm font-semibold text-white">
                         {getName(booking.venue)} — {getName(booking.court)}
                       </p>
                     </div>
 
                     {/* Date + time */}
-                    <div className="flex items-center gap-4 text-xs text-white/50">
+                    <div className="flex items-center gap-4 text-xs text-[#999]">
                       <span className="flex items-center gap-1">
                         <CalendarDays size={14} />
                         {formatDate(booking.date, locale === "ar" ? "ar-EG" : "en-US")}
@@ -252,14 +249,14 @@ export default function MyBookingsPage() {
 
                     {/* Price */}
                     <div className="mt-2 text-end">
-                      <span className="text-sm font-bold text-[#c8ff00]">
+                      <span className="text-sm font-bold text-[#d4ff00]">
                         {formatPrice(booking.totalPrice)}
                       </span>
                     </div>
                   </Link>
-                </motion.div>
+                </div>
               ))}
-            </motion.div>
+            </div>
           )}
         </AnimatePresence>
       </div>

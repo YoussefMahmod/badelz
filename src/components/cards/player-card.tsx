@@ -66,6 +66,7 @@ const AVATAR_GLOW: Partial<Record<PlayerTier, React.CSSProperties>> = {
 /* Avatar border width per tier */
 const AVATAR_BORDER_WIDTH: Record<PlayerTier, number> = {
   BRONZE: 2,
+  SILVER: 2,
   GOLD: 2,
   EMERALD: 3,
   DIAMOND: 3,
@@ -120,7 +121,7 @@ function Avatar({
       >
         <div
           className={`relative ${AVATAR_CLS[size]} rounded-full flex items-center justify-center font-bold overflow-hidden`}
-          style={{ backgroundColor: "#0a0f1a", color }}
+          style={{ backgroundColor: "#0d0d0d", color }}
         >
           {avatarContent}
         </div>

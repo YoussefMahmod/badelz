@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Badelz Card Design Options</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: #0a0f1a;
+    color: white;
+    padding: 24px;
+    min-height: 100vh;
+  }
+
+  .option-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #c8ff00;
+    margin: 40px 0 8px;
+    text-align: center;
+    direction: ltr;
+  }
+  .option-subtitle {
+    font-size: 13px;
+    color: rgba(255,255,255,0.4);
+    text-align: center;
+    margin-bottom: 20px;
+    direction: ltr;
+  }
+  .divider {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    margin: 40px 0;
+  }
+
+  /* Section header */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding: 0 4px;
+  }
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .section-link {
+    font-size: 11px;
+    color: #c8ff00;
+    text-decoration: none;
+    direction: ltr;
+  }
+
+  /* Card scroll container */
+  .card-scroll {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 4px 0 12px;
+    scroll-snap-type: x mandatory;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .card-scroll::-webkit-scrollbar { display: none; }
+
+  /* ======== OPTION A ======== */
+  .card-a {
+    flex-shrink: 0;
+    width: 112px;
+    height: 156px;
+    border-radius: 16px;
+    border: 2px solid;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    gap: 6px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    scroll-snap-align: start;
+  }
+  .card-a:hover {
+    transform: translateY(-4px);
+  }
+
+  /* ======== OPTION B ======== */
+  .card-b {
+    flex-shrink: 0;
+    width: 112px;
+    height: 156px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    gap: 5px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    position: relative;
+    overflow: hidden;
+    scroll-snap-align: start;
+  }
+  .card-b:hover { transform: translateY(-4px); }
+
+  /* Shimmer effect for gold+ */
+  .card-b .shimmer {
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .card-b .shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.08) 38%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0.08) 62%, transparent 70%);
+    background-size: 200% 100%;
+    animation: shimmer 2.5s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    0%, 100% { background-position: 200% 0; }
+    50% { background-position: -200% 0; }
+  }
+
+  /* Ice sparkle for diamond */
+  .card-b .ice-sparkle {
+    position: absolute;
+    inset: -6px;
+    border-radius: 16px;
+    pointer-events: none;
+    z-index: 3;
+    background-image:
+      radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,0.8), transparent),
+      radial-gradient(2px 2px at 25% 75%, rgba(185,242,255,0.8), transparent),
+      radial-gradient(1.5px 1.5px at 40% 10%, rgba(255,255,255,0.7), transparent),
+      radial-gradient(2px 2px at 70% 30%, rgba(255,255,255,0.8), transparent),
+      radial-gradient(1.5px 1.5px at 85% 60%, rgba(185,242,255,0.6), transparent);
+    animation: sparkle 2.5s ease-in-out infinite;
+  }
+  @keyframes sparkle {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+  }
+
+  /* Ember float for master */
+  .card-b .ember {
+    position: absolute;
+    inset: -6px;
+    border-radius: 16px;
+    pointer-events: none;
+    z-index: 3;
+    background-image:
+      radial-gradient(2px 2px at 15% 80%, rgba(255,70,85,0.8), transparent),
+      radial-gradient(2px 2px at 30% 90%, rgba(255,140,50,0.7), transparent),
+      radial-gradient(1.5px 1.5px at 50% 85%, rgba(255,70,85,0.6), transparent),
+      radial-gradient(2px 2px at 70% 75%, rgba(255,140,50,0.7), transparent),
+      radial-gradient(2px 2px at 85% 88%, rgba(255,70,85,0.8), transparent);
+    animation: ember-float 2s ease-in-out infinite;
+  }
+  @keyframes ember-float {
+    0%, 100% { transform: translateY(0); opacity: 0.6; }
+    50% { transform: translateY(-4px); opacity: 1; }
+  }
+
+  /* Aurora for grandmaster */
+  .card-b-gm {
+    position: relative;
+  }
+  .card-b-gm .aurora-ring {
+    position: absolute;
+    inset: -4px;
+    border-radius: 20px;
+    background: conic-gradient(from 0deg, #c8ff00, #00d4ff, #ff4655, #ffd700, #c8ff00);
+    animation: aurora-rotate 3s linear infinite;
+    z-index: -1;
+  }
+  @keyframes aurora-rotate {
+    to { transform: rotate(360deg); }
+  }
+  .card-b-gm .aurora-mask {
+    position: absolute;
+    inset: 1px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #0a0f1a, #120a20);
+    z-index: 0;
+  }
+
+  /* ======== OPTION C ======== */
+  .card-c {
+    flex-shrink: 0;
+    width: 112px;
+    height: 156px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    gap: 5px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+    scroll-snap-align: start;
+  }
+  .card-c:hover { transform: translateY(-4px); }
+  .card-c .top-stripe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: 16px 16px 0 0;
+  }
+
+  /* ======== Shared ======== */
+  .avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 13px;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  /* Sparkle dots around avatar */
+  .avatar-sparkle {
+    position: absolute;
+    width: 54px;
+    height: 54px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .avatar-sparkle .dot {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    animation: sparkle-twinkle 2s ease-in-out infinite;
+  }
+  @keyframes sparkle-twinkle {
+    0%, 100% { opacity: 0.3; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+
+  .name {
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.9);
+    text-align: center;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+  .tier-badge {
+    font-size: 8px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .price {
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .rank {
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .games {
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+  }
+
+  .rank-pill {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 8px;
+    z-index: 10;
+  }
+
+  /* Glow animation for GM avatar */
+  .avatar-gm-ring {
+    padding: 3px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, #c8ff00, #00d4ff, #ff4655, #ffd700, #c8ff00);
+    animation: aurora-rotate 3s linear infinite;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- OPTION A: Tier-Matched Accent Borders      -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="option-title">Option A: Tier-Matched Accent Borders</div>
+<div class="option-subtitle">Same CardShell, tier-specific border color + glow. Minimal change.</div>
+
+<!-- Coaches -->
+<div class="section-header">
+  <div class="section-title">
+    <span style="color: #c084fc;">&#127891;</span>
+    مدربين جدد
+  </div>
+  <a class="section-link" href="#">عرض الكل &nearr;</a>
+</div>
+<div class="card-scroll">
+  <!-- PRO coach - lime -->
+  <div class="card-a" style="border-color: #c8ff00; box-shadow: 0 0 20px rgba(200,255,0,0.15);">
+    <div class="avatar" style="border: 2px solid rgba(200,255,0,0.5); background: rgba(200,255,0,0.08); color: #c8ff00;">CH</div>
+    <div class="name">كابتن حسام</div>
+    <div class="tier-badge" style="background: rgba(200,255,0,0.15); color: #c8ff00;">PRO</div>
+    <div class="price" style="color: #c8ff00;">500 ج.م</div>
+  </div>
+  <!-- POPULAR coach - purple -->
+  <div class="card-a" style="border-color: #c084fc; box-shadow: 0 0 20px rgba(192,132,252,0.15);">
+    <div class="avatar" style="border: 2px solid rgba(192,132,252,0.5); background: rgba(192,132,252,0.08); color: #c084fc;">CT</div>
+    <div class="name">كابتن طارق</div>
+    <div class="tier-badge" style="background: rgba(192,132,252,0.15); color: #c084fc;">POPULAR</div>
+    <div class="price" style="color: #c084fc;">300 ج.م</div>
+  </div>
+  <!-- RISING coach - blue -->
+  <div class="card-a" style="border-color: #60a5fa; box-shadow: 0 0 20px rgba(96,165,250,0.15);">
+    <div class="avatar" style="border: 2px solid rgba(96,165,250,0.5); background: rgba(96,165,250,0.08); color: #60a5fa;">CY</div>
+    <div class="name">كابتن ياسر</div>
+    <div class="tier-badge" style="background: rgba(96,165,250,0.15); color: #60a5fa;">RISING</div>
+    <div class="price" style="color: #60a5fa;">200 ج.م</div>
+  </div>
+  <!-- NEW coach - gray -->
+  <div class="card-a" style="border-color: rgba(255,255,255,0.2); box-shadow: 0 0 10px rgba(255,255,255,0.05);">
+    <div class="avatar" style="border: 2px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6);">CS</div>
+    <div class="name">كابتن سارة</div>
+    <div class="tier-badge" style="background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">NEW</div>
+    <div class="price" style="color: rgba(255,255,255,0.5);">250 ج.م</div>
+  </div>
+</div>
+
+<!-- Players -->
+<div class="section-header" style="margin-top: 16px;">
+  <div class="section-title">
+    <span style="color: #fbbf24;">&#127942;</span>
+    أفضل اللاعبين
+  </div>
+  <a class="section-link" href="#">عرض الكل &nearr;</a>
+</div>
+<div class="card-scroll">
+  <!-- #1 MASTER -->
+  <div class="card-a" style="border-color: #ff4655; box-shadow: 0 0 20px rgba(255,70,85,0.2);">
+    <div class="rank" style="color: rgba(255,70,85,0.3);">#1</div>
+    <div class="avatar" style="border: 3px solid #ff4655; background: rgba(255,70,85,0.1); color: #ff4655;">مح</div>
+    <div class="name">محمد إبراهيم</div>
+    <div class="tier-badge" style="background: rgba(255,70,85,0.2); color: #ff4655;">MASTER</div>
+    <div class="games">55 ماتشات</div>
+  </div>
+  <!-- #2 DIAMOND -->
+  <div class="card-a" style="border-color: #b9f2ff; box-shadow: 0 0 20px rgba(185,242,255,0.15);">
+    <div class="rank" style="color: rgba(185,242,255,0.3);">#2</div>
+    <div class="avatar" style="border: 3px solid #b9f2ff; background: rgba(185,242,255,0.08); color: #b9f2ff;">أح</div>
+    <div class="name">أحمد سعيد</div>
+    <div class="tier-badge" style="background: rgba(185,242,255,0.2); color: #b9f2ff;">DIAMOND</div>
+    <div class="games">30 ماتشات</div>
+  </div>
+  <!-- #3 GOLD -->
+  <div class="card-a" style="border-color: #ffd700; box-shadow: 0 0 20px rgba(255,215,0,0.15);">
+    <div class="rank" style="color: rgba(255,215,0,0.3);">#3</div>
+    <div class="avatar" style="border: 2px solid #ffd700; background: rgba(255,215,0,0.08); color: #ffd700;">عم</div>
+    <div class="name">عمر حسن</div>
+    <div class="tier-badge" style="background: rgba(255,215,0,0.2); color: #ffd700;">GOLD</div>
+    <div class="games">15 ماتشات</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- OPTION B: Full Tier Shell Effects           -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="option-title">Option B: Full Tier Shell Effects</div>
+<div class="option-subtitle">Full shimmer, sparkles, embers, aurora effects per tier. Maximum visual impact.</div>
+
+<!-- Coaches -->
+<div class="section-header">
+  <div class="section-title">
+    <span style="color: #c084fc;">&#127891;</span>
+    مدربين جدد
+  </div>
+  <a class="section-link" href="#">عرض الكل &nearr;</a>
+</div>
+<div class="card-scroll">
+  <!-- PRO → grandmaster (aurora) -->
+  <div class="card-b card-b-gm" style="width: 112px; height: 156px;">
+    <div class="aurora-ring"></div>
+    <div class="aurora-mask"></div>
+    <div style="position: relative; z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 5px; padding: 8px;">
+      <div class="avatar-gm-ring">
+        <div class="avatar" style="background: #0a0f1a; color: #c8ff00; width: 40px; height: 40px; font-size: 12px;">CH</div>
+      </div>
+      <div class="name">كابتن حسام</div>
+      <div class="tier-badge" style="background: rgba(200,255,0,0.15); color: #c8ff00;">PRO</div>
+      <div class="price" style="color: #c8ff00;">500 ج.م</div>
+    </div>
+  </div>
+  <!-- POPULAR → diamond (sparkles) -->
+  <div class="card-b" style="border: 4px solid #b9f2ff; background: linear-gradient(135deg, #0a0f1a, #0f1b2d); box-shadow: 0 0 30px rgba(185,242,255,0.2);">
+    <div class="ice-sparkle"></div>
+    <div class="shimmer"></div>
+    <div style="position: relative; z-index: 5; display: flex; flex-direction: column; align-items: center; gap: 5px;">
+      <div class="avatar" style="border: 2px solid #c084fc; background: rgba(192,132,252,0.08); color: #c084fc;">CT</div>
+      <div class="name">كابتن طارق</div>
+      <div class="tier-badge" style="background: rgba(192,132,252,0.15); color: #c084fc;">POPULAR</div>
+      <div class="price" style="color: #c084fc;">300 ج.م</div>
+    </div>
+  </div>
+  <!-- RISING → gold (shimmer) -->
+  <div class="card-b" style="border: 3px solid #ffd700; background: linear-gradient(135deg, #1a1a2e, #2a2040); box-shadow: 0 0 20px rgba(255,215,0,0.15);">
+    <div class="shimmer"></div>
+    <div style="position: relative; z-index: 5; display: flex; flex-direction: column; align-items: center; gap: 5px;">
+      <div class="avatar" style="border: 2px solid #60a5fa; background: rgba(96,165,250,0.08); color: #60a5fa;">CY</div>
+      <div class="name">كابتن ياسر</div>
+      <div class="tier-badge" style="background: rgba(96,165,250,0.15); color: #60a5fa;">RISING</div>
+      <div class="price" style="color: #60a5fa;">200 ج.م</div>
+    </div>
+  </div>
+  <!-- NEW → bronze (subtle) -->
+  <div class="card-b" style="border: 2px solid #cd7f32; background: linear-gradient(135deg, #1a1a2e, #16213e); box-shadow: 0 0 10px rgba(205,127,50,0.1);">
+    <div style="position: relative; z-index: 5; display: flex; flex-direction: column; align-items: center; gap: 5px;">
+      <div class="avatar" style="border: 2px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6);">CS</div>
+      <div class="name">كابتن سارة</div>
+      <div class="tier-badge" style="background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">NEW</div>
+      <div class="price" style="color: rgba(255,255,255,0.5);">250 ج.م</div>
+    </div>
+  </div>
+</div>
+
+<!-- Players -->
+<div class="section-header" style="margin-top: 16px;">
+  <div class="section-title">
+    <span style="color: #fbbf24;">&#127942;</span>
+    أفضل اللاعبين
+  </div>
+  <a class="section-link" href="#">عرض الكل &nearr;</a>
+</div>
+<div class="card-scroll">
+  <!-- #1 MASTER (flames) -->
+  <div class="card-b" style="border: 4px solid #ff4655; background: linear-gradient(135deg, #1a0a0e, #2a1015); box-shadow: 0 0 30px rgba(255,70,85,0.25);">
+    <div class="ember"></div>
+    <div style="position: relative; z-index: 5; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+      <div class="tier-badge" style="background: rgba(255,70,85,0.2); color: #ff4655; box-shadow: 0 0 10px rgba(255,70,85,0.3);">MASTER</div>
+      <div class="avatar" style="border: 4px solid #ff4655; background: rgba(255,70,85,0.1); color: #ff4655; box-shadow: 0 0 15px rgba(255,70,85,0.4);">مح</div>
+      <div class="name">محمد إبراهيم</div>
+      <div class="games">55 ماتشات</div>
+    </div>
+  </div>
+  <!-- #2 DIAMOND (ice) -->
+  <div class="card-b" style="border: 4px solid #b9f2ff; background: linear-gradient(135deg, #0a0f1a, #0f1b2d); box-shadow: 0 0 30px rgba(185,242,255,0.2);">
+    <div class="ice-sparkle"></div>
+    <div style="position: relative; z-index: 5; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+      <div class="tier-badge" style="background: rgba(185,242,255,0.2); color: #b9f2ff;">DIAMOND</div>
+      <div class="avatar" style="border: 3px solid #b9f2ff; background: rgba(185,242,255,0.08); color: #b9f2ff; box-shadow: 0 0 12px rgba(185,242,255,0.4);">أح</div>
+      <div class="name">أحمد سعيد</div>
+      <div class="games">30 ماتشات</div>
+    </div>
+  </div>
+  <!-- #3 GOLD (shimmer) -->
+  <div class="card-b" style="border: 3px solid #ffd700; background: linear-gradient(135deg, #1a1a2e, #2a2040); box-shadow: 0 0 20px rgba(255,215,0,0.15);">
+    <div class="shimmer"></div>
+    <div style="position: relative; z-index: 5; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+      <div class="tier-badge" style="background: rgba(255,215,0,0.2); color: #ffd700;">GOLD</div>
+      <div class="avatar" style="border: 2px solid #ffd700; background: rgba(255,215,0,0.08); color: #ffd700; box-shadow: 0 0 8px rgba(255,215,0,0.3);">عم</div>
+      <div class="name">عمر حسن</div>
+      <div class="games">15 ماتشات</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- OPTION C: Glass + Tier Top-Stripe          -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="option-title">Option C: Glass Cards + Tier Top-Stripe</div>
+<div class="option-subtitle">Modern glassmorphism with colored accent stripe. Lightest, cleanest.</div>
+
+<!-- Coaches -->
+<div class="section-header">
+  <div class="section-title">
+    <span style="color: #c084fc;">&#127891;</span>
+    مدربين جدد
+  </div>
+  <a class="section-link" href="#">عرض الكل &nearr;</a>
+</div>
+<div class="card-scroll">
+  <!-- PRO - lime stripe -->
+  <div class="card-c" style="box-shadow: 0 0 20px rgba(200,255,0,0.1);">
+    <div class="top-stripe" style="background: linear-gradient(90deg, #c8ff00, rgba(200,255,0,0.3));"></div>
+    <div class="tier-badge" style="background: rgba(200,255,0,0.15); color: #c8ff00; position: absolute; top: 10px; right: 8px; font-size: 7px;">PRO</div>
+    <div class="avatar" style="border: 2px solid rgba(200,255,0,0.5); background: rgba(200,255,0,0.08); color: #c8ff00;">CH</div>
+    <div class="name">كابتن حسام</div>
+    <div class="price" style="color: #c8ff00;">500 ج.م</div>
+  </div>
+  <!-- POPULAR - purple stripe -->
+  <div class="card-c" style="box-shadow: 0 0 20px rgba(192,132,252,0.1);">
+    <div class="top-stripe" style="background: linear-gradient(90deg, #c084fc, rgba(192,132,252,0.3));"></div>
+    <div class="tier-badge" style="background: rgba(192,132,252,0.15); color: #c084fc; position: absolute; top: 10px; right: 8px; font-size: 7px;">POPULAR</div>
+    <div class="avatar" style="border: 2px solid rgba(192,132,252,0.5); background: rgba(192,132,252,0.08); color: #c084fc;">CT</div>
+    <div class="name">كابتن طارق</div>
+    <div class="price" style="color: #c084fc;">300 ج.م</div>
+  </div>
+  <!-- RISING - blue stripe -->
+  <div class="card-c" style="box-shadow: 0 0 15px rgba(96,165,250,0.1);">
+    <div class="top-stripe" style="background: linear-gradient(90deg, #60a5fa, rgba(96,165,250,0.3));"></div>
+    <div class="tier-badge" style="background: rgba(96,165,250,0.15); color: #60a5fa; position: absolute; top: 10px; right: 8px; font-size: 7px;">RISING</div>
+    <div class="avatar" style="border: 2px solid rgba(96,165,250,0.5); background: rgba(96,165,250,0.08); color: #60a5fa;">CY</div>
+    <div class="name">كابتن ياسر</div>
+    <div class="price" style="color: #60a5fa;">200 ج.م</div>
+  </div>
+  <!-- NEW - gray stripe -->
+  <div class="card-c" style="box-shadow: 0 0 10px rgba(255,255,255,0.03);">
+    <div class="top-stripe" style="background: linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.05));"></div>
+    <div class="tier-badge" style="background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.4); position: absolute; top: 10px; right: 8px; font-size: 7px;">NEW</div>
+    <div class="avatar" style="border: 2px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.5);">CS</div>
+    <div class="name">كابتن سارة</div>
+    <div class="price" style="color: rgba(255,255,255,0.4);">250 ج.م</div>
+  </div>
+</div>
+
+<!-- Players -->
+<div class="section-header" style="margin-top: 16px;">
+  <div class="section-title">
+    <span style="color: #fbbf24;">&#127942;</span>
+    أفضل اللاعبين
+  </div>
+  <a class="section-link" href="#">عرض الكل &nearr;</a>
+</div>
+<div class="card-scroll">
+  <!-- #1 MASTER - red stripe -->
+  <div class="card-c" style="box-shadow: 0 0 20px rgba(255,70,85,0.12);">
+    <div class="top-stripe" style="background: linear-gradient(90deg, #ff4655, rgba(255,70,85,0.3));"></div>
+    <div class="rank-pill" style="background: rgba(255,70,85,0.2); color: #ff4655;">#1</div>
+    <div class="avatar" style="border: 3px solid #ff4655; background: rgba(255,70,85,0.1); color: #ff4655; box-shadow: 0 0 12px rgba(255,70,85,0.3);">مح</div>
+    <div class="name">محمد إبراهيم</div>
+    <div class="tier-badge" style="background: rgba(255,70,85,0.2); color: #ff4655;">MASTER</div>
+    <div class="games">55 ماتشات</div>
+  </div>
+  <!-- #2 DIAMOND - cyan stripe -->
+  <div class="card-c" style="box-shadow: 0 0 20px rgba(185,242,255,0.1);">
+    <div class="top-stripe" style="background: linear-gradient(90deg, #b9f2ff, rgba(185,242,255,0.3));"></div>
+    <div class="rank-pill" style="background: rgba(185,242,255,0.2); color: #b9f2ff;">#2</div>
+    <div class="avatar" style="border: 3px solid #b9f2ff; background: rgba(185,242,255,0.08); color: #b9f2ff;">أح</div>
+    <div class="name">أحمد سعيد</div>
+    <div class="tier-badge" style="background: rgba(185,242,255,0.2); color: #b9f2ff;">DIAMOND</div>
+    <div class="games">30 ماتشات</div>
+  </div>
+  <!-- #3 GOLD - gold stripe -->
+  <div class="card-c" style="box-shadow: 0 0 15px rgba(255,215,0,0.1);">
+    <div class="top-stripe" style="background: linear-gradient(90deg, #ffd700, rgba(255,215,0,0.3));"></div>
+    <div class="rank-pill" style="background: rgba(255,215,0,0.2); color: #ffd700;">#3</div>
+    <div class="avatar" style="border: 2px solid #ffd700; background: rgba(255,215,0,0.08); color: #ffd700;">عم</div>
+    <div class="name">عمر حسن</div>
+    <div class="tier-badge" style="background: rgba(255,215,0,0.2); color: #ffd700;">GOLD</div>
+    <div class="games">15 ماتشات</div>
+  </div>
+</div>
+
+<div style="height: 60px;"></div>
+
+</body>
+</html>

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cairo, Barlow_Condensed } from "next/font/google";
+import { Cairo, Lalezar, Anton } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 
@@ -7,14 +7,21 @@ const cairo = Cairo({
   subsets: ["arabic", "latin"],
   variable: "--font-cairo",
   display: "swap",
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700"],
 });
 
-const barlowCondensed = Barlow_Condensed({
-  subsets: ["latin"],
-  variable: "--font-display",
+const lalezar = Lalezar({
+  subsets: ["arabic", "latin"],
+  variable: "--font-display-ar",
   display: "swap",
-  weight: ["600", "700", "800"],
+  weight: ["400"],
+});
+
+const anton = Anton({
+  subsets: ["latin"],
+  variable: "--font-display-en",
+  display: "swap",
+  weight: ["400"],
 });
 
 export const metadata: Metadata = {
@@ -43,7 +50,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0a0f1a",
+  themeColor: "#0d0d0d",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -56,8 +63,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl" className={`${cairo.variable} ${barlowCondensed.variable} antialiased`}>
-      <body className="min-h-screen bg-[#0a0f1a] text-white/90 font-sans selection:bg-lime-300/40">
+    <html lang="ar" dir="rtl" className={`${cairo.variable} ${lalezar.variable} ${anton.variable} antialiased`}>
+      <body className="min-h-screen bg-[#0d0d0d] text-white font-sans selection:bg-[#d4ff00]/30">
         <Providers>{children}</Providers>
       </body>
     </html>

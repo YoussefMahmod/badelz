@@ -15,7 +15,7 @@ export function ownerBookingNotificationTemplate(
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
-<body style="margin:0;padding:0;background:#0a0f1a;font-family:Arial,Tahoma,sans-serif;">
+<body style="margin:0;padding:0;background:#0d0d0d;font-family:Arial,Tahoma,sans-serif;">
   <div style="max-width:480px;margin:0 auto;padding:24px 16px;">
     <!-- Header -->
     <div style="text-align:center;margin-bottom:24px;">
@@ -88,7 +88,7 @@ export function passwordResetTemplate(params: {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
-<body style="margin:0;padding:0;background:#0a0f1a;font-family:Arial,Tahoma,sans-serif;">
+<body style="margin:0;padding:0;background:#0d0d0d;font-family:Arial,Tahoma,sans-serif;">
   <div style="max-width:480px;margin:0 auto;padding:24px 16px;">
     <div style="text-align:center;margin-bottom:24px;">
       <img src="https://badelz.app/icons/icon-192.png" alt="Badelz" width="56" height="56" style="border-radius:12px;margin-bottom:8px;" />

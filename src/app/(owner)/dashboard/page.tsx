@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/i18n";
-import { staggerContainer, staggerItem } from "@/lib/animations";
 import { formatPrice, formatTime, formatDateShort } from "@/lib/format";
 import { LoadingSpinner } from "@/components/loading-spinner";
 import { EmptyState } from "@/components/empty-state";
@@ -86,7 +85,7 @@ export default function DashboardPage() {
       label: t("owner.todayBookings"),
       value: data?.todayBookings ?? 0,
       color: "text-blue-400",
-      bg: "bg-[#c8ff00]",
+      bg: "bg-[#d4ff00]",
     },
     {
       icon: Calendar,
@@ -121,36 +120,30 @@ export default function DashboardPage() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-6"
       >
-        <h1 className="text-xl font-bold text-white/90">
+        <h1 className="text-xl font-bold text-white">
           {t("owner.welcome", { name: user?.name || "" })}
         </h1>
-        <p className="text-sm text-white/40">{t("owner.dashboard")}</p>
+        <p className="text-sm text-[#666]">{t("owner.dashboard")}</p>
       </motion.div>
 
       {/* Stats grid */}
-      <motion.div
-        variants={staggerContainer}
-        initial="initial"
-        animate="animate"
-        className="grid grid-cols-2 gap-3 mb-8"
-      >
+      <div className="grid grid-cols-2 gap-3 mb-8">
         {stats.map((stat, idx) => {
           const Icon = stat.icon;
           return (
-            <motion.div
+            <div
               key={stat.label}
-              variants={staggerItem}
-              className="bg-white/5 border border-white/10 rounded-2xl p-4"
+              className="bg-[#1a1a1a] border border-[#333] rounded-sm p-4"
             >
               <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${stat.bg} mb-3`}>
-                <Icon size={18} className={idx === 0 ? "text-[#c8ff00]" : stat.color} />
+                <Icon size={18} className={idx === 0 ? "text-[#d4ff00]" : stat.color} />
               </div>
-              <p className="text-2xl font-bold text-white/90">{stat.value}</p>
-              <p className="text-xs text-white/40 mt-0.5">{stat.label}</p>
-            </motion.div>
+              <p className="text-2xl font-bold text-white">{stat.value}</p>
+              <p className="text-xs text-[#666] mt-0.5">{stat.label}</p>
+            </div>
           );
         })}
-      </motion.div>
+      </div>
 
       {/* Upcoming bookings */}
       <motion.div
@@ -158,7 +151,7 @@ export default function DashboardPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
       >
-        <h2 className="text-base font-bold text-white/70 mb-3">
+        <h2 className="text-base font-bold text-[#999] mb-3">
           {t("owner.upcomingBookings")}
         </h2>
 
@@ -175,24 +168,24 @@ export default function DashboardPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 + idx * 0.05 }}
-                className="bg-white/5 border border-white/10 rounded-xl p-3 flex items-center gap-3"
+                className="bg-[#1a1a1a] border border-[#333] rounded-xl p-3 flex items-center gap-3"
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#c8ff00]/20">
-                  <User size={18} className="text-[#c8ff00]" />
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#d4ff00]/20">
+                  <User size={18} className="text-[#d4ff00]" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-white/90 truncate">
+                  <p className="text-sm font-medium text-white truncate">
                     {booking.playerName}
                   </p>
-                  <p className="text-xs text-white/40">
+                  <p className="text-xs text-[#666]">
                     {booking.court.name}
                   </p>
                 </div>
                 <div className="text-end shrink-0">
-                  <p className="text-xs text-white/50">
+                  <p className="text-xs text-[#999]">
                     {formatDateShort(booking.date)}
                   </p>
-                  <p className="text-xs text-white/90 font-medium flex items-center gap-1">
+                  <p className="text-xs text-white font-medium flex items-center gap-1">
                     <Clock size={10} />
                     {formatTime(booking.startTime)}
                   </p>

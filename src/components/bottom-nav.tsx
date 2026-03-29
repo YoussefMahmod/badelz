@@ -2,7 +2,6 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import {
   Sparkles,
   Search,
@@ -45,7 +44,6 @@ export function BottomNav({ variant = "public" }: { variant?: "public" | "owner"
 
   useEffect(() => { setMounted(true); }, []);
 
-  // Only auto-detect after mount to avoid hydration mismatch
   const effectiveVariant = mounted && variant === "public" && user?.role && !isLoading
     ? ROLE_TO_VARIANT[user.role] ?? "public"
     : variant;
@@ -238,39 +236,38 @@ export function BottomNav({ variant = "public" }: { variant?: "public" | "owner"
 
   return (
     <nav
-      className="fixed bottom-0 inset-x-0 z-50 bg-[#0a0f1a]/90 backdrop-blur-xl border-t border-white/5 safe-bottom"
+      className="fixed bottom-0 inset-x-0 z-50 bg-[#0d0d0d] border-t-2 border-[#333] safe-bottom"
       role="navigation"
     >
-      <div className="mx-auto flex max-w-lg items-center justify-around px-2 py-2.5">
+      <div className="mx-auto flex max-w-lg items-center justify-around px-2 py-2">
         {tabs.map((tab) => {
           const active = isActive(tab.href);
           return (
             <Link
               key={tab.href}
               href={tab.href}
-              className={`relative flex flex-col items-center gap-1 min-h-[44px] justify-center transition-colors cursor-pointer ${tabs.length > 4 ? "px-1.5" : "px-3"}`}
+              className={`relative flex flex-col items-center gap-1 min-h-[44px] justify-center transition-colors cursor-pointer pt-2 ${tabs.length > 4 ? "px-1.5" : "px-3"}`}
               aria-current={active ? "page" : undefined}
               aria-label={t(tab.labelKey as Parameters<typeof t>[0])}
             >
+              {/* Active top bar indicator */}
+              {active && (
+                <span
+                  className={`absolute top-0 inset-x-1 h-[2px] ${effectiveVariant === "admin" ? "bg-indigo-400" : "bg-[#d4ff00]"}`}
+                />
+              )}
               <span
                 className={
                   active
-                    ? `flex items-center justify-center rounded-xl p-1.5 ${effectiveVariant === "admin" ? "text-indigo-400" : "text-[#c8ff00]"}`
-                    : "flex items-center justify-center p-1.5 text-white/30"
+                    ? `flex items-center justify-center p-1 ${effectiveVariant === "admin" ? "text-indigo-400" : "text-[#d4ff00]"}`
+                    : "flex items-center justify-center p-1 text-[#666]"
                 }
               >
                 {active ? tab.activeIcon : tab.icon}
               </span>
-              {active && (
-                <motion.div
-                  layoutId="nav-dot"
-                  className={`h-1.5 w-1.5 rounded-full ${effectiveVariant === "admin" ? "bg-indigo-400" : "bg-[#c8ff00]"}`}
-                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                />
-              )}
               <span
-                className={`text-xs font-medium leading-tight ${
-                  active ? (effectiveVariant === "admin" ? "text-indigo-400" : "text-[#c8ff00]") : "text-white/30"
+                className={`text-[10px] font-medium leading-tight ${
+                  active ? (effectiveVariant === "admin" ? "text-indigo-400" : "text-[#d4ff00]") : "text-[#666]"
                 }`}
               >
                 {t(tab.labelKey as Parameters<typeof t>[0])}

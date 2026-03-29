@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Badelz — Logo Concepts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800;900&family=Noto+Sans+Arabic:wght@300;400;500;600;700;800;900&family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+  :root {
+    --lime: #c8ff00;
+    --lime-dark: #a3d900;
+    --dark: #0a0f1a;
+    --dark-card: #111827;
+    --dark-elevated: #1a2035;
+    --white: #ffffff;
+    --white-50: rgba(255,255,255,0.5);
+    --white-70: rgba(255,255,255,0.7);
+    --white-10: rgba(255,255,255,0.1);
+    --white-05: rgba(255,255,255,0.05);
+    --emerald: #10b981;
+    --teal: #14b8a6;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--dark);
+    color: var(--white);
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ═══════════ HERO HEADER ═══════════ */
+  .hero {
+    text-align: center;
+    padding: 80px 24px 40px;
+    position: relative;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(200,255,0,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    padding: 6px 20px;
+    border: 1px solid var(--white-10);
+    border-radius: 100px;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--white-50);
+    margin-bottom: 32px;
+    backdrop-filter: blur(10px);
+    background: var(--white-05);
+  }
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 8vw, 96px);
+    letter-spacing: 6px;
+    line-height: 1;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, var(--white) 0%, var(--white-70) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero p {
+    font-size: 18px;
+    color: var(--white-50);
+    font-weight: 300;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* ═══════════ CONCEPTS GRID ═══════════ */
+  .concepts {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 24px 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+  }
+
+  .concept {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid var(--white-10);
+    background: var(--dark-card);
+    min-height: 600px;
+    position: relative;
+  }
+
+  .concept-number {
+    position: absolute;
+    top: 28px;
+    left: 32px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 4px;
+    color: var(--lime);
+    z-index: 10;
+    text-transform: uppercase;
+  }
+
+  /* ── Logo Display Area ── */
+  .logo-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .logo-display.dark-bg {
+    background: var(--dark);
+  }
+  .logo-display.lime-bg {
+    background: var(--lime);
+  }
+  .logo-display.gradient-bg {
+    background: linear-gradient(145deg, #0a0f1a 0%, #111827 50%, #1a2035 100%);
+  }
+
+  /* Grid pattern overlay */
+  .logo-display.dark-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .logo-wrapper {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ── Info Panel ── */
+  .concept-info {
+    padding: 60px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: var(--dark-elevated);
+    border-left: 1px solid var(--white-10);
+  }
+
+  .concept-info h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+    color: var(--white);
+  }
+
+  .concept-info .style-tag {
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--lime);
+    margin-bottom: 24px;
+    font-weight: 600;
+  }
+
+  .concept-info .description {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--white-70);
+    margin-bottom: 32px;
+    font-weight: 300;
+  }
+
+  .attributes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+  .attr {
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 1px solid var(--white-10);
+    color: var(--white-50);
+    background: var(--white-05);
+  }
+
+  /* ── Logo Variants Strip ── */
+  .variants-strip {
+    display: flex;
+    gap: 16px;
+    padding-top: 24px;
+    border-top: 1px solid var(--white-10);
+  }
+  .variant-box {
+    width: 80px;
+    height: 80px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--white-10);
+    position: relative;
+    overflow: hidden;
+  }
+  .variant-box.on-dark { background: var(--dark); }
+  .variant-box.on-white { background: var(--white); }
+  .variant-box.on-lime { background: var(--lime); }
+  .variant-box.on-emerald { background: linear-gradient(135deg, var(--emerald), var(--teal)); }
+  .variant-label {
+    position: absolute;
+    bottom: 4px;
+    font-size: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: 0.5;
+  }
+
+  /* ═══════════ RESPONSIVE ═══════════ */
+  @media (max-width: 900px) {
+    .concept {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+    .logo-display { min-height: 400px; }
+    .concept-info { border-left: none; border-top: 1px solid var(--white-10); padding: 40px 28px; }
+    .concept-number { top: 20px; left: 24px; }
+  }
+
+  /* ═══════════ ANIMATIONS ═══════════ */
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  @keyframes pulse-glow {
+    0%, 100% { filter: drop-shadow(0 0 20px rgba(200,255,0,0.2)); }
+    50% { filter: drop-shadow(0 0 40px rgba(200,255,0,0.4)); }
+  }
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .logo-wrapper { animation: float 6s ease-in-out infinite; }
+  .concept:nth-child(2) .logo-wrapper { animation-delay: -2s; }
+  .concept:nth-child(3) .logo-wrapper { animation-delay: -4s; }
+
+  /* ═══════════ FOOTER ═══════════ */
+  .footer {
+    text-align: center;
+    padding: 40px 24px 60px;
+    color: var(--white-50);
+    font-size: 13px;
+    letter-spacing: 2px;
+    border-top: 1px solid var(--white-10);
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- HERO -->
+<!-- ═══════════════════════════════════════════ -->
+<header class="hero">
+  <div class="hero-badge">Brand Identity</div>
+  <h1>BADELZ LOGOS</h1>
+  <p>Three distinctive concepts for Egypt's premier padel booking platform. Each designed for versatility across digital and physical touchpoints.</p>
+</header>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- CONCEPT 1 — THE RACKET GRID -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="concepts">
+
+<article class="concept">
+  <div class="concept-number">Concept 01</div>
+
+  <div class="logo-display dark-bg">
+    <div class="logo-wrapper">
+      <svg width="320" height="140" viewBox="0 0 320 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Padel Racket Face — Grid/Net abstracted as geometric mark -->
+        <g>
+          <!-- Racket head outline — rounded rectangle with grid -->
+          <rect x="16" y="14" width="88" height="112" rx="44" ry="44"
+                stroke="#c8ff00" stroke-width="3" fill="none"/>
+
+          <!-- Grid lines horizontal -->
+          <line x1="28" y1="38" x2="92" y2="38" stroke="#c8ff00" stroke-width="1.5" opacity="0.6"/>
+          <line x1="24" y1="54" x2="96" y2="54" stroke="#c8ff00" stroke-width="1.5" opacity="0.6"/>
+          <line x1="22" y1="70" x2="98" y2="70" stroke="#c8ff00" stroke-width="1.5" opacity="0.7"/>
+          <line x1="24" y1="86" x2="96" y2="86" stroke="#c8ff00" stroke-width="1.5" opacity="0.6"/>
+          <line x1="28" y1="102" x2="92" y2="102" stroke="#c8ff00" stroke-width="1.5" opacity="0.6"/>
+
+          <!-- Grid lines vertical -->
+          <line x1="44" y1="18" x2="44" y2="122" stroke="#c8ff00" stroke-width="1.5" opacity="0.6"/>
+          <line x1="60" y1="14" x2="60" y2="126" stroke="#c8ff00" stroke-width="1.5" opacity="0.7"/>
+          <line x1="76" y1="18" x2="76" y2="122" stroke="#c8ff00" stroke-width="1.5" opacity="0.6"/>
+
+          <!-- Ball — dynamic hit point -->
+          <circle cx="82" cy="28" r="8" fill="#c8ff00"/>
+          <!-- Motion trail -->
+          <circle cx="90" cy="22" r="4" fill="#c8ff00" opacity="0.3"/>
+          <circle cx="96" cy="18" r="2.5" fill="#c8ff00" opacity="0.15"/>
+        </g>
+
+        <!-- Wordmark: BADELZ -->
+        <text x="126" y="62" font-family="'Barlow Condensed', sans-serif" font-weight="800"
+              font-size="52" fill="#ffffff" letter-spacing="4">BADELZ</text>
+
+        <!-- Arabic: بادلز -->
+        <text x="126" y="100" font-family="'Cairo', 'Noto Sans Arabic', sans-serif" font-weight="700"
+              font-size="30" fill="#c8ff00" letter-spacing="2" direction="rtl">بادلز</text>
+
+        <!-- Tagline -->
+        <text x="127" y="122" font-family="'Outfit', sans-serif" font-weight="300"
+              font-size="11" fill="rgba(255,255,255,0.4)" letter-spacing="4" text-transform="uppercase">BOOK YOUR COURT</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="concept-info">
+    <h2>The Racket Grid</h2>
+    <div class="style-tag">Athletic Geometric</div>
+    <p class="description">
+      The padel racket face — the most iconic element of the sport — abstracted into a clean geometric mark. The perforated grid pattern instantly communicates "padel" to anyone who's held a racket. A dynamic ball with motion trails adds energy and movement. The combination mark pairs a bold condensed wordmark with Arabic calligraphy in the brand's electric lime.
+    </p>
+    <div class="attributes">
+      <span class="attr">Sporty</span>
+      <span class="attr">Recognizable</span>
+      <span class="attr">Scalable</span>
+      <span class="attr">Bilingual</span>
+    </div>
+    <div class="variants-strip">
+      <div class="variant-box on-dark">
+        <svg width="36" height="50" viewBox="0 0 88 112" fill="none">
+          <rect x="0" y="0" width="88" height="112" rx="44" ry="44" stroke="#c8ff00" stroke-width="4" fill="none"/>
+          <line x1="12" y1="28" x2="76" y2="28" stroke="#c8ff00" stroke-width="2" opacity="0.5"/>
+          <line x1="8" y1="44" x2="80" y2="44" stroke="#c8ff00" stroke-width="2" opacity="0.5"/>
+          <line x1="6" y1="60" x2="82" y2="60" stroke="#c8ff00" stroke-width="2" opacity="0.6"/>
+          <line x1="8" y1="76" x2="80" y2="76" stroke="#c8ff00" stroke-width="2" opacity="0.5"/>
+          <line x1="28" y1="4" x2="28" y2="108" stroke="#c8ff00" stroke-width="2" opacity="0.5"/>
+          <line x1="44" y1="0" x2="44" y2="112" stroke="#c8ff00" stroke-width="2" opacity="0.6"/>
+          <line x1="60" y1="4" x2="60" y2="108" stroke="#c8ff00" stroke-width="2" opacity="0.5"/>
+          <circle cx="68" cy="18" r="9" fill="#c8ff00"/>
+        </svg>
+        <span class="variant-label" style="color:#fff">dark</span>
+      </div>
+      <div class="variant-box on-white">
+        <svg width="36" height="50" viewBox="0 0 88 112" fill="none">
+          <rect x="0" y="0" width="88" height="112" rx="44" ry="44" stroke="#111827" stroke-width="4" fill="none"/>
+          <line x1="12" y1="28" x2="76" y2="28" stroke="#111827" stroke-width="2" opacity="0.3"/>
+          <line x1="8" y1="44" x2="80" y2="44" stroke="#111827" stroke-width="2" opacity="0.3"/>
+          <line x1="6" y1="60" x2="82" y2="60" stroke="#111827" stroke-width="2" opacity="0.4"/>
+          <line x1="8" y1="76" x2="80" y2="76" stroke="#111827" stroke-width="2" opacity="0.3"/>
+          <line x1="28" y1="4" x2="28" y2="108" stroke="#111827" stroke-width="2" opacity="0.3"/>
+          <line x1="44" y1="0" x2="44" y2="112" stroke="#111827" stroke-width="2" opacity="0.4"/>
+          <line x1="60" y1="4" x2="60" y2="108" stroke="#111827" stroke-width="2" opacity="0.3"/>
+          <circle cx="68" cy="18" r="9" fill="#111827"/>
+        </svg>
+        <span class="variant-label" style="color:#111">light</span>
+      </div>
+      <div class="variant-box on-lime">
+        <svg width="36" height="50" viewBox="0 0 88 112" fill="none">
+          <rect x="0" y="0" width="88" height="112" rx="44" ry="44" stroke="#111827" stroke-width="4" fill="none"/>
+          <line x1="12" y1="28" x2="76" y2="28" stroke="#111827" stroke-width="2" opacity="0.4"/>
+          <line x1="8" y1="44" x2="80" y2="44" stroke="#111827" stroke-width="2" opacity="0.4"/>
+          <line x1="6" y1="60" x2="82" y2="60" stroke="#111827" stroke-width="2" opacity="0.5"/>
+          <line x1="8" y1="76" x2="80" y2="76" stroke="#111827" stroke-width="2" opacity="0.4"/>
+          <line x1="28" y1="4" x2="28" y2="108" stroke="#111827" stroke-width="2" opacity="0.4"/>
+          <line x1="44" y1="0" x2="44" y2="112" stroke="#111827" stroke-width="2" opacity="0.5"/>
+          <line x1="60" y1="4" x2="60" y2="108" stroke="#111827" stroke-width="2" opacity="0.4"/>
+          <circle cx="68" cy="18" r="9" fill="#111827"/>
+        </svg>
+        <span class="variant-label" style="color:#111">brand</span>
+      </div>
+      <div class="variant-box on-emerald">
+        <svg width="36" height="50" viewBox="0 0 88 112" fill="none">
+          <rect x="0" y="0" width="88" height="112" rx="44" ry="44" stroke="#fff" stroke-width="4" fill="none"/>
+          <line x1="12" y1="28" x2="76" y2="28" stroke="#fff" stroke-width="2" opacity="0.4"/>
+          <line x1="8" y1="44" x2="80" y2="44" stroke="#fff" stroke-width="2" opacity="0.4"/>
+          <line x1="6" y1="60" x2="82" y2="60" stroke="#fff" stroke-width="2" opacity="0.5"/>
+          <line x1="8" y1="76" x2="80" y2="76" stroke="#fff" stroke-width="2" opacity="0.4"/>
+          <line x1="28" y1="4" x2="28" y2="108" stroke="#fff" stroke-width="2" opacity="0.4"/>
+          <line x1="44" y1="0" x2="44" y2="112" stroke="#fff" stroke-width="2" opacity="0.5"/>
+          <line x1="60" y1="4" x2="60" y2="108" stroke="#fff" stroke-width="2" opacity="0.4"/>
+          <circle cx="68" cy="18" r="9" fill="#fff"/>
+        </svg>
+        <span class="variant-label" style="color:#fff">alt</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- CONCEPT 2 — THE COURT MARK -->
+<!-- ═══════════════════════════════════════════ -->
+<article class="concept">
+  <div class="concept-number">Concept 02</div>
+
+  <div class="logo-display gradient-bg">
+    <div class="logo-wrapper" style="animation-name: pulse-glow;">
+      <svg width="320" height="140" viewBox="0 0 320 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Abstract "B" formed from court lines — bird's eye padel court -->
+        <g transform="translate(10, 10)">
+          <!-- Court outline -->
+          <rect x="8" y="4" width="72" height="120" rx="4"
+                stroke="#c8ff00" stroke-width="2.5" fill="rgba(200,255,0,0.05)"/>
+
+          <!-- Center line (net) -->
+          <line x1="8" y1="64" x2="80" y2="64" stroke="#c8ff00" stroke-width="3"/>
+
+          <!-- Service boxes - top half -->
+          <line x1="44" y1="4" x2="44" y2="64" stroke="#c8ff00" stroke-width="1.5" opacity="0.7"/>
+          <!-- Service line top -->
+          <line x1="16" y1="34" x2="72" y2="34" stroke="#c8ff00" stroke-width="1.5" opacity="0.5"/>
+
+          <!-- Service boxes - bottom half -->
+          <line x1="44" y1="64" x2="44" y2="124" stroke="#c8ff00" stroke-width="1.5" opacity="0.7"/>
+          <!-- Service line bottom -->
+          <line x1="16" y1="94" x2="72" y2="94" stroke="#c8ff00" stroke-width="1.5" opacity="0.5"/>
+
+          <!-- Glass walls indicator — outer glow -->
+          <rect x="4" y="0" width="80" height="128" rx="6"
+                stroke="rgba(200,255,0,0.15)" stroke-width="1" fill="none" stroke-dasharray="4 4"/>
+
+          <!-- Player positions — dots -->
+          <circle cx="28" cy="20" r="4" fill="#c8ff00" opacity="0.8"/>
+          <circle cx="60" cy="20" r="4" fill="#c8ff00" opacity="0.4"/>
+          <circle cx="28" cy="108" r="4" fill="#c8ff00" opacity="0.4"/>
+          <circle cx="60" cy="108" r="4" fill="#c8ff00" opacity="0.8"/>
+        </g>
+
+        <!-- Wordmark -->
+        <text x="112" y="58" font-family="'Outfit', sans-serif" font-weight="800"
+              font-size="48" fill="#ffffff" letter-spacing="6">BADELZ</text>
+
+        <!-- Arabic underneath -->
+        <text x="112" y="94" font-family="'Noto Sans Arabic', 'Cairo', sans-serif" font-weight="700"
+              font-size="28" fill="#c8ff00" opacity="0.9" direction="rtl">بادلز</text>
+
+        <!-- Divider line -->
+        <line x1="112" y1="104" x2="300" y2="104" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+
+        <!-- Tagline -->
+        <text x="113" y="122" font-family="'Outfit', sans-serif" font-weight="400"
+              font-size="11" fill="rgba(255,255,255,0.35)" letter-spacing="5">PADEL BOOKING</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="concept-info">
+    <h2>The Court Mark</h2>
+    <div class="style-tag">Architectural Minimal</div>
+    <p class="description">
+      A bird's-eye view of a padel court becomes the brandmark. The clean court lines, service boxes, net, and four player positions create a recognizable symbol that speaks directly to the sport. The dashed outer boundary hints at the glass walls unique to padel. Works beautifully as an app icon — the court mark alone is instantly identifiable at any size.
+    </p>
+    <div class="attributes">
+      <span class="attr">Iconic</span>
+      <span class="attr">App-Ready</span>
+      <span class="attr">Unique to Padel</span>
+      <span class="attr">Clean</span>
+    </div>
+    <div class="variants-strip">
+      <div class="variant-box on-dark">
+        <svg width="40" height="52" viewBox="0 0 72 96" fill="none">
+          <rect x="4" y="4" width="64" height="88" rx="4" stroke="#c8ff00" stroke-width="3" fill="rgba(200,255,0,0.05)"/>
+          <line x1="4" y1="48" x2="68" y2="48" stroke="#c8ff00" stroke-width="3"/>
+          <line x1="36" y1="4" x2="36" y2="92" stroke="#c8ff00" stroke-width="1.5" opacity="0.6"/>
+          <line x1="12" y1="26" x2="60" y2="26" stroke="#c8ff00" stroke-width="1.5" opacity="0.4"/>
+          <line x1="12" y1="70" x2="60" y2="70" stroke="#c8ff00" stroke-width="1.5" opacity="0.4"/>
+          <circle cx="22" cy="14" r="3.5" fill="#c8ff00" opacity="0.8"/>
+          <circle cx="50" cy="14" r="3.5" fill="#c8ff00" opacity="0.4"/>
+          <circle cx="22" cy="82" r="3.5" fill="#c8ff00" opacity="0.4"/>
+          <circle cx="50" cy="82" r="3.5" fill="#c8ff00" opacity="0.8"/>
+        </svg>
+        <span class="variant-label" style="color:#fff">dark</span>
+      </div>
+      <div class="variant-box on-white">
+        <svg width="40" height="52" viewBox="0 0 72 96" fill="none">
+          <rect x="4" y="4" width="64" height="88" rx="4" stroke="#111827" stroke-width="3" fill="rgba(17,24,39,0.03)"/>
+          <line x1="4" y1="48" x2="68" y2="48" stroke="#111827" stroke-width="3"/>
+          <line x1="36" y1="4" x2="36" y2="92" stroke="#111827" stroke-width="1.5" opacity="0.4"/>
+          <line x1="12" y1="26" x2="60" y2="26" stroke="#111827" stroke-width="1.5" opacity="0.25"/>
+          <line x1="12" y1="70" x2="60" y2="70" stroke="#111827" stroke-width="1.5" opacity="0.25"/>
+          <circle cx="22" cy="14" r="3.5" fill="#111827" opacity="0.7"/>
+          <circle cx="50" cy="14" r="3.5" fill="#111827" opacity="0.3"/>
+          <circle cx="22" cy="82" r="3.5" fill="#111827" opacity="0.3"/>
+          <circle cx="50" cy="82" r="3.5" fill="#111827" opacity="0.7"/>
+        </svg>
+        <span class="variant-label" style="color:#111">light</span>
+      </div>
+      <div class="variant-box on-lime">
+        <svg width="40" height="52" viewBox="0 0 72 96" fill="none">
+          <rect x="4" y="4" width="64" height="88" rx="4" stroke="#111827" stroke-width="3" fill="rgba(17,24,39,0.05)"/>
+          <line x1="4" y1="48" x2="68" y2="48" stroke="#111827" stroke-width="3"/>
+          <line x1="36" y1="4" x2="36" y2="92" stroke="#111827" stroke-width="1.5" opacity="0.5"/>
+          <line x1="12" y1="26" x2="60" y2="26" stroke="#111827" stroke-width="1.5" opacity="0.3"/>
+          <line x1="12" y1="70" x2="60" y2="70" stroke="#111827" stroke-width="1.5" opacity="0.3"/>
+          <circle cx="22" cy="14" r="3.5" fill="#111827" opacity="0.7"/>
+          <circle cx="50" cy="14" r="3.5" fill="#111827" opacity="0.35"/>
+          <circle cx="22" cy="82" r="3.5" fill="#111827" opacity="0.35"/>
+          <circle cx="50" cy="82" r="3.5" fill="#111827" opacity="0.7"/>
+        </svg>
+        <span class="variant-label" style="color:#111">brand</span>
+      </div>
+      <div class="variant-box on-emerald">
+        <svg width="40" height="52" viewBox="0 0 72 96" fill="none">
+          <rect x="4" y="4" width="64" height="88" rx="4" stroke="#fff" stroke-width="3" fill="rgba(255,255,255,0.08)"/>
+          <line x1="4" y1="48" x2="68" y2="48" stroke="#fff" stroke-width="3"/>
+          <line x1="36" y1="4" x2="36" y2="92" stroke="#fff" stroke-width="1.5" opacity="0.5"/>
+          <line x1="12" y1="26" x2="60" y2="26" stroke="#fff" stroke-width="1.5" opacity="0.3"/>
+          <line x1="12" y1="70" x2="60" y2="70" stroke="#fff" stroke-width="1.5" opacity="0.3"/>
+          <circle cx="22" cy="14" r="3.5" fill="#fff" opacity="0.8"/>
+          <circle cx="50" cy="14" r="3.5" fill="#fff" opacity="0.4"/>
+          <circle cx="22" cy="82" r="3.5" fill="#fff" opacity="0.4"/>
+          <circle cx="50" cy="82" r="3.5" fill="#fff" opacity="0.8"/>
+        </svg>
+        <span class="variant-label" style="color:#fff">alt</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- CONCEPT 3 — THE SMASH ARC -->
+<!-- ═══════════════════════════════════════════ -->
+<article class="concept">
+  <div class="concept-number">Concept 03</div>
+
+  <div class="logo-display dark-bg">
+    <div class="logo-wrapper">
+      <svg width="340" height="150" viewBox="0 0 340 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="arcGrad" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#c8ff00"/>
+            <stop offset="50%" stop-color="#10b981"/>
+            <stop offset="100%" stop-color="#14b8a6"/>
+          </linearGradient>
+          <linearGradient id="arcGrad2" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#c8ff00" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#14b8a6" stop-opacity="0.1"/>
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+          </filter>
+        </defs>
+
+        <g transform="translate(10, 10)">
+          <!-- Primary smash arc — the main dynamic swoosh -->
+          <path d="M 8 110 Q 20 10, 90 20 Q 110 22, 105 8"
+                stroke="url(#arcGrad)" stroke-width="5" fill="none"
+                stroke-linecap="round" filter="url(#glow)"/>
+
+          <!-- Secondary arc — echo/follow-through -->
+          <path d="M 16 108 Q 28 30, 82 38"
+                stroke="url(#arcGrad2)" stroke-width="2.5" fill="none"
+                stroke-linecap="round"/>
+
+          <!-- Ball at the apex of the smash -->
+          <circle cx="105" cy="8" r="10" fill="#c8ff00"/>
+          <circle cx="105" cy="8" r="14" fill="none" stroke="#c8ff00" stroke-width="1" opacity="0.3"/>
+          <circle cx="105" cy="8" r="20" fill="none" stroke="#c8ff00" stroke-width="0.5" opacity="0.15"/>
+
+          <!-- Impact sparkle lines -->
+          <line x1="118" y1="4" x2="126" y2="0" stroke="#c8ff00" stroke-width="1.5" opacity="0.5" stroke-linecap="round"/>
+          <line x1="116" y1="14" x2="124" y2="18" stroke="#c8ff00" stroke-width="1.5" opacity="0.3" stroke-linecap="round"/>
+          <line x1="114" y1="-2" x2="120" y2="-8" stroke="#c8ff00" stroke-width="1" opacity="0.2" stroke-linecap="round"/>
+        </g>
+
+        <!-- Wordmark — stacked layout -->
+        <g transform="translate(140, 0)">
+          <!-- BADELZ — custom letter-spaced -->
+          <text x="0" y="60" font-family="'Bebas Neue', sans-serif"
+                font-size="64" fill="#ffffff" letter-spacing="8">BADELZ</text>
+
+          <!-- Arabic — right-aligned under the wordmark -->
+          <text x="0" y="96" font-family="'Noto Sans Arabic', 'Cairo', sans-serif" font-weight="600"
+                font-size="26" fill="url(#arcGrad)" direction="rtl">بادلز</text>
+
+          <!-- Divider -->
+          <rect x="0" y="108" width="180" height="1" fill="rgba(255,255,255,0.08)" rx="1"/>
+
+          <!-- Tagline -->
+          <text x="0" y="128" font-family="'Barlow Condensed', sans-serif" font-weight="500"
+                font-size="13" fill="rgba(255,255,255,0.3)" letter-spacing="6">EGYPT'S PADEL APP</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <div class="concept-info">
+    <h2>The Smash Arc</h2>
+    <div class="style-tag">Dynamic Premium</div>
+    <p class="description">
+      The signature padel smash — captured in a single fluid arc. The sweeping motion trail transitions from electric lime through emerald to teal, echoing the brand's gradient palette. A ball at the apex with radiating impact rings creates a focal point of energy. The secondary echo arc suggests follow-through and momentum. This mark conveys power, precision, and the thrill of the game.
+    </p>
+    <div class="attributes">
+      <span class="attr">Dynamic</span>
+      <span class="attr">Premium</span>
+      <span class="attr">Gradient</span>
+      <span class="attr">Energetic</span>
+    </div>
+    <div class="variants-strip">
+      <div class="variant-box on-dark">
+        <svg width="44" height="44" viewBox="0 0 80 80" fill="none">
+          <path d="M 8 72 Q 16 8, 62 16 Q 74 18, 70 6" stroke="#c8ff00" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M 14 70 Q 22 24, 56 30" stroke="#c8ff00" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.3"/>
+          <circle cx="70" cy="6" r="7" fill="#c8ff00"/>
+        </svg>
+        <span class="variant-label" style="color:#fff">dark</span>
+      </div>
+      <div class="variant-box on-white">
+        <svg width="44" height="44" viewBox="0 0 80 80" fill="none">
+          <path d="M 8 72 Q 16 8, 62 16 Q 74 18, 70 6" stroke="#111827" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M 14 70 Q 22 24, 56 30" stroke="#111827" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.2"/>
+          <circle cx="70" cy="6" r="7" fill="#111827"/>
+        </svg>
+        <span class="variant-label" style="color:#111">light</span>
+      </div>
+      <div class="variant-box on-lime">
+        <svg width="44" height="44" viewBox="0 0 80 80" fill="none">
+          <path d="M 8 72 Q 16 8, 62 16 Q 74 18, 70 6" stroke="#111827" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M 14 70 Q 22 24, 56 30" stroke="#111827" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.25"/>
+          <circle cx="70" cy="6" r="7" fill="#111827"/>
+        </svg>
+        <span class="variant-label" style="color:#111">brand</span>
+      </div>
+      <div class="variant-box on-emerald">
+        <svg width="44" height="44" viewBox="0 0 80 80" fill="none">
+          <path d="M 8 72 Q 16 8, 62 16 Q 74 18, 70 6" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M 14 70 Q 22 24, 56 30" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.3"/>
+          <circle cx="70" cy="6" r="7" fill="#fff"/>
+        </svg>
+        <span class="variant-label" style="color:#fff">alt</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+</section>
+
+<footer class="footer">
+  BADELZ BRAND IDENTITY &mdash; ALL CONCEPTS &copy; 2026
+</footer>
+
+</body>
+</html>

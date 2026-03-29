@@ -8,7 +8,6 @@ import Link from "next/link";
 import { MainLayout } from "@/components/main-layout";
 import { useTranslation, useLocale } from "@/i18n";
 import { AREAS } from "@/lib/constants";
-import { scaleIn } from "@/lib/animations";
 
 interface FormData {
   name: string;
@@ -128,8 +127,8 @@ export default function CoachRegisterPage() {
   };
 
   const inputClasses =
-    "w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3.5 text-sm text-white outline-none placeholder:text-white/30 focus:border-[#c8ff00]/50 focus:ring-2 focus:ring-[#c8ff00]/30 transition-all";
-  const labelClasses = "block text-sm font-medium text-white/70 mb-1.5";
+    "w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-4 py-3.5 text-sm text-white outline-none placeholder:text-[#666] focus:border-[#d4ff00]  transition-all";
+  const labelClasses = "block text-sm font-medium text-[#999] mb-1.5";
   const errorClasses = "text-xs text-red-400 mt-1";
 
   return (
@@ -140,7 +139,7 @@ export default function CoachRegisterPage() {
           initial={{ opacity: 0, x: locale === "ar" ? 10 : -10 }}
           animate={{ opacity: 1, x: 0 }}
           onClick={() => router.back()}
-          className="flex items-center gap-1.5 text-white/60 hover:text-white mb-6 transition-colors"
+          className="flex items-center gap-1.5 text-[#999] hover:text-white mb-6 transition-colors"
         >
           <BackIcon size={18} />
           <span className="text-sm">{t("common.back")}</span>
@@ -149,35 +148,34 @@ export default function CoachRegisterPage() {
         <AnimatePresence mode="wait">
           {success ? (
             /* Success state */
-            <motion.div
+            <div
               key="success"
-              {...scaleIn}
               className="flex flex-col items-center text-center py-12"
             >
-              <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-[#c8ff00]/10 border-2 border-[#c8ff00]">
-                <CheckCircle size={36} className="text-[#c8ff00]" />
+              <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-sm bg-[#d4ff00]/10 border-2 border-[#d4ff00]">
+                <CheckCircle size={36} className="text-[#d4ff00]" />
               </div>
               <h2 className="text-2xl font-bold text-white mb-2">
                 {t("coach.registerSuccess")}
               </h2>
-              <p className="text-sm text-white/50 mb-8">
+              <p className="text-sm text-[#999] mb-8">
                 {t("coach.registerSuccessDesc")}
               </p>
               <div className="flex flex-col gap-3 w-full">
                 <Link
                   href={`/coaches/${success}`}
-                  className="flex items-center justify-center rounded-full bg-[#c8ff00] py-3.5 text-sm font-bold text-[#111827] transition-all hover:shadow-[0_0_20px_rgba(200,255,0,0.2)]"
+                  className="flex items-center justify-center rounded-sm bg-[#d4ff00] py-3.5 text-sm font-bold text-[#0d0d0d] transition-all"
                 >
                   {t("player.viewCard")}
                 </Link>
                 <Link
                   href="/coaches"
-                  className="flex items-center justify-center rounded-full border border-white/10 py-3 text-sm font-medium text-white/60 hover:bg-white/5 transition-all"
+                  className="flex items-center justify-center rounded-sm border border-[#333] py-3 text-sm font-medium text-[#999] hover:bg-[#1a1a1a] transition-all"
                 >
                   {t("coach.directory")}
                 </Link>
               </div>
-            </motion.div>
+            </div>
           ) : (
             /* Registration form */
             <motion.div
@@ -188,12 +186,12 @@ export default function CoachRegisterPage() {
               <h1 className="text-2xl font-bold text-white mb-1">
                 {t("coach.register")}
               </h1>
-              <p className="text-sm text-white/50 mb-6">
+              <p className="text-sm text-[#999] mb-6">
                 {t("coach.registerDesc")}
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="glass-dark rounded-2xl p-5 space-y-5">
+                <div className="bg-[#1a1a1a] border border-[#333] rounded-sm p-5 space-y-5">
                   {/* Name */}
                   <div>
                     <label className={labelClasses}>
@@ -216,7 +214,7 @@ export default function CoachRegisterPage() {
                   <div>
                     <label className={labelClasses}>
                       {t("coach.name")} ({locale === "ar" ? "بالعربي" : "Arabic"}){" "}
-                      <span className="text-white/30">({t("common.optional")})</span>
+                      <span className="text-[#666]">({t("common.optional")})</span>
                     </label>
                     <input
                       type="text"
@@ -252,7 +250,7 @@ export default function CoachRegisterPage() {
                   <div>
                     <label className={labelClasses}>
                       WhatsApp{" "}
-                      <span className="text-white/30">({t("common.optional")})</span>
+                      <span className="text-[#666]">({t("common.optional")})</span>
                     </label>
                     <input
                       type="tel"
@@ -267,7 +265,7 @@ export default function CoachRegisterPage() {
                 </div>
 
                 {/* Areas */}
-                <div className="glass-dark rounded-2xl p-5">
+                <div className="bg-[#1a1a1a] border border-[#333] rounded-sm p-5">
                   <label className={labelClasses}>
                     {t("coach.selectAreas")} <span className="text-red-400">*</span>
                   </label>
@@ -282,8 +280,8 @@ export default function CoachRegisterPage() {
                           onClick={() => toggleArea(area.key)}
                           className={`flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-semibold transition-all ${
                             isActive
-                              ? "bg-[#c8ff00] text-[#111827]"
-                              : "border border-white/10 text-white/60 hover:bg-white/10"
+                              ? "bg-[#d4ff00] text-[#0d0d0d]"
+                              : "border border-[#333] text-[#999] hover:bg-[#222]"
                           }`}
                         >
                           <MapPin size={11} />
@@ -296,12 +294,12 @@ export default function CoachRegisterPage() {
                 </div>
 
                 {/* Price & Experience */}
-                <div className="glass-dark rounded-2xl p-5 space-y-5">
+                <div className="bg-[#1a1a1a] border border-[#333] rounded-sm p-5 space-y-5">
                   {/* Price per hour */}
                   <div>
                     <label className={labelClasses}>
                       {t("coach.pricePerHour")}{" "}
-                      <span className="text-white/30">({t("common.optional")})</span>
+                      <span className="text-[#666]">({t("common.optional")})</span>
                     </label>
                     <div className="relative">
                       <input
@@ -316,7 +314,7 @@ export default function CoachRegisterPage() {
                         min={0}
                         className={`${inputClasses} pe-14`}
                       />
-                      <span className="absolute end-4 top-1/2 -translate-y-1/2 text-xs text-white/30">
+                      <span className="absolute end-4 top-1/2 -translate-y-1/2 text-xs text-[#666]">
                         {t("common.egp")}
                       </span>
                     </div>
@@ -326,7 +324,7 @@ export default function CoachRegisterPage() {
                   <div>
                     <label className={labelClasses}>
                       {t("coach.experience")}{" "}
-                      <span className="text-white/30">({t("common.optional")})</span>
+                      <span className="text-[#666]">({t("common.optional")})</span>
                     </label>
                     <input
                       type="text"
@@ -343,7 +341,7 @@ export default function CoachRegisterPage() {
                   <div>
                     <label className={labelClasses}>
                       {t("coach.bio")}{" "}
-                      <span className="text-white/30">({t("common.optional")})</span>
+                      <span className="text-[#666]">({t("common.optional")})</span>
                     </label>
                     <textarea
                       value={form.bio}
@@ -361,24 +359,24 @@ export default function CoachRegisterPage() {
 
                 {/* Server error */}
                 {errors.server && (
-                  <div className="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400">
+                  <div className="rounded-sm bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400">
                     {errors.server}
                   </div>
                 )}
 
                 {/* Submit */}
-                <motion.button
+                <button
                   type="submit"
                   disabled={submitting}
-                  whileTap={{ scale: 0.97 }}
-                  className="w-full rounded-full bg-[#c8ff00] py-4 text-base font-bold text-[#111827] transition-all hover:shadow-[0_0_30px_rgba(200,255,0,0.2)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  
+                  className="w-full rounded-sm bg-[#d4ff00] py-4 text-base font-bold text-[#0d0d0d] transition-all hover:shadow-[0_0_30px_rgba(200,255,0,0.2)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 active:scale-[0.97] transition-transform duration-75"
                 >
                   {submitting ? (
                     <Loader2 size={18} className="animate-spin" />
                   ) : (
                     t("coach.register")
                   )}
-                </motion.button>
+                </button>
               </form>
             </motion.div>
           )}

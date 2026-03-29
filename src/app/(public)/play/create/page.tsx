@@ -22,7 +22,6 @@ import { useTranslation, useLocale } from "@/i18n";
 import { useAuth } from "@/lib/auth-context";
 import { AREAS, LOBBY_LEVELS } from "@/lib/constants";
 import { getNext7Days, toDateString } from "@/lib/format";
-import { slideUp } from "@/lib/animations";
 
 function isValidEgyptPhone(phone: string): boolean {
   const cleaned = phone.replace(/\D/g, "");
@@ -153,20 +152,20 @@ export default function CreateLobbyPage() {
   };
 
   const inputCls =
-    "w-full rounded-xl bg-white/5 border border-white/10 px-4 py-4 text-base text-white outline-none placeholder:text-white/30 transition-all focus:border-[#c8ff00]/50 focus:ring-2 focus:ring-[#c8ff00]/30";
+    "w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-4 py-4 text-base text-white outline-none placeholder:text-[#666] transition-all focus:border-[#d4ff00] ";
   const inputErrorCls =
-    "w-full rounded-xl bg-red-500/5 border border-red-500/30 px-4 py-4 text-base text-white outline-none placeholder:text-white/30 ring-2 ring-red-500/20";
+    "w-full rounded-sm bg-red-500/5 border border-red-500/30 px-4 py-4 text-base text-white outline-none placeholder:text-[#666] ring-2 ring-red-500/20";
   const labelCls =
-    "mb-2 flex items-center gap-2 text-sm font-semibold text-white/80";
+    "mb-2 flex items-center gap-2 text-sm font-semibold text-[#999]";
 
   return (
-    <div className="min-h-screen bg-[#0a0f1a]">
+    <div className="min-h-screen bg-[#0d0d0d]">
       {/* Header */}
-      <div className="sticky top-0 z-30 bg-[#0a0f1a]/80 backdrop-blur-lg border-b border-white/5">
+      <div className="sticky top-0 z-30 bg-[#0d0d0d]/80 border-b border-[#222]">
         <div className="mx-auto max-w-2xl flex items-center gap-3 px-4 py-4">
           <Link
             href="/play"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 border border-white/10 text-white/60 hover:text-white transition-colors"
+            className="flex h-10 w-10 items-center justify-center rounded-sm bg-[#1a1a1a] border border-[#333] text-[#999] hover:text-white transition-colors"
           >
             <ArrowRight size={18} className="rtl:rotate-0 ltr:rotate-180" />
           </Link>
@@ -187,7 +186,7 @@ export default function CreateLobbyPage() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="flex items-center gap-2 rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3"
+              className="flex items-center gap-2 rounded-sm bg-red-500/10 border border-red-500/20 px-4 py-3"
             >
               <AlertCircle size={16} className="shrink-0 text-red-400" />
               <p className="text-sm text-red-400">{error}</p>
@@ -196,9 +195,9 @@ export default function CreateLobbyPage() {
         </AnimatePresence>
 
         {/* Area selection */}
-        <motion.div {...slideUp}>
+        <div>
           <label className={labelCls}>
-            <MapPin size={15} className="text-white/40" />
+            <MapPin size={15} className="text-[#666]" />
             {t("lobby.selectArea")}
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -215,8 +214,8 @@ export default function CreateLobbyPage() {
                   }}
                   className={`rounded-xl px-3 py-3 text-sm font-semibold transition-all ${
                     isSelected
-                      ? "bg-[#c8ff00] text-[#111827] shadow-sm"
-                      : "bg-white/5 border border-white/10 text-white/60 hover:bg-white/10 hover:text-white/90"
+                      ? "bg-[#d4ff00] text-[#0d0d0d] shadow-sm"
+                      : "bg-[#1a1a1a] border border-[#333] text-[#999] hover:bg-[#222] hover:text-white"
                   }`}
                 >
                   {label}
@@ -229,12 +228,12 @@ export default function CreateLobbyPage() {
               {t("common.required")}
             </p>
           )}
-        </motion.div>
+        </div>
 
         {/* Date selection */}
-        <motion.div {...slideUp} transition={{ delay: 0.05 }}>
+        <div>
           <label className={labelCls}>
-            <Calendar size={15} className="text-white/40" />
+            <Calendar size={15} className="text-[#666]" />
             {t("lobby.selectDate")}
           </label>
           <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
@@ -251,10 +250,10 @@ export default function CreateLobbyPage() {
                     setDate(dateStr);
                     setTouched((p) => ({ ...p, date: true }));
                   }}
-                  className={`shrink-0 flex flex-col items-center rounded-2xl px-4 py-3 transition-all ${
+                  className={`shrink-0 flex flex-col items-center rounded-sm px-4 py-3 transition-all ${
                     isSelected
-                      ? "bg-[#c8ff00] text-[#111827] shadow-sm"
-                      : "bg-white/5 border border-white/10 text-white/60 hover:bg-white/10"
+                      ? "bg-[#d4ff00] text-[#0d0d0d] shadow-sm"
+                      : "bg-[#1a1a1a] border border-[#333] text-[#999] hover:bg-[#222]"
                   }`}
                 >
                   <span className="text-[10px] font-medium">{dayName}</span>
@@ -269,12 +268,12 @@ export default function CreateLobbyPage() {
               {t("common.required")}
             </p>
           )}
-        </motion.div>
+        </div>
 
         {/* Time (optional) */}
-        <motion.div {...slideUp} transition={{ delay: 0.1 }}>
+        <div>
           <label className={labelCls}>
-            <Clock size={15} className="text-white/40" />
+            <Clock size={15} className="text-[#666]" />
             {t("lobby.selectTime")}
           </label>
           <select
@@ -282,23 +281,23 @@ export default function CreateLobbyPage() {
             onChange={(e) => setTime(e.target.value)}
             className={`${inputCls} appearance-none`}
           >
-            <option value="" className="bg-[#111827]">
+            <option value="" className="bg-[#1a1a1a]">
               {t("lobby.optional")}
             </option>
             {timeSlots.map((slot) => (
-              <option key={slot} value={slot} className="bg-[#111827]">
+              <option key={slot} value={slot} className="bg-[#1a1a1a]">
                 {formatSlotTime(slot)}
               </option>
             ))}
           </select>
-        </motion.div>
+        </div>
 
         {/* Price range (optional) */}
-        <motion.div {...slideUp} transition={{ delay: 0.15 }}>
+        <div>
           <label className={labelCls}>
-            <Banknote size={15} className="text-white/40" />
+            <Banknote size={15} className="text-[#666]" />
             {t("lobby.priceRange")}
-            <span className="text-white/30 text-xs font-normal">
+            <span className="text-[#666] text-xs font-normal">
               ({t("lobby.optional")})
             </span>
           </label>
@@ -310,14 +309,14 @@ export default function CreateLobbyPage() {
             dir="ltr"
             className={`${inputCls} text-start`}
           />
-        </motion.div>
+        </div>
 
         {/* Level (optional) */}
-        <motion.div {...slideUp} transition={{ delay: 0.175 }}>
+        <div>
           <label className={labelCls}>
-            <Gauge size={15} className="text-white/40" />
+            <Gauge size={15} className="text-[#666]" />
             {t("lobby.level")}
-            <span className="text-white/30 text-xs font-normal">
+            <span className="text-[#666] text-xs font-normal">
               ({t("lobby.optional")})
             </span>
           </label>
@@ -327,8 +326,8 @@ export default function CreateLobbyPage() {
               onClick={() => setLevel("")}
               className={`shrink-0 rounded-xl px-3 py-2.5 text-xs font-semibold transition-all ${
                 level === ""
-                  ? "bg-[#c8ff00] text-[#111827] shadow-sm"
-                  : "bg-white/5 border border-white/10 text-white/60 hover:bg-white/10 hover:text-white/90"
+                  ? "bg-[#d4ff00] text-[#0d0d0d] shadow-sm"
+                  : "bg-[#1a1a1a] border border-[#333] text-[#999] hover:bg-[#222] hover:text-white"
               }`}
             >
               {t("lobby.anyLevel")}
@@ -343,8 +342,8 @@ export default function CreateLobbyPage() {
                   onClick={() => setLevel(lvl.key)}
                   className={`shrink-0 rounded-xl px-3 py-2.5 text-xs font-semibold transition-all ${
                     isSelected
-                      ? "bg-[#c8ff00] text-[#111827] shadow-sm"
-                      : "bg-white/5 border border-white/10 text-white/60 hover:bg-white/10 hover:text-white/90"
+                      ? "bg-[#d4ff00] text-[#0d0d0d] shadow-sm"
+                      : "bg-[#1a1a1a] border border-[#333] text-[#999] hover:bg-[#222] hover:text-white"
                   }`}
                 >
                   {label}
@@ -352,14 +351,14 @@ export default function CreateLobbyPage() {
               );
             })}
           </div>
-        </motion.div>
+        </div>
 
         {/* Note (optional) */}
-        <motion.div {...slideUp} transition={{ delay: 0.225 }}>
+        <div>
           <label className={labelCls}>
-            <FileText size={15} className="text-white/40" />
+            <FileText size={15} className="text-[#666]" />
             {t("lobby.note")}
-            <span className="text-white/30 text-xs font-normal">
+            <span className="text-[#666] text-xs font-normal">
               ({t("lobby.optional")})
             </span>
           </label>
@@ -370,25 +369,25 @@ export default function CreateLobbyPage() {
             rows={3}
             className={`${inputCls} resize-none`}
           />
-        </motion.div>
+        </div>
 
         {/* Divider */}
-        <div className="border-t border-white/5" />
+        <div className="border-t border-[#222]" />
 
         {/* Logged in badge */}
         {isAuthenticated && user?.name && (
-          <div className="flex items-center gap-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-3 py-2">
-            <CheckCircle size={14} className="text-emerald-400 shrink-0" />
-            <span className="text-xs text-emerald-400 font-medium">
+          <div className="flex items-center gap-2 rounded-lg bg-[#d4ff00]/10 border border-emerald-500/20 px-3 py-2">
+            <CheckCircle size={14} className="text-[#d4ff00] shrink-0" />
+            <span className="text-xs text-[#d4ff00] font-medium">
               {t("nudge.loggedInAs", { name: user.name })}
             </span>
           </div>
         )}
 
         {/* Name */}
-        <motion.div {...slideUp} transition={{ delay: 0.275 }}>
+        <div>
           <label className={labelCls}>
-            <User size={15} className="text-white/40" />
+            <User size={15} className="text-[#666]" />
             {t("lobby.yourName")}
           </label>
           <input
@@ -405,12 +404,12 @@ export default function CreateLobbyPage() {
               {t("common.required")}
             </p>
           )}
-        </motion.div>
+        </div>
 
         {/* Phone */}
-        <motion.div {...slideUp} transition={{ delay: 0.325 }}>
+        <div>
           <label className={labelCls}>
-            <Phone size={15} className="text-white/40" />
+            <Phone size={15} className="text-[#666]" />
             {t("lobby.yourPhone")}
           </label>
           <input
@@ -428,17 +427,17 @@ export default function CreateLobbyPage() {
               {t("lobby.phonePlaceholder")}
             </p>
           )}
-        </motion.div>
+        </div>
 
         {/* Submit */}
-        <motion.button
+        <button
           type="submit"
-          whileTap={{ scale: 0.97 }}
+          
           disabled={submitting}
-          className="w-full rounded-full bg-[#c8ff00] py-4 text-base font-bold text-[#111827] shadow-lg shadow-[#c8ff00]/20 transition-all hover:shadow-[0_0_30px_rgba(200,255,0,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full rounded-sm bg-[#d4ff00] py-4 text-base font-bold text-[#0d0d0d] transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.97] transition-transform duration-75"
         >
           {submitting ? t("lobby.creating") : t("lobby.createLobby")}
-        </motion.button>
+        </button>
       </form>
     </div>
   );

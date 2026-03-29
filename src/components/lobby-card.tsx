@@ -1,11 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { MapPin, Calendar, Clock, Users, Gauge } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslation, useLocale } from "@/i18n";
 import { formatDateShort, formatTime } from "@/lib/format";
-import { darkBentoItem } from "@/lib/animations";
 import { LOBBY_LEVELS } from "@/lib/constants";
 
 const MAX_PLAYERS = 4;
@@ -46,40 +44,38 @@ export function LobbyCard({ lobby }: LobbyCardProps) {
   const dateStr = formatDateShort(lobby.date, locale === "ar" ? "ar-EG" : "en-US");
 
   return (
-    <motion.div
-      {...darkBentoItem}
-      whileTap={{ scale: 0.97 }}
+    <div
       onClick={() => router.push(`/lobby/${lobby.lobbyCode}`)}
-      className="cursor-pointer rounded-2xl bg-white/5 border border-white/10 p-3 transition-all hover:border-[#c8ff00]/20 hover:shadow-[0_0_30px_rgba(200,255,0,0.08)]"
+      className="cursor-pointer rounded-sm bg-[#1a1a1a] border-s-[3px] border-s-[#ff4d4d] p-3 transition-colors duration-200 hover:bg-[#222] active:scale-[0.97] transition-transform duration-75"
     >
       {/* Area name + level badge */}
       <div className="flex items-start justify-between gap-2 mb-2">
         <div className="flex items-center gap-1.5 min-w-0">
-          <MapPin size={14} className="shrink-0 text-white/40" />
+          <MapPin size={14} className="shrink-0 text-[#666]" />
           <h3 className="text-sm font-bold text-white truncate">{areaName}</h3>
           {levelLabel && (
-            <span className="shrink-0 flex items-center gap-0.5 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-semibold text-white/70">
+            <span className="shrink-0 flex items-center gap-0.5 rounded-sm bg-[#222] px-2 py-0.5 text-[10px] font-semibold text-[#999]">
               <Gauge size={10} />
               {levelLabel}
             </span>
           )}
         </div>
         {lobby.priceRange && (
-          <span className="shrink-0 text-sm font-bold text-[#c8ff00]">
+          <span className="shrink-0 text-sm font-bold text-[#d4ff00] font-[family-name:var(--font-display-en)]">
             ~{lobby.priceRange} {locale === "ar" ? "ج.م" : "EGP"}
           </span>
         )}
       </div>
 
       {/* Date + time */}
-      <div className="flex items-center gap-2.5 mb-2 text-white/55 text-xs">
+      <div className="flex items-center gap-2.5 mb-2 text-[#999] text-xs">
         <div className="flex items-center gap-1">
           <Calendar size={12} />
           <span>{dateStr}</span>
         </div>
         {lobby.startTime && (
           <>
-            <div className="h-3 w-px bg-white/10" />
+            <div className="h-3 w-px bg-[#333]" />
             <div className="flex items-center gap-1">
               <Clock size={12} />
               <span>{formatTime(lobby.startTime)}</span>
@@ -89,7 +85,7 @@ export function LobbyCard({ lobby }: LobbyCardProps) {
       </div>
 
       {/* Host name */}
-      <p className="text-xs text-white/40 mb-2">
+      <p className="text-xs text-[#666] mb-2">
         {t("lobby.hostedBy", { name: lobby.hostName })}
       </p>
 
@@ -98,15 +94,11 @@ export function LobbyCard({ lobby }: LobbyCardProps) {
         {/* Spots indicator */}
         <div className="flex items-center gap-1.5">
           {!isFull && (
-            <motion.div
-              animate={{ scale: [1, 1.4, 1] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-              className="h-2 w-2 rounded-full bg-[#c8ff00]"
-            />
+            <div className="h-2 w-2 rounded-full bg-[#ff4d4d] animate-pulse" />
           )}
           <span
-            className={`text-xs font-semibold ${
-              isFull ? "text-white/40" : "text-[#c8ff00]"
+            className={`text-xs font-semibold font-[family-name:var(--font-display-en)] ${
+              isFull ? "text-[#666]" : "text-[#ff4d4d]"
             }`}
           >
             {isFull
@@ -125,8 +117,8 @@ export function LobbyCard({ lobby }: LobbyCardProps) {
                 key={i}
                 className={`h-5 w-5 rounded-full flex items-center justify-center text-[9px] font-bold ${
                   filled
-                    ? "bg-[#c8ff00] text-[#111827]"
-                    : "border border-dashed border-white/20 text-white/20"
+                    ? "bg-[#ff4d4d] text-[#0d0d0d]"
+                    : "border border-dashed border-[#333] text-[#666]"
                 }`}
               >
                 {filled
@@ -137,6 +129,6 @@ export function LobbyCard({ lobby }: LobbyCardProps) {
           })}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

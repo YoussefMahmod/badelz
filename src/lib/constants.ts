@@ -28,24 +28,26 @@ export const LOBBY_LEVELS = [
 
 export type LobbyLevelKey = (typeof LOBBY_LEVELS)[number]["key"];
 
-export function calculateTier(gamesPlayed: number): "BRONZE" | "GOLD" | "EMERALD" | "DIAMOND" | "MASTER" | "GRANDMASTER" {
+export function calculateTier(gamesPlayed: number): "BRONZE" | "SILVER" | "GOLD" | "EMERALD" | "DIAMOND" | "MASTER" | "GRANDMASTER" {
   if (gamesPlayed >= 100) return "GRANDMASTER";
   if (gamesPlayed >= 50) return "MASTER";
   if (gamesPlayed >= 25) return "DIAMOND";
   if (gamesPlayed >= 10) return "EMERALD";
-  if (gamesPlayed >= 3) return "GOLD";
+  if (gamesPlayed >= 5) return "GOLD";
+  if (gamesPlayed >= 3) return "SILVER";
   return "BRONZE";
 }
 
-export type PlayerTier = "BRONZE" | "GOLD" | "EMERALD" | "DIAMOND" | "MASTER" | "GRANDMASTER";
+export type PlayerTier = "BRONZE" | "SILVER" | "GOLD" | "EMERALD" | "DIAMOND" | "MASTER" | "GRANDMASTER";
 
 export const PLAYER_TIER_COLORS: Record<PlayerTier, string> = {
   BRONZE: "#cd7f32",
+  SILVER: "#c0c0c0",
   GOLD: "#ffd700",
   EMERALD: "#50c878",
   DIAMOND: "#b9f2ff",
   MASTER: "#ff4655",
-  GRANDMASTER: "#c8ff00",
+  GRANDMASTER: "#d4ff00",
 };
 
 export const LISTING_CATEGORY_COLORS: Record<string, string> = {

@@ -20,7 +20,6 @@ import { useVenueDetail } from "@/hooks/use-venue-detail";
 import { useTranslation, useLocale } from "@/i18n";
 import { buildVenueShareLink, buildWhatsAppDirectLink } from "@/lib/whatsapp";
 import { formatPrice } from "@/lib/format";
-import { revealUp, staggerBento } from "@/lib/animations";
 
 export default function VenueDetailClient({ id }: { id: string }) {
   const { t } = useTranslation();
@@ -34,11 +33,11 @@ export default function VenueDetailClient({ id }: { id: string }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0a0f1a]">
+      <div className="min-h-screen bg-[#0d0d0d]">
         {/* Skeleton cover */}
         <div className="h-72 sm:h-96 w-full animate-pulse dark-skeleton" />
         <div className="relative -mt-16 mx-4 sm:mx-auto sm:max-w-2xl">
-          <div className="rounded-2xl bg-[#111827] border border-white/10 p-6 sm:p-8 animate-pulse space-y-4 shadow-dark-elevated">
+          <div className="rounded-sm bg-[#1a1a1a] border border-[#333] p-6 sm:p-8 animate-pulse space-y-4">
             <div className="h-8 w-3/4 rounded-lg dark-skeleton" />
             <div className="h-5 w-1/2 rounded-lg dark-skeleton" />
             <div className="h-4 w-full rounded-lg dark-skeleton" />
@@ -50,7 +49,7 @@ export default function VenueDetailClient({ id }: { id: string }) {
 
   if (error || !venue) {
     return (
-      <div className="min-h-screen bg-[#0a0f1a] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0d0d0d] flex items-center justify-center">
         <EmptyState
           icon={<MapPin size={28} />}
           title={t("common.error")}
@@ -82,7 +81,7 @@ export default function VenueDetailClient({ id }: { id: string }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0f1a] pb-24">
+    <div className="min-h-screen bg-[#0d0d0d] pb-24">
       {/* Full-bleed cover photo */}
       <div className="relative h-72 sm:h-96 overflow-hidden">
         {coverPhoto ? (
@@ -93,13 +92,13 @@ export default function VenueDetailClient({ id }: { id: string }) {
             loading="eager"
           />
         ) : (
-          <div className="h-full w-full bg-white/5 flex items-center justify-center">
+          <div className="h-full w-full bg-[#1a1a1a] flex items-center justify-center">
             <RectangleHorizontal className="h-20 w-20 text-white/10" />
           </div>
         )}
 
         {/* Dark gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1a] via-[#0a0f1a]/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d] via-[#0d0d0d]/60 to-transparent" />
 
         {/* Back button */}
         <motion.button
@@ -107,7 +106,7 @@ export default function VenueDetailClient({ id }: { id: string }) {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.1 }}
           onClick={() => router.back()}
-          className="absolute top-4 start-4 z-10 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-white hover:bg-white/20 transition-colors cursor-pointer"
+          className="absolute top-4 start-4 z-10 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-[#222] border border-[#333] text-white hover:bg-[#222] transition-colors cursor-pointer"
           aria-label={t("common.back")}
         >
           <ArrowRight
@@ -122,7 +121,7 @@ export default function VenueDetailClient({ id }: { id: string }) {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.15 }}
           onClick={handleShare}
-          className="absolute top-4 end-4 z-10 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-white hover:bg-white/20 transition-colors cursor-pointer"
+          className="absolute top-4 end-4 z-10 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-[#222] border border-[#333] text-white hover:bg-[#222] transition-colors cursor-pointer"
           aria-label={t("venue.share")}
         >
           <Share2 size={18} />
@@ -136,27 +135,27 @@ export default function VenueDetailClient({ id }: { id: string }) {
         transition={{ delay: 0.2, duration: 0.5 }}
         className="relative -mt-16 mx-4 sm:mx-auto sm:max-w-2xl"
       >
-        <div className="rounded-2xl bg-[#111827] border border-white/10 shadow-dark-elevated p-6 sm:p-8">
+        <div className="rounded-sm bg-[#1a1a1a] border border-[#333] p-6 sm:p-8">
           {/* Name + location + rating */}
           <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
             {displayName}
           </h1>
 
-          <div className="flex items-center gap-3 text-base text-white/50 mb-4">
+          <div className="flex items-center gap-3 text-base text-[#999] mb-4">
             <span className="flex items-center gap-1.5">
-              <MapPin size={15} className="text-white/30" />
+              <MapPin size={15} className="text-[#666]" />
               {displayCity}
             </span>
             {venue.rating > 0 ? (
-              <span className="flex items-center gap-1 rounded-full bg-[#c8ff00]/10 px-2.5 py-0.5 text-[#c8ff00] text-sm font-medium">
-                <Star size={13} className="fill-[#c8ff00] text-[#c8ff00]" />
+              <span className="flex items-center gap-1 rounded-sm bg-[#d4ff00]/10 px-2.5 py-0.5 text-[#d4ff00] text-sm font-medium">
+                <Star size={13} className="fill-[#d4ff00] text-[#d4ff00]" />
                 {t("venue.rating", {
                   rating: venue.rating.toFixed(1),
                   count: venue.ratingCount,
                 })}
               </span>
             ) : (
-              <span className="text-white/30 text-sm">
+              <span className="text-[#666] text-sm">
                 {t("venue.noRating")}
               </span>
             )}
@@ -164,7 +163,7 @@ export default function VenueDetailClient({ id }: { id: string }) {
 
           {/* Description */}
           {displayDesc && (
-            <p className="text-sm text-white/60 leading-relaxed mb-5">
+            <p className="text-sm text-[#999] leading-relaxed mb-5">
               {displayDesc}
             </p>
           )}
@@ -173,7 +172,7 @@ export default function VenueDetailClient({ id }: { id: string }) {
           <div className="flex gap-2">
             <a
               href={`tel:${venue.phone}`}
-              className="flex flex-1 items-center justify-center gap-2 rounded-full bg-white/5 border border-white/10 py-3 text-sm font-semibold text-white/80 transition-all hover:bg-white/10 hover:text-white"
+              className="flex flex-1 items-center justify-center gap-2 rounded-sm bg-[#1a1a1a] border border-[#333] py-3 text-sm font-semibold text-[#999] transition-all hover:bg-[#222] hover:text-white"
             >
               <Phone size={16} />
               {t("venue.callVenue")}
@@ -183,7 +182,7 @@ export default function VenueDetailClient({ id }: { id: string }) {
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex flex-1 items-center justify-center gap-2 rounded-full bg-green-500/10 border border-green-500/20 py-3 text-sm font-semibold text-green-400 transition-all hover:bg-green-500/15 hover:text-green-300"
+                className="flex flex-1 items-center justify-center gap-2 rounded-sm bg-green-500/10 border border-green-500/20 py-3 text-sm font-semibold text-green-400 transition-all hover:bg-green-500/15 hover:text-green-300"
               >
                 <MessageCircle size={16} />
                 {t("venue.whatsapp")}
@@ -191,7 +190,7 @@ export default function VenueDetailClient({ id }: { id: string }) {
             )}
             <button
               onClick={handleShare}
-              className="flex items-center justify-center rounded-full bg-white/5 border border-white/10 px-3.5 text-white/50 transition-all hover:bg-white/10 hover:text-white/70"
+              className="flex items-center justify-center rounded-sm bg-[#1a1a1a] border border-[#333] px-3.5 text-[#999] transition-all hover:bg-[#222] hover:text-[#999]"
               aria-label={t("venue.share")}
             >
               <Share2 size={16} />
@@ -203,17 +202,17 @@ export default function VenueDetailClient({ id }: { id: string }) {
       {/* Below the card: map + courts */}
       <div className="mx-4 sm:mx-auto sm:max-w-2xl mt-6 space-y-6">
         {/* Map section */}
-        <motion.div {...revealUp}>
+        <div>
           <MapEmbed
             latitude={venue.latitude}
             longitude={venue.longitude}
             address={displayAddress}
             venueName={displayName}
           />
-        </motion.div>
+        </div>
 
         {/* Courts section */}
-        <motion.div {...revealUp}>
+        <div>
           <h2 className="text-xl font-bold text-white mb-4">
             {t("venue.courts")}
           </h2>
@@ -223,10 +222,8 @@ export default function VenueDetailClient({ id }: { id: string }) {
               title={t("venue.noCourts")}
             />
           ) : (
-            <motion.div
-              variants={staggerBento}
-              initial="initial"
-              animate="animate"
+            <div
+
               className="space-y-3"
             >
               {venue.courts.map((court) => (
@@ -237,9 +234,9 @@ export default function VenueDetailClient({ id }: { id: string }) {
                   onBook={(courtId) => router.push(`/book/${courtId}`)}
                 />
               ))}
-            </motion.div>
+            </div>
           )}
-        </motion.div>
+        </div>
       </div>
 
       {/* Sticky Book Now bar */}
@@ -248,22 +245,22 @@ export default function VenueDetailClient({ id }: { id: string }) {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="fixed bottom-0 start-0 end-0 z-50 bg-[#0a0f1a]/90 backdrop-blur-xl border-t border-white/5 p-4 safe-bottom"
+          className="fixed bottom-0 start-0 end-0 z-50 bg-[#0d0d0d]/90 border-t border-[#222] p-4 safe-bottom"
         >
           <div className="mx-auto max-w-2xl flex items-center justify-between gap-3">
             <div className="min-w-0">
               <p className="text-sm font-semibold text-white truncate">{venue.courts[0].nameAr || venue.courts[0].name}</p>
-              <p className="text-xs text-[#c8ff00] font-medium">
+              <p className="text-xs text-[#d4ff00] font-medium">
                 {formatPrice(parseFloat(String(venue.courts[0].pricePerHour)))} {t("common.perHour")}
               </p>
             </div>
-            <motion.button
-              whileTap={{ scale: 0.95 }}
+            <button
+              
               onClick={() => router.push(`/book/${venue.courts[0].id}`)}
-              className="shrink-0 rounded-full bg-[#c8ff00] px-8 py-3.5 text-sm font-bold text-[#111827] shadow-[0_0_20px_rgba(200,255,0,0.2)] hover:shadow-[0_0_30px_rgba(200,255,0,0.3)] transition-all"
+              className="shrink-0 rounded-sm bg-[#d4ff00] px-8 py-3.5 text-sm font-bold text-[#0d0d0d] transition-all"
             >
               {t("venue.bookNow")}
-            </motion.button>
+            </button>
           </div>
         </motion.div>
       )}

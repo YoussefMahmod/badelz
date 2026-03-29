@@ -1,8 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { RectangleHorizontal } from "lucide-react";
-import { cardHoverSubtle } from "@/lib/animations";
 import { useTranslation, useLocale } from "@/i18n";
 import { formatPrice } from "@/lib/format";
 
@@ -28,35 +26,28 @@ export function CourtCard({ court, venueId, onBook }: CourtCardProps) {
     : court.pricePerHour;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      {...cardHoverSubtle}
-      className="bg-white/5 border border-white/10 rounded-2xl p-4 transition-all duration-300 hover:border-[#c8ff00]/20 hover:shadow-[0_0_30px_rgba(200,255,0,0.06)]"
-    >
+    <div className="bg-[#1a1a1a] border-s-[3px] border-s-[#d4ff00] rounded-sm p-4 transition-colors duration-200 hover:bg-[#222]">
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#c8ff00]/10">
-            <RectangleHorizontal size={22} className="text-[#c8ff00]" />
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-sm bg-[#d4ff00]/10">
+            <RectangleHorizontal size={22} className="text-[#d4ff00]" />
           </div>
           <div className="min-w-0">
             <h4 className="text-base font-bold text-white truncate">
               {displayName}
             </h4>
-            <p className="text-sm text-[#c8ff00] font-semibold">
+            <p className="text-sm text-[#d4ff00] font-semibold font-[family-name:var(--font-display-en)]">
               {t("venue.pricePerHour", { price: formatPrice(price) })}
             </p>
           </div>
         </div>
-        <motion.button
-          whileTap={{ scale: 0.93 }}
+        <button
           onClick={() => onBook?.(court.id)}
-          className="shrink-0 rounded-full bg-[#c8ff00] px-5 py-2.5 text-sm font-bold text-[#111827] transition-all hover:shadow-[0_0_20px_rgba(200,255,0,0.25)] active:scale-95"
+          className="shrink-0 rounded-sm bg-[#d4ff00] px-5 py-2.5 text-sm font-bold text-[#0d0d0d] active:scale-[0.97] transition-transform duration-75"
         >
           {t("venue.bookNow")}
-        </motion.button>
+        </button>
       </div>
-    </motion.div>
+    </div>
   );
 }

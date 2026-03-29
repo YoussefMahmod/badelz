@@ -487,6 +487,7 @@ const ar: TranslationKeys = {
     rating: "تقييم",
     tier: "المستوى",
     bronze: "برونز",
+    silver: "سيلفر",
     gold: "جولد",
     emerald: "إميرالد",
     diamond: "دايموند",

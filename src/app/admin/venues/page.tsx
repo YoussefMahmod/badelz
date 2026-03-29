@@ -5,7 +5,6 @@ import { useTranslation, useLocale } from "@/i18n";
 import { motion, AnimatePresence } from "framer-motion";
 import { LoadingSpinner } from "@/components/loading-spinner";
 import { EmptyState } from "@/components/empty-state";
-import { staggerContainer, staggerItem } from "@/lib/animations";
 import { buildWhatsAppDirectLink } from "@/lib/whatsapp";
 import {
   Search,
@@ -193,7 +192,7 @@ export default function AdminVenuesPage() {
     <div className="mx-auto max-w-3xl px-4 py-5">
       {/* Header */}
       <div className="mb-5 flex items-center gap-3">
-        <h1 className="text-xl font-bold text-white/90">
+        <h1 className="text-xl font-bold text-white">
           {t("admin.venues")}
         </h1>
         {!isLoading && (
@@ -209,13 +208,13 @@ export default function AdminVenuesPage() {
 
       {/* Search */}
       <div className="relative mb-4">
-        <Search className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/30" />
+        <Search className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#666]" />
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder={t("admin.searchVenues")}
-          className="w-full rounded-xl border border-white/10 bg-white/5 py-2.5 ps-10 pe-4 text-sm text-white/90 placeholder:text-white/30 backdrop-blur-lg outline-none transition-colors focus:border-indigo-500/50 focus:bg-white/[0.07]"
+          className="w-full rounded-sm border border-[#333] bg-[#1a1a1a] py-2.5 ps-10 pe-4 text-sm text-white placeholder:text-[#666] outline-none transition-colors focus:border-indigo-500/50 focus:bg-white/[0.07]"
         />
       </div>
 
@@ -228,7 +227,7 @@ export default function AdminVenuesPage() {
             className={`cursor-pointer rounded-full px-3.5 py-1.5 text-xs font-medium transition-all ${
               statusFilter === filter.key
                 ? "bg-indigo-500/20 text-indigo-300 shadow-[0_0_12px_rgba(99,102,241,0.15)]"
-                : "bg-white/5 text-white/40 hover:bg-white/10 hover:text-white/60"
+                : "bg-[#1a1a1a] text-[#666] hover:bg-[#222] hover:text-[#999]"
             }`}
           >
             {filter.label}
@@ -247,24 +246,22 @@ export default function AdminVenuesPage() {
       ) : (
         <>
           {/* Venue cards */}
-          <motion.div
-            {...staggerContainer}
+          <div
             className="flex flex-col gap-3"
           >
             <AnimatePresence mode="popLayout">
               {venues.map((venue) => (
                 <motion.div
                   key={venue.id}
-                  {...staggerItem}
                   layout
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-lg"
+                  className="rounded-sm border border-[#333] bg-[#1a1a1a] p-4"
                 >
                   {/* Top row: Name + founding badge + status */}
                   <div className="mb-2 flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <h3 className="truncate text-sm font-semibold text-white/90">
+                        <h3 className="truncate text-sm font-semibold text-white">
                           {getDisplayName(venue)}
                         </h3>
                         {venue.isFoundingVenue && (
@@ -273,7 +270,7 @@ export default function AdminVenuesPage() {
                           </span>
                         )}
                       </div>
-                      <p className="mt-0.5 truncate text-xs text-white/40">
+                      <p className="mt-0.5 truncate text-xs text-[#666]">
                         {venue.owner.name} &middot; {venue.owner.email}
                       </p>
                     </div>
@@ -282,34 +279,34 @@ export default function AdminVenuesPage() {
                     <button
                       onClick={() => handleToggle(venue.id)}
                       disabled={togglingId === venue.id}
-                      className="shrink-0 cursor-pointer rounded-lg p-1 transition-colors hover:bg-white/5 disabled:opacity-50"
+                      className="shrink-0 cursor-pointer rounded-lg p-1 transition-colors hover:bg-[#1a1a1a] disabled:opacity-50"
                       title={t("admin.toggleStatus")}
                       aria-label={`${t("admin.toggleStatus")}: ${venue.name}`}
                     >
                       {venue.isActive ? (
-                        <ToggleRight className="h-6 w-6 text-emerald-400" />
+                        <ToggleRight className="h-6 w-6 text-[#d4ff00]" />
                       ) : (
-                        <ToggleLeft className="h-6 w-6 text-white/25" />
+                        <ToggleLeft className="h-6 w-6 text-[#666]" />
                       )}
                     </button>
                   </div>
 
                   {/* City */}
-                  <div className="mb-3 flex items-center gap-1.5 text-xs text-white/50">
+                  <div className="mb-3 flex items-center gap-1.5 text-xs text-[#999]">
                     <MapPin className="h-3 w-3 shrink-0" />
                     <span>{getDisplayCity(venue)}</span>
                   </div>
 
                   {/* Stats row */}
                   <div className="mb-3 flex items-center gap-4">
-                    <div className="flex items-center gap-1.5 text-xs text-white/50">
-                      <span className="font-semibold text-white/70">
+                    <div className="flex items-center gap-1.5 text-xs text-[#999]">
+                      <span className="font-semibold text-[#999]">
                         {venue.courtsCount}
                       </span>
                       <span>{t("admin.courts")}</span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-xs text-white/50">
-                      <span className="font-semibold text-white/70">
+                    <div className="flex items-center gap-1.5 text-xs text-[#999]">
+                      <span className="font-semibold text-[#999]">
                         {venue.bookingsCount}
                       </span>
                       <span>{t("admin.bookings")}</span>
@@ -318,7 +315,7 @@ export default function AdminVenuesPage() {
 
                   {/* Completeness dots */}
                   <div className="mb-3 flex items-center gap-2">
-                    <span className="text-[10px] font-medium uppercase tracking-wider text-white/30">
+                    <span className="text-[10px] font-medium uppercase tracking-wider text-[#666]">
                       {t("admin.completeness")}
                     </span>
                     <div className="flex items-center gap-1">
@@ -329,21 +326,21 @@ export default function AdminVenuesPage() {
                           className={`inline-block h-2 w-2 rounded-full transition-colors ${
                             venue.completeness[key]
                               ? "bg-indigo-400"
-                              : "bg-white/10"
+                              : "bg-[#222]"
                           }`}
                         />
                       ))}
                     </div>
-                    <span className="text-[10px] text-white/30">
+                    <span className="text-[10px] text-[#666]">
                       {venue.completeness.score}/5
                     </span>
                   </div>
 
                   {/* Action buttons */}
-                  <div className="flex items-center gap-2 border-t border-white/5 pt-3">
+                  <div className="flex items-center gap-2 border-t border-[#222] pt-3">
                     <button
                       onClick={() => handleWhatsApp(venue)}
-                      className="flex cursor-pointer items-center gap-1.5 rounded-lg bg-emerald-500/10 px-3 py-1.5 text-xs font-medium text-emerald-400 transition-colors hover:bg-emerald-500/20"
+                      className="flex cursor-pointer items-center gap-1.5 rounded-lg bg-[#d4ff00]/10 px-3 py-1.5 text-xs font-medium text-[#d4ff00] transition-colors hover:bg-[#d4ff00]/20"
                       aria-label={`${t("admin.contactOwner")}: ${venue.owner.name}`}
                     >
                       <MessageCircle className="h-3.5 w-3.5" />
@@ -353,7 +350,7 @@ export default function AdminVenuesPage() {
                       href={`/venues/${venue.id}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 rounded-lg bg-white/5 px-3 py-1.5 text-xs font-medium text-white/60 transition-colors hover:bg-white/10 hover:text-white/80"
+                      className="flex items-center gap-1.5 rounded-lg bg-[#1a1a1a] px-3 py-1.5 text-xs font-medium text-[#999] transition-colors hover:bg-[#222] hover:text-[#999]"
                       aria-label={`${t("admin.viewVenue")}: ${venue.name}`}
                     >
                       <ExternalLink className="h-3.5 w-3.5" />
@@ -364,8 +361,8 @@ export default function AdminVenuesPage() {
                     <div className="ms-auto flex items-center gap-1 text-[10px]">
                       {venue.isActive ? (
                         <>
-                          <CheckCircle2 className="h-3 w-3 text-emerald-400" />
-                          <span className="text-emerald-400/70">
+                          <CheckCircle2 className="h-3 w-3 text-[#d4ff00]" />
+                          <span className="text-[#d4ff00]/70">
                             {t("admin.active")}
                           </span>
                         </>
@@ -382,7 +379,7 @@ export default function AdminVenuesPage() {
                 </motion.div>
               ))}
             </AnimatePresence>
-          </motion.div>
+          </div>
 
           {/* Pagination */}
           {totalPages > 1 && (
@@ -390,18 +387,18 @@ export default function AdminVenuesPage() {
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page <= 1}
-                className="flex cursor-pointer items-center gap-1 rounded-xl bg-white/5 px-3 py-2 text-xs font-medium text-white/60 transition-colors hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-30"
+                className="flex cursor-pointer items-center gap-1 rounded-sm bg-[#1a1a1a] px-3 py-2 text-xs font-medium text-[#999] transition-colors hover:bg-[#222] disabled:cursor-not-allowed disabled:opacity-30"
                 aria-label="Previous page"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
-              <span className="text-xs text-white/40">
+              <span className="text-xs text-[#666]">
                 {page} / {totalPages}
               </span>
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page >= totalPages}
-                className="flex cursor-pointer items-center gap-1 rounded-xl bg-white/5 px-3 py-2 text-xs font-medium text-white/60 transition-colors hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-30"
+                className="flex cursor-pointer items-center gap-1 rounded-sm bg-[#1a1a1a] px-3 py-2 text-xs font-medium text-[#999] transition-colors hover:bg-[#222] disabled:cursor-not-allowed disabled:opacity-30"
                 aria-label="Next page"
               >
                 <ChevronRight className="h-4 w-4" />

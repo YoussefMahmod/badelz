@@ -73,7 +73,7 @@ export function FeatureTour() {
           className="fixed inset-0 z-[100] flex items-center justify-center"
         >
           {/* Backdrop */}
-          <div className="absolute inset-0 bg-[#0a0f1a]/95 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-[#0d0d0d]/95 backdrop-blur-sm" />
 
           {/* Content */}
           <div className="relative z-10 w-full max-w-sm mx-auto px-6 flex flex-col items-center">

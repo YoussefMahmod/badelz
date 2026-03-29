@@ -434,7 +434,7 @@ export function ScheduleGrid({ venueId, onSlotTap }: ScheduleGridProps) {
             <tr>
               {/* Time column header */}
               <th
-                className="sticky top-0 start-0 z-30 bg-[#0a0f1a]/95 backdrop-blur-sm border-b border-e border-white/10 p-2"
+                className="sticky top-0 start-0 z-30 bg-[#0d0d0d]/95 backdrop-blur-sm border-b border-e border-white/10 p-2"
                 style={{ minWidth: 64 }}
               >
                 <span className="text-[10px] font-medium text-white/40 uppercase tracking-wider">
@@ -444,7 +444,7 @@ export function ScheduleGrid({ venueId, onSlotTap }: ScheduleGridProps) {
               {courts.map((court) => (
                 <th
                   key={court.id}
-                  className="sticky top-0 z-20 bg-[#0a0f1a]/95 backdrop-blur-sm border-b border-e border-white/10 p-2 text-center last:border-e-0"
+                  className="sticky top-0 z-20 bg-[#0d0d0d]/95 backdrop-blur-sm border-b border-e border-white/10 p-2 text-center last:border-e-0"
                   style={{ minWidth: 120 }}
                 >
                   <span className="block text-xs font-semibold text-white/90 truncate">
@@ -471,7 +471,7 @@ export function ScheduleGrid({ venueId, onSlotTap }: ScheduleGridProps) {
                 >
                   {/* Time label — only show on hour marks */}
                   <td
-                    className="sticky start-0 z-10 bg-[#0a0f1a] border-e border-white/10 px-2 align-top"
+                    className="sticky start-0 z-10 bg-[#0d0d0d] border-e border-white/10 px-2 align-top"
                     style={{ height: 48 }}
                   >
                     {isHourMark && (
