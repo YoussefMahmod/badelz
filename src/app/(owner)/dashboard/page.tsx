@@ -407,28 +407,42 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Busiest Day */}
-            <div className="bg-[#1a1a1a] border border-[#333] rounded-sm p-4">
-              <p className="text-[11px] text-[#666] mb-1.5">{t("owner.busiestDay")}</p>
-              <p className="text-base font-bold text-white">
-                {locale === "ar" ? (DAY_NAMES_AR[insights.busiestDay] ?? insights.busiestDay) : insights.busiestDay}
-              </p>
-              <p className="text-[11px] text-[#666] mt-0.5">
-                {insights.busiestDayCount} {t("owner.bookings")}
-              </p>
-            </div>
+            {/* Busiest Day — only show when there's data */}
+            {insights.busiestDayCount > 0 ? (
+              <div className="bg-[#1a1a1a] border border-[#333] rounded-sm p-4">
+                <p className="text-[11px] text-[#666] mb-1.5">{t("owner.busiestDay")}</p>
+                <p className="text-base font-bold text-white">
+                  {locale === "ar" ? (DAY_NAMES_AR[insights.busiestDay] ?? insights.busiestDay) : insights.busiestDay}
+                </p>
+                <p className="text-[11px] text-[#666] mt-0.5">
+                  {insights.busiestDayCount} {t("owner.bookings")}
+                </p>
+              </div>
+            ) : (
+              <div className="bg-[#1a1a1a] border border-[#333] rounded-sm p-4">
+                <p className="text-[11px] text-[#666] mb-1.5">{t("owner.busiestDay")}</p>
+                <p className="text-sm text-[#666]">—</p>
+              </div>
+            )}
 
-            {/* Peak Hour */}
-            <div className="bg-[#1a1a1a] border border-[#333] rounded-sm p-4">
-              <p className="text-[11px] text-[#666] mb-1.5">{t("owner.peakHour")}</p>
-              <p className="text-base font-bold text-white">
-                {formatTime(`${insights.peakHour}:00`)}
-              </p>
-            </div>
+            {/* Peak Hour — only show when there's data */}
+            {insights.busiestDayCount > 0 ? (
+              <div className="bg-[#1a1a1a] border border-[#333] rounded-sm p-4">
+                <p className="text-[11px] text-[#666] mb-1.5">{t("owner.peakHour")}</p>
+                <p className="text-base font-bold text-white">
+                  {formatTime(`${insights.peakHour}:00`)}
+                </p>
+              </div>
+            ) : (
+              <div className="bg-[#1a1a1a] border border-[#333] rounded-sm p-4">
+                <p className="text-[11px] text-[#666] mb-1.5">{t("owner.peakHour")}</p>
+                <p className="text-sm text-[#666]">—</p>
+              </div>
+            )}
           </div>
 
-          {/* Weekly Revenue Bar Chart */}
-          {insights.dailyRevenue.length > 0 && (
+          {/* Weekly Revenue Bar Chart — only show when there's revenue */}
+          {insights.dailyRevenue.length > 0 && insights.dailyRevenue.some((d) => d.revenue > 0) && (
             <div className="bg-[#1a1a1a] border border-[#333] rounded-sm p-4">
               <h3 className="text-sm font-bold text-white mb-3">{t("owner.weeklyChart")}</h3>
               <div className="flex items-end gap-1.5 h-[100px]">
