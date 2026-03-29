@@ -341,7 +341,7 @@ const ar: TranslationKeys = {
     slotSaved: "تم حفظ المواعيد",
     slotDeleted: "تم حذف الميعاد",
     slotsCount: "{{count}} ميعاد",
-    slotDuration: "مدة الفترة",
+    slotDuration: "مدة الحجز الواحد",
     sameAllDays: "نفس المواعيد كل الأيام",
     operatingHours: "ساعات العمل",
     slotsPerDay: "فترة/يوم",

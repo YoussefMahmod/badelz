@@ -38,24 +38,21 @@ interface FeedbackMessage {
 
 function generateTimeOptions(includeEnd: boolean): string[] {
   const times: string[] = [];
-  // 06:00 to 23:30 same day
-  for (let h = 6; h < 24; h++) {
+  // Full 24 hours: 00:00 to 23:30
+  for (let h = 0; h < 24; h++) {
     times.push(`${h.toString().padStart(2, "0")}:00`);
     times.push(`${h.toString().padStart(2, "0")}:30`);
   }
-  // Next day: 00:00 to 01:30 (for start) or 02:00 (for end)
-  times.push("00:00");
-  times.push("00:30");
-  times.push("01:00");
-  times.push("01:30");
+  // For end times, include next-day 00:00-02:00 for venues that close after midnight
   if (includeEnd) {
-    times.push("02:00");
+    // These are already included (00:00, 00:30, 01:00, 01:30) from the loop above
+    // Just add 02:00 as the final possible end time for late-night venues
   }
   return times;
 }
 
 const START_TIMES = generateTimeOptions(false);
-const END_TIMES = generateTimeOptions(true).filter((t) => t !== "06:00");
+const END_TIMES = generateTimeOptions(true);
 
 // ─── Inline Feedback Component ───────────────────────────
 
