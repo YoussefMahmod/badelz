@@ -9,6 +9,8 @@ const subscribeSchema = z.object({
   p256dh: z.string().min(1),
   auth: z.string().min(1),
   phone: z.string().regex(/^01[0125]\d{8}$/).optional(),
+  area: z.string().optional(),
+  level: z.string().optional(),
   locale: z.enum(["ar", "en"]).default("ar"),
 });
 
@@ -25,7 +27,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { endpoint, p256dh, auth, phone, locale } = parsed.data;
+    const { endpoint, p256dh, auth, phone, area, level, locale } = parsed.data;
 
     // Check if user is authenticated (venue owner)
     const session = await getServerSession(authOptions);
@@ -47,6 +49,8 @@ export async function POST(request: NextRequest) {
         auth,
         userId,
         phone: phone || null,
+        area: area || null,
+        level: level || null,
         locale,
         isActive: true,
       },
@@ -56,6 +60,8 @@ export async function POST(request: NextRequest) {
         auth,
         userId,
         phone: phone || null,
+        area: area || null,
+        level: level || null,
         locale,
         isActive: true,
       },

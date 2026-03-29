@@ -22,6 +22,7 @@ import { useTranslation, useLocale } from "@/i18n";
 import { useAuth } from "@/lib/auth-context";
 import { AREAS, LOBBY_LEVELS } from "@/lib/constants";
 import { getNext7Days, toDateString } from "@/lib/format";
+import { getPlayerPreferences, setPlayerPreferences } from "@/lib/player-preferences";
 
 function isValidEgyptPhone(phone: string): boolean {
   const cleaned = phone.replace(/\D/g, "");
@@ -74,12 +75,19 @@ export default function CreateLobbyPage() {
     phone: false,
   });
 
-  // Auto-fill from authenticated user
+  // Auto-fill from authenticated user or saved preferences
   useEffect(() => {
     if (isAuthenticated && user) {
       if (user.name && !name) setName(user.name);
       if (user.phone && !phone) setPhone(user.phone);
     }
+
+    // Fill from saved preferences for non-auth or missing fields
+    const prefs = getPlayerPreferences();
+    if (!name && prefs.name) setName(prefs.name);
+    if (!phone && prefs.phone) setPhone(prefs.phone);
+    if (!area && prefs.area) setArea(prefs.area);
+    if (!level && prefs.level) setLevel(prefs.level);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, user]);
 
@@ -123,8 +131,15 @@ export default function CreateLobbyPage() {
       });
       const json = await res.json();
       if (res.ok && json.data?.lobbyCode) {
+        const cleanedPhone = phone.replace(/\D/g, "");
+        setPlayerPreferences({
+          area,
+          level: level || undefined,
+          name: name.trim(),
+          phone: cleanedPhone,
+        });
         if (typeof window !== "undefined") {
-          localStorage.setItem("badelz-player-phone", phone.replace(/\D/g, ""));
+          localStorage.setItem("badelz-player-phone", cleanedPhone);
         }
         track.lobbyCreated({ area, date });
         router.push(`/lobby/${json.data.lobbyCode}`);

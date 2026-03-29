@@ -16,7 +16,7 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
 interface UsePushSubscriptionReturn {
   isSupported: boolean;
   permission: NotificationPermission | "unsupported";
-  subscribe: (phone?: string) => Promise<boolean>;
+  subscribe: (phone?: string, area?: string) => Promise<boolean>;
   unsubscribe: () => Promise<void>;
 }
 
@@ -36,7 +36,7 @@ export function usePushSubscription(): UsePushSubscriptionReturn {
   }, [isSupported]);
 
   const subscribe = useCallback(
-    async (phone?: string): Promise<boolean> => {
+    async (phone?: string, area?: string): Promise<boolean> => {
       if (!isSupported) return false;
 
       try {
@@ -64,6 +64,7 @@ export function usePushSubscription(): UsePushSubscriptionReturn {
             p256dh: json.keys?.p256dh,
             auth: json.keys?.auth,
             phone,
+            area,
             locale,
           }),
         });

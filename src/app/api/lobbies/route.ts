@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { lobbySchema } from "@/lib/validators";
 import { customAlphabet } from "nanoid";
 import { buildLobbyShareLink } from "@/lib/whatsapp";
+import { notifyAreaPlayers } from "@/lib/push-notify-area";
 
 const generateCode = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 6);
 
@@ -167,6 +168,15 @@ export async function POST(request: NextRequest) {
       level: lobby.level ?? undefined,
       spotsLeft: MAX_PLAYERS - 1, // Host is already in
     });
+
+    // Fire-and-forget: notify area subscribers about new lobby
+    notifyAreaPlayers(lobby.area, [hostPhone], {
+      title: `لوبي جديد في ${lobby.areaAr ?? lobby.area}`,
+      body: `${lobby.hostName} فتح لوبي — ${date}`,
+      url: `/lobby/${lobby.lobbyCode}`,
+      tag: `lobby-new-${lobby.area}`,
+      lang: "ar",
+    }).catch((err) => console.error("Area push (new lobby) failed:", err));
 
     return NextResponse.json(
       {

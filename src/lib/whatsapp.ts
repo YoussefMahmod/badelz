@@ -131,6 +131,27 @@ export function buildPlayerShareLink(params: {
   return `https://wa.me/?text=${encodeURIComponent(lines.join("\n"))}`;
 }
 
+export function buildPlayBroadcastLink(params: {
+  area?: string;
+  areaAr?: string;
+  date?: string;
+}) {
+  const areaLine = params.areaAr || params.area;
+  const queryParts: string[] = [];
+  if (params.area) queryParts.push(`area=${params.area}`);
+  if (params.date) queryParts.push(`date=${params.date}`);
+  const query = queryParts.length > 0 ? `?${queryParts.join("&")}` : "";
+
+  const lines = [
+    "ناقصنا لاعبين بادل النهارده! 🏸",
+    areaLine ? `📍 ${areaLine}` : "",
+    "",
+    "دور على ماتش أو أنشئ لوبي:",
+    `${BASE_URL}/play${query}`,
+  ].filter(Boolean);
+  return `https://wa.me/?text=${encodeURIComponent(lines.join("\n"))}`;
+}
+
 export function buildListingShareLink(params: {
   id: string;
   title: string;

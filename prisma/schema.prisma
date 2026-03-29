@@ -432,6 +432,8 @@ model PushSubscription {
   auth     String
   userId   String?
   phone    String?
+  area     String?
+  level    String?
   locale   String  @default("ar")
   isActive Boolean @default(true)
   createdAt DateTime @default(now())
@@ -442,4 +444,5 @@ model PushSubscription {
   @@index([userId])
   @@index([phone])
   @@index([isActive])
+  @@index([area, isActive])
 }

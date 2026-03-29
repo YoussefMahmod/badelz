@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { joinLobbySchema } from "@/lib/validators";
 import { sendPushToPhone } from "@/lib/push";
+import { notifyAreaPlayers } from "@/lib/push-notify-area";
 
 type RouteParams = { params: Promise<{ code: string }> };
 
@@ -129,6 +130,10 @@ export async function POST(
         hostPhone: lobby.hostPhone,
         spotsLeft: MAX_PLAYERS - newPlayerCount,
         lobbyStatus: isFull ? ("FULL" as const) : lobby.status,
+        lobbyArea: lobby.area,
+        lobbyAreaAr: lobby.areaAr,
+        lobbyDate: lobby.date,
+        allPlayerPhones: [...lobby.players.map((p) => p.playerPhone), playerPhone],
       };
     });
 
@@ -142,6 +147,18 @@ export async function POST(
       tag: `lobby-${code.toUpperCase()}`,
       lang: "ar",
     }).catch((err) => console.error("Lobby push failed:", err));
+
+    // Fire-and-forget: notify area when lobby needs 1 more player
+    if (result.spotsLeft === 1) {
+      const areaLabel = result.lobbyAreaAr ?? result.lobbyArea;
+      notifyAreaPlayers(result.lobbyArea, result.allPlayerPhones, {
+        title: "ناقصنا 1 بس! 🏸",
+        body: `لوبي في ${areaLabel} محتاج لاعب`,
+        url: `/lobby/${code.toUpperCase()}`,
+        tag: `lobby-hot-${code.toUpperCase()}`,
+        lang: "ar",
+      }).catch((err) => console.error("Area push (need 1) failed:", err));
+    }
 
     return NextResponse.json(
       {

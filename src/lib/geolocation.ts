@@ -5,7 +5,7 @@ import { AREAS } from "./constants";
 /**
  * Haversine formula to calculate distance between two lat/lng points in kilometers.
  */
-function haversine(lat1: number, lng1: number, lat2: number, lng2: number): number {
+export function haversine(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const R = 6371; // Earth radius in km
   const dLat = ((lat2 - lat1) * Math.PI) / 180;
   const dLng = ((lng2 - lng1) * Math.PI) / 180;
@@ -61,4 +61,68 @@ export function getNearestArea(): Promise<string | null> {
       }
     );
   });
+}
+
+/**
+ * Gets the user's raw coordinates without resolving to an area.
+ * Returns null if geolocation is unavailable, denied, or times out.
+ */
+export function getUserCoordinates(): Promise<{ lat: number; lng: number } | null> {
+  return new Promise((resolve) => {
+    if (typeof navigator === "undefined" || !navigator.geolocation) {
+      resolve(null);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        resolve({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      },
+      () => {
+        resolve(null);
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 10000,
+        maximumAge: 300000,
+      }
+    );
+  });
+}
+
+/**
+ * Returns area keys within a given radius (km) of a target area, sorted by distance.
+ * Excludes the target area itself and the "all" entry.
+ */
+export function getAdjacentAreas(areaKey: string, radiusKm: number = 15): string[] {
+  const target = AREAS.find((a) => a.key === areaKey);
+  if (!target || target.key === "all") return [];
+
+  return AREAS
+    .filter((a) => a.key !== "all" && a.key !== areaKey)
+    .map((a) => ({
+      key: a.key,
+      distance: haversine(target.lat, target.lng, a.lat, a.lng),
+    }))
+    .filter((a) => a.distance <= radiusKm)
+    .sort((a, b) => a.distance - b.distance)
+    .map((a) => a.key);
+}
+
+/**
+ * Returns all area keys sorted by distance from the given coordinates.
+ * Excludes the "all" entry.
+ */
+export function getAreasSortedByProximity(lat: number, lng: number): string[] {
+  return AREAS
+    .filter((a) => a.key !== "all")
+    .map((a) => ({
+      key: a.key,
+      distance: haversine(lat, lng, a.lat, a.lng),
+    }))
+    .sort((a, b) => a.distance - b.distance)
+    .map((a) => a.key);
 }

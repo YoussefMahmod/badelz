@@ -5,14 +5,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Bell, X } from "lucide-react";
 import { usePushSubscription } from "@/hooks/use-push-subscription";
 import { useTranslation } from "@/i18n";
+import { getPlayerPreferences } from "@/lib/player-preferences";
 
 const DISMISSED_KEY = "badelz-notification-dismissed";
 
 interface NotificationPromptProps {
   phone?: string;
+  area?: string;
 }
 
-export function NotificationPrompt({ phone }: NotificationPromptProps) {
+export function NotificationPrompt({ phone, area }: NotificationPromptProps) {
   const { t } = useTranslation();
   const { isSupported, permission, subscribe } = usePushSubscription();
   const [visible, setVisible] = useState(false);
@@ -32,7 +34,9 @@ export function NotificationPrompt({ phone }: NotificationPromptProps) {
 
   const handleEnable = async () => {
     setLoading(true);
-    const success = await subscribe(phone);
+    const prefs = getPlayerPreferences();
+    const subArea = area || prefs.detectedArea || prefs.area;
+    const success = await subscribe(phone, subArea);
     setLoading(false);
     if (success) {
       setVisible(false);
