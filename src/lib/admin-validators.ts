@@ -27,7 +27,22 @@ export const quickOnboardSchema = z.object({
       })
     )
     .min(1),
-  slotTemplate: z.enum(["STANDARD_PADEL", "EVENING_ONLY", "WEEKEND_HEAVY"]),
+  slotTemplate: z.enum(["STANDARD_PADEL", "EVENING_ONLY", "WEEKEND_HEAVY"]).optional(),
+  scheduleConfig: z.object({
+    slotDuration: z.number().refine((v) => v === 30 || v === 60).default(60),
+    weekdays: z.object({
+      startTime: z.string().regex(/^\d{2}:\d{2}$/),
+      endTime: z.string().regex(/^\d{2}:\d{2}$/),
+    }).optional(),
+    weekends: z.object({
+      startTime: z.string().regex(/^\d{2}:\d{2}$/),
+      endTime: z.string().regex(/^\d{2}:\d{2}$/),
+    }).optional(),
+    all: z.object({
+      startTime: z.string().regex(/^\d{2}:\d{2}$/),
+      endTime: z.string().regex(/^\d{2}:\d{2}$/),
+    }).optional(),
+  }).optional(),
 });
 
 export const applyTemplateSchema = z.object({

@@ -2,11 +2,11 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-interface AvailableSlot {
-  id: string;
-  dayOfWeek: string;
+export interface AvailableSlot {
   startTime: string;
   endTime: string;
+  slotDuration: number; // 30 or 60
+  availableBlocks: number; // 1-3
   pricePerHour: string | number;
 }
 

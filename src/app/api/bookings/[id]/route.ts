@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { calculateTier } from "@/lib/constants";
+import { sendPushToPhone } from "@/lib/push";
 import { z } from "zod";
 
 type RouteParams = { params: Promise<{ id: string }> };
@@ -96,7 +97,10 @@ export async function PATCH(
     // Fetch the booking and verify the caller is the venue owner
     const booking = await prisma.booking.findUnique({
       where: { id },
-      include: { venue: { select: { ownerId: true } } },
+      include: {
+        venue: { select: { ownerId: true, name: true, nameAr: true } },
+        court: { select: { name: true, nameAr: true } },
+      },
     });
 
     if (!booking) {
@@ -118,12 +122,33 @@ export async function PATCH(
       data: { status: parsed.data.status },
     });
 
-    // Cascade cancellation to the linked game
+    const venueName = booking.venue.nameAr ?? booking.venue.name;
+
+    // Notify player on status change
+    if (parsed.data.status === "CONFIRMED") {
+      sendPushToPhone(booking.playerPhone, {
+        title: "تم تأكيد الحجز! ✅",
+        body: `حجزك في ${venueName} الساعة ${booking.startTime} متأكد`,
+        url: `/booking-confirmed/${booking.id}`,
+        tag: `booking-${booking.confirmationCode}`,
+        lang: "ar",
+      }).catch((err) => console.error("Confirm push failed:", err));
+    }
+
     if (parsed.data.status === "CANCELLED") {
+      // Cascade cancellation to the linked game
       await prisma.game.updateMany({
         where: { bookingId: id },
         data: { status: "CANCELLED" },
       });
+
+      sendPushToPhone(booking.playerPhone, {
+        title: "الحجز لم يتم تأكيده",
+        body: `حجزك في ${venueName} الساعة ${booking.startTime} تم رفضه - جرب ميعاد تاني`,
+        url: `/venues`,
+        tag: `booking-${booking.confirmationCode}`,
+        lang: "ar",
+      }).catch((err) => console.error("Cancel push failed:", err));
     }
 
     // On completion: increment gamesPlayed for ALL players in the game

@@ -4,13 +4,20 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ownerBookingSchema } from "@/lib/validators";
 import { customAlphabet } from "nanoid";
+import { getDayGroup, timeToMinutes, minutesToTime } from "@/lib/slot-templates";
+import { DayOfWeek } from "@prisma/client";
 
 const generateCode = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 6);
 
-function timeToMinutes(time: string): number {
-  const [h, m] = time.split(":").map(Number);
-  return h * 60 + m;
-}
+const DAY_MAP: Record<number, DayOfWeek> = {
+  0: "SUNDAY",
+  1: "MONDAY",
+  2: "TUESDAY",
+  3: "WEDNESDAY",
+  4: "THURSDAY",
+  5: "FRIDAY",
+  6: "SATURDAY",
+};
 
 export async function GET(request: NextRequest) {
   try {
@@ -116,15 +123,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { courtId, date, startTime, endTime, playerName, playerPhone, notes } = parsed.data;
-
-    // Validate time order
-    if (timeToMinutes(startTime) >= timeToMinutes(endTime)) {
-      return NextResponse.json(
-        { statusCode: 400, message: "وقت البداية لازم يكون قبل وقت النهاية", data: null },
-        { status: 400 }
-      );
-    }
+    const { courtId, date, startTime, blockCount, playerName, playerPhone, notes } = parsed.data;
 
     // Verify court belongs to owner's venue
     const court = await prisma.court.findFirst({
@@ -138,21 +137,45 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Determine endTime from schedule template or legacy
+    const dateParts = date.split("-").map(Number);
+    const dateObj = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+    const dayOfWeek = DAY_MAP[dateObj.getDay()];
+    const dayGroup = getDayGroup(dayOfWeek);
+
     // Transaction: conflict check + create booking
     const result = await prisma.$transaction(async (tx) => {
+      let endTime: string;
+
+      // Try schedule template first
+      const template = await tx.scheduleTemplate.findFirst({
+        where: {
+          courtId,
+          dayGroup: { in: [dayGroup, "all"] },
+          isActive: true,
+        },
+      });
+
+      if (template) {
+        const requestedEndMin = timeToMinutes(startTime) + template.slotDuration * blockCount;
+        endTime = minutesToTime(requestedEndMin);
+      } else if (parsed.data.endTime) {
+        endTime = parsed.data.endTime;
+      } else {
+        // Default to 1 hour blocks
+        const requestedEndMin = timeToMinutes(startTime) + 60 * blockCount;
+        endTime = minutesToTime(requestedEndMin);
+      }
+
       // Check for conflicting bookings
       const conflicting = await tx.booking.findFirst({
         where: {
           courtId,
           date: new Date(date),
           status: { not: "CANCELLED" },
-          OR: [
-            {
-              AND: [
-                { startTime: { lt: endTime } },
-                { endTime: { gt: startTime } },
-              ],
-            },
+          AND: [
+            { startTime: { lt: endTime } },
+            { endTime: { gt: startTime } },
           ],
         },
       });
@@ -165,6 +188,7 @@ export async function POST(request: NextRequest) {
       const durationMinutes = timeToMinutes(endTime) - timeToMinutes(startTime);
       const totalPrice = court.pricePerHour.toNumber() * (durationMinutes / 60);
 
+      // Owner bookings skip PENDING — go directly to CONFIRMED
       const booking = await tx.booking.create({
         data: {
           courtId,
@@ -174,6 +198,7 @@ export async function POST(request: NextRequest) {
           date: new Date(date),
           startTime,
           endTime,
+          blockCount,
           totalPrice,
           status: "CONFIRMED",
           confirmationCode: generateCode(),

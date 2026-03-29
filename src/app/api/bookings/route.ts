@@ -8,6 +8,7 @@ import { DayOfWeek } from "@prisma/client";
 import { buildGameShareLink } from "@/lib/whatsapp";
 import { sendBookingNotification } from "@/lib/email";
 import { sendPushToPhone, sendPushToUser } from "@/lib/push";
+import { getDayGroup, timeToMinutes, minutesToTime } from "@/lib/slot-templates";
 
 const generateCode = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 6);
 
@@ -84,11 +85,6 @@ const DAY_MAP: Record<number, DayOfWeek> = {
   6: "SATURDAY",
 };
 
-function timeToMinutes(time: string): number {
-  const [h, m] = time.split(":").map(Number);
-  return h * 60 + m;
-}
-
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -106,20 +102,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { courtId, date, startTime, endTime, playerName, playerPhone, notes, level } =
+    const { courtId, date, startTime, blockCount, playerName, playerPhone, notes, level } =
       parsed.data;
-
-    // Validate startTime < endTime
-    if (timeToMinutes(startTime) >= timeToMinutes(endTime)) {
-      return NextResponse.json(
-        {
-          statusCode: 400,
-          message: "وقت البداية لازم يكون قبل وقت النهاية",
-          data: null,
-        },
-        { status: 400 }
-      );
-    }
 
     // Look up the court and its venue
     const court = await prisma.court.findUnique({
@@ -155,38 +139,74 @@ export async function POST(request: NextRequest) {
     const dateParts = date.split("-").map(Number);
     const dateObj = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
     const dayOfWeek = DAY_MAP[dateObj.getDay()];
+    const dayGroup = getDayGroup(dayOfWeek);
 
     // Use a transaction for the availability check + booking + game creation
     const result = await prisma.$transaction(async (tx) => {
-      // Check that a matching TimeSlot template exists
-      const matchingSlot = await tx.timeSlot.findFirst({
+      // Try new ScheduleTemplate first, fall back to legacy TimeSlot
+      const template = await tx.scheduleTemplate.findFirst({
         where: {
           courtId,
-          dayOfWeek,
-          startTime,
-          endTime,
+          dayGroup: { in: [dayGroup, "all"] },
           isActive: true,
         },
       });
 
-      if (!matchingSlot) {
-        throw new Error("SLOT_NOT_FOUND");
+      let endTime: string;
+      let slotDuration: number;
+
+      if (template) {
+        // Validate against schedule template
+        slotDuration = template.slotDuration;
+        const requestedStartMin = timeToMinutes(startTime);
+        const templateStartMin = timeToMinutes(template.startTime);
+        const templateEndMin = timeToMinutes(template.endTime);
+        const requestedEndMin = requestedStartMin + slotDuration * blockCount;
+
+        // Check start time is within template range
+        if (requestedStartMin < templateStartMin || requestedEndMin > templateEndMin) {
+          throw new Error("SLOT_NOT_FOUND");
+        }
+
+        // Check start time aligns with slot grid
+        if ((requestedStartMin - templateStartMin) % slotDuration !== 0) {
+          throw new Error("SLOT_NOT_FOUND");
+        }
+
+        endTime = minutesToTime(requestedEndMin);
+      } else {
+        // Legacy fallback: check TimeSlot table
+        const endTimeFromBody = parsed.data.endTime;
+        if (!endTimeFromBody) {
+          throw new Error("SLOT_NOT_FOUND");
+        }
+        endTime = endTimeFromBody;
+        slotDuration = timeToMinutes(endTime) - timeToMinutes(startTime);
+
+        const matchingSlot = await tx.timeSlot.findFirst({
+          where: {
+            courtId,
+            dayOfWeek,
+            startTime,
+            endTime,
+            isActive: true,
+          },
+        });
+
+        if (!matchingSlot) {
+          throw new Error("SLOT_NOT_FOUND");
+        }
       }
 
-      // Check for conflicting bookings on the same court + date
+      // Check for conflicting bookings (includes PENDING to block slots)
       const conflicting = await tx.booking.findFirst({
         where: {
           courtId,
           date: new Date(date),
           status: { not: "CANCELLED" },
-          OR: [
-            {
-              // Existing booking starts before new one ends, and existing ends after new one starts
-              AND: [
-                { startTime: { lt: endTime } },
-                { endTime: { gt: startTime } },
-              ],
-            },
+          AND: [
+            { startTime: { lt: endTime } },
+            { endTime: { gt: startTime } },
           ],
         },
       });
@@ -195,7 +215,7 @@ export async function POST(request: NextRequest) {
         throw new Error("SLOT_TAKEN");
       }
 
-      // Calculate duration in hours for pricing
+      // Calculate price based on duration
       const durationMinutes = timeToMinutes(endTime) - timeToMinutes(startTime);
       const durationHours = durationMinutes / 60;
       const totalPrice = court.pricePerHour.toNumber() * durationHours;
@@ -213,8 +233,9 @@ export async function POST(request: NextRequest) {
           date: new Date(date),
           startTime,
           endTime,
+          blockCount,
           totalPrice,
-          status: "CONFIRMED",
+          status: "PENDING",
           confirmationCode,
           notes: notes ?? null,
         },
@@ -236,10 +257,10 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      return { booking, gameCode: game.gameCode, totalPrice };
+      return { booking, gameCode: game.gameCode, totalPrice, endTime };
     });
 
-    const { booking, gameCode, totalPrice } = result;
+    const { booking, gameCode, totalPrice, endTime } = result;
     const venueName = court.venue.nameAr ?? court.venue.name;
     const courtName = court.nameAr ?? court.name;
     const pricePerPlayer = Math.ceil(Number(totalPrice) / 4);
@@ -260,10 +281,10 @@ export async function POST(request: NextRequest) {
       }).catch((err) => console.error("Email notification failed:", err));
     }
 
-    // Fire-and-forget push notification to player
+    // Fire-and-forget push notification to player (pending state)
     sendPushToPhone(playerPhone, {
-      title: "تم تأكيد الحجز",
-      body: `كورتك في ${venueName} الساعة ${startTime}`,
+      title: "تم إرسال طلب الحجز",
+      body: `طلبك في ${venueName} الساعة ${startTime} - في انتظار تأكيد الملعب`,
       url: `/booking-confirmed/${booking.id}`,
       tag: `booking-${booking.confirmationCode}`,
       lang: "ar",
@@ -272,8 +293,8 @@ export async function POST(request: NextRequest) {
     // Fire-and-forget push notification to venue owner
     if (court.venue.owner?.id) {
       sendPushToUser(court.venue.owner.id, {
-        title: "حجز جديد!",
-        body: `${playerName} حجز ${courtName} الساعة ${startTime}`,
+        title: "طلب حجز جديد!",
+        body: `${playerName} عايز يحجز ${courtName} الساعة ${startTime} - أكد أو ارفض`,
         url: "/bookings",
         tag: `owner-booking-${booking.confirmationCode}`,
         lang: "ar",
@@ -289,14 +310,14 @@ export async function POST(request: NextRequest) {
       startTime,
       endTime,
       pricePerPlayer,
-      spotsLeft: 3, // creator is already in, 3 spots remain
+      spotsLeft: 3,
       level: level ?? undefined,
     });
 
     return NextResponse.json(
       {
         statusCode: 201,
-        message: "تم الحجز بنجاح",
+        message: "تم إرسال طلب الحجز",
         data: {
           ...booking,
           venueName,

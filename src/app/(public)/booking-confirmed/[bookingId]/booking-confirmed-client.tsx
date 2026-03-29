@@ -1,15 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { CreditCard } from "lucide-react";
+import { CreditCard, Clock, XCircle } from "lucide-react";
 import Link from "next/link";
 import { BookingConfirmationCard } from "@/components/booking-confirmation-card";
 import { GameLinkCard } from "@/components/game-link-card";
 import { AuthNudge } from "@/components/auth-nudge";
 import { LoadingSpinner } from "@/components/loading-spinner";
 import { NotificationPrompt } from "@/components/notification-prompt";
-import { useTranslation } from "@/i18n";
+import { useTranslation, useLocale } from "@/i18n";
 
 interface GameOnBooking {
   gameCode: string;
@@ -44,9 +44,23 @@ export default function BookingConfirmedClient({
   bookingId: string;
 }) {
   const { t } = useTranslation();
+  const { locale } = useLocale();
   const [booking, setBooking] = useState<BookingData | null>(null);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(false);
+
+  const fetchBooking = useCallback(async () => {
+    if (bookingId === "demo") return;
+    try {
+      const res = await fetch(`/api/bookings/${bookingId}`);
+      const json = await res.json();
+      if (res.ok && json.data) {
+        setBooking(json.data);
+      }
+    } catch {
+      // handled by empty state
+    }
+  }, [bookingId]);
 
   useEffect(() => {
     if (bookingId === "demo") {
@@ -75,21 +89,20 @@ export default function BookingConfirmedClient({
       return;
     }
 
-    async function fetchBooking() {
-      try {
-        const res = await fetch(`/api/bookings/${bookingId}`);
-        const json = await res.json();
-        if (res.ok && json.data) {
-          setBooking(json.data);
-        }
-      } catch {
-        // handled by empty state
-      } finally {
-        setLoading(false);
-      }
+    async function load() {
+      await fetchBooking();
+      setLoading(false);
     }
-    fetchBooking();
-  }, [bookingId]);
+    load();
+  }, [bookingId, fetchBooking]);
+
+  // Poll for status changes when booking is PENDING
+  useEffect(() => {
+    if (!booking || booking.status !== "PENDING" || bookingId === "demo") return;
+
+    const interval = setInterval(fetchBooking, 5000);
+    return () => clearInterval(interval);
+  }, [booking?.status, bookingId, fetchBooking]);
 
   const handleCancel = async () => {
     if (!booking) return;
@@ -124,6 +137,10 @@ export default function BookingConfirmedClient({
     ["CONFIRMED", "PENDING"].includes(booking.status) &&
     bookingId !== "demo";
 
+  const isPending = booking?.status === "PENDING";
+  const isConfirmed = booking?.status === "CONFIRMED";
+  const isCancelled = booking?.status === "CANCELLED";
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0a0f1a] flex items-center justify-center">
@@ -142,32 +159,61 @@ export default function BookingConfirmedClient({
 
   return (
     <div className="min-h-screen bg-[#0a0f1a] flex flex-col items-center justify-center py-10 relative overflow-hidden">
-      {/* Celebration particles -- emerald */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        {Array.from({ length: 12 }).map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute h-2 w-2 rounded-full"
-            style={{
-              left: `${10 + Math.random() * 80}%`,
-              top: `${Math.random() * 100}%`,
-              backgroundColor: i % 3 === 0 ? "#10b981" : i % 3 === 1 ? "#14b8a6" : "#065f46",
-              opacity: 0.5,
-            }}
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{
-              opacity: [0, 0.8, 0],
-              scale: [0, 1, 0.5],
-              y: [0, -100 - Math.random() * 200],
-            }}
-            transition={{
-              duration: 1.5 + Math.random() * 1,
-              delay: 0.3 + Math.random() * 0.8,
-              ease: "easeOut",
-            }}
-          />
-        ))}
-      </div>
+      {/* Celebration particles -- only show when confirmed */}
+      {isConfirmed && (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute h-2 w-2 rounded-full"
+              style={{
+                left: `${10 + Math.random() * 80}%`,
+                top: `${Math.random() * 100}%`,
+                backgroundColor: i % 3 === 0 ? "#10b981" : i % 3 === 1 ? "#14b8a6" : "#065f46",
+                opacity: 0.5,
+              }}
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{
+                opacity: [0, 0.8, 0],
+                scale: [0, 1, 0.5],
+                y: [0, -100 - Math.random() * 200],
+              }}
+              transition={{
+                duration: 1.5 + Math.random() * 1,
+                delay: 0.3 + Math.random() * 0.8,
+                ease: "easeOut",
+              }}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Pending status banner */}
+      {isPending && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-sm mx-auto mb-6 px-4"
+        >
+          <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl px-5 py-4 text-center">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+              className="inline-block mb-2"
+            >
+              <Clock size={24} className="text-amber-400" />
+            </motion.div>
+            <p className="text-sm font-bold text-amber-400 mb-1">
+              {locale === "ar" ? "في انتظار تأكيد الملعب" : "Waiting for venue confirmation"}
+            </p>
+            <p className="text-xs text-amber-400/60">
+              {locale === "ar"
+                ? "هنبعتلك إشعار لما الملعب يأكد حجزك"
+                : "We'll notify you when the venue confirms your booking"}
+            </p>
+          </div>
+        </motion.div>
+      )}
 
       <BookingConfirmationCard
         booking={{
@@ -189,7 +235,7 @@ export default function BookingConfirmedClient({
         }
       />
 
-      {booking.game && (
+      {booking.game && isConfirmed && (
         <GameLinkCard
           gameCode={booking.game.gameCode}
           spotsLeft={4 - booking.game.players.length}
@@ -210,17 +256,24 @@ export default function BookingConfirmedClient({
         />
       )}
 
-      {/* Cancelled banner */}
-      {booking.status === "CANCELLED" && (
+      {/* Cancelled / Rejected banner */}
+      {isCancelled && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-sm mx-auto mt-4 px-4"
         >
-          <div className="bg-red-500/10 border border-red-500/20 rounded-2xl px-5 py-3 text-center">
-            <p className="text-sm font-medium text-red-400">
+          <div className="bg-red-500/10 border border-red-500/20 rounded-2xl px-5 py-4 text-center">
+            <XCircle size={24} className="text-red-400 mx-auto mb-2" />
+            <p className="text-sm font-medium text-red-400 mb-2">
               {t("confirmation.cancelled")}
             </p>
+            <Link
+              href="/venues"
+              className="inline-block text-xs font-medium text-emerald-400 hover:text-emerald-300 transition-colors"
+            >
+              {locale === "ar" ? "جرب ميعاد تاني" : "Try another time"}
+            </Link>
           </div>
         </motion.div>
       )}

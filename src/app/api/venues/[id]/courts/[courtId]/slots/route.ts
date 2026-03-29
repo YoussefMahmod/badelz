@@ -5,6 +5,8 @@ import { prisma } from "@/lib/prisma";
 import { slotSchema } from "@/lib/validators";
 import { z } from "zod";
 import { DayOfWeek } from "@prisma/client";
+import { generateSlotsFromTemplate, getDayGroup } from "@/lib/slot-templates";
+import { expireStalePendingBookings } from "@/lib/booking-expiry";
 
 type RouteParams = { params: Promise<{ id: string; courtId: string }> };
 
@@ -55,8 +57,32 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    // Owner mode: return all slot templates for this court (all days)
+    // Owner mode: return schedule template config for this court
     if (allParam === "true") {
+      // Try new ScheduleTemplate first
+      const schedules = await prisma.scheduleTemplate.findMany({
+        where: { courtId, isActive: true },
+        orderBy: { dayGroup: "asc" },
+      });
+
+      if (schedules.length > 0) {
+        return NextResponse.json({
+          statusCode: 200,
+          message: "تم جلب جدول المواعيد",
+          data: {
+            type: "schedule",
+            schedules: schedules.map((s) => ({
+              id: s.id,
+              dayGroup: s.dayGroup,
+              startTime: s.startTime,
+              endTime: s.endTime,
+              slotDuration: s.slotDuration,
+            })),
+          },
+        });
+      }
+
+      // Legacy fallback: return individual TimeSlot rows
       const slots = await prisma.timeSlot.findMany({
         where: { courtId, isActive: true },
         orderBy: [{ dayOfWeek: "asc" }, { startTime: "asc" }],
@@ -72,7 +98,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({
         statusCode: 200,
         message: "تم جلب كل المواعيد",
-        data,
+        data: { type: "legacy", slots: data },
       });
     }
 
@@ -95,20 +121,14 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    // Parse the date in Egypt timezone to get the correct day of week
+    // Expire stale PENDING bookings before checking availability
+    await expireStalePendingBookings();
+
+    // Parse the date to get the correct day of week
     const dateParts = dateParam.split("-").map(Number);
     const dateObj = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
     const dayOfWeek = DAY_MAP[dateObj.getDay()];
-
-    // Get all active time slot templates for this court + day
-    const slots = await prisma.timeSlot.findMany({
-      where: {
-        courtId,
-        dayOfWeek,
-        isActive: true,
-      },
-      orderBy: { startTime: "asc" },
-    });
+    const dayGroup = getDayGroup(dayOfWeek);
 
     // Get all non-cancelled bookings for this court + date
     const bookings = await prisma.booking.findMany({
@@ -120,6 +140,51 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       select: { startTime: true, endTime: true },
     });
 
+    // Try new ScheduleTemplate first
+    const template = await prisma.scheduleTemplate.findFirst({
+      where: {
+        courtId,
+        dayGroup: { in: [dayGroup, "all"] },
+        isActive: true,
+      },
+    });
+
+    if (template) {
+      // Generate slots dynamically from template
+      const slots = generateSlotsFromTemplate(
+        {
+          startTime: template.startTime,
+          endTime: template.endTime,
+          slotDuration: template.slotDuration,
+        },
+        bookings
+      );
+
+      const data = slots.map((slot) => ({
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+        slotDuration: template.slotDuration,
+        availableBlocks: slot.availableBlocks,
+        pricePerHour: court.pricePerHour,
+      }));
+
+      return NextResponse.json({
+        statusCode: 200,
+        message: "تم جلب المواعيد المتاحة",
+        data,
+      });
+    }
+
+    // Legacy fallback: use TimeSlot table
+    const slots = await prisma.timeSlot.findMany({
+      where: {
+        courtId,
+        dayOfWeek,
+        isActive: true,
+      },
+      orderBy: { startTime: "asc" },
+    });
+
     // Filter out slots that conflict with existing bookings
     const available = slots.filter((slot) => {
       return !bookings.some((booking) =>
@@ -128,10 +193,10 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     });
 
     const data = available.map((slot) => ({
-      id: slot.id,
-      dayOfWeek: slot.dayOfWeek,
       startTime: slot.startTime,
       endTime: slot.endTime,
+      slotDuration: 60,
+      availableBlocks: 1,
       pricePerHour: court.pricePerHour,
     }));
 

@@ -60,7 +60,8 @@ export default function BookingPage({
 
   const days = useMemo(() => getNext7Days(), []);
   const [selectedDate, setSelectedDate] = useState(toDateString(days[0]));
-  const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
+  const [selectedStartTime, setSelectedStartTime] = useState<string | null>(null);
+  const [selectedBlockCount, setSelectedBlockCount] = useState(1);
   const [playerInfo, setPlayerInfo] = useState({ name: "", phone: "", notes: "" });
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -103,11 +104,27 @@ export default function BookingPage({
   // Poll slot availability every 10s while on time selection step
   usePolling(refetchSlots, 10000, step === 1 && !!selectedDate);
 
-  const selectedSlot = slots.find((s) => s.id === selectedSlotId);
+  const selectedSlot = slots.find((s) => s.startTime === selectedStartTime);
 
   const courtName = locale === "ar" && court?.nameAr ? court.nameAr : court?.name || "";
   const venueName = locale === "ar" && court?.venue?.nameAr ? court.venue.nameAr : court?.venue?.name || "";
-  const price = court ? parseFloat(court.pricePerHour) : 0;
+  const pricePerHour = court ? parseFloat(court.pricePerHour) : 0;
+
+  // Calculate total price based on blocks
+  const slotDuration = selectedSlot?.slotDuration || 60;
+  const totalPrice = pricePerHour * ((slotDuration * selectedBlockCount) / 60);
+  const totalDurationMinutes = slotDuration * selectedBlockCount;
+
+  // Computed end time for display
+  const computedEndTime = selectedSlot
+    ? (() => {
+        const [h, m] = selectedSlot.startTime.split(":").map(Number);
+        const endMin = h * 60 + m + totalDurationMinutes;
+        const eh = Math.floor(endMin / 60);
+        const em = endMin % 60;
+        return `${eh.toString().padStart(2, "0")}:${em.toString().padStart(2, "0")}`;
+      })()
+    : "";
 
   const isToday = (date: string) => date === toDateString(days[0]);
   const isTomorrow = (date: string) => date === toDateString(days[1]);
@@ -121,12 +138,13 @@ export default function BookingPage({
 
   const handleDateSelect = (date: string) => {
     setSelectedDate(date);
-    setSelectedSlotId(null);
+    setSelectedStartTime(null);
+    setSelectedBlockCount(1);
   };
 
   const canProceed = () => {
     if (step === 0) return !!selectedDate;
-    if (step === 1) return !!selectedSlotId;
+    if (step === 1) return !!selectedStartTime;
     if (step === 2) return !!playerInfo.name && !!playerInfo.phone;
     return true;
   };
@@ -146,7 +164,7 @@ export default function BookingPage({
           courtId,
           date: selectedDate,
           startTime: selectedSlot.startTime,
-          endTime: selectedSlot.endTime,
+          blockCount: selectedBlockCount,
           playerName: playerInfo.name,
           playerPhone: playerInfo.phone,
           notes: playerInfo.notes || undefined,
@@ -160,7 +178,7 @@ export default function BookingPage({
         if (typeof window !== "undefined") {
           localStorage.setItem("badelz-player-phone", playerInfo.phone);
         }
-        track.bookingCompleted({ venueId: court?.venue?.id || "", courtId, price, date: selectedDate });
+        track.bookingCompleted({ venueId: court?.venue?.id || "", courtId, price: totalPrice, date: selectedDate });
         router.push(`/booking-confirmed/${json.data.id}`);
       } else {
         setSubmitError(json.message || t("common.error"));
@@ -173,6 +191,15 @@ export default function BookingPage({
   };
 
   const progressWidth = ((step + 1) / STEPS.length) * 100;
+
+  // Duration label for summary
+  const durationLabel = totalDurationMinutes >= 60
+    ? locale === "ar"
+      ? `${totalDurationMinutes / 60} ساعة`
+      : `${totalDurationMinutes / 60}h`
+    : locale === "ar"
+      ? `${totalDurationMinutes} دقيقة`
+      : `${totalDurationMinutes}m`;
 
   if (courtLoading) {
     return (
@@ -308,8 +335,10 @@ export default function BookingPage({
               </h2>
               <TimeSlotPicker
                 slots={slots}
-                selectedSlot={selectedSlotId}
-                onSelect={setSelectedSlotId}
+                selectedStartTime={selectedStartTime}
+                selectedBlockCount={selectedBlockCount}
+                onSelectTime={setSelectedStartTime}
+                onSelectBlocks={setSelectedBlockCount}
                 loading={slotsLoading}
               />
             </motion.div>
@@ -396,12 +425,18 @@ export default function BookingPage({
                 {selectedSlot && (
                   <SummaryRow
                     label={t("booking.time")}
-                    value={`${formatTime(selectedSlot.startTime)} - ${formatTime(selectedSlot.endTime)}`}
+                    value={`${formatTime(selectedSlot.startTime)} - ${formatTime(computedEndTime)}`}
+                  />
+                )}
+                {selectedBlockCount > 1 && (
+                  <SummaryRow
+                    label={locale === "ar" ? "المدة" : "Duration"}
+                    value={durationLabel}
                   />
                 )}
                 <SummaryRow
                   label={t("booking.price")}
-                  value={formatPrice(price)}
+                  value={formatPrice(totalPrice)}
                   highlight
                 />
                 <div className="border-t border-white/10 pt-3.5 space-y-2">
@@ -425,6 +460,15 @@ export default function BookingPage({
                 </div>
               </div>
 
+              {/* Pending notice */}
+              <div className="mb-4 rounded-xl bg-amber-500/10 border border-amber-500/20 px-4 py-3 text-center">
+                <p className="text-xs text-amber-400/80">
+                  {locale === "ar"
+                    ? "الحجز هيكون في انتظار تأكيد الملعب"
+                    : "Booking will be pending venue confirmation"}
+                </p>
+              </div>
+
               {submitError && (
                 <div className="mb-4 rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400 text-center">
                   {submitError}
@@ -437,7 +481,11 @@ export default function BookingPage({
                 disabled={submitting}
                 className="w-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 py-4 text-base font-bold text-white shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/30 disabled:opacity-50"
               >
-                {submitting ? t("common.loading") : t("booking.confirmBooking")}
+                {submitting
+                  ? t("common.loading")
+                  : locale === "ar"
+                    ? "إرسال طلب الحجز"
+                    : "Send Booking Request"}
               </motion.button>
             </motion.div>
           )}

@@ -8,7 +8,8 @@ export const bookingSchema = z.object({
   courtId: z.string().min(1),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   startTime: z.string().regex(/^\d{2}:\d{2}$/),
-  endTime: z.string().regex(/^\d{2}:\d{2}$/),
+  endTime: z.string().regex(/^\d{2}:\d{2}$/).optional(),
+  blockCount: z.number().int().min(1).max(3).default(1),
   playerName: z.string().min(2, "الاسم مطلوب"),
   playerPhone: phoneSchema,
   notes: z.string().optional(),
@@ -19,7 +20,8 @@ export const ownerBookingSchema = z.object({
   courtId: z.string().min(1),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   startTime: z.string().regex(/^\d{2}:\d{2}$/),
-  endTime: z.string().regex(/^\d{2}:\d{2}$/),
+  endTime: z.string().regex(/^\d{2}:\d{2}$/).optional(),
+  blockCount: z.number().int().min(1).max(3).default(1),
   playerName: z.string().min(2, "الاسم مطلوب"),
   playerPhone: z.string().regex(/^01[0125]\d{8}$/).optional().or(z.literal("")),
   notes: z.string().optional(),
@@ -155,6 +157,26 @@ export const listingUpdateSchema = z.object({
   status: z.enum(["ACTIVE", "SOLD", "REMOVED"]).optional(),
 });
 
+export const scheduleTemplateSchema = z.object({
+  slotDuration: z.number().refine((v) => v === 30 || v === 60, "Must be 30 or 60"),
+  weekdays: z.object({
+    startTime: z.string().regex(/^\d{2}:\d{2}$/),
+    endTime: z.string().regex(/^\d{2}:\d{2}$/),
+  }).optional(),
+  weekends: z.object({
+    startTime: z.string().regex(/^\d{2}:\d{2}$/),
+    endTime: z.string().regex(/^\d{2}:\d{2}$/),
+  }).optional(),
+  all: z.object({
+    startTime: z.string().regex(/^\d{2}:\d{2}$/),
+    endTime: z.string().regex(/^\d{2}:\d{2}$/),
+  }).optional(),
+}).refine(
+  (data) => data.all || (data.weekdays && data.weekends),
+  "Must provide either 'all' days or both 'weekdays' and 'weekends'"
+);
+
+export type ScheduleTemplateInput = z.infer<typeof scheduleTemplateSchema>;
 export type BookingInput = z.infer<typeof bookingSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type VenueInput = z.infer<typeof venueSchema>;

@@ -146,9 +146,10 @@ model Court {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
-  venue    Venue      @relation(fields: [venueId], references: [id], onDelete: Cascade)
-  slots    TimeSlot[]
-  bookings Booking[]
+  venue     Venue              @relation(fields: [venueId], references: [id], onDelete: Cascade)
+  slots     TimeSlot[]
+  schedules ScheduleTemplate[]
+  bookings  Booking[]
 
   @@index([venueId])
 }
@@ -168,6 +169,23 @@ model TimeSlot {
   @@index([courtId, dayOfWeek])
 }
 
+model ScheduleTemplate {
+  id           String   @id @default(cuid())
+  courtId      String
+  dayGroup     String   // "all" | "weekdays" | "weekends"
+  startTime    String   // "08:00" format (24h)
+  endTime      String   // "23:00" format (24h)
+  slotDuration Int      // 30 or 60 (minutes)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  court Court @relation(fields: [courtId], references: [id], onDelete: Cascade)
+
+  @@unique([courtId, dayGroup])
+  @@index([courtId])
+}
+
 model Booking {
   id               String        @id @default(cuid())
   courtId          String
@@ -178,6 +196,7 @@ model Booking {
   date             DateTime      @db.Date
   startTime        String // "14:00"
   endTime          String // "15:00"
+  blockCount       Int           @default(1)
   totalPrice       Decimal       @db.Decimal(10, 2)
   status           BookingStatus @default(PENDING)
   confirmationCode String        @unique

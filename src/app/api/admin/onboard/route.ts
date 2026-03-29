@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { quickOnboardSchema } from "@/lib/admin-validators";
-import { expandTemplate } from "@/lib/slot-templates";
+import { expandTemplate, presetToScheduleConfig } from "@/lib/slot-templates";
 import { buildWhatsAppDirectLink } from "@/lib/whatsapp";
 
 function generatePassword(): string {
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { owner: ownerData, venue: venueData, courts: courtsData, slotTemplate } = parsed.data;
+    const { owner: ownerData, venue: venueData, courts: courtsData, slotTemplate, scheduleConfig } = parsed.data;
 
     // Check if email already exists
     const existing = await prisma.user.findUnique({
@@ -98,18 +98,68 @@ export async function POST(request: NextRequest) {
         courts.push(court);
       }
 
-      // 4. Expand slot template and create all time slots
       const courtIds = courts.map((c) => c.id);
-      const slotData = expandTemplate(slotTemplate, courtIds);
+      let schedulesCreated = 0;
 
-      if (slotData.length > 0) {
-        await tx.timeSlot.createMany({
-          data: slotData,
-          skipDuplicates: true,
-        });
+      // 4. Create schedule templates (new system) or fallback to legacy slots
+      if (scheduleConfig) {
+        // New: create ScheduleTemplate rows from custom config
+        const dayGroups: { dayGroup: string; startTime: string; endTime: string }[] = [];
+
+        if (scheduleConfig.all) {
+          dayGroups.push({ dayGroup: "all", ...scheduleConfig.all });
+        } else {
+          if (scheduleConfig.weekdays) {
+            dayGroups.push({ dayGroup: "weekdays", ...scheduleConfig.weekdays });
+          }
+          if (scheduleConfig.weekends) {
+            dayGroups.push({ dayGroup: "weekends", ...scheduleConfig.weekends });
+          }
+        }
+
+        for (const courtId of courtIds) {
+          for (const dg of dayGroups) {
+            await tx.scheduleTemplate.create({
+              data: {
+                courtId,
+                dayGroup: dg.dayGroup,
+                startTime: dg.startTime,
+                endTime: dg.endTime,
+                slotDuration: scheduleConfig.slotDuration ?? 60,
+              },
+            });
+            schedulesCreated++;
+          }
+        }
+      } else if (slotTemplate) {
+        // Convert preset to ScheduleTemplate rows
+        const configs = presetToScheduleConfig(slotTemplate);
+        for (const courtId of courtIds) {
+          for (const config of configs) {
+            await tx.scheduleTemplate.create({
+              data: {
+                courtId,
+                dayGroup: config.dayGroup,
+                startTime: config.startTime,
+                endTime: config.endTime,
+                slotDuration: config.slotDuration,
+              },
+            });
+            schedulesCreated++;
+          }
+        }
+
+        // Also create legacy TimeSlots for backward compatibility
+        const slotData = expandTemplate(slotTemplate, courtIds);
+        if (slotData.length > 0) {
+          await tx.timeSlot.createMany({
+            data: slotData,
+            skipDuplicates: true,
+          });
+        }
       }
 
-      return { user, venue, courts, slotsCreated: slotData.length };
+      return { user, venue, courts, schedulesCreated };
     });
 
     // Build WhatsApp credentials message
@@ -129,7 +179,7 @@ export async function POST(request: NextRequest) {
           owner: { id: result.user.id, name: result.user.name, email: result.user.email },
           venue: { id: result.venue.id, name: result.venue.name },
           courtsCreated: result.courts.length,
-          slotsCreated: result.slotsCreated,
+          schedulesCreated: result.schedulesCreated,
           generatedPassword: plainPassword,
           whatsappLink,
         },

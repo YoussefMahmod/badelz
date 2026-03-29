@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus,
@@ -10,8 +10,6 @@ import {
   X,
   Clock,
   Pencil,
-  Trash2,
-  Copy,
   Check,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
@@ -32,48 +30,12 @@ interface Court {
   sortOrder: number;
 }
 
-interface TimeSlot {
-  id: string;
-  dayOfWeek: DayOfWeek;
-  startTime: string;
-  endTime: string;
-}
-
-type DayOfWeek =
-  | "SATURDAY"
-  | "SUNDAY"
-  | "MONDAY"
-  | "TUESDAY"
-  | "WEDNESDAY"
-  | "THURSDAY"
-  | "FRIDAY";
-
 interface FeedbackMessage {
   type: "success" | "error";
   text: string;
 }
 
 // ─── Constants ───────────────────────────────────────────
-
-const DAYS_ORDER: DayOfWeek[] = [
-  "SATURDAY",
-  "SUNDAY",
-  "MONDAY",
-  "TUESDAY",
-  "WEDNESDAY",
-  "THURSDAY",
-  "FRIDAY",
-];
-
-const DAY_TRANSLATION_KEYS = {
-  SATURDAY: "owner.saturday",
-  SUNDAY: "owner.sunday",
-  MONDAY: "owner.monday",
-  TUESDAY: "owner.tuesday",
-  WEDNESDAY: "owner.wednesday",
-  THURSDAY: "owner.thursday",
-  FRIDAY: "owner.friday",
-} as const;
 
 function generateTimeOptions(includeEnd: boolean): string[] {
   const times: string[] = [];
@@ -124,7 +86,7 @@ function InlineFeedback({ message }: { message: FeedbackMessage | null }) {
   );
 }
 
-// ─── Slot Management Modal ──────────────────────────────
+// ─── Schedule Config Modal ──────────────────────────────
 
 interface SlotModalProps {
   court: Court;
@@ -134,16 +96,19 @@ interface SlotModalProps {
 
 function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
   const { t } = useTranslation();
-  const [selectedDay, setSelectedDay] = useState<DayOfWeek>("SATURDAY");
-  const [allSlots, setAllSlots] = useState<TimeSlot[]>([]);
   const [loading, setLoading] = useState(true);
-  const [addingSlot, setAddingSlot] = useState(false);
-  const [deletingSlotId, setDeletingSlotId] = useState<string | null>(null);
-  const [copying, setCopying] = useState(false);
-  const [startTime, setStartTime] = useState("10:00");
-  const [endTime, setEndTime] = useState("11:00");
+  const [saving, setSaving] = useState(false);
   const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
-  const dayScrollRef = useRef<HTMLDivElement>(null);
+
+  // Schedule config state
+  const [slotDuration, setSlotDuration] = useState<30 | 60>(60);
+  const [sameForAllDays, setSameForAllDays] = useState(true);
+  const [allStart, setAllStart] = useState("08:00");
+  const [allEnd, setAllEnd] = useState("23:00");
+  const [weekdaysStart, setWeekdaysStart] = useState("10:00");
+  const [weekdaysEnd, setWeekdaysEnd] = useState("23:00");
+  const [weekendsStart, setWeekendsStart] = useState("08:00");
+  const [weekendsEnd, setWeekendsEnd] = useState("23:00");
 
   const showFeedback = useCallback(
     (type: "success" | "error", text: string) => {
@@ -153,59 +118,77 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
     []
   );
 
-  const fetchSlots = useCallback(async () => {
-    try {
-      const res = await fetch(
-        `/api/venues/${venueId}/courts/${court.id}/slots?all=true`
-      );
-      const json = await res.json();
-      if (res.ok) {
-        setAllSlots(json.data || []);
-      }
-    } catch {
-      showFeedback("error", t("common.error"));
-    } finally {
-      setLoading(false);
-    }
-  }, [venueId, court.id, t, showFeedback]);
-
+  // Load existing schedule
   useEffect(() => {
-    fetchSlots();
-  }, [fetchSlots]);
+    async function load() {
+      try {
+        const res = await fetch(
+          `/api/venues/${venueId}/courts/${court.id}/schedule`
+        );
+        const json = await res.json();
+        if (res.ok && json.data?.length > 0) {
+          const schedules = json.data;
+          const allSchedule = schedules.find((s: { dayGroup: string }) => s.dayGroup === "all");
+          const weekdaysSchedule = schedules.find((s: { dayGroup: string }) => s.dayGroup === "weekdays");
+          const weekendsSchedule = schedules.find((s: { dayGroup: string }) => s.dayGroup === "weekends");
 
-  // Prevent body scroll when modal is open
+          if (allSchedule) {
+            setSameForAllDays(true);
+            setAllStart(allSchedule.startTime);
+            setAllEnd(allSchedule.endTime);
+            setSlotDuration(allSchedule.slotDuration);
+          } else if (weekdaysSchedule || weekendsSchedule) {
+            setSameForAllDays(false);
+            if (weekdaysSchedule) {
+              setWeekdaysStart(weekdaysSchedule.startTime);
+              setWeekdaysEnd(weekdaysSchedule.endTime);
+              setSlotDuration(weekdaysSchedule.slotDuration);
+            }
+            if (weekendsSchedule) {
+              setWeekendsStart(weekendsSchedule.startTime);
+              setWeekendsEnd(weekendsSchedule.endTime);
+            }
+          }
+        }
+      } catch {
+        // Will show empty form
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, [venueId, court.id]);
+
+  // Prevent body scroll
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
+    return () => { document.body.style.overflow = ""; };
   }, []);
 
-  const slotsForDay = allSlots
-    .filter((s) => s.dayOfWeek === selectedDay)
-    .sort((a, b) => {
-      const aMin = timeToMinutes(a.startTime);
-      const bMin = timeToMinutes(b.startTime);
-      return aMin - bMin;
-    });
+  const handleSave = async () => {
+    setSaving(true);
+    setFeedback(null);
 
-  const handleAddSlot = async () => {
-    if (addingSlot) return;
-    setAddingSlot(true);
+    const body: Record<string, unknown> = { slotDuration };
+    if (sameForAllDays) {
+      body.all = { startTime: allStart, endTime: allEnd };
+    } else {
+      body.weekdays = { startTime: weekdaysStart, endTime: weekdaysEnd };
+      body.weekends = { startTime: weekendsStart, endTime: weekendsEnd };
+    }
+
     try {
       const res = await fetch(
-        `/api/venues/${venueId}/courts/${court.id}/slots`,
+        `/api/venues/${venueId}/courts/${court.id}/schedule`,
         {
-          method: "POST",
+          method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify([
-            { dayOfWeek: selectedDay, startTime, endTime },
-          ]),
+          body: JSON.stringify(body),
         }
       );
       if (res.ok) {
         showFeedback("success", t("owner.slotSaved"));
-        await fetchSlots();
+        setTimeout(onClose, 800);
       } else {
         const json = await res.json();
         showFeedback("error", json.message || t("common.error"));
@@ -213,66 +196,20 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
     } catch {
       showFeedback("error", t("common.error"));
     } finally {
-      setAddingSlot(false);
+      setSaving(false);
     }
   };
 
-  const handleDeleteSlot = async (slotId: string) => {
-    if (deletingSlotId) return;
-    setDeletingSlotId(slotId);
-    try {
-      const res = await fetch(
-        `/api/venues/${venueId}/courts/${court.id}/slots/${slotId}`,
-        { method: "DELETE" }
-      );
-      if (res.ok) {
-        setAllSlots((prev) => prev.filter((s) => s.id !== slotId));
-        showFeedback("success", t("owner.slotDeleted"));
-      } else {
-        showFeedback("error", t("common.error"));
-      }
-    } catch {
-      showFeedback("error", t("common.error"));
-    } finally {
-      setDeletingSlotId(null);
-    }
+  // Preview: compute slot count
+  const computeSlotCount = (start: string, end: string) => {
+    const startMin = timeToMinutes(start);
+    const endMin = timeToMinutes(end);
+    return Math.max(0, Math.floor((endMin - startMin) / slotDuration));
   };
 
-  const handleCopyToAllDays = async () => {
-    if (copying || slotsForDay.length === 0) return;
-    setCopying(true);
-
-    const otherDays = DAYS_ORDER.filter((d) => d !== selectedDay);
-    const slotsToCreate = otherDays.flatMap((day) =>
-      slotsForDay.map((slot) => ({
-        dayOfWeek: day,
-        startTime: slot.startTime,
-        endTime: slot.endTime,
-      }))
-    );
-
-    try {
-      const res = await fetch(
-        `/api/venues/${venueId}/courts/${court.id}/slots`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(slotsToCreate),
-        }
-      );
-      if (res.ok) {
-        showFeedback("success", t("owner.slotSaved"));
-        await fetchSlots();
-      } else {
-        const json = await res.json();
-        showFeedback("error", json.message || t("common.error"));
-      }
-    } catch {
-      showFeedback("error", t("common.error"));
-    } finally {
-      setCopying(false);
-    }
-  };
+  const previewCount = sameForAllDays
+    ? computeSlotCount(allStart, allEnd)
+    : null;
 
   return (
     <motion.div
@@ -281,13 +218,8 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center"
     >
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
 
-      {/* Modal sheet */}
       <motion.div
         initial={{ y: "100%" }}
         animate={{ y: 0 }}
@@ -295,7 +227,6 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
         transition={{ type: "spring", damping: 28, stiffness: 300 }}
         className="relative z-10 w-full sm:max-w-lg bg-[#111827] rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col overflow-hidden"
       >
-        {/* Handle bar (mobile) */}
         <div className="flex justify-center pt-3 pb-1 sm:hidden">
           <div className="h-1 w-10 rounded-full bg-white/20" />
         </div>
@@ -320,203 +251,204 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
           </motion.button>
         </div>
 
-        {/* Day tabs */}
-        <div
-          ref={dayScrollRef}
-          className="flex gap-2 px-5 py-3 overflow-x-auto scrollbar-hide border-b border-white/10"
-        >
-          {DAYS_ORDER.map((day) => {
-            const isSelected = day === selectedDay;
-            const daySlotCount = allSlots.filter(
-              (s) => s.dayOfWeek === day
-            ).length;
-            return (
-              <motion.button
-                key={day}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setSelectedDay(day)}
-                className={`relative shrink-0 rounded-xl px-3 py-2 text-xs font-semibold transition-all ${
-                  isSelected
-                    ? "bg-[#111827] text-white shadow-sm"
-                    : "bg-white/10 text-white/60 hover:bg-white/15"
-                }`}
-              >
-                {t(DAY_TRANSLATION_KEYS[day])}
-                {daySlotCount > 0 && (
-                  <span
-                    className={`absolute -top-1.5 -end-1.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-bold ${
-                      isSelected
-                        ? "bg-[#c8ff00] text-[#111827]"
-                        : "bg-white/20 text-white/70"
-                    }`}
-                  >
-                    {daySlotCount}
-                  </span>
-                )}
-              </motion.button>
-            );
-          })}
-        </div>
-
-        {/* Content area (scrollable) */}
-        <div className="flex-1 overflow-y-auto px-5 py-4 pb-24 space-y-4">
-          {/* Feedback */}
-          <InlineFeedback message={feedback} />
-
-          {/* Loading state */}
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto px-5 py-5 pb-24 space-y-5">
           {loading ? (
-            <div className="py-8">
-              <LoadingSpinner size="sm" />
-            </div>
+            <div className="py-8"><LoadingSpinner size="sm" /></div>
           ) : (
             <>
-              {/* Existing slots */}
-              {slotsForDay.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-8 text-center">
-                  <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10">
-                    <Clock size={20} className="text-white/40" />
-                  </div>
-                  <p className="text-sm text-white/50 max-w-xs">
-                    {t("owner.noSlots")}
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <AnimatePresence mode="popLayout">
-                    {slotsForDay.map((slot) => (
-                      <motion.div
-                        key={slot.id}
-                        layout
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9, x: -40 }}
-                        className="flex items-center justify-between rounded-xl bg-white/5 border border-white/10 px-4 py-3"
-                      >
-                        <div className="flex items-center gap-2">
-                          <Clock size={14} className="text-white/40 shrink-0" />
-                          <span
-                            className="text-sm font-medium text-white/90"
-                            dir="ltr"
-                          >
-                            {formatTime(slot.startTime)} —{" "}
-                            {formatTime(slot.endTime)}
-                          </span>
-                        </div>
-                        <motion.button
-                          whileTap={{ scale: 0.85 }}
-                          onClick={() => handleDeleteSlot(slot.id)}
-                          disabled={deletingSlotId === slot.id}
-                          className="flex h-8 w-8 items-center justify-center rounded-lg text-white/40 hover:bg-red-500/10 hover:text-red-400 transition-colors disabled:opacity-40"
-                          aria-label={t("owner.deleteSlot")}
-                        >
-                          {deletingSlotId === slot.id ? (
-                            <motion.div
-                              className="h-4 w-4 rounded-full border-2 border-white/20 border-t-white/60"
-                              animate={{ rotate: 360 }}
-                              transition={{
-                                duration: 0.6,
-                                repeat: Infinity,
-                                ease: "linear",
-                              }}
-                            />
-                          ) : (
-                            <Trash2 size={15} />
-                          )}
-                        </motion.button>
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-                </div>
-              )}
-
-              {/* Add slot form */}
-              <div className="rounded-2xl border border-dashed border-white/15 bg-white/5 p-4 space-y-3">
-                <p className="text-xs font-semibold text-white/50">
-                  {t("owner.addSlot")}
-                </p>
-                <div className="flex items-end gap-2">
-                  <div className="flex-1">
-                    <label className="text-xs text-white/40 mb-1 block">
-                      {t("owner.startTime")}
-                    </label>
-                    <select
-                      value={startTime}
-                      onChange={(e) => setStartTime(e.target.value)}
-                      dir="ltr"
-                      className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] appearance-none"
-                    >
-                      {START_TIMES.map((time) => (
-                        <option key={`start-${time}`} value={time}>
-                          {formatTime(time)}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="flex-1">
-                    <label className="text-xs text-white/40 mb-1 block">
-                      {t("owner.endTime")}
-                    </label>
-                    <select
-                      value={endTime}
-                      onChange={(e) => setEndTime(e.target.value)}
-                      dir="ltr"
-                      className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] appearance-none"
-                    >
-                      {END_TIMES.map((time) => (
-                        <option key={`end-${time}`} value={time}>
-                          {formatTime(time)}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <motion.button
-                    whileTap={{ scale: 0.9 }}
-                    onClick={handleAddSlot}
-                    disabled={addingSlot}
-                    className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-xl bg-[#c8ff00] text-[#111827] hover:bg-[#c8ff00]/80 transition-colors disabled:opacity-50"
-                    aria-label={t("owner.addSlot")}
+              {/* Slot duration toggle */}
+              <div>
+                <label className="text-xs font-semibold text-white/50 mb-2 block">
+                  {t("owner.slotDuration") || "مدة الفترة"}
+                </label>
+                <div className="flex rounded-xl border border-white/10 overflow-hidden">
+                  <button
+                    onClick={() => setSlotDuration(60)}
+                    className={`flex-1 py-3 text-sm font-bold transition-all ${
+                      slotDuration === 60
+                        ? "bg-[#c8ff00] text-[#111827]"
+                        : "bg-white/5 text-white/50 hover:bg-white/10"
+                    }`}
                   >
-                    {addingSlot ? (
-                      <motion.div
-                        className="h-4 w-4 rounded-full border-2 border-[#111827]/30 border-t-[#111827]"
-                        animate={{ rotate: 360 }}
-                        transition={{
-                          duration: 0.6,
-                          repeat: Infinity,
-                          ease: "linear",
-                        }}
-                      />
-                    ) : (
-                      <Plus size={18} />
-                    )}
-                  </motion.button>
+                    1 {t("common.hour") || "ساعة"}
+                  </button>
+                  <button
+                    onClick={() => setSlotDuration(30)}
+                    className={`flex-1 py-3 text-sm font-bold transition-all ${
+                      slotDuration === 30
+                        ? "bg-[#c8ff00] text-[#111827]"
+                        : "bg-white/5 text-white/50 hover:bg-white/10"
+                    }`}
+                  >
+                    30 {t("common.minutes") || "دقيقة"}
+                  </button>
                 </div>
               </div>
 
-              {/* Copy to all days */}
-              {slotsForDay.length > 0 && (
+              {/* Same for all days toggle */}
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-white/70">
+                  {t("owner.sameAllDays") || "نفس المواعيد كل الأيام"}
+                </span>
                 <motion.button
-                  whileTap={{ scale: 0.97 }}
-                  onClick={handleCopyToAllDays}
-                  disabled={copying}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white/70 hover:bg-white/10 transition-colors disabled:opacity-50"
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => setSameForAllDays(!sameForAllDays)}
                 >
-                  {copying ? (
-                    <motion.div
-                      className="h-4 w-4 rounded-full border-2 border-white/20 border-t-white/60"
-                      animate={{ rotate: 360 }}
-                      transition={{
-                        duration: 0.6,
-                        repeat: Infinity,
-                        ease: "linear",
-                      }}
-                    />
+                  {sameForAllDays ? (
+                    <ToggleRight size={32} className="text-[#c8ff00]" />
                   ) : (
-                    <Copy size={15} />
+                    <ToggleLeft size={32} className="text-white/30" />
                   )}
-                  {t("owner.copyToAllDays")}
                 </motion.button>
+              </div>
+
+              {sameForAllDays ? (
+                /* All days config */
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+                  <p className="text-xs font-semibold text-white/50">
+                    {t("owner.operatingHours") || "ساعات العمل"}
+                  </p>
+                  <div className="flex items-end gap-3">
+                    <div className="flex-1">
+                      <label className="text-xs text-white/40 mb-1 block">{t("owner.startTime")}</label>
+                      <select
+                        value={allStart}
+                        onChange={(e) => setAllStart(e.target.value)}
+                        dir="ltr"
+                        className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] appearance-none"
+                      >
+                        {START_TIMES.map((time) => (
+                          <option key={`all-s-${time}`} value={time}>{formatTime(time)}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="flex-1">
+                      <label className="text-xs text-white/40 mb-1 block">{t("owner.endTime")}</label>
+                      <select
+                        value={allEnd}
+                        onChange={(e) => setAllEnd(e.target.value)}
+                        dir="ltr"
+                        className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] appearance-none"
+                      >
+                        {END_TIMES.map((time) => (
+                          <option key={`all-e-${time}`} value={time}>{formatTime(time)}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  {previewCount !== null && (
+                    <p className="text-xs text-white/30 text-center mt-2">
+                      {previewCount} {slotDuration === 60 ? (t("owner.slotsPerDay") || "فترة/يوم") : (t("owner.slotsPerDay") || "فترة/يوم")}
+                    </p>
+                  )}
+                </div>
+              ) : (
+                /* Weekdays / Weekends split */
+                <div className="space-y-3">
+                  {/* Weekdays */}
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+                    <p className="text-xs font-semibold text-white/50">
+                      {t("owner.weekdays") || "أيام الأسبوع"} (أحد - خميس)
+                    </p>
+                    <div className="flex items-end gap-3">
+                      <div className="flex-1">
+                        <label className="text-xs text-white/40 mb-1 block">{t("owner.startTime")}</label>
+                        <select
+                          value={weekdaysStart}
+                          onChange={(e) => setWeekdaysStart(e.target.value)}
+                          dir="ltr"
+                          className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] appearance-none"
+                        >
+                          {START_TIMES.map((time) => (
+                            <option key={`wd-s-${time}`} value={time}>{formatTime(time)}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="flex-1">
+                        <label className="text-xs text-white/40 mb-1 block">{t("owner.endTime")}</label>
+                        <select
+                          value={weekdaysEnd}
+                          onChange={(e) => setWeekdaysEnd(e.target.value)}
+                          dir="ltr"
+                          className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] appearance-none"
+                        >
+                          {END_TIMES.map((time) => (
+                            <option key={`wd-e-${time}`} value={time}>{formatTime(time)}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    <p className="text-xs text-white/30 text-center">
+                      {computeSlotCount(weekdaysStart, weekdaysEnd)} {t("owner.slotsPerDay") || "فترة/يوم"}
+                    </p>
+                  </div>
+
+                  {/* Weekends */}
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+                    <p className="text-xs font-semibold text-white/50">
+                      {t("owner.weekends") || "الويكند"} (جمعة - سبت)
+                    </p>
+                    <div className="flex items-end gap-3">
+                      <div className="flex-1">
+                        <label className="text-xs text-white/40 mb-1 block">{t("owner.startTime")}</label>
+                        <select
+                          value={weekendsStart}
+                          onChange={(e) => setWeekendsStart(e.target.value)}
+                          dir="ltr"
+                          className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] appearance-none"
+                        >
+                          {START_TIMES.map((time) => (
+                            <option key={`we-s-${time}`} value={time}>{formatTime(time)}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="flex-1">
+                        <label className="text-xs text-white/40 mb-1 block">{t("owner.endTime")}</label>
+                        <select
+                          value={weekendsEnd}
+                          onChange={(e) => setWeekendsEnd(e.target.value)}
+                          dir="ltr"
+                          className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-[#c8ff00]/30 focus:border-[#c8ff00] appearance-none"
+                        >
+                          {END_TIMES.map((time) => (
+                            <option key={`we-e-${time}`} value={time}>{formatTime(time)}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    <p className="text-xs text-white/30 text-center">
+                      {computeSlotCount(weekendsStart, weekendsEnd)} {t("owner.slotsPerDay") || "فترة/يوم"}
+                    </p>
+                  </div>
+                </div>
               )}
+
+              <InlineFeedback message={feedback} />
+
+              {/* Save button */}
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                onClick={handleSave}
+                disabled={saving}
+                className="w-full flex items-center justify-center gap-2 rounded-full bg-[#c8ff00] py-3 text-sm font-bold text-[#111827] transition-all hover:bg-[#c8ff00]/80 disabled:opacity-50"
+              >
+                {saving ? (
+                  <>
+                    <motion.div
+                      className="h-4 w-4 rounded-full border-2 border-[#111827]/30 border-t-[#111827]"
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 0.6, repeat: Infinity, ease: "linear" }}
+                    />
+                    {t("common.loading")}
+                  </>
+                ) : (
+                  <>
+                    <Check size={15} />
+                    {t("common.save")}
+                  </>
+                )}
+              </motion.button>
             </>
           )}
         </div>
@@ -688,9 +620,13 @@ function CourtCard({
             {court.isActive ? t("owner.active") : t("owner.inactive")}
           </span>
 
-          <span className="inline-flex items-center gap-1 rounded-full bg-white/5 px-2.5 py-0.5 text-xs font-medium text-white/40">
+          <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${
+            slotCount > 0 ? "bg-[#c8ff00]/10 text-[#c8ff00]" : "bg-white/5 text-white/40"
+          }`}>
             <Clock size={11} />
-            {t("owner.slotsCount", { count: slotCount })}
+            {slotCount > 0
+              ? (t("owner.scheduleSet") || "الجدول محدد")
+              : (t("owner.noSchedule") || "بدون جدول")}
           </span>
         </div>
       </div>
@@ -855,16 +791,17 @@ export default function CourtsPage() {
       const fetchedCourts: Court[] = courtsJson.data || [];
       setCourts(fetchedCourts);
 
-      // Fetch slot counts for all courts in parallel
+      // Fetch schedule info for all courts in parallel
       const counts: Record<string, number> = {};
       await Promise.all(
         fetchedCourts.map(async (court) => {
           try {
-            const slotsRes = await fetch(
-              `/api/venues/${ownerVenue.id}/courts/${court.id}/slots?all=true`
+            const schedRes = await fetch(
+              `/api/venues/${ownerVenue.id}/courts/${court.id}/schedule`
             );
-            const slotsJson = await slotsRes.json();
-            counts[court.id] = (slotsJson.data || []).length;
+            const schedJson = await schedRes.json();
+            // Count schedule templates (1 = all days, 2 = weekdays+weekends)
+            counts[court.id] = (schedJson.data || []).length;
           } catch {
             counts[court.id] = 0;
           }
