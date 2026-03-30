@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Cairo, Lalezar, Anton } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import { buildOrganizationJsonLd, buildWebAppJsonLd } from "@/lib/json-ld";
 
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
@@ -39,6 +40,7 @@ export const metadata: Metadata = {
       { url: "/icons/icon.svg", type: "image/svg+xml" },
       { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
     ],
+    shortcut: [{ url: "/favicon.ico" }],
     apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180" }],
   },
   openGraph: {
@@ -65,6 +67,14 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl" className={`${cairo.variable} ${lalezar.variable} ${anton.variable} antialiased`}>
       <body className="min-h-screen bg-[#0d0d0d] text-white font-sans selection:bg-[#d4ff00]/30">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(buildOrganizationJsonLd()) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(buildWebAppJsonLd()) }}
+        />
         <Providers>{children}</Providers>
       </body>
     </html>
