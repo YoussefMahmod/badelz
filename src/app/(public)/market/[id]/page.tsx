@@ -305,7 +305,7 @@ export default function ListingDetailPage() {
                       dragConstraints={{ left: 0, right: 0 }}
                       dragElastic={0.2}
                       onDragEnd={handleDragEnd}
-                      animate={{ x: `-${currentPhoto * 100}%` }}
+                      animate={{ x: `-${currentPhoto * (100 / listing.photos.length)}%` }}
                      
                       style={{
                         width: `${listing.photos.length * 100}%`,
