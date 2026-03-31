@@ -7,13 +7,12 @@ import {
   ShoppingBag,
   Camera,
   ChevronDown,
-  Plus,
-  X,
   RotateCcw,
   Loader2,
 } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import { checkmarkDraw } from "@/lib/animations";
+import { PhotoUpload } from "@/components/photo-upload";
 
 // ─── Types ───
 
@@ -62,7 +61,7 @@ const INITIAL_FORM: ListingFormData = {
   condition: "USED",
   area: "",
   areaAr: "",
-  photos: [""],
+  photos: [],
 };
 
 const CATEGORIES: { value: Category; label: string }[] = [
@@ -195,22 +194,6 @@ export default function CreateListingPage() {
     value: ListingFormData[K]
   ) => setForm((f) => ({ ...f, [field]: value }));
 
-  const updatePhoto = (index: number, value: string) =>
-    setForm((f) => ({
-      ...f,
-      photos: f.photos.map((p, i) => (i === index ? value : p)),
-    }));
-
-  const addPhoto = () => {
-    if (form.photos.length >= MAX_PHOTOS) return;
-    setForm((f) => ({ ...f, photos: [...f.photos, ""] }));
-  };
-
-  const removePhoto = (index: number) =>
-    setForm((f) => ({
-      ...f,
-      photos: f.photos.filter((_, i) => i !== index),
-    }));
 
   // ─── Submit ───
 
@@ -262,7 +245,7 @@ export default function CreateListingPage() {
   // ─── Reset ───
 
   const resetForm = () => {
-    setForm({ ...INITIAL_FORM, photos: [""] });
+    setForm(INITIAL_FORM);
     setResult(null);
     setError(null);
   };
@@ -508,56 +491,11 @@ export default function CreateListingPage() {
             expanded={sections.photos}
             onToggle={() => toggleSection("photos")}
           >
-            <div className="space-y-3">
-              <AnimatePresence initial={false}>
-                {form.photos.map((photo, idx) => (
-                  <motion.div
-                    key={idx}
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-                   
-                    className="overflow-hidden"
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-medium text-[#666] shrink-0 w-5 text-center">
-                        #{idx + 1}
-                      </span>
-                      <input
-                        type="url"
-                        value={photo}
-                        onChange={(e) => updatePhoto(idx, e.target.value)}
-                        placeholder="https://..."
-                        className={INPUT_CLASS}
-                        dir="ltr"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removePhoto(idx)}
-                        className="flex shrink-0 items-center justify-center h-9 w-9 rounded-xl text-red-400/70 hover:text-red-400 hover:bg-red-500/10 transition-colors"
-                      >
-                        <X size={14} />
-                      </button>
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
-
-            {form.photos.length < MAX_PHOTOS && (
-              <button
-                type="button"
-                onClick={addPhoto}
-                className="flex items-center gap-2 text-sm text-indigo-400 hover:text-indigo-300 transition-colors mt-2"
-              >
-                <Plus size={14} />
-                Add Photo URL
-              </button>
-            )}
-
-            <p className="text-xs text-[#666]">
-              Max {MAX_PHOTOS} photos. Paste direct image URLs.
-            </p>
+            <PhotoUpload
+              photos={form.photos}
+              onChange={(photos) => setForm((f) => ({ ...f, photos }))}
+              max={MAX_PHOTOS}
+            />
           </Section>
 
           {/* ── Error ── */}
