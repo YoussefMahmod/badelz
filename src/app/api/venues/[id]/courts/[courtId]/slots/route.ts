@@ -7,6 +7,7 @@ import { z } from "zod";
 import { DayOfWeek } from "@prisma/client";
 import { generateSlotsFromTemplate, getDayGroup } from "@/lib/slot-templates";
 import { expireStalePendingBookings } from "@/lib/booking-expiry";
+import { resolveSlotPrice, type PriceRule } from "@/lib/price-rules";
 
 type RouteParams = { params: Promise<{ id: string; courtId: string }> };
 
@@ -47,7 +48,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     // Verify the court belongs to this venue
     const court = await prisma.court.findUnique({
       where: { id: courtId },
-      select: { id: true, venueId: true, pricePerHour: true, isActive: true },
+      select: { id: true, venueId: true, pricePerHour: true, isActive: true, priceRules: true },
     });
 
     if (!court || court.venueId !== venueId) {
@@ -130,6 +131,15 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     const dayOfWeek = DAY_MAP[dateObj.getDay()];
     const dayGroup = getDayGroup(dayOfWeek);
 
+    // Prepare price rules for resolution
+    const basePricePerHour = court.pricePerHour.toNumber();
+    const priceRules: PriceRule[] = court.priceRules.map((r) => ({
+      dayGroup: r.dayGroup,
+      startTime: r.startTime,
+      endTime: r.endTime,
+      pricePerHour: r.pricePerHour.toNumber(),
+    }));
+
     // Get all non-cancelled bookings for this court + date
     const bookings = await prisma.booking.findMany({
       where: {
@@ -165,7 +175,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         endTime: slot.endTime,
         slotDuration: template.slotDuration,
         availableBlocks: slot.availableBlocks,
-        pricePerHour: court.pricePerHour,
+        pricePerHour: resolveSlotPrice(dayGroup, slot.startTime, slot.endTime, priceRules, basePricePerHour),
       }));
 
       return NextResponse.json({
@@ -197,7 +207,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       endTime: slot.endTime,
       slotDuration: 60,
       availableBlocks: 1,
-      pricePerHour: court.pricePerHour,
+      pricePerHour: resolveSlotPrice(dayGroup, slot.startTime, slot.endTime, priceRules, basePricePerHour),
     }));
 
     return NextResponse.json({

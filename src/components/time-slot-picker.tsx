@@ -67,7 +67,18 @@ export function TimeSlotPicker({
   };
 
   const getBlockPrice = (count: number): number => {
-    return pricePerHour * ((slotDuration * count) / 60);
+    if (!selectedStartTime) return pricePerHour * ((slotDuration * count) / 60);
+    const startIdx = slots.findIndex((s) => s.startTime === selectedStartTime);
+    if (startIdx === -1) return pricePerHour * ((slotDuration * count) / 60);
+    let sum = 0;
+    for (let i = 0; i < count && startIdx + i < slots.length; i++) {
+      const s = slots[startIdx + i];
+      const pph = s.pricePerHour
+        ? typeof s.pricePerHour === "string" ? parseFloat(s.pricePerHour) : s.pricePerHour
+        : pricePerHour;
+      sum += pph * ((s.slotDuration || 60) / 60);
+    }
+    return sum;
   };
 
   return (

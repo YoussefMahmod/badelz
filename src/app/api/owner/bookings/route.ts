@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { ownerBookingSchema } from "@/lib/validators";
 import { customAlphabet } from "nanoid";
 import { getDayGroup, timeToMinutes, minutesToTime } from "@/lib/slot-templates";
+import { calculateTotalPrice, type PriceRule } from "@/lib/price-rules";
 import { DayOfWeek } from "@prisma/client";
 
 const generateCode = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 6);
@@ -128,6 +129,7 @@ export async function POST(request: NextRequest) {
     // Verify court belongs to owner's venue
     const court = await prisma.court.findFirst({
       where: { id: courtId, venueId: venue.id },
+      include: { priceRules: true },
     });
 
     if (!court) {
@@ -184,9 +186,18 @@ export async function POST(request: NextRequest) {
         throw new Error("SLOT_TAKEN");
       }
 
-      // Calculate price
-      const durationMinutes = timeToMinutes(endTime) - timeToMinutes(startTime);
-      const totalPrice = court.pricePerHour.toNumber() * (durationMinutes / 60);
+      // Calculate price (supports time-based pricing rules)
+      const slotDuration = template?.slotDuration || 60;
+      const priceRules: PriceRule[] = court.priceRules.map((r) => ({
+        dayGroup: r.dayGroup,
+        startTime: r.startTime,
+        endTime: r.endTime,
+        pricePerHour: r.pricePerHour.toNumber(),
+      }));
+      const totalPrice = calculateTotalPrice(
+        dayGroup, startTime, endTime, slotDuration,
+        priceRules, court.pricePerHour.toNumber()
+      );
 
       // Owner bookings skip PENDING — go directly to CONFIRMED
       const booking = await tx.booking.create({

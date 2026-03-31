@@ -9,6 +9,7 @@ import { buildGameShareLink } from "@/lib/whatsapp";
 import { sendBookingNotification } from "@/lib/email";
 import { sendPushToPhone, sendPushToUser } from "@/lib/push";
 import { getDayGroup, timeToMinutes, minutesToTime } from "@/lib/slot-templates";
+import { calculateTotalPrice, type PriceRule } from "@/lib/price-rules";
 
 const generateCode = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 6);
 
@@ -118,6 +119,7 @@ export async function POST(request: NextRequest) {
             owner: { select: { id: true, email: true } },
           },
         },
+        priceRules: true,
       },
     });
 
@@ -215,10 +217,17 @@ export async function POST(request: NextRequest) {
         throw new Error("SLOT_TAKEN");
       }
 
-      // Calculate price based on duration
-      const durationMinutes = timeToMinutes(endTime) - timeToMinutes(startTime);
-      const durationHours = durationMinutes / 60;
-      const totalPrice = court.pricePerHour.toNumber() * durationHours;
+      // Calculate price (supports time-based pricing rules)
+      const priceRules: PriceRule[] = court.priceRules.map((r) => ({
+        dayGroup: r.dayGroup,
+        startTime: r.startTime,
+        endTime: r.endTime,
+        pricePerHour: r.pricePerHour.toNumber(),
+      }));
+      const totalPrice = calculateTotalPrice(
+        dayGroup, startTime, endTime, slotDuration,
+        priceRules, court.pricePerHour.toNumber()
+      );
 
       const confirmationCode = generateCode();
       const gameCode = generateCode();

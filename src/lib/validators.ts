@@ -176,6 +176,19 @@ export const scheduleTemplateSchema = z.object({
   "Must provide either 'all' days or both 'weekdays' and 'weekends'"
 );
 
+export const courtPriceRuleSchema = z.object({
+  dayGroup: z.enum(["all", "weekdays", "weekends"]),
+  startTime: z.string().regex(/^\d{2}:\d{2}$/),
+  endTime: z.string().regex(/^\d{2}:\d{2}$/),
+  pricePerHour: z.number().positive(),
+});
+
+export const courtPriceRulesSchema = z.object({
+  rules: z.array(courtPriceRuleSchema),
+});
+
+export type CourtPriceRuleInput = z.infer<typeof courtPriceRuleSchema>;
+export type CourtPriceRulesInput = z.infer<typeof courtPriceRulesSchema>;
 export type ScheduleTemplateInput = z.infer<typeof scheduleTemplateSchema>;
 export type BookingInput = z.infer<typeof bookingSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;

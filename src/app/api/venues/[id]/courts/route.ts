@@ -35,6 +35,10 @@ export async function GET(
         isActive: true,
         sortOrder: true,
         createdAt: true,
+        priceRules: {
+          orderBy: [{ dayGroup: "asc" as const }, { startTime: "asc" as const }],
+        },
+        _count: { select: { priceRules: true } },
       },
     });
 

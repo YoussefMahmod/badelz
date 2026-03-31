@@ -146,10 +146,11 @@ model Court {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
-  venue     Venue              @relation(fields: [venueId], references: [id], onDelete: Cascade)
-  slots     TimeSlot[]
-  schedules ScheduleTemplate[]
-  bookings  Booking[]
+  venue      Venue              @relation(fields: [venueId], references: [id], onDelete: Cascade)
+  slots      TimeSlot[]
+  schedules  ScheduleTemplate[]
+  bookings   Booking[]
+  priceRules CourtPriceRule[]
 
   @@index([venueId])
 }
@@ -183,6 +184,21 @@ model ScheduleTemplate {
   court Court @relation(fields: [courtId], references: [id], onDelete: Cascade)
 
   @@unique([courtId, dayGroup])
+  @@index([courtId])
+}
+
+model CourtPriceRule {
+  id           String   @id @default(cuid())
+  courtId      String
+  dayGroup     String // "all" | "weekdays" | "weekends"
+  startTime    String // "09:00" format (24h)
+  endTime      String // "15:00" format (24h)
+  pricePerHour Decimal  @db.Decimal(10, 2)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  court Court @relation(fields: [courtId], references: [id], onDelete: Cascade)
+
   @@index([courtId])
 }
 

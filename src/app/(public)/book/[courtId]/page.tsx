@@ -110,9 +110,21 @@ export default function BookingPage({
   const venueName = locale === "ar" && court?.venue?.nameAr ? court.venue.nameAr : court?.venue?.name || "";
   const pricePerHour = court ? parseFloat(court.pricePerHour) : 0;
 
-  // Calculate total price based on blocks
+  // Calculate total price based on blocks (supports variable per-slot pricing)
   const slotDuration = selectedSlot?.slotDuration || 60;
-  const totalPrice = pricePerHour * ((slotDuration * selectedBlockCount) / 60);
+  const totalPrice = (() => {
+    if (!selectedStartTime) return 0;
+    const startIdx = slots.findIndex((s) => s.startTime === selectedStartTime);
+    if (startIdx === -1) return pricePerHour * ((slotDuration * selectedBlockCount) / 60);
+    let sum = 0;
+    for (let i = 0; i < selectedBlockCount && startIdx + i < slots.length; i++) {
+      const slot = slots[startIdx + i];
+      const pph = typeof slot.pricePerHour === "string"
+        ? parseFloat(slot.pricePerHour) : (slot.pricePerHour ?? pricePerHour);
+      sum += pph * ((slot.slotDuration || 60) / 60);
+    }
+    return sum;
+  })();
   const totalDurationMinutes = slotDuration * selectedBlockCount;
 
   // Computed end time for display
