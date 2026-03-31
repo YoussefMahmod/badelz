@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import { motion, AnimatePresence, type PanInfo } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowRight,
   ArrowLeft,
@@ -177,21 +177,6 @@ export default function ListingDetailPage() {
     }
   };
 
-  const handleDragEnd = useCallback(
-    (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-      if (!listing) return;
-      const threshold = 50;
-      if (
-        info.offset.x < -threshold &&
-        currentPhoto < listing.photos.length - 1
-      ) {
-        setCurrentPhoto((prev) => prev + 1);
-      } else if (info.offset.x > threshold && currentPhoto > 0) {
-        setCurrentPhoto((prev) => prev - 1);
-      }
-    },
-    [listing, currentPhoto]
-  );
 
   const formatTimeAgo = (dateStr: string): string => {
     const now = new Date();
@@ -298,35 +283,38 @@ export default function ListingDetailPage() {
                   <div
                     ref={galleryRef}
                     className="relative w-full h-full overflow-hidden"
+                    onTouchStart={(e) => {
+                      (galleryRef.current as HTMLDivElement & { _touchStartX?: number })._touchStartX = e.touches[0].clientX;
+                    }}
+                    onTouchEnd={(e) => {
+                      const el = galleryRef.current as HTMLDivElement & { _touchStartX?: number };
+                      if (el._touchStartX == null) return;
+                      const diff = el._touchStartX - e.changedTouches[0].clientX;
+                      if (Math.abs(diff) > 50) {
+                        if (diff > 0 && currentPhoto < listing.photos.length - 1) {
+                          setCurrentPhoto((p) => p + 1);
+                        } else if (diff < 0 && currentPhoto > 0) {
+                          setCurrentPhoto((p) => p - 1);
+                        }
+                      }
+                      el._touchStartX = undefined;
+                    }}
                   >
-                    <motion.div
-                      className="flex h-full"
-                      drag={listing.photos.length > 1 ? "x" : false}
-                      dragConstraints={{ left: 0, right: 0 }}
-                      dragElastic={0.2}
-                      onDragEnd={handleDragEnd}
-                      animate={{ x: `-${currentPhoto * (100 / listing.photos.length)}%` }}
-                     
-                      style={{
-                        width: `${listing.photos.length * 100}%`,
-                      }}
-                    >
-                      {listing.photos.map((photo, i) => (
-                        <div
-                          key={i}
-                          className="relative shrink-0 h-full"
-                          style={{
-                            width: `${100 / listing.photos.length}%`,
-                          }}
-                        >
-                          <img
-                            src={photo}
-                            alt={`${listing.title} ${i + 1}`}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      ))}
-                    </motion.div>
+                    {listing.photos.map((photo, i) => (
+                      <motion.div
+                        key={i}
+                        className="absolute inset-0"
+                        initial={false}
+                        animate={{ x: `${(i - currentPhoto) * 100}%` }}
+                        transition={{ type: "tween", duration: 0.3, ease: "easeInOut" }}
+                      >
+                        <img
+                          src={photo}
+                          alt={`${listing.title} ${i + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      </motion.div>
+                    ))}
                   </div>
 
                   {/* Bottom gradient */}
