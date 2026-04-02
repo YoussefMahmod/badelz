@@ -11,13 +11,13 @@ import {
   Clock,
   Pencil,
   Check,
-  Trash2,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/i18n";
 import { formatPrice, formatTime } from "@/lib/format";
 import { LoadingSpinner } from "@/components/loading-spinner";
 import { EmptyState } from "@/components/empty-state";
+import { PriceRulesEditor } from "@/components/owner/price-rules-editor";
 
 // ─── Types ───────────────────────────────────────────────
 
@@ -734,145 +734,13 @@ function CourtCard({
               </div>
 
               {/* ── Time-Based Pricing ── */}
-              <div className="border-t border-[#222] pt-3 mt-3">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-semibold text-[#999]">
-                    {t("owner.timePricing") || "تسعير حسب الوقت"}
-                  </span>
-                  <span className="text-[10px] text-[#666]">
-                    {t("owner.timePricingHint") || "اختياري — السعر الأساسي هيتطبق لو مفيش قاعدة"}
-                  </span>
-                </div>
-
-                {/* Day mode toggle */}
-                <div className="flex gap-2 mb-3">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setRulesDayMode("all");
-                      setEditRules((prev) =>
-                        prev.map((r) => ({ ...r, dayGroup: "all" }))
-                      );
-                    }}
-                    className={`flex-1 text-xs py-2 rounded-sm border transition-colors ${
-                      rulesDayMode === "all"
-                        ? "bg-[#d4ff00]/15 border-[#d4ff00]/40 text-[#d4ff00]"
-                        : "border-[#333] text-[#666] hover:border-[#666]"
-                    }`}
-                  >
-                    {t("owner.allDays") || "كل الأيام"}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setRulesDayMode("split")}
-                    className={`flex-1 text-xs py-2 rounded-sm border transition-colors ${
-                      rulesDayMode === "split"
-                        ? "bg-[#d4ff00]/15 border-[#d4ff00]/40 text-[#d4ff00]"
-                        : "border-[#333] text-[#666] hover:border-[#666]"
-                    }`}
-                  >
-                    {t("owner.weekdaysWeekends") || "أيام الأسبوع / ويكند"}
-                  </button>
-                </div>
-
-                {/* Rules list */}
-                {editRules.map((rule, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-center gap-2 mb-2"
-                  >
-                    {rulesDayMode === "split" && (
-                      <select
-                        value={rule.dayGroup}
-                        onChange={(e) => {
-                          const updated = [...editRules];
-                          updated[idx] = { ...updated[idx], dayGroup: e.target.value };
-                          setEditRules(updated);
-                        }}
-                        className="w-20 shrink-0 rounded-sm bg-[#1a1a1a] border border-[#333] px-1.5 py-2 text-xs text-white outline-none focus:border-[#d4ff00]"
-                      >
-                        <option value="weekdays">{t("owner.weekdays") || "أسبوع"}</option>
-                        <option value="weekends">{t("owner.weekends") || "ويكند"}</option>
-                      </select>
-                    )}
-                    <select
-                      value={rule.startTime}
-                      onChange={(e) => {
-                        const updated = [...editRules];
-                        updated[idx] = { ...updated[idx], startTime: e.target.value };
-                        setEditRules(updated);
-                      }}
-                      dir="ltr"
-                      className="flex-1 rounded-sm bg-[#1a1a1a] border border-[#333] px-2 py-2 text-xs text-white outline-none focus:border-[#d4ff00]"
-                    >
-                      <option value="">{t("owner.from") || "من"}</option>
-                      {generateTimeOptions(false).map((t) => (
-                        <option key={t} value={t}>
-                          {t}
-                        </option>
-                      ))}
-                    </select>
-                    <select
-                      value={rule.endTime}
-                      onChange={(e) => {
-                        const updated = [...editRules];
-                        updated[idx] = { ...updated[idx], endTime: e.target.value };
-                        setEditRules(updated);
-                      }}
-                      dir="ltr"
-                      className="flex-1 rounded-sm bg-[#1a1a1a] border border-[#333] px-2 py-2 text-xs text-white outline-none focus:border-[#d4ff00]"
-                    >
-                      <option value="">{t("owner.to") || "إلى"}</option>
-                      {generateTimeOptions(true).map((t) => (
-                        <option key={t} value={t}>
-                          {t}
-                        </option>
-                      ))}
-                    </select>
-                    <input
-                      type="number"
-                      value={rule.pricePerHour}
-                      onChange={(e) => {
-                        const updated = [...editRules];
-                        updated[idx] = { ...updated[idx], pricePerHour: e.target.value };
-                        setEditRules(updated);
-                      }}
-                      placeholder="EGP"
-                      min="1"
-                      dir="ltr"
-                      className="w-20 shrink-0 rounded-sm bg-[#1a1a1a] border border-[#333] px-2 py-2 text-xs text-white outline-none focus:border-[#d4ff00]"
-                    />
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setEditRules((prev) => prev.filter((_, i) => i !== idx))
-                      }
-                      className="shrink-0 flex items-center justify-center h-8 w-8 rounded-sm text-red-400/70 hover:text-red-400 hover:bg-red-500/10 transition-colors"
-                    >
-                      <Trash2 size={13} />
-                    </button>
-                  </div>
-                ))}
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    setEditRules((prev) => [
-                      ...prev,
-                      {
-                        dayGroup: rulesDayMode === "all" ? "all" : "weekdays",
-                        startTime: "",
-                        endTime: "",
-                        pricePerHour: "",
-                      },
-                    ])
-                  }
-                  className="flex items-center gap-1.5 text-xs text-[#d4ff00]/70 hover:text-[#d4ff00] transition-colors mt-1"
-                >
-                  <Plus size={13} />
-                  {t("owner.addPriceRule") || "إضافة قاعدة تسعير"}
-                </button>
-              </div>
+              <PriceRulesEditor
+                rules={editRules}
+                onChange={setEditRules}
+                dayMode={rulesDayMode}
+                onDayModeChange={setRulesDayMode}
+                basePrice={editPrice}
+              />
 
               <InlineFeedback message={feedback} />
 

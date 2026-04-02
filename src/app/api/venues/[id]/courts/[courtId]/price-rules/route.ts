@@ -3,13 +3,9 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { courtPriceRulesSchema } from "@/lib/validators";
+import { timeToMinutes, endTimeToMinutes } from "@/lib/slot-templates";
 
 type RouteParams = { params: Promise<{ id: string; courtId: string }> };
-
-function timeToMinutes(time: string): number {
-  const [h, m] = time.split(":").map(Number);
-  return h * 60 + m;
-}
 
 export async function GET(_request: NextRequest, { params }: RouteParams) {
   try {
@@ -82,9 +78,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    // Validate: startTime < endTime for each rule
+    // Validate: startTime < endTime for each rule (endTime "00:00" = midnight = 1440)
     for (const rule of parsed.data.rules) {
-      if (timeToMinutes(rule.startTime) >= timeToMinutes(rule.endTime)) {
+      if (timeToMinutes(rule.startTime) >= endTimeToMinutes(rule.endTime)) {
         return NextResponse.json(
           { statusCode: 400, message: `وقت البداية ${rule.startTime} لازم يكون قبل وقت النهاية ${rule.endTime}`, data: null },
           { status: 400 }
@@ -103,7 +99,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     for (const [, groupRules] of byGroup) {
       const sorted = groupRules.sort((a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime));
       for (let i = 1; i < sorted.length; i++) {
-        if (timeToMinutes(sorted[i].startTime) < timeToMinutes(sorted[i - 1].endTime)) {
+        if (timeToMinutes(sorted[i].startTime) < endTimeToMinutes(sorted[i - 1].endTime)) {
           return NextResponse.json(
             { statusCode: 400, message: "يوجد تداخل في أوقات التسعير", data: null },
             { status: 400 }

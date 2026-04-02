@@ -1,4 +1,4 @@
-import { timeToMinutes, minutesToTime } from "./slot-templates";
+import { timeToMinutes, endTimeToMinutes, minutesToTime } from "./slot-templates";
 
 export interface PriceRule {
   dayGroup: string; // "all" | "weekdays" | "weekends"
@@ -25,7 +25,7 @@ export function resolveSlotPrice(
   // Find matching rules: slot must be fully contained within the rule's range
   const matching = rules.filter((r) => {
     const ruleStart = timeToMinutes(r.startTime);
-    const ruleEnd = timeToMinutes(r.endTime);
+    const ruleEnd = endTimeToMinutes(r.endTime);
     const dayMatch = r.dayGroup === dayGroup || r.dayGroup === "all";
     return dayMatch && ruleStart <= slotStartMin && ruleEnd >= slotEndMin;
   });
@@ -50,7 +50,7 @@ export function calculateTotalPrice(
   basePricePerHour: number
 ): number {
   const startMin = timeToMinutes(startTime);
-  const endMin = timeToMinutes(endTime);
+  const endMin = endTimeToMinutes(endTime);
   const durationHoursPerSlot = slotDuration / 60;
 
   let total = 0;

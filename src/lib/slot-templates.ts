@@ -110,6 +110,12 @@ export function timeToMinutes(time: string): number {
   return h * 60 + m;
 }
 
+/** For end times: treat "00:00" (midnight) as 1440 (end of day) */
+export function endTimeToMinutes(time: string): number {
+  const mins = timeToMinutes(time);
+  return mins === 0 ? 1440 : mins;
+}
+
 export function minutesToTime(minutes: number): string {
   const h = Math.floor(minutes / 60);
   const m = minutes % 60;
