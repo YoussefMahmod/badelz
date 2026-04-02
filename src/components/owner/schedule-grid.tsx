@@ -9,11 +9,19 @@ import Link from "next/link";
 
 // ─── Types ───
 
+interface PriceRule {
+  dayGroup: string;
+  startTime: string;
+  endTime: string;
+  pricePerHour: number | string;
+}
+
 interface Court {
   id: string;
   name: string;
   nameAr: string | null;
   pricePerHour: number | string;
+  priceRules?: PriceRule[];
 }
 
 interface ScheduleBooking {
@@ -58,6 +66,33 @@ function toDateString(date: Date): string {
   const m = (date.getMonth() + 1).toString().padStart(2, "0");
   const d = date.getDate().toString().padStart(2, "0");
   return `${y}-${m}-${d}`;
+}
+
+/** Resolve price for a slot time based on price rules */
+function resolvePrice(court: Court, slotTime: string, dayGroup: string): number {
+  const basePrice = Number(court.pricePerHour);
+  if (!court.priceRules || court.priceRules.length === 0) return basePrice;
+
+  const slotMin = timeToMinutes(slotTime);
+
+  const matching = court.priceRules.filter((r) => {
+    const rStart = timeToMinutes(r.startTime);
+    const rEndRaw = timeToMinutes(r.endTime);
+    const rEnd = rEndRaw === 0 ? 1440 : rEndRaw; // midnight = end of day
+    const dayMatch = r.dayGroup === dayGroup || r.dayGroup === "all";
+    return dayMatch && rStart <= slotMin && rEnd > slotMin;
+  });
+
+  if (matching.length === 0) return basePrice;
+  const specific = matching.find((r) => r.dayGroup === dayGroup);
+  return Number(specific ? specific.pricePerHour : matching[0].pricePerHour);
+}
+
+function getDayGroupForDate(dateStr: string): string {
+  const d = new Date(dateStr + "T12:00:00");
+  const day = d.getDay(); // 0=Sun
+  // Egypt: Friday (5) and Saturday (6) are weekends
+  return day === 5 || day === 6 ? "weekends" : "weekdays";
 }
 
 /** Generate 30-min time slots from 06:00 (360) to 02:00 next day (1560) */
@@ -451,6 +486,9 @@ export function ScheduleGrid({ venueId, onSlotTap }: ScheduleGridProps) {
                     {locale === "ar" && court.nameAr ? court.nameAr : court.name}
                   </span>
                   <span className="block text-[10px] text-white/40 mt-0.5">
+                    {(court.priceRules?.length ?? 0) > 0 && (
+                      <span className="text-[#d4ff00]/50 me-0.5">{t("owner.from") || "من"}</span>
+                    )}
                     {Number(court.pricePerHour)} {t("common.egp")}{t("common.perHour")}
                   </span>
                 </th>
@@ -530,6 +568,9 @@ export function ScheduleGrid({ venueId, onSlotTap }: ScheduleGridProps) {
                     }
 
                     // Available slot
+                    const slotPrice = resolvePrice(court, timeStr, getDayGroupForDate(selectedDate));
+                    const isCustomPrice = slotPrice !== Number(court.pricePerHour);
+
                     return (
                       <td
                         key={cellKey}
@@ -545,13 +586,18 @@ export function ScheduleGrid({ venueId, onSlotTap }: ScheduleGridProps) {
                               endTime: minutesToTime(slotMinute + 30),
                             })
                           }
-                          className="flex h-full w-full items-center justify-center rounded-lg border border-dashed border-white/10 text-white/30 transition-all hover:bg-white/5 hover:border-white/20 hover:text-white/40 cursor-pointer group"
+                          className="flex h-full w-full items-center justify-center rounded-lg border border-dashed border-white/10 text-white/30 transition-all hover:bg-white/5 hover:border-white/20 hover:text-white/40 cursor-pointer group relative"
                           aria-label={`${t("owner.tapToBook")} - ${locale === "ar" && court.nameAr ? court.nameAr : court.name} - ${formatTime(timeStr)}`}
                         >
                           <Plus
                             size={14}
                             className="opacity-0 group-hover:opacity-100 transition-opacity"
                           />
+                          {isCustomPrice && isHourMark && (
+                            <span className="absolute bottom-0.5 end-1.5 text-[9px] text-[#d4ff00]/40 font-medium">
+                              {slotPrice}
+                            </span>
+                          )}
                         </button>
                       </td>
                     );

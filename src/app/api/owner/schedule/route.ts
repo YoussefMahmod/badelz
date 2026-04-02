@@ -44,6 +44,14 @@ export async function GET(request: NextRequest) {
           name: true,
           nameAr: true,
           pricePerHour: true,
+          priceRules: {
+            select: {
+              dayGroup: true,
+              startTime: true,
+              endTime: true,
+              pricePerHour: true,
+            },
+          },
         },
       }),
       prisma.booking.findMany({
