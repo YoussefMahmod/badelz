@@ -15,6 +15,7 @@ import {
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/i18n";
 import { formatPrice, formatTime } from "@/lib/format";
+import { endTimeToMinutes } from "@/lib/slot-templates";
 import { LoadingSpinner } from "@/components/loading-spinner";
 import { EmptyState } from "@/components/empty-state";
 import { PriceRulesEditor } from "@/components/owner/price-rules-editor";
@@ -206,10 +207,10 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
     }
   };
 
-  // Preview: compute slot count
+  // Preview: compute slot count (endTimeToMinutes handles midnight = 1440)
   const computeSlotCount = (start: string, end: string) => {
     const startMin = timeToMinutes(start);
-    const endMin = timeToMinutes(end);
+    const endMin = endTimeToMinutes(end);
     return Math.max(0, Math.floor((endMin - startMin) / slotDuration));
   };
 
@@ -321,8 +322,7 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
                       <select
                         value={allStart}
                         onChange={(e) => setAllStart(e.target.value)}
-                        dir="ltr"
-                        className="w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-3 py-2.5 text-sm text-white outline-none  focus:border-[#d4ff00] appearance-none"
+                        className="w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-3 py-2.5 text-sm text-white outline-none focus:border-[#d4ff00] appearance-none"
                       >
                         {START_TIMES.map((time) => (
                           <option key={`all-s-${time}`} value={time}>{formatTime(time)}</option>
@@ -334,8 +334,7 @@ function SlotManagementModal({ court, venueId, onClose }: SlotModalProps) {
                       <select
                         value={allEnd}
                         onChange={(e) => setAllEnd(e.target.value)}
-                        dir="ltr"
-                        className="w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-3 py-2.5 text-sm text-white outline-none  focus:border-[#d4ff00] appearance-none"
+                        className="w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-3 py-2.5 text-sm text-white outline-none focus:border-[#d4ff00] appearance-none"
                       >
                         {END_TIMES.map((time) => (
                           <option key={`all-e-${time}`} value={time}>{formatTime(time)}</option>
@@ -720,16 +719,23 @@ function CourtCard({
               </div>
 
               <div>
-                <label className="text-xs text-[#666] mb-1 block">
-                  {t("owner.pricePerHour")} (EGP)
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs text-[#666]">
+                    {t("owner.pricePerHour")} (EGP)
+                  </label>
+                  {editRules.length > 0 && (
+                    <span className="text-[10px] text-[#666]">
+                      {t("owner.basePrice") || "السعر الأساسي"} — {t("owner.timePricingHint") || "هيتطبق لو مفيش قاعدة"}
+                    </span>
+                  )}
+                </div>
                 <input
                   type="number"
                   value={editPrice}
                   onChange={(e) => setEditPrice(e.target.value)}
                   min="1"
                   dir="ltr"
-                  className="w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-3 py-2.5 text-sm text-white outline-none  focus:border-[#d4ff00] transition-shadow"
+                  className="w-full rounded-sm bg-[#1a1a1a] border border-[#333] px-3 py-2.5 text-sm text-white outline-none focus:border-[#d4ff00] transition-shadow"
                 />
               </div>
 

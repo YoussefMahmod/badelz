@@ -141,7 +141,7 @@ export function generateSlotsFromTemplate(
 ): GeneratedSlot[] {
   const slots: GeneratedSlot[] = [];
   const startMin = timeToMinutes(template.startTime);
-  const endMin = timeToMinutes(template.endTime);
+  const endMin = endTimeToMinutes(template.endTime);
   const dur = template.slotDuration;
 
   // Build a set of booked minutes for O(1) conflict check

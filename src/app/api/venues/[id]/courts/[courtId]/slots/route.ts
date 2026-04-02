@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { slotSchema } from "@/lib/validators";
 import { z } from "zod";
 import { DayOfWeek } from "@prisma/client";
-import { generateSlotsFromTemplate, getDayGroup } from "@/lib/slot-templates";
+import { generateSlotsFromTemplate, getDayGroup, timeToMinutes, endTimeToMinutes } from "@/lib/slot-templates";
 import { expireStalePendingBookings } from "@/lib/booking-expiry";
 import { resolveSlotPrice, type PriceRule } from "@/lib/price-rules";
 
@@ -20,11 +20,6 @@ const DAY_MAP: Record<number, DayOfWeek> = {
   5: "FRIDAY",
   6: "SATURDAY",
 };
-
-function timeToMinutes(time: string): number {
-  const [h, m] = time.split(":").map(Number);
-  return h * 60 + m;
-}
 
 function slotsOverlap(
   aStart: string,
@@ -272,7 +267,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     // Validate that startTime < endTime for each slot
     for (const slot of parsed.data) {
-      if (timeToMinutes(slot.startTime) >= timeToMinutes(slot.endTime)) {
+      if (timeToMinutes(slot.startTime) >= endTimeToMinutes(slot.endTime)) {
         return NextResponse.json(
           {
             statusCode: 400,
