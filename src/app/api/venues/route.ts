@@ -60,16 +60,28 @@ export async function GET(request: NextRequest) {
           rating: true,
           ratingCount: true,
           isFoundingVenue: true,
+          courts: {
+            where: { isActive: true },
+            select: { pricePerHour: true },
+          },
           _count: { select: { courts: { where: { isActive: true } } } },
         },
       }),
       prisma.venue.count({ where }),
     ]);
 
-    const data = venues.map(({ _count, ...venue }) => ({
-      ...venue,
-      courtCount: _count.courts,
-    }));
+    const data = venues.map(({ _count, courts, ...venue }) => {
+      const prices = courts.map((court) => Number(court.pricePerHour || 0));
+      const minPrice = prices.length > 0 ? Math.min(...prices) : 0;
+      const maxPrice = prices.length > 0 ? Math.max(...prices) : 0;
+
+      return {
+        ...venue,
+        courtCount: _count.courts,
+        minPrice,
+        maxPrice,
+      };
+    });
 
     return NextResponse.json({
       statusCode: 200,

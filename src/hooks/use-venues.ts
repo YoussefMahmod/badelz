@@ -21,6 +21,8 @@ interface Venue {
   rating: number;
   ratingCount: number;
   courtCount: number;
+  minPrice: number;
+  maxPrice: number;
 }
 
 interface UseVenuesOptions {

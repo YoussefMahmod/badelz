@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, MapPin } from "lucide-react";
 import { MainLayout } from "@/components/main-layout";
@@ -9,6 +9,7 @@ import { FeaturedVenueCard } from "@/components/featured-venue-card";
 import { EmptyState } from "@/components/empty-state";
 import { useVenues } from "@/hooks/use-venues";
 import { useTranslation, useLocale } from "@/i18n";
+import { formatPrice } from "@/lib/format";
 
 const AREAS = [
   { key: "all", labelEn: "All Areas", labelAr: "كل المناطق" },
@@ -20,17 +21,33 @@ const AREAS = [
   { key: "Heliopolis", labelEn: "Heliopolis", labelAr: "مصر الجديدة" },
 ];
 
+const DEFAULT_MAX_PRICE = 5000;
+
 export default function BrowsePage() {
   const { t } = useTranslation();
   const { locale } = useLocale();
   const [selectedArea, setSelectedArea] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [maxPriceFilter, setMaxPriceFilter] = useState(DEFAULT_MAX_PRICE);
 
   const { venues, loading } = useVenues({
     city: selectedArea === "all" ? undefined : selectedArea,
     search: debouncedSearch || undefined,
   });
+
+  const currencyLocale = locale === "ar" ? "ar-EG" : "en-EG";
+
+  const highestPrice = useMemo(() => {
+    const values = venues.map((venue) => venue.maxPrice ?? venue.minPrice ?? 0);
+    return values.length > 0 ? Math.max(...values) : DEFAULT_MAX_PRICE;
+  }, [venues]);
+
+  useEffect(() => {
+    if (highestPrice > 0) {
+      setMaxPriceFilter((current) => (current === 0 || current > highestPrice ? highestPrice : current));
+    }
+  }, [highestPrice]);
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
@@ -38,16 +55,20 @@ export default function BrowsePage() {
     return () => clearTimeout(timeout);
   };
 
+  const filteredVenues = useMemo(() => {
+    return venues.filter((venue) => (venue.minPrice ?? 0) <= maxPriceFilter);
+  }, [venues, maxPriceFilter]);
+
   const featuredVenue = useMemo(() => {
-    if (venues.length === 0) return null;
-    const sorted = [...venues].sort((a, b) => b.rating - a.rating);
+    if (filteredVenues.length === 0) return null;
+    const sorted = [...filteredVenues].sort((a, b) => b.rating - a.rating);
     return sorted[0];
-  }, [venues]);
+  }, [filteredVenues]);
 
   const remainingVenues = useMemo(() => {
-    if (!featuredVenue) return venues;
-    return venues.filter((v) => v.id !== featuredVenue.id);
-  }, [venues, featuredVenue]);
+    if (!featuredVenue) return filteredVenues;
+    return filteredVenues.filter((v) => v.id !== featuredVenue.id);
+  }, [filteredVenues, featuredVenue]);
 
   const skeletons = useMemo(
     () =>
@@ -101,6 +122,36 @@ export default function BrowsePage() {
           />
         </motion.div>
 
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.15 }}
+          className="mb-5 rounded-sm border border-[#333] bg-[#1a1a1a] p-4"
+        >
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-semibold text-white">{t("browse.maxPrice")}</p>
+              <p className="text-xs text-[#666]">{t("browse.maxPriceHint")}</p>
+            </div>
+            <span className="text-sm font-bold text-[#d4ff00]">{formatPrice(maxPriceFilter, currencyLocale)}</span>
+          </div>
+
+          <input
+            type="range"
+            min={0}
+            max={highestPrice}
+            step={50}
+            value={maxPriceFilter}
+            onChange={(e) => setMaxPriceFilter(Number(e.target.value))}
+            className="h-2 w-full cursor-pointer appearance-none rounded-full bg-[#222] accent-[#d4ff00]"
+          />
+
+          <div className="mt-3 flex items-center justify-between text-xs text-[#666]">
+            <span>{formatPrice(0, currencyLocale)}</span>
+            <span>{formatPrice(highestPrice, currencyLocale)}</span>
+          </div>
+        </motion.div>
+
         {/* Area chips */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -115,11 +166,10 @@ export default function BrowsePage() {
               <button
                 key={area.key}
                 onClick={() => setSelectedArea(area.key)}
-                className={`shrink-0 flex items-center gap-1.5 rounded-sm px-4 py-2.5 text-xs font-semibold transition-all cursor-pointer active:scale-[0.97] transition-transform duration-75 ${
-                  isSelected
+                className={`shrink-0 flex items-center gap-1.5 rounded-sm px-4 py-2.5 text-xs font-semibold transition-all cursor-pointer active:scale-[0.97] transition-transform duration-75 ${isSelected
                     ? "bg-[#d4ff00] text-[#0d0d0d]"
                     : "border border-[#333] text-[#999] hover:text-white hover:bg-[#222]"
-                }`}
+                  }`}
               >
                 <span className="relative flex items-center gap-1.5">
                   {area.key !== "all" && <MapPin size={12} />}
@@ -138,7 +188,7 @@ export default function BrowsePage() {
               {skeletons}
             </div>
           </div>
-        ) : venues.length === 0 ? (
+        ) : filteredVenues.length === 0 ? (
           <EmptyState
             icon={<Search size={28} />}
             title={t("browse.noVenues")}
@@ -149,6 +199,7 @@ export default function BrowsePage() {
                 setSelectedArea("all");
                 setSearchQuery("");
                 setDebouncedSearch("");
+                setMaxPriceFilter(highestPrice);
               },
             }}
           />
@@ -160,11 +211,9 @@ export default function BrowsePage() {
             )}
 
             {/* Venue grid */}
-            <div
-              className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
-            >
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               <AnimatePresence mode="popLayout">
-                {(debouncedSearch ? venues : remainingVenues).map((venue) => (
+                {(debouncedSearch ? filteredVenues : remainingVenues).map((venue) => (
                   <VenueCard key={venue.id} venue={venue} />
                 ))}
               </AnimatePresence>

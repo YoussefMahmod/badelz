@@ -191,6 +191,10 @@ const en = {
     noVenues: "No courts found in this area",
     noVenuesDesc: "Try a different area or search term",
     priceFrom: "From {{price}}",
+    priceRange: "{{minPrice}} - {{maxPrice}}",
+    priceSingle: "{{price}}",
+    maxPrice: "Max price",
+    maxPriceHint: "Show venues with prices at or below this amount",
     courts: "{{count}} courts",
   },
   venue: {
