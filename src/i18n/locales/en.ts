@@ -190,7 +190,6 @@ const en = {
     allAreas: "All Areas",
     noVenues: "No courts found in this area",
     noVenuesDesc: "Try a different area or search term",
-    priceFrom: "From {{price}}",
     priceRange: "{{minPrice}} - {{maxPrice}}",
     priceSingle: "{{price}}",
     maxPrice: "Max price",

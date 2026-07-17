@@ -55,9 +55,14 @@ export default function BrowsePage() {
     return () => clearTimeout(timeout);
   };
 
-  const filteredVenues = useMemo(() => {
-    return venues.filter((venue) => (venue.minPrice ?? 0) <= maxPriceFilter);
-  }, [venues, maxPriceFilter]);
+const filteredVenues = useMemo(() => {
+  return venues.filter(
+    (venue) =>
+      venue.minPrice &&
+      venue.minPrice > 0 &&
+      venue.minPrice <= maxPriceFilter
+  );
+}, [venues, maxPriceFilter]);
 
   const featuredVenue = useMemo(() => {
     if (filteredVenues.length === 0) return null;
