@@ -192,7 +192,10 @@ const ar: TranslationKeys = {
     allAreas: "كل المناطق",
     noVenues: "مفيش ملاعب في المنطقة دي",
     noVenuesDesc: "جرّب منطقة تانية",
-    priceFrom: "من {{price}}",
+    priceRange: "{{minPrice}} - {{maxPrice}}",
+    priceSingle: "{{price}}",
+    maxPrice: "أعلى سعر",
+    maxPriceHint: "اعرض الملاعب بسعر يساوي أو أقل من هذا المبلغ",
     courts: "{{count}} كورت",
   },
   venue: {

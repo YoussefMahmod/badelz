@@ -18,17 +18,30 @@ interface VenueCardProps {
     courtCount: number;
     sportTypes?: string[];
     isFoundingVenue?: boolean;
+    minPrice?: number;
+    maxPrice?: number;
   };
   minPrice?: number;
+  maxPrice?: number;
   size?: "standard" | "large";
 }
 
-export function VenueCard({ venue, minPrice, size = "standard" }: VenueCardProps) {
+export function VenueCard({ venue, minPrice, maxPrice, size = "standard" }: VenueCardProps) {
   const { t } = useTranslation();
   const { locale } = useLocale();
 
   const displayName = locale === "ar" && venue.nameAr ? venue.nameAr : venue.name;
   const displayCity = locale === "ar" && venue.cityAr ? venue.cityAr : venue.city;
+  const currencyLocale = locale === "ar" ? "ar-EG" : "en-EG";
+  const displayMinPrice = venue.minPrice ?? minPrice;
+  const displayMaxPrice = venue.maxPrice ?? maxPrice;
+  const priceLabel =
+    displayMinPrice !== undefined && displayMaxPrice !== undefined && displayMaxPrice > 0
+      ? t("browse.priceRange", {
+        minPrice: formatPrice(displayMinPrice, currencyLocale),
+        maxPrice: formatPrice(displayMaxPrice, currencyLocale),
+      })
+      : undefined;
 
   const isLarge = size === "large";
 
@@ -73,15 +86,6 @@ export function VenueCard({ venue, minPrice, size = "standard" }: VenueCardProps
                 </span>
               </div>
             )}
-
-            {/* Price badge */}
-            {minPrice !== undefined && (
-              <div className="absolute top-3 end-3 z-10">
-                <span className="rounded-sm bg-[#0d0d0d]/80 px-3 py-1 text-xs font-bold text-[#d4ff00] font-[family-name:var(--font-display-en)]">
-                  {t("browse.priceFrom", { price: formatPrice(minPrice) })}
-                </span>
-              </div>
-            )}
           </div>
 
           {/* Info section */}
@@ -107,6 +111,12 @@ export function VenueCard({ venue, minPrice, size = "standard" }: VenueCardProps
                 </span>
               )}
             </div>
+
+            {priceLabel && (
+              <div className="mt-2">
+                <span className="text-sm font-semibold text-[#d4ff00]">{priceLabel}</span>
+              </div>
+            )}
           </div>
         </div>
       </Link>

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { MapPin, Star, RectangleHorizontal, ArrowUpRight, Sparkles } from "lucide-react";
 import { useTranslation, useLocale } from "@/i18n";
+import { formatPrice } from "@/lib/format";
 
 interface FeaturedVenueCardProps {
   venue: {
@@ -16,6 +17,8 @@ interface FeaturedVenueCardProps {
     ratingCount: number;
     courtCount: number;
     isFoundingVenue?: boolean;
+    minPrice?: number;
+    maxPrice?: number;
   };
 }
 
@@ -25,6 +28,19 @@ export function FeaturedVenueCard({ venue }: FeaturedVenueCardProps) {
 
   const displayName = locale === "ar" && venue.nameAr ? venue.nameAr : venue.name;
   const displayCity = locale === "ar" && venue.cityAr ? venue.cityAr : venue.city;
+  const currencyLocale = locale === "ar" ? "ar-EG" : "en-EG";
+  const hasPriceRange = typeof venue.minPrice === "number" || typeof venue.maxPrice === "number";
+  const priceLabel =
+    hasPriceRange && typeof venue.minPrice === "number" && typeof venue.maxPrice === "number" && venue.maxPrice > 0
+      ? venue.minPrice === venue.maxPrice
+        ? t("browse.priceSingle", {
+          price: formatPrice(venue.minPrice, currencyLocale),
+        })
+        : t("browse.priceRange", {
+          minPrice: formatPrice(venue.minPrice, currencyLocale),
+          maxPrice: formatPrice(venue.maxPrice, currencyLocale),
+        })
+      : undefined;
 
   return (
     <div className="mb-6">
@@ -73,7 +89,7 @@ export function FeaturedVenueCard({ venue }: FeaturedVenueCardProps) {
                   {displayName}
                 </h2>
 
-                <div className="flex items-center gap-3 text-sm text-white/70 mb-4">
+                <div className="flex items-center gap-3 text-sm text-white/70 mb-3">
                   <span className="flex items-center gap-1">
                     <MapPin size={14} className="text-white/50" />
                     {displayCity}
@@ -86,6 +102,14 @@ export function FeaturedVenueCard({ venue }: FeaturedVenueCardProps) {
                     </span>
                   )}
                 </div>
+
+                {priceLabel && (
+                  <div className="mb-4">
+                    <span className="inline-flex rounded-sm bg-[#0d0d0d]/70 px-3 py-1 text-sm font-semibold text-[#d4ff00]">
+                      {priceLabel}
+                    </span>
+                  </div>
+                )}
 
                 <span className="inline-flex items-center gap-2 rounded-sm bg-[#d4ff00] px-5 py-2.5 text-sm font-bold text-[#0d0d0d] transition-all hover:gap-3">
                   {t("venue.bookNow")}
@@ -119,7 +143,7 @@ export function FeaturedVenueCard({ venue }: FeaturedVenueCardProps) {
                 {displayName}
               </h2>
 
-              <div className="flex items-center gap-3 text-sm text-[#0d0d0d]/70 mb-6">
+              <div className="flex items-center gap-3 text-sm text-[#0d0d0d]/70 mb-3">
                 <span className="flex items-center gap-1">
                   <MapPin size={14} className="text-[#0d0d0d]/50" />
                   {displayCity}
@@ -132,6 +156,14 @@ export function FeaturedVenueCard({ venue }: FeaturedVenueCardProps) {
                   </span>
                 )}
               </div>
+
+              {priceLabel && (
+                <div className="mb-6">
+                  <span className="inline-flex rounded-sm bg-[#0d0d0d]/80 px-3 py-1 text-sm font-semibold text-[#d4ff00]">
+                    {priceLabel}
+                  </span>
+                </div>
+              )}
 
               <span className="inline-flex items-center gap-2 rounded-sm bg-[#0d0d0d] px-5 py-2.5 text-sm font-bold text-[#d4ff00] transition-all hover:gap-3">
                 {t("venue.bookNow")}
